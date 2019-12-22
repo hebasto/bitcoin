@@ -183,10 +183,11 @@ void CTxMemPool::UpdateAncestorsOf(bool add, txiter it, setEntries &setAncestors
         UpdateChild(piter, it, add);
     }
     const int64_t updateCount = (add ? 1 : -1);
-    const int64_t updateSize = updateCount * it->GetTxSize();
+    const int64_t updateSize = it->GetTxSize();
+    assert(updateSize > 0);
     const CAmount updateFee = updateCount * it->GetModifiedFee();
     for (txiter ancestorIt : setAncestors) {
-        mapTx.modify(ancestorIt, update_descendant_state(updateSize, updateFee, updateCount));
+        mapTx.modify(ancestorIt, update_descendant_state(updateCount * updateSize, updateFee, updateCount));
     }
 }
 
