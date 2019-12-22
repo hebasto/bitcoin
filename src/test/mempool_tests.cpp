@@ -425,6 +425,7 @@ BOOST_AUTO_TEST_CASE(MempoolSizeLimitTest)
 {
     CTxMemPool pool;
     LOCK2(cs_main, pool.cs);
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     TestMemPoolEntryHelper entry;
 
     CMutableTransaction tx1 = CMutableTransaction();
@@ -434,6 +435,7 @@ BOOST_AUTO_TEST_CASE(MempoolSizeLimitTest)
     tx1.vout[0].scriptPubKey = CScript() << OP_1 << OP_EQUAL;
     tx1.vout[0].nValue = 10 * COIN;
     pool.addUnchecked(entry.Fee(10000LL).FromTx(tx1));
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
 
     CMutableTransaction tx2 = CMutableTransaction();
     tx2.vin.resize(1);
@@ -442,16 +444,20 @@ BOOST_AUTO_TEST_CASE(MempoolSizeLimitTest)
     tx2.vout[0].scriptPubKey = CScript() << OP_2 << OP_EQUAL;
     tx2.vout[0].nValue = 10 * COIN;
     pool.addUnchecked(entry.Fee(5000LL).FromTx(tx2));
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
 
     pool.TrimToSize(pool.DynamicMemoryUsage()); // should do nothing
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     BOOST_CHECK(pool.exists(tx1.GetHash()));
     BOOST_CHECK(pool.exists(tx2.GetHash()));
 
     pool.TrimToSize(pool.DynamicMemoryUsage() * 3 / 4); // should remove the lower-feerate transaction
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     BOOST_CHECK(pool.exists(tx1.GetHash()));
     BOOST_CHECK(!pool.exists(tx2.GetHash()));
 
     pool.addUnchecked(entry.FromTx(tx2));
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     CMutableTransaction tx3 = CMutableTransaction();
     tx3.vin.resize(1);
     tx3.vin[0].prevout = COutPoint(tx2.GetHash(), 0);
@@ -460,13 +466,16 @@ BOOST_AUTO_TEST_CASE(MempoolSizeLimitTest)
     tx3.vout[0].scriptPubKey = CScript() << OP_3 << OP_EQUAL;
     tx3.vout[0].nValue = 10 * COIN;
     pool.addUnchecked(entry.Fee(20000LL).FromTx(tx3));
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
 
     pool.TrimToSize(pool.DynamicMemoryUsage() * 3 / 4); // tx3 should pay for tx2 (CPFP)
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     BOOST_CHECK(!pool.exists(tx1.GetHash()));
     BOOST_CHECK(pool.exists(tx2.GetHash()));
     BOOST_CHECK(pool.exists(tx3.GetHash()));
 
     pool.TrimToSize(GetVirtualTransactionSize(CTransaction(tx1))); // mempool is limited to tx1's size in memory usage, so nothing fits
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     BOOST_CHECK(!pool.exists(tx1.GetHash()));
     BOOST_CHECK(!pool.exists(tx2.GetHash()));
     BOOST_CHECK(!pool.exists(tx3.GetHash()));
@@ -523,28 +532,40 @@ BOOST_AUTO_TEST_CASE(MempoolSizeLimitTest)
     tx7.vout[1].nValue = 10 * COIN;
 
     pool.addUnchecked(entry.Fee(7000LL).FromTx(tx4));
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     pool.addUnchecked(entry.Fee(1000LL).FromTx(tx5));
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     pool.addUnchecked(entry.Fee(1100LL).FromTx(tx6));
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     pool.addUnchecked(entry.Fee(9000LL).FromTx(tx7));
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
 
     // we only require this to remove, at max, 2 txn, because it's not clear what we're really optimizing for aside from that
     pool.TrimToSize(pool.DynamicMemoryUsage() - 1);
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     BOOST_CHECK(pool.exists(tx4.GetHash()));
     BOOST_CHECK(pool.exists(tx6.GetHash()));
     BOOST_CHECK(!pool.exists(tx7.GetHash()));
 
-    if (!pool.exists(tx5.GetHash()))
+    if (!pool.exists(tx5.GetHash())) {
         pool.addUnchecked(entry.Fee(1000LL).FromTx(tx5));
+        tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
+    }
+
     pool.addUnchecked(entry.Fee(9000LL).FromTx(tx7));
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
 
     pool.TrimToSize(pool.DynamicMemoryUsage() / 2); // should maximize mempool size by only removing 5/7
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     BOOST_CHECK(pool.exists(tx4.GetHash()));
     BOOST_CHECK(!pool.exists(tx5.GetHash()));
     BOOST_CHECK(pool.exists(tx6.GetHash()));
     BOOST_CHECK(!pool.exists(tx7.GetHash()));
 
     pool.addUnchecked(entry.Fee(1000LL).FromTx(tx5));
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     pool.addUnchecked(entry.Fee(9000LL).FromTx(tx7));
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
 
     std::vector<CTransactionRef> vtx;
     SetMockTime(42);
@@ -552,6 +573,7 @@ BOOST_AUTO_TEST_CASE(MempoolSizeLimitTest)
     BOOST_CHECK_EQUAL(pool.GetMinFee(1).GetFeePerK(), maxFeeRateRemoved.GetFeePerK() + 1000);
     // ... we should keep the same min fee until we get a block
     pool.removeForBlock(vtx, 1);
+    tfm::printf("%s %s\n", __LINE__,  pool.GetTotalTxSize());
     SetMockTime(42 + 2*CTxMemPool::ROLLING_FEE_HALFLIFE);
     BOOST_CHECK_EQUAL(pool.GetMinFee(1).GetFeePerK(), llround((maxFeeRateRemoved.GetFeePerK() + 1000)/2.0));
     // ... then feerate should drop 1/2 each halflife
