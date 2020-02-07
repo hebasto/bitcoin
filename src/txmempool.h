@@ -543,8 +543,8 @@ private:
         setEntries children;
     };
 
-    typedef std::map<txiter, TxLinks, CompareIteratorByHash> txlinksMap;
-    txlinksMap mapLinks;
+    typedef std::map<txiter, TxLinks, CompareIteratorByHash, memusage::AccountingAllocator<std::pair<const txiter, TxLinks>>> txlinksMap;
+    txlinksMap mapLinks GUARDED_BY(cs);
 
     void UpdateParent(txiter entry, txiter parent, bool add);
     void UpdateChild(txiter entry, txiter child, bool add);
