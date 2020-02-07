@@ -327,7 +327,9 @@ void CTxMemPoolEntry::UpdateAncestorState(int64_t modifySize, CAmount modifyFee,
 }
 
 CTxMemPool::CTxMemPool(CBlockPolicyEstimator* estimator)
-    : nTransactionsUpdated(0), minerPolicyEstimator(estimator), m_allocation_counter(0), m_epoch(0), m_has_epoch_guard(false), mapTx(memusage::AccountingAllocator<CTxMemPoolEntry>(m_allocation_counter))
+    : nTransactionsUpdated(0), minerPolicyEstimator(estimator), m_allocation_counter(0), m_epoch(0),
+      m_has_epoch_guard(false), mapTx(memusage::AccountingAllocator<CTxMemPoolEntry>(m_allocation_counter)),
+      mapDeltas({}, std::less<uint256>(), memusage::AccountingAllocator<std::pair<const uint256, CAmount>>(m_allocation_counter))
 {
     _clear(); //lock free clear
 
@@ -917,7 +919,7 @@ bool CCoinsViewMemPool::GetCoin(const COutPoint &outpoint, Coin &coin) const {
 
 size_t CTxMemPool::DynamicMemoryUsage() const {
     LOCK(cs);
-    return memusage::DynamicUsage(mapNextTx) + memusage::DynamicUsage(mapDeltas) + memusage::DynamicUsage(mapLinks) + memusage::DynamicUsage(vTxHashes) + cachedInnerUsage + m_allocation_counter;
+    return memusage::DynamicUsage(mapNextTx) + memusage::DynamicUsage(mapLinks) + memusage::DynamicUsage(vTxHashes) + cachedInnerUsage + m_allocation_counter;
 }
 
 void CTxMemPool::RemoveUnbroadcastTx(const uint256& txid, const bool unchecked) {
