@@ -18,12 +18,59 @@
 #include <unordered_map>
 #include <unordered_set>
 
-
 namespace memusage
 {
 
 /** Compute the total memory used by allocating alloc bytes. */
 static size_t MallocUsage(size_t alloc);
+
+/** Wrapping allocator that accounts accurately.
+ *
+ * To use accounting, the AccountAllocator(size_t&) constructor must be used.
+ * Any containers using such an allocator, and containers copied/moved from such
+ * containers will then increment/decrement size_t when allocating/deallocating
+ * memory.
+ */
+template<typename T>
+class AccountingAllocator : public std::allocator<T>
+{
+    size_t* m_allocated; //!< Pointer to accounting variable, if any
+
+    template<typename U> friend class AccountingAllocator;
+
+public:
+    typedef std::allocator<T> base;
+    typedef typename base::size_type size_type;
+    typedef typename base::difference_type difference_type;
+    typedef typename base::pointer pointer;
+    typedef typename base::const_pointer const_pointer;
+    typedef typename base::reference reference;
+    typedef typename base::const_reference const_reference;
+    typedef typename base::value_type value_type;
+
+    explicit AccountingAllocator(size_t& allocated) noexcept : m_allocated(&allocated) {}
+    AccountingAllocator() noexcept : m_allocated(nullptr) {} //!< Non-accounting constructor
+    template <typename U> AccountingAllocator(AccountingAllocator<U>&& a) noexcept : std::allocator<T>(std::move(a)), m_allocated(a.m_allocated) {}
+    template <typename U> AccountingAllocator(const AccountingAllocator<U>& a) noexcept : std::allocator<T>(a), m_allocated(a.m_allocated) {}
+
+    value_type* allocate(std::size_t n, const void* hint = nullptr)
+    {
+        value_type* allocation = base::allocate(n, hint);
+        if (m_allocated) *m_allocated += MallocUsage(sizeof(value_type) * n);
+        return allocation;
+    }
+
+    void deallocate(value_type* p, std::size_t n)
+    {
+        base::deallocate(p, n);
+        if (m_allocated) *m_allocated -= MallocUsage(sizeof(value_type) * n);
+    }
+
+    template<typename U> struct rebind { typedef AccountingAllocator<U> other; };
+
+    friend bool operator==(const AccountingAllocator<T>& a, const AccountingAllocator<T>& b) noexcept { return a.m_allocated == b.m_allocated; }
+    friend bool operator!=(const AccountingAllocator<T>& a, const AccountingAllocator<T>& b) noexcept { return a.m_allocated != b.m_allocated; }
+};
 
 /** Dynamic memory usage for built-in types is zero. */
 static inline size_t DynamicUsage(const int8_t& v) { return 0; }
