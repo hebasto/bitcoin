@@ -978,10 +978,14 @@ static UniValue gettxoutsetinfo(const JSONRPCRequest& request)
 
     UniValue ret(UniValue::VOBJ);
 
-    CCoinsStats stats;
-    ::ChainstateActive().ForceFlushStateToDisk();
+    CCoinsView* coins_view;
+    {
+        LOCK(cs_main);
+        ::ChainstateActive().ForceFlushStateToDisk();
+        coins_view = &::ChainstateActive().CoinsDB();
+    }
 
-    CCoinsView* coins_view = WITH_LOCK(cs_main, return &ChainstateActive().CoinsDB());
+    CCoinsStats stats;
     if (GetUTXOStats(coins_view, stats)) {
         ret.pushKV("height", (int64_t)stats.nHeight);
         ret.pushKV("bestblock", stats.hashBlock.GetHex());
