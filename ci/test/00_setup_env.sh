@@ -73,3 +73,7 @@ echo $PATH
 export CI_RETRY_EXE=${CI_RETRY_EXE:retry}
 echo $CI_RETRY_EXE
 retry echo "I am OK"
+
+echo "Find out our shell..."
+$SHELL --version
+cat /etc/shells
