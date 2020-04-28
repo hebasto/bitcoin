@@ -72,3 +72,4 @@ export PATH=${BASE_ROOT_DIR}/ci/retry:$PATH
 echo $PATH
 export CI_RETRY_EXE=${CI_RETRY_EXE:retry}
 echo $CI_RETRY_EXE
+retry echo "I am OK"
