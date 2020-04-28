@@ -11,7 +11,10 @@ export LC_ALL=C.UTF-8
 # This is where the build is done (depends and dist).
 BASE_ROOT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )"/../../ >/dev/null 2>&1 && pwd )
 export BASE_ROOT_DIR
-echo $BASE_ROOT_DIR
+echo "BASE_ROOT_DIR=$BASE_ROOT_DIR"
+echo "ls $BASE_ROOT_DIR === BEGIN"
+ls -1 $BASE_ROOT_DIR
+echo "ls $BASE_ROOT_DIR === END"
 
 echo "Setting specific values in env"
 if [ -n "${FILE_ENV}" ]; then
@@ -31,8 +34,9 @@ echo $BASE_SCRATCH_DIR
 # What host to compile for. See also ./depends/README.md
 # Tests that need cross-compilation export the appropriate HOST.
 # Tests that run natively guess the host
+echo "HOST(before)=$HOST"
 export HOST=${HOST:-$("$BASE_ROOT_DIR/depends/config.guess")}
-echo $HOST
+echo "HOST(after)=$HOST"
 # Whether to prefer BusyBox over GNU utilities
 export USE_BUSY_BOX=${USE_BUSY_BOX:-false}
 export RUN_UNIT_TESTS=${RUN_UNIT_TESTS:-true}
@@ -55,6 +59,7 @@ echo $CCACHE_DIR
 # The depends dir.
 # This folder exists on the ci host and ci guest. Changes are propagated back and forth.
 export DEPENDS_DIR=${DEPENDS_DIR:-$BASE_ROOT_DIR/depends}
+echo "DEPENDS_DIR=$DEPENDS_DIR"
 # Folder where the build is done (bin and lib).
 export BASE_OUTDIR=${BASE_OUTDIR:-$BASE_SCRATCH_DIR/out/$HOST}
 echo $BASE_OUTDIR
