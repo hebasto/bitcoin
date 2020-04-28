@@ -11,6 +11,7 @@ export LC_ALL=C.UTF-8
 # This is where the build is done (depends and dist).
 BASE_ROOT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )"/../../ >/dev/null 2>&1 && pwd )
 export BASE_ROOT_DIR
+echo $BASE_ROOT_DIR
 
 echo "Setting specific values in env"
 if [ -n "${FILE_ENV}" ]; then
@@ -22,13 +23,16 @@ fi
 echo "Fallback to default values in env (if not yet set)"
 # The number of parallel jobs to pass down to make and test_runner.py
 export MAKEJOBS=${MAKEJOBS:--j4}
+echo $MAKEJOBS
 # A folder for the ci system to put temporary files (ccache, datadirs for tests, ...)
 # This folder only exists on the ci host.
 export BASE_SCRATCH_DIR=${BASE_SCRATCH_DIR:-$BASE_ROOT_DIR/ci/scratch}
+echo $BASE_SCRATCH_DIR
 # What host to compile for. See also ./depends/README.md
 # Tests that need cross-compilation export the appropriate HOST.
 # Tests that run natively guess the host
 export HOST=${HOST:-$("$BASE_ROOT_DIR/depends/config.guess")}
+echo $HOST
 # Whether to prefer BusyBox over GNU utilities
 export USE_BUSY_BOX=${USE_BUSY_BOX:-false}
 export RUN_UNIT_TESTS=${RUN_UNIT_TESTS:-true}
@@ -41,20 +45,25 @@ export DOCKER_NAME_TAG=${DOCKER_NAME_TAG:-ubuntu:18.04}
 # See https://www.boost.org/doc/libs/1_71_0/libs/test/doc/html/boost_test/utf_reference/rt_param_reference/random.html
 export BOOST_TEST_RANDOM=${BOOST_TEST_RANDOM:-1}
 export CCACHE_SIZE=${CCACHE_SIZE:-100M}
+echo $CCACHE_SIZE
 export CCACHE_TEMPDIR=${CCACHE_TEMPDIR:-/tmp/.ccache-temp}
 export CCACHE_COMPRESS=${CCACHE_COMPRESS:-1}
 # The cache dir.
 # This folder exists on the ci host and ci guest. Changes are propagated back and forth.
 export CCACHE_DIR=${CCACHE_DIR:-$BASE_SCRATCH_DIR/.ccache}
+echo $CCACHE_DIR
 # The depends dir.
 # This folder exists on the ci host and ci guest. Changes are propagated back and forth.
 export DEPENDS_DIR=${DEPENDS_DIR:-$BASE_ROOT_DIR/depends}
 # Folder where the build is done (bin and lib).
 export BASE_OUTDIR=${BASE_OUTDIR:-$BASE_SCRATCH_DIR/out/$HOST}
+echo $BASE_OUTDIR
 export PREVIOUS_RELEASES_DIR=${PREVIOUS_RELEASES_DIR:-$BASE_ROOT_DIR/releases/$HOST}
 export SDK_URL=${SDK_URL:-https://bitcoincore.org/depends-sources/sdks}
 export DOCKER_PACKAGES=${DOCKER_PACKAGES:-build-essential libtool autotools-dev automake pkg-config bsdmainutils curl ca-certificates ccache python3 rsync git procps}
 export GOAL=${GOAL:-install}
 export DIR_QA_ASSETS=${DIR_QA_ASSETS:-${BASE_SCRATCH_DIR}/qa-assets}
 export PATH=${BASE_ROOT_DIR}/ci/retry:$PATH
+echo $PATH
 export CI_RETRY_EXE=${CI_RETRY_EXE:retry}
+echo $CI_RETRY_EXE
