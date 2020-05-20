@@ -1853,9 +1853,9 @@ bool AppInitMain(NodeContext& node)
         while (!fHaveGenesis && !ShutdownRequested()) {
             g_genesis_wait_cv.wait_for(lock, std::chrono::milliseconds(500));
         }
-        block_notify_genesis_wait_connection.disconnect();
     }
 
+    block_notify_genesis_wait_connection.disconnect();
     if (ShutdownRequested()) {
         return false;
     }
