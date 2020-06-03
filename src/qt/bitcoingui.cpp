@@ -100,16 +100,16 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     qInfo() << __func__ << QIcon::themeName(); // "core_mainnet"
 
     // qInfo() << __func__ << QIcon::hasThemeIcon("mainnet"); // true
-    // m_app_icon = QIcon::fromTheme("mainnet");
+    m_app_icon = QIcon::fromTheme("mainnet");
     // qInfo() << __func__ << m_app_icon.isNull(); // false
     // qInfo() << __func__ << m_app_icon.availableSizes();
     // // QIcon::setThemeName("icon_theme");
     // // m_app_icon = QIcon::fromTheme("bitcoin");
 
     // // QApplication::setWindowIcon(QIcon(":/icons/core_mainnet/128x128/apps/mainnet.png")); // WORKS
-    QApplication::setWindowIcon(QIcon::fromTheme("mainnet")); // BROKEN: empty icon.
+    // qApp->setWindowIcon(QIcon::fromTheme("mainnet")); // BROKEN: empty icon. But works on pause.
+    qApp->setWindowIcon(m_app_icon); // BROKEN: empty icon. But works on pause.
     // setWindowIcon(m_app_icon); // BROKEN: empty icon.
-    std::this_thread::sleep_for(std::chrono::seconds{10});
 
     // setWindowIcon(QIcon(":/icons/remove"));
     updateWindowTitle();

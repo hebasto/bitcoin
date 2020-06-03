@@ -250,6 +250,8 @@ void BitcoinApplication::createWindow(const NetworkStyle *networkStyle)
 {
     window = new BitcoinGUI(m_node, platformStyle, networkStyle, nullptr);
 
+    // std::this_thread::sleep_for(std::chrono::seconds{10});
+
     pollShutdownTimer = new QTimer(window);
     connect(pollShutdownTimer, &QTimer::timeout, window, &BitcoinGUI::detectShutdown);
 }
@@ -344,6 +346,8 @@ void BitcoinApplication::requestShutdown()
 void BitcoinApplication::initializeResult(bool success)
 {
     qDebug() << __func__ << ": Initialization result: " << success;
+    // App icon is OK.
+
     // Set exit result.
     returnValue = success ? EXIT_SUCCESS : EXIT_FAILURE;
     if(success)
@@ -362,6 +366,8 @@ void BitcoinApplication::initializeResult(bool success)
         }
 #endif // ENABLE_WALLET
 
+        // App icon is OK.
+
         // If -min option passed, start window minimized (iconified) or minimized to tray
         if (!gArgs.GetBoolArg("-min", false)) {
             window->show();
@@ -370,6 +376,10 @@ void BitcoinApplication::initializeResult(bool success)
         } else {
             window->showMinimized();
         }
+
+        QIcon::setThemeName("core_mainnet");
+        window->setWindowIcon(QIcon::fromTheme("mainnet"));
+
         Q_EMIT splashFinished();
         Q_EMIT windowShown(window);
 
@@ -586,14 +596,20 @@ int GuiMain(int argc, char* argv[])
     try
     {
         app.createWindow(networkStyle.data());
+
+        // App icon is OK.
+
         // Perform base initialization before spinning up initialization/shutdown thread
         // This is acceptable because this function only contains steps that are quick to execute,
         // so the GUI thread won't be held up.
         if (app.baseInitialize()) {
+            // App icon is OK.
+
             app.requestInitialize();
 #if defined(Q_OS_WIN)
             WinShutdownMonitor::registerShutdownBlockReason(QObject::tr("%1 didn't yet exit safely...").arg(PACKAGE_NAME), (HWND)app.getMainWinId());
 #endif
+            // App icon is OK.
             app.exec();
             app.requestShutdown();
             app.exec();
