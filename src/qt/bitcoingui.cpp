@@ -93,22 +93,23 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
 #endif // ENABLE_WALLET
 
     // QIcon::setThemeSearchPaths(QIcon::themeSearchPaths() << ":/res");
-    qInfo() << __func__ << QIcon::themeSearchPaths();
+    // qInfo() << __func__ << QIcon::themeSearchPaths();
 
     qInfo() << __func__ << QIcon::themeName(); // "Mint-Y"
     QIcon::setThemeName("core_mainnet");
     qInfo() << __func__ << QIcon::themeName(); // "core_mainnet"
 
-    qInfo() << __func__ << QIcon::hasThemeIcon("mainnet"); // true
-    m_app_icon = QIcon::fromTheme("mainnet");
-    qInfo() << __func__ << m_app_icon.isNull(); // false
-    qInfo() << __func__ << m_app_icon.availableSizes();
-    // QIcon::setThemeName("icon_theme");
-    // m_app_icon = QIcon::fromTheme("bitcoin");
+    // qInfo() << __func__ << QIcon::hasThemeIcon("mainnet"); // true
+    // m_app_icon = QIcon::fromTheme("mainnet");
+    // qInfo() << __func__ << m_app_icon.isNull(); // false
+    // qInfo() << __func__ << m_app_icon.availableSizes();
+    // // QIcon::setThemeName("icon_theme");
+    // // m_app_icon = QIcon::fromTheme("bitcoin");
 
-    // QApplication::setWindowIcon(QIcon(":/icons/core_mainnet/128x128/apps/mainnet.png")); // WORKS
+    // // QApplication::setWindowIcon(QIcon(":/icons/core_mainnet/128x128/apps/mainnet.png")); // WORKS
     QApplication::setWindowIcon(QIcon::fromTheme("mainnet")); // BROKEN: empty icon.
-
+    // setWindowIcon(m_app_icon); // BROKEN: empty icon.
+    std::this_thread::sleep_for(std::chrono::seconds{10});
 
     // setWindowIcon(QIcon(":/icons/remove"));
     updateWindowTitle();
@@ -765,8 +766,13 @@ void BitcoinGUI::createTrayIcon()
         // trayIcon = new QSystemTrayIcon(*ti2, this);
         // qInfo() << __func__ << trayIcon->icon().availableSizes();
 
-        // trayIcon = new QSystemTrayIcon(QIcon(":/icons/core_mainnet/128x128/apps/mainnet.png"), this); // WORKS
-        trayIcon = new QSystemTrayIcon(QIcon::fromTheme("mainnet"), this); // BROKEN: "QSystemTrayIcon::setVisible: No Icon set"
+        trayIcon = new QSystemTrayIcon(QIcon(":/icons/core_mainnet/128x128/apps/mainnet.png"), this); // WORKS
+        // trayIcon = new QSystemTrayIcon(QIcon::fromTheme("mainnet"), this); // BROKEN: "QSystemTrayIcon::setVisible: No Icon set"
+        qInfo() << __func__ << trayIcon->icon().isNull();
+        qInfo() << __func__ << trayIcon->icon().availableSizes();
+
+        trayIcon->show();
+        // std::this_thread::sleep_for(std::chrono::seconds{10});
 
         QString toolTip = tr("%1 client").arg(PACKAGE_NAME) + " " + m_network_style->getTitleAddText();
         trayIcon->setToolTip(toolTip);
@@ -1406,7 +1412,13 @@ void BitcoinGUI::setTrayIconVisible(bool fHideTrayIcon)
 {
     if (trayIcon)
     {
+        qInfo() << __func__ << "START";
+        qInfo() << __func__ << trayIcon->icon().isNull();
+        qInfo() << __func__ << trayIcon->icon().availableSizes();
+
         trayIcon->setVisible(!fHideTrayIcon);
+
+        qInfo() << __func__ << "STOP";
     }
 }
 

@@ -451,6 +451,12 @@ int GuiMain(int argc, char* argv[])
 
     BitcoinApplication app(*node);
 
+    // QIcon::setThemeName("core_mainnet");
+    // const QIcon app_icon = QIcon::fromTheme("mainnet");
+    // app.setWindowIcon(app_icon);
+    // app.setWindowIcon(QIcon::fromTheme("mainnet"));
+    // std::this_thread::sleep_for(std::chrono::seconds{10});
+
     /// 2. Parse command-line options. We do this after qt in order to show an error if there are problems parsing these
     // Command-line options take precedence:
     node->setupServerArgs();
