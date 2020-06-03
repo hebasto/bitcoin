@@ -92,15 +92,25 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
     enableWallet = WalletModel::isWalletEnabled();
 #endif // ENABLE_WALLET
 
-    QIcon::setThemeSearchPaths(QIcon::themeSearchPaths() << ":/res");
+    // QIcon::setThemeSearchPaths(QIcon::themeSearchPaths() << ":/res");
     qInfo() << __func__ << QIcon::themeSearchPaths();
 
+    qInfo() << __func__ << QIcon::themeName(); // "Mint-Y"
     QIcon::setThemeName("core_mainnet");
-    m_app_icon = QIcon::fromTheme("mainnet");
-    qInfo() << __func__ << m_app_icon.availableSizes();
+    qInfo() << __func__ << QIcon::themeName(); // "core_mainnet"
 
-    QApplication::setWindowIcon(m_app_icon);
-    setWindowIcon(m_app_icon);
+    qInfo() << __func__ << QIcon::hasThemeIcon("mainnet"); // true
+    m_app_icon = QIcon::fromTheme("mainnet");
+    qInfo() << __func__ << m_app_icon.isNull(); // false
+    qInfo() << __func__ << m_app_icon.availableSizes();
+    // QIcon::setThemeName("icon_theme");
+    // m_app_icon = QIcon::fromTheme("bitcoin");
+
+    // QApplication::setWindowIcon(QIcon(":/icons/core_mainnet/128x128/apps/mainnet.png")); // WORKS
+    QApplication::setWindowIcon(QIcon::fromTheme("mainnet")); // BROKEN: empty icon.
+
+
+    // setWindowIcon(QIcon(":/icons/remove"));
     updateWindowTitle();
 
     rpcConsole = new RPCConsole(node, _platformStyle, nullptr);
@@ -747,13 +757,16 @@ void BitcoinGUI::createTrayIcon()
         // QIcon ti = QIcon::fromTheme("bitcoin");
         // qInfo() << __func__ << ti.availableSizes();
 
-        QIcon::setThemeName("core_mainnet");
-        qInfo() << __func__ << QIcon::hasThemeIcon("mainnet");
-        QIcon* ti2 = new QIcon(QIcon::fromTheme("mainnet"));
-        qInfo() << __func__ << ti2->availableSizes();
+        // QIcon::setThemeName("core_mainnet");
+        // qInfo() << __func__ << QIcon::hasThemeIcon("mainnet");
+        // QIcon* ti2 = new QIcon(QIcon::fromTheme("mainnet"));
+        // qInfo() << __func__ << ti2->availableSizes();
 
-        trayIcon = new QSystemTrayIcon(*ti2, this);
-        qInfo() << __func__ << trayIcon->icon().availableSizes();
+        // trayIcon = new QSystemTrayIcon(*ti2, this);
+        // qInfo() << __func__ << trayIcon->icon().availableSizes();
+
+        // trayIcon = new QSystemTrayIcon(QIcon(":/icons/core_mainnet/128x128/apps/mainnet.png"), this); // WORKS
+        trayIcon = new QSystemTrayIcon(QIcon::fromTheme("mainnet"), this); // BROKEN: "QSystemTrayIcon::setVisible: No Icon set"
 
         QString toolTip = tr("%1 client").arg(PACKAGE_NAME) + " " + m_network_style->getTitleAddText();
         trayIcon->setToolTip(toolTip);

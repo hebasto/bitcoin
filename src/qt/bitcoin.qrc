@@ -1,11 +1,16 @@
 <!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/icons/core_mainnet">
+        <file alias="16x16/actions/mainnet.png">res/core_mainnet/16x16/actions/mainnet.png</file>
+        <file alias="32x32/actions/mainnet.png">res/core_mainnet/32x32/actions/mainnet.png</file>
+        <file alias="128x128/actions/mainnet.png">res/core_mainnet/128x128/actions/mainnet.png</file>
+        <file alias="128x128/apps/mainnet.png">res/core_mainnet/128x128/apps/mainnet.png</file>
+        <file alias="128x128/status/mainnet.png">res/core_mainnet/128x128/status/mainnet.png</file>
+        <file alias="index.theme">res/core_mainnet/index.theme</file>
+    </qresource>
     <qresource prefix="/">
         <file>res/icon_theme/index.theme</file>
         <file>res/icon_theme/16x16/actions/bitcoin.png</file>
         <file>res/icon_theme/32x32/actions/bitcoin.png</file>
-        <file>res/core_mainnet/index.theme</file>
-        <file>res/core_mainnet/apps/128/mainnet.png</file>
-        <file>res/core_mainnet/128x128/apps/mainnet.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file alias="address-book">res/icons/address-book.png</file>
