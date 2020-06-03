@@ -73,8 +73,16 @@ NetworkStyle::NetworkStyle(const QString &_appName, const int iconColorHueShift,
         pixmap.convertFromImage(img);
     }
 
-    appIcon             = QIcon(pixmap);
-    trayAndWindowIcon   = QIcon(pixmap.scaled(QSize(256,256)));
+    appIcon = QIcon(pixmap);
+    // trayAndWindowIcon = QIcon(pixmap.scaled(QSize(256, 256)));
+    // trayAndWindowIcon.addPixmap(pixmap.scaled(QSize(128, 128)));
+    // trayAndWindowIcon.addPixmap(pixmap.scaled(QSize(48, 48)));
+    // trayAndWindowIcon.addPixmap(pixmap.scaled(QSize(32, 32)));
+    // trayAndWindowIcon.addPixmap(pixmap.scaled(QSize(16, 16)));
+
+    QIcon::setThemeSearchPaths(QIcon::themeSearchPaths() << ":/res");
+    QIcon::setThemeName("icon_theme");
+    trayAndWindowIcon = QIcon::fromTheme("bitcoin");
 }
 
 const NetworkStyle* NetworkStyle::instantiate(const std::string& networkId)

@@ -43,6 +43,7 @@
 #include <QApplication>
 #include <QComboBox>
 #include <QDateTime>
+#include <QDebug>
 #include <QDragEnterEvent>
 #include <QListWidget>
 #include <QMenu>
@@ -90,6 +91,8 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
 #ifdef ENABLE_WALLET
     enableWallet = WalletModel::isWalletEnabled();
 #endif // ENABLE_WALLET
+    qInfo() << m_network_style->getTrayAndWindowIcon().availableSizes();
+
     QApplication::setWindowIcon(m_network_style->getTrayAndWindowIcon());
     setWindowIcon(m_network_style->getTrayAndWindowIcon());
     updateWindowTitle();
