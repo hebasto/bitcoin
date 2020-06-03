@@ -1,0 +1,10 @@
+[Icon Theme]
+Name=mainnet
+Comment=The Bitcoin Core icon theme
+
+Directories=128x128/apps
+
+[128x128/apps]
+Size=128
+Context=Applications
+Type=Fixed

@@ -91,10 +91,16 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
 #ifdef ENABLE_WALLET
     enableWallet = WalletModel::isWalletEnabled();
 #endif // ENABLE_WALLET
-    qInfo() << m_network_style->getTrayAndWindowIcon().availableSizes();
 
-    QApplication::setWindowIcon(m_network_style->getTrayAndWindowIcon());
-    setWindowIcon(m_network_style->getTrayAndWindowIcon());
+    QIcon::setThemeSearchPaths(QIcon::themeSearchPaths() << ":/res");
+    qInfo() << __func__ << QIcon::themeSearchPaths();
+
+    QIcon::setThemeName("core_mainnet");
+    m_app_icon = QIcon::fromTheme("mainnet");
+    qInfo() << __func__ << m_app_icon.availableSizes();
+
+    QApplication::setWindowIcon(m_app_icon);
+    setWindowIcon(m_app_icon);
     updateWindowTitle();
 
     rpcConsole = new RPCConsole(node, _platformStyle, nullptr);
@@ -738,7 +744,17 @@ void BitcoinGUI::createTrayIcon()
 
 #ifndef Q_OS_MAC
     if (QSystemTrayIcon::isSystemTrayAvailable()) {
-        trayIcon = new QSystemTrayIcon(m_network_style->getTrayAndWindowIcon(), this);
+        // QIcon ti = QIcon::fromTheme("bitcoin");
+        // qInfo() << __func__ << ti.availableSizes();
+
+        QIcon::setThemeName("core_mainnet");
+        qInfo() << __func__ << QIcon::hasThemeIcon("mainnet");
+        QIcon* ti2 = new QIcon(QIcon::fromTheme("mainnet"));
+        qInfo() << __func__ << ti2->availableSizes();
+
+        trayIcon = new QSystemTrayIcon(*ti2, this);
+        qInfo() << __func__ << trayIcon->icon().availableSizes();
+
         QString toolTip = tr("%1 client").arg(PACKAGE_NAME) + " " + m_network_style->getTitleAddText();
         trayIcon->setToolTip(toolTip);
     }

@@ -169,6 +169,8 @@ private:
     HelpMessageDialog* helpMessageDialog = nullptr;
     ModalOverlay* modalOverlay = nullptr;
 
+    QIcon m_app_icon;
+
 #ifdef Q_OS_MAC
     CAppNapInhibitor* m_app_nap_inhibitor = nullptr;
 #endif

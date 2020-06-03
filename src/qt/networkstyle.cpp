@@ -80,9 +80,11 @@ NetworkStyle::NetworkStyle(const QString &_appName, const int iconColorHueShift,
     // trayAndWindowIcon.addPixmap(pixmap.scaled(QSize(32, 32)));
     // trayAndWindowIcon.addPixmap(pixmap.scaled(QSize(16, 16)));
 
-    QIcon::setThemeSearchPaths(QIcon::themeSearchPaths() << ":/res");
-    QIcon::setThemeName("icon_theme");
-    trayAndWindowIcon = QIcon::fromTheme("bitcoin");
+    // QIcon::setThemeName("icon_theme");
+    // trayAndWindowIcon = QIcon::fromTheme("bitcoin");
+    // QIcon::setThemeSearchPaths(QIcon::themeSearchPaths() << ":/res");
+    // QIcon::setThemeName("core_mainnet");
+    // trayAndWindowIcon = QIcon::fromTheme("mainnet");
 }
 
 const NetworkStyle* NetworkStyle::instantiate(const std::string& networkId)
