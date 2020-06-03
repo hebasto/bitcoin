@@ -249,8 +249,9 @@ void BitcoinApplication::createOptionsModel(bool resetSettings)
 void BitcoinApplication::createWindow(const NetworkStyle *networkStyle)
 {
     window = new BitcoinGUI(m_node, platformStyle, networkStyle, nullptr);
-
-    // std::this_thread::sleep_for(std::chrono::seconds{10});
+    // window->hide();
+    // QIcon::setThemeName("core_mainnet");
+    // window->setWindowIcon(QIcon::fromTheme("mainnet"));
 
     pollShutdownTimer = new QTimer(window);
     connect(pollShutdownTimer, &QTimer::timeout, window, &BitcoinGUI::detectShutdown);
@@ -366,7 +367,9 @@ void BitcoinApplication::initializeResult(bool success)
         }
 #endif // ENABLE_WALLET
 
-        // App icon is OK.
+        QIcon::setThemeName("core_mainnet"); // This line is importatnt!
+        window->setWindowIcon(QIcon::fromTheme("mainnet"));
+        // window->setWindowIcon(window->m_app_icon);
 
         // If -min option passed, start window minimized (iconified) or minimized to tray
         if (!gArgs.GetBoolArg("-min", false)) {
@@ -376,9 +379,6 @@ void BitcoinApplication::initializeResult(bool success)
         } else {
             window->showMinimized();
         }
-
-        QIcon::setThemeName("core_mainnet");
-        window->setWindowIcon(QIcon::fromTheme("mainnet"));
 
         Q_EMIT splashFinished();
         Q_EMIT windowShown(window);

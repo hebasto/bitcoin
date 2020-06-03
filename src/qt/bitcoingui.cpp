@@ -108,7 +108,7 @@ BitcoinGUI::BitcoinGUI(interfaces::Node& node, const PlatformStyle *_platformSty
 
     // // QApplication::setWindowIcon(QIcon(":/icons/core_mainnet/128x128/apps/mainnet.png")); // WORKS
     // qApp->setWindowIcon(QIcon::fromTheme("mainnet")); // BROKEN: empty icon. But works on pause.
-    qApp->setWindowIcon(m_app_icon); // BROKEN: empty icon. But works on pause.
+    qApp->setWindowIcon(m_app_icon);
     // setWindowIcon(m_app_icon); // BROKEN: empty icon.
 
     // setWindowIcon(QIcon(":/icons/remove"));

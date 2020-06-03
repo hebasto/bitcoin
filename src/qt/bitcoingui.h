@@ -101,6 +101,8 @@ public:
 
     bool isPrivacyModeActivated() const;
 
+    QIcon m_app_icon;
+
 protected:
     void changeEvent(QEvent *e) override;
     void closeEvent(QCloseEvent *event) override;
@@ -168,8 +170,6 @@ private:
     RPCConsole* rpcConsole = nullptr;
     HelpMessageDialog* helpMessageDialog = nullptr;
     ModalOverlay* modalOverlay = nullptr;
-
-    QIcon m_app_icon;
 
 #ifdef Q_OS_MAC
     CAppNapInhibitor* m_app_nap_inhibitor = nullptr;
