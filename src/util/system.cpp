@@ -21,6 +21,7 @@
 #include <util/strencodings.h>
 #include <util/string.h>
 #include <util/translation.h>
+#include <random.h>
 
 
 #if (defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__))
@@ -240,19 +241,6 @@ static bool CheckValid(const std::string& key, const util::SettingsValue& val, u
     return true;
 }
 
-namespace {
-fs::path StripRedundantLastElementsOfPath(const fs::path& path)
-{
-    auto result = path;
-    while (result.filename().string() == ".") {
-        result = result.parent_path();
-    }
-
-    assert(fs::equivalent(result, path));
-    return result;
-}
-} // namespace
-
 // Define default constructor and destructor that are not inline, so code instantiating this class doesn't need to
 // #include class definitions for all members.
 // For example, m_settings has an internal dependency on univalue.
@@ -404,9 +392,9 @@ const fs::path& ArgsManager::GetBlocksDirPath() const
     if (!path.empty()) return path;
 
     if (IsArgSet("-blocksdir")) {
-        path = fs::system_complete(GetArg("-blocksdir", ""));
+        path = fs::absolute(GetArg("-blocksdir", ""));
         if (!fs::is_directory(path)) {
-            path = "";
+            path = fs::path("");
             return path;
         }
     } else {
@@ -416,7 +404,7 @@ const fs::path& ArgsManager::GetBlocksDirPath() const
     path /= BaseParams().DataDir();
     path /= "blocks";
     fs::create_directories(path);
-    path = StripRedundantLastElementsOfPath(path);
+    path = fs::canonical(path);
     return path;
 }
 
@@ -431,9 +419,9 @@ const fs::path& ArgsManager::GetDataDir(bool net_specific) const
 
     std::string datadir = GetArg("-datadir", "");
     if (!datadir.empty()) {
-        path = fs::system_complete(datadir);
+        path = fs::absolute(datadir);
         if (!fs::is_directory(path)) {
-            path = "";
+            path = fs::path("");
             return path;
         }
     } else {
@@ -447,7 +435,7 @@ const fs::path& ArgsManager::GetDataDir(bool net_specific) const
         fs::create_directories(path / "wallets");
     }
 
-    path = StripRedundantLastElementsOfPath(path);
+    path = fs::canonical(path);
     return path;
 }
 
@@ -811,7 +799,7 @@ fs::path GetDefaultDataDir()
 bool CheckDataDirOption()
 {
     std::string datadir = gArgs.GetArg("-datadir", "");
-    return datadir.empty() || fs::is_directory(fs::system_complete(datadir));
+    return datadir.empty() || fs::is_directory(fs::absolute(datadir));
 }
 
 fs::path GetConfigFile(const std::string& confPath)
@@ -1316,16 +1304,6 @@ void SetupEnvironment()
     // Set the default input/output charset is utf-8
     SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
-#endif
-    // The path locale is lazy initialized and to avoid deinitialization errors
-    // in multithreading environments, it is set explicitly by the main thread.
-    // A dummy locale is used to extract the internal default locale, used by
-    // fs::path, which is then used to explicitly imbue the path.
-    std::locale loc = fs::path::imbue(std::locale::classic());
-#ifndef WIN32
-    fs::path::imbue(loc);
-#else
-    fs::path::imbue(std::locale(loc, new std::codecvt_utf8_utf16<wchar_t>()));
 #endif
 }
 

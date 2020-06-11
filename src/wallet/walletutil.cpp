@@ -16,7 +16,7 @@ fs::path GetWalletDir()
         if (!fs::is_directory(path)) {
             // If the path specified doesn't exist, we return the deliberately
             // invalid empty string.
-            path = "";
+            path = fs::path("");
         }
     } else {
         path = gArgs.GetDataDirNet();

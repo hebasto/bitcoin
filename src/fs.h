@@ -11,13 +11,13 @@
 #include <ext/stdio_filebuf.h>
 #endif
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include <filesystem>
+#include <fstream>
 
 /** Filesystem operations and types */
 namespace fs {
 
-using namespace boost::filesystem;
+using namespace std::filesystem;
 
 /**
  * Path class wrapper to prepare application code for transition from
@@ -32,15 +32,15 @@ using namespace boost::filesystem;
  * https://github.com/bitcoin/bitcoin/pull/20744#issuecomment-916627496 for more
  * information about the boost path transition and windows encoding ambiguities.
  */
-class path : public boost::filesystem::path
+class path : public std::filesystem::path
 {
 public:
-    using boost::filesystem::path::path;
-    path(boost::filesystem::path path) : boost::filesystem::path::path(std::move(path)) {}
+    using std::filesystem::path::path;
+    path(std::filesystem::path path) : std::filesystem::path::path(std::move(path)) {}
     path(const std::string& string) = delete;
     path& operator=(std::string&) = delete;
     std::string string() const = delete;
-    std::string u8string() const { return boost::filesystem::path::string(); }
+    std::string u8string() const { return std::filesystem::path::string(); }
 };
 
 static inline path operator+(path p1, path p2)
@@ -49,19 +49,19 @@ static inline path operator+(path p1, path p2)
     return p1;
 }
 
-static inline std::string PathToString(const boost::filesystem::path& path)
+static inline std::string PathToString(const std::filesystem::path& path)
 {
     return path.string();
 }
 
 static inline path PathFromString(const std::string& string)
 {
-    return boost::filesystem::path(string);
+    return std::filesystem::path(string);
 }
 
 static inline path u8path(const std::string& string)
 {
-    return boost::filesystem::path(string);
+    return std::filesystem::path(string);
 }
 }
 
@@ -102,53 +102,8 @@ namespace fsbridge {
 
     std::string get_filesystem_error_message(const fs::filesystem_error& e);
 
-    // GNU libstdc++ specific workaround for opening UTF-8 paths on Windows.
-    //
-    // On Windows, it is only possible to reliably access multibyte file paths through
-    // `wchar_t` APIs, not `char` APIs. But because the C++ standard doesn't
-    // require ifstream/ofstream `wchar_t` constructors, and the GNU library doesn't
-    // provide them (in contrast to the Microsoft C++ library, see
-    // https://stackoverflow.com/questions/821873/how-to-open-an-stdfstream-ofstream-or-ifstream-with-a-unicode-filename/822032#822032),
-    // Boost is forced to fall back to `char` constructors which may not work properly.
-    //
-    // Work around this issue by creating stream objects with `_wfopen` in
-    // combination with `__gnu_cxx::stdio_filebuf`. This workaround can be removed
-    // with an upgrade to C++17, where streams can be constructed directly from
-    // `std::filesystem::path` objects.
-
-#if defined WIN32 && defined __GLIBCXX__
-    class ifstream : public std::istream
-    {
-    public:
-        ifstream() = default;
-        explicit ifstream(const fs::path& p, std::ios_base::openmode mode = std::ios_base::in) { open(p, mode); }
-        ~ifstream() { close(); }
-        void open(const fs::path& p, std::ios_base::openmode mode = std::ios_base::in);
-        bool is_open() { return m_filebuf.is_open(); }
-        void close();
-
-    private:
-        __gnu_cxx::stdio_filebuf<char> m_filebuf;
-        FILE* m_file = nullptr;
-    };
-    class ofstream : public std::ostream
-    {
-    public:
-        ofstream() = default;
-        explicit ofstream(const fs::path& p, std::ios_base::openmode mode = std::ios_base::out) { open(p, mode); }
-        ~ofstream() { close(); }
-        void open(const fs::path& p, std::ios_base::openmode mode = std::ios_base::out);
-        bool is_open() { return m_filebuf.is_open(); }
-        void close();
-
-    private:
-        __gnu_cxx::stdio_filebuf<char> m_filebuf;
-        FILE* m_file = nullptr;
-    };
-#else  // !(WIN32 && __GLIBCXX__)
-    typedef fs::ifstream ifstream;
-    typedef fs::ofstream ofstream;
-#endif // WIN32 && __GLIBCXX__
+    typedef std::ifstream ifstream;
+    typedef std::ofstream ofstream;
 };
 
 #endif // BITCOIN_FS_H

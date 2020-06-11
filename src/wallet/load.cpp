@@ -26,7 +26,7 @@ bool VerifyWallets(WalletContext& context)
 
     if (args.IsArgSet("-walletdir")) {
         fs::path wallet_dir = fs::PathFromString(args.GetArg("-walletdir", ""));
-        boost::system::error_code error;
+        std::error_code error;
         // The canonical path cleans the path, preventing >1 Berkeley environment instances for the same directory
         fs::path canonical_wallet_dir = fs::canonical(wallet_dir, error);
         if (error || !fs::exists(wallet_dir)) {

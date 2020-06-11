@@ -1180,7 +1180,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
         if (args.IsArgSet("-asmap")) {
             fs::path asmap_path = fs::PathFromString(args.GetArg("-asmap", ""));
             if (asmap_path.empty()) {
-                asmap_path = DEFAULT_ASMAP_FILENAME;
+                asmap_path = fs::path(DEFAULT_ASMAP_FILENAME);
             }
             if (!asmap_path.is_absolute()) {
                 asmap_path = gArgs.GetDataDirNet() / asmap_path;
