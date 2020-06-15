@@ -9,13 +9,14 @@
 #include <consensus/params.h>
 #include <net.h>
 #include <sync.h>
+#include <txmempool.h>
 #include <validationinterface.h>
 
-class CTxMemPool;
 class ChainstateManager;
 
 extern RecursiveMutex cs_main;
 extern RecursiveMutex g_cs_orphans;
+extern CTxMemPool mempool;
 
 /** Default for -maxorphantx, maximum number of orphan transactions kept in memory */
 static const unsigned int DEFAULT_MAX_ORPHAN_TRANSACTIONS = 100;
@@ -64,7 +65,7 @@ public:
     * @param[in]   pfrom           The node which we have received messages from.
     * @param[in]   interrupt       Interrupt condition for processing threads
     */
-    bool ProcessMessages(CNode* pfrom, std::atomic<bool>& interrupt) override;
+    bool ProcessMessages(CNode* pfrom, std::atomic<bool>& interrupt) override EXCLUSIVE_LOCKS_REQUIRED(!::mempool.cs);
     /**
     * Send queued protocol messages to be sent to a give node.
     *

@@ -4,6 +4,7 @@
 
 #include <qt/walletview.h>
 
+#include <interfaces/node.h>
 #include <node/psbt.h>
 #include <node/transaction.h>
 #include <policy/policy.h>
@@ -20,8 +21,7 @@
 #include <qt/transactiontablemodel.h>
 #include <qt/transactionview.h>
 #include <qt/walletmodel.h>
-
-#include <interfaces/node.h>
+#include <sync.h>
 #include <ui_interface.h>
 #include <util/strencodings.h>
 
@@ -256,6 +256,7 @@ void WalletView::gotoLoadPSBT()
             std::string err_string;
             CTransactionRef tx = MakeTransactionRef(mtx);
 
+            AssertLockNotHeld(clientModel->node().context()->mempool->cs);
             TransactionError result = BroadcastTransaction(*clientModel->node().context(), tx, err_string, DEFAULT_MAX_RAW_TX_FEE_RATE.GetFeePerK(), /* relay */ true, /* wait_callback */ false);
             if (result == TransactionError::OK) {
                 Q_EMIT message(tr("Success"), tr("Broadcasted transaction successfully."), CClientUIInterface::MSG_INFORMATION | CClientUIInterface::MODAL);
