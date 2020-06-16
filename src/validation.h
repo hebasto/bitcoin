@@ -593,7 +593,8 @@ public:
         const CChainParams& chainparams,
         BlockValidationState &state,
         FlushStateMode mode,
-        int nManualPruneHeight);
+        int nManualPruneHeight,
+        CoinsCacheSizeState cache_state) EXCLUSIVE_LOCKS_REQUIRED(cs_main);
 
     bool FlushStateToDiskWithLockedMempool(
         const CChainParams& chainparams,
@@ -601,8 +602,10 @@ public:
         FlushStateMode mode,
         int nManualPruneHeight = 0) // EXCLUSIVE_LOCKS_REQUIRED(::mempool.cs)
     {
+        LOCK(cs_main);
         AssertLockHeld(::mempool.cs);
-        return FlushStateToDiskHelper(chainparams, state, mode, nManualPruneHeight);
+        const CoinsCacheSizeState cache_state = GetCoinsCacheSizeState(::mempool);
+        return FlushStateToDiskHelper(chainparams, state, mode, nManualPruneHeight, cache_state);
     }
 
     bool FlushStateToDiskWithUnlockedMempool(
@@ -611,8 +614,14 @@ public:
         FlushStateMode mode,
         int nManualPruneHeight = 0) EXCLUSIVE_LOCKS_REQUIRED(!::mempool.cs)
     {
+        LOCK(cs_main);
         AssertLockNotHeld(::mempool.cs);
-        return FlushStateToDiskHelper(chainparams, state, mode, nManualPruneHeight);
+        CoinsCacheSizeState cache_state;
+        {
+            LOCK(::mempool.cs);
+            cache_state = GetCoinsCacheSizeState(::mempool);
+        }
+        return FlushStateToDiskHelper(chainparams, state, mode, nManualPruneHeight, cache_state);
     }
 
     //! Unconditionally flush all changes to disk.
