@@ -1004,6 +1004,22 @@ unsigned int LimitOrphanTxSize(unsigned int nMaxOrphans)
     return nEvicted;
 }
 
+unsigned int EvictOrphanTxs(unsigned int nMaxOrphans)
+{
+    LOCK(g_cs_orphans);
+
+    unsigned int nEvicted = 0;
+    FastRandomContext rng;
+    while (mapOrphanTransactions.size() > nMaxOrphans) {
+        // Evict a random orphan:
+        auto iter = mapOrphanTransactions.begin();
+        std::advance(iter, rng.randrange(mapOrphanTransactions.size()));
+        EraseOrphanTx(iter->first);
+        ++nEvicted;
+    }
+    return nEvicted;
+}
+
 /**
  * Mark a misbehaving peer to be banned depending upon the value of `-banscore`.
  */
