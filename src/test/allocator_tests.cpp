@@ -265,12 +265,12 @@ BOOST_AUTO_TEST_CASE(accounting_allocation_test)
             container_type container3(container1); // container3 is a copy of container1, which is unaccounted.
             BOOST_TEST_MESSAGE("cached: " << cached);
             BOOST_TEST_MESSAGE("total: " << total);
-            BOOST_CHECK(total == cached);
+            BOOST_CHECK(total == cached);   ///////////////////// ERROR
             container3.insert(4);
             container3.erase(3);
             BOOST_TEST_MESSAGE("cached: " << cached);
             BOOST_TEST_MESSAGE("total: " << total);
-            BOOST_CHECK(total == cached);
+            BOOST_CHECK(total == cached);   ////////////////////// ERROR
         }
         BOOST_CHECK(total == cached);
     }

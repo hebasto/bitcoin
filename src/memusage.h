@@ -65,6 +65,7 @@ public:
     */
     AA select_on_container_copy_construction() const
     {
+        LogPrintf("HEBASTO - %s:%s\n", __func__, __LINE__);
         // tfm::format(std::cerr, "HEBASTO - %s:%s\n", __func__, __LINE__);
         return AA();
     }
