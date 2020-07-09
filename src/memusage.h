@@ -41,6 +41,7 @@ class AccountingAllocator : public std::allocator<T>
 
     template<typename U> friend class AccountingAllocator;
     typedef std::allocator<T> base;
+    typedef AccountingAllocator<T> AA;
 
 public:
     //! Default constructor constructs a non-accounting allocator.
@@ -62,10 +63,10 @@ public:
         return AccountingAllocator();
     }
     */
-    static AccountingAllocator select_on_container_copy_construction()
+    AA select_on_container_copy_construction() const
     {
-        tfm::format(std::cerr, "HEBASTO - %s:%s\n", __func__, __LINE__);
-        return AccountingAllocator();
+        // tfm::format(std::cerr, "HEBASTO - %s:%s\n", __func__, __LINE__);
+        return AA();
     }
 
     //! A copy-assigned container will be non-accounting.
