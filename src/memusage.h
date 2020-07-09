@@ -52,7 +52,7 @@ public:
     explicit AccountingAllocator(size_t& allocated) noexcept : m_allocated(&allocated) {}
 
     //! A copy-constructed container will be non-accounting.
-    static AccountingAllocator select_on_container_copy_construction() { return AccountingAllocator(); }
+    static AccountingAllocator select_on_container_copy_construction(const AccountingAllocator& a) { return AccountingAllocator(); }
     //! A copy-assigned container will be non-accounting.
     typedef std::false_type propagate_on_container_copy_assignment;
     //! The accounting will follow a container as it's moved.
