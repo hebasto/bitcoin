@@ -253,7 +253,7 @@ BOOST_AUTO_TEST_CASE(accounting_allocation_test)
             BOOST_CHECK(total > 0);
             size_t old = total;
             container1 = std::move(container2); // container1 is now accounted for in 'total'
-            BOOST_CHECK(total >= old);
+            BOOST_CHECK(total == old);
         }
         container1.erase(5);
         size_t cached = total;
