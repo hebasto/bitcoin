@@ -241,11 +241,12 @@ BOOST_AUTO_TEST_CASE(accounting_allocation_test)
     size_t dummy = 0;
 
     {
-        typedef std::unordered_set<int, std::hash<int>, std::equal_to<int>, memusage::AccountingAllocator<int>> container_type;
-        container_type container1({}, 2, std::hash<int>(), std::equal_to<int>(), memusage::AccountingAllocator<int>(dummy)); // container1 is accounted for in 'dummy'
+        using container_type = std::unordered_set<int, std::hash<int>, std::equal_to<int>, memusage::AccountingAllocator<int>>;
+
+        container_type container1{memusage::AccountingAllocator<int>(dummy)}; // container1 is accounted for in 'dummy'
         container1.insert(6);
         {
-            container_type container2(1, std::hash<int>(), std::equal_to<int>(), memusage::AccountingAllocator<int>(total)); // container2 is accounted for in 'total'
+            container_type container2{memusage::AccountingAllocator<int>(total)}; // container2 is accounted for in 'total'
             container2.insert(5);
             container2.insert(2);
             container2.insert(3);
@@ -253,7 +254,7 @@ BOOST_AUTO_TEST_CASE(accounting_allocation_test)
             BOOST_CHECK(total > 0);
             size_t old = total;
             container1 = std::move(container2); // container1 is now accounted for in 'total'
-            BOOST_CHECK(total >= old);
+            BOOST_CHECK(total == old);
         }
         container1.erase(5);
         size_t cached = total;
@@ -261,7 +262,7 @@ BOOST_AUTO_TEST_CASE(accounting_allocation_test)
         BOOST_TEST_MESSAGE("total: " << total);
         BOOST_CHECK(cached > 0);
         {
-            container_type container3 = container1; // container3 is a copy of container1, which is unaccounted.
+            container_type container3(container1); // container3 is a copy of container1, which is unaccounted.
             BOOST_TEST_MESSAGE("cached: " << cached);
             BOOST_TEST_MESSAGE("total: " << total);
             BOOST_CHECK(total == cached);
