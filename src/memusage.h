@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include <tinyformat.h>
 
 namespace memusage
 {
@@ -52,7 +53,21 @@ public:
     explicit AccountingAllocator(size_t& allocated) noexcept : m_allocated(&allocated) {}
 
     //! A copy-constructed container will be non-accounting.
-    static AccountingAllocator select_on_container_copy_construction(const AccountingAllocator& a) { return AccountingAllocator(); }
+    /*
+    static AccountingAllocator select_on_container_copy_construction(const AccountingAllocator& a)
+    {
+        if (a.m_allocated) {
+            tfm::format(std::cerr, "HEBASTO - ");//%s:%s *(a.m_allocated)=%s\n", __func__, __LINE__, *(a.m_allocated));
+        }
+        return AccountingAllocator();
+    }
+    */
+    static AccountingAllocator select_on_container_copy_construction()
+    {
+        tfm::format(std::cerr, "HEBASTO - %s:%s\n", __func__, __LINE__);
+        return AccountingAllocator();
+    }
+
     //! A copy-assigned container will be non-accounting.
     typedef std::false_type propagate_on_container_copy_assignment;
     //! The accounting will follow a container as it's moved.
