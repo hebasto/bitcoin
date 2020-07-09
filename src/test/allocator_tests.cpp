@@ -240,17 +240,13 @@ BOOST_AUTO_TEST_CASE(accounting_allocation_test)
     size_t total = 0;
     size_t dummy = 0;
 
-    BOOST_TEST_MESSAGE("propagate_on_container_copy_assignment: " << memusage::AccountingAllocator<int>::propagate_on_container_copy_assignment::value);
-    BOOST_TEST_MESSAGE("std::false_type: " << std::false_type::value);
-    BOOST_TEST_MESSAGE("std::true_type: " << std::true_type::value);
-
     {
         using container_type = std::unordered_set<int, std::hash<int>, std::equal_to<int>, memusage::AccountingAllocator<int>>;
 
-        container_type container1{memusage::AccountingAllocator<int>(dummy)}; // container1 is accounted for in 'dummy'
+        container_type container1({}, 2, std::hash<int>(), std::equal_to<int>(), memusage::AccountingAllocator<int>(dummy)); // container1 is accounted for in 'dummy' 
         container1.insert(6);
         {
-            container_type container2{memusage::AccountingAllocator<int>(total)}; // container2 is accounted for in 'total'
+            container_type container2(1, std::hash<int>(), std::equal_to<int>(), memusage::AccountingAllocator<int>(total)); // container2 is accounted for in 'total' 
             container2.insert(5);
             container2.insert(2);
             container2.insert(3);
