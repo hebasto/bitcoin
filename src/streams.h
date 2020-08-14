@@ -718,7 +718,7 @@ private:
     uint64_t nReadPos;    //!< how many bytes have been read from this
     uint64_t nReadLimit;  //!< up to which position we're allowed to read
     uint64_t nRewind;     //!< how many bytes we guarantee to rewind
-    std::vector<char> vchBuf; //!< the buffer
+    std::vector<unsigned char> vchBuf; //!< the buffer
 
 protected:
     //! read data from the source to fill the buffer
@@ -831,7 +831,8 @@ public:
     }
 
     //! search for a given byte in the stream, and remain positioned on it
-    void FindByte(char ch) {
+    void FindByte(unsigned char ch)
+    {
         // i is the index into vchBuf[] at which to start searching
         size_t i = nReadPos % vchBuf.size();
         while (true) {
@@ -845,6 +846,27 @@ public:
             if (inc < n) break;
             i += inc;
             if (i >= vchBuf.size()) i = 0;
+        }
+    }
+
+    //! search for a given sequence of bytes in the stream, position at
+    //! the first byte following the found pattern
+    void Search(const unsigned char* cp, size_t length)
+    {
+        assert(length - 2 <= nRewind);
+        while (true) {
+            FindByte(cp[0]);
+            const uint64_t next_byte_pos = nReadPos + 1;
+            size_t i = next_byte_pos % vchBuf.size();
+            size_t j;
+            for (j = 1; j < length; ++j) {
+                if (++nReadPos == nSrcPos) Fill();
+                if (cp[j] != vchBuf[i]) break;
+                if (++i >= vchBuf.size()) i = 0;
+            }
+            nReadPos++;
+            if (j >= length) break;
+            SetPos(next_byte_pos);
         }
     }
 };
