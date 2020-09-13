@@ -113,6 +113,8 @@ The following can be set when running make: `make FOO=bar`
 <dd>(EXPERTS ONLY) When cross-compiling for macOS, use Clang found in the
 system's <code>$PATH</code> rather than the default prebuilt release of Clang
 from llvm.org. Clang 8 or later is required.</dd>
+<dt>LOG</dt>
+<dd>Use file-based logging for individual packages</dd>
 </dl>
 
 If some packages are not built, for example `make NO_WALLET=1`, the appropriate
