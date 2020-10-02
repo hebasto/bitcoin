@@ -15,7 +15,6 @@ $(package)_cppflags_mingw32=-DUNICODE -D_UNICODE
 endef
 
 define $(package)_preprocess_cmds
-  patch -p1 < $($(package)_patch_dir)/clang_cxx_11.patch && \
   cp -f $(BASEDIR)/config.guess $(BASEDIR)/config.sub dist
 endef
 
