@@ -242,6 +242,7 @@ define $(package)_config_cmds
 endef
 
 define $(package)_build_cmds
+  rm -f src/corelib/kernel/qcore_unix.cpp && \
   $(MAKE) -C src $(addprefix sub-,$($(package)_qt_libs)) && \
   $(MAKE) -C ../qttools/src/linguist/lrelease && \
   $(MAKE) -C ../qttools/src/linguist/lupdate && \
