@@ -22,7 +22,7 @@ index 3f543755..8ecc1c8c 100644
      }
  #if defined(FT_FONT_FORMATS_H)
 -    const char *fmt = FT_Get_Font_Format(face);
-+    const char *fmt = FT_Get_X11_Font_Format(face);
++    const char *fmt = FT_Get_X11_Font_Format(face)
      if (fmt && qstrncmp(fmt, "CFF", 4) == 0) {
          FT_Bool no_stem_darkening = true;
          FT_Error err = FT_Property_Get(qt_getFreetype(), "cff", "no-stem-darkening", &no_stem_darkening);
