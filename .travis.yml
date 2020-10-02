@@ -36,6 +36,9 @@ before_install:
 install:
   - set -o errexit; source ./ci/test/04_install.sh
 before_script:
+  # Workaround for 10 minutes timeout without producing any output.
+  # https://docs.travis-ci.com/user/common-build-problems/#build-times-out-because-no-output-was-received
+  - for i in {1..4}; do echo "$(sleep 500)" ; done &
   - set -o errexit; source ./ci/test/05_before_script.sh
 script:
   - export CONTINUE=1
