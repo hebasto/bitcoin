@@ -36,7 +36,7 @@ before_install:
 install:
   - set -o errexit; source ./ci/test/04_install.sh
 before_script:
-  - set -o errexit; travis_wait 30 source ./ci/test/05_before_script.sh
+  - set -o errexit; source ./ci/test/05_before_script.sh
 script:
   - export CONTINUE=1
   - if [ $SECONDS -gt 1200 ]; then export CONTINUE=0; fi  # Likely the depends build took very long
