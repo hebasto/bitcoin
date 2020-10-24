@@ -62,11 +62,9 @@ To run:
 * UI elements like BitcoinAmountField, which inherit from QWidget.
 * `bitcoinstrings.cpp`: automatically generated
 * `bitcoinunits.(h/cpp)`: BTC / mBTC / etc. handling
-* `callback.h`
 * `guiconstants.h`: UI colors, app name, etc.
 * `guiutil.h`: several helper functions
 * `macdockiconhandler.(h/mm)`: macOS dock icon handler
-* `macnotificationhandler.(h/mm)`: display notifications in macOS
 
 ## Contribute
 
