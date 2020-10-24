@@ -46,12 +46,6 @@ Notificator::Notificator(const QString &_programName, QSystemTrayIcon *_trayIcon
         mode = Freedesktop;
     }
 #endif
-#ifdef Q_OS_MACOS
-    // check if users OS has support for NSUserNotification
-    if( MacNotificationHandler::instance()->hasUserNotificationCenterSupport()) {
-        mode = UserNotificationCenter;
-    }
-#endif
 }
 
 Notificator::~Notificator()

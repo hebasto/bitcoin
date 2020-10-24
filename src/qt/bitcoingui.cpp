@@ -36,6 +36,7 @@
 #include <interfaces/handler.h>
 #include <interfaces/node.h>
 #include <node/interface_ui.h>
+#include <util/check.h>
 #include <util/translation.h>
 #include <validation.h>
 
@@ -69,6 +70,7 @@
 #include <QVBoxLayout>
 #include <QWindow>
 
+#include <cassert>
 
 const std::string BitcoinGUI::DEFAULT_UIPLATFORM =
 #if defined(Q_OS_MACOS)
@@ -637,9 +639,13 @@ void BitcoinGUI::setClientModel(ClientModel *_clientModel, interfaces::BlockAndH
             walletFrame->setClientModel(_clientModel);
         }
 #endif // ENABLE_WALLET
-        unitDisplayControl->setOptionsModel(_clientModel->getOptionsModel());
 
         OptionsModel* optionsModel = _clientModel->getOptionsModel();
+        unitDisplayControl->setOptionsModel(optionsModel);
+#ifdef Q_OS_MACOS
+        // trayIcon is used to post user notifications to macOS Notification Center.
+        Assert(trayIcon)->show();
+#else
         if (optionsModel && trayIcon) {
             // be aware of the tray icon disable state change reported by the OptionsModel object.
             connect(optionsModel, &OptionsModel::showTrayIconChanged, trayIcon, &QSystemTrayIcon::setVisible);
@@ -647,6 +653,7 @@ void BitcoinGUI::setClientModel(ClientModel *_clientModel, interfaces::BlockAndH
             // initialize the disable state of the tray icon with the current value in the model.
             trayIcon->setVisible(optionsModel->getShowTrayIcon());
         }
+#endif // Q_OS_MACOS
 
         m_mask_values_action->setChecked(_clientModel->getOptionsModel()->getOption(OptionsModel::OptionID::MaskValues).toBool());
     } else {
@@ -810,14 +817,8 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
 void BitcoinGUI::createTrayIcon()
 {
     assert(QSystemTrayIcon::isSystemTrayAvailable());
-
-#ifndef Q_OS_MACOS
-    if (QSystemTrayIcon::isSystemTrayAvailable()) {
-        trayIcon = new QSystemTrayIcon(m_network_style->getTrayAndWindowIcon(), this);
-        QString toolTip = tr("%1 client").arg(PACKAGE_NAME) + " " + m_network_style->getTitleAddText();
-        trayIcon->setToolTip(toolTip);
-    }
-#endif
+    trayIcon = new QSystemTrayIcon(m_network_style->getTrayAndWindowIcon(), this);
+    trayIcon->setToolTip(tr("%1 client").arg(PACKAGE_NAME) + " " + m_network_style->getTitleAddText());
 }
 
 void BitcoinGUI::createTrayIconMenu()
