@@ -14,4 +14,3 @@ export RUN_FUNCTIONAL_TESTS=false
 export RUN_SECURITY_TESTS="true"
 export GOAL="deploy"
 export BITCOIN_CONFIG="--enable-reduce-exports --disable-gui-tests --without-boost-process"
-export NO_WERROR=1
