@@ -29,9 +29,8 @@ void test_one_input(const std::vector<uint8_t>& buffer)
         }
     }
     if (opt_buffered_file && fuzzed_file != nullptr) {
-        bool setpos_fail = false;
         while (fuzzed_data_provider.ConsumeBool()) {
-            switch (fuzzed_data_provider.ConsumeIntegralInRange<int>(0, 4)) {
+            switch (fuzzed_data_provider.ConsumeIntegralInRange<int>(0, 5)) {
             case 0: {
                 std::array<uint8_t, 4096> arr{};
                 try {
@@ -45,23 +44,27 @@ void test_one_input(const std::vector<uint8_t>& buffer)
                 break;
             }
             case 2: {
-                if (!opt_buffered_file->SetPos(fuzzed_data_provider.ConsumeIntegralInRange<uint64_t>(0, 4096))) {
-                    setpos_fail = true;
-                }
+                opt_buffered_file->SetPos(fuzzed_data_provider.ConsumeIntegralInRange<uint64_t>(0, 4096));
                 break;
             }
             case 3: {
-                if (setpos_fail) {
-                    // Calling FindByte(...) after a failed SetPos(...) call may result in an infinite loop.
-                    break;
-                }
                 try {
-                    opt_buffered_file->FindByte(fuzzed_data_provider.ConsumeIntegral<char>());
+                    opt_buffered_file->FindByte(fuzzed_data_provider.ConsumeIntegral<unsigned char>());
                 } catch (const std::ios_base::failure&) {
                 }
                 break;
             }
             case 4: {
+                std::string str = fuzzed_data_provider.ConsumeRandomLengthString(8);
+                if (str.size() == 0) break;
+                auto cp = reinterpret_cast<const unsigned char*>(str.c_str());
+                try {
+                    opt_buffered_file->Search(cp, str.size());
+                } catch (const std::ios_base::failure&) {
+                }
+                break;
+            }
+            case 5: {
                 ReadFromStream(fuzzed_data_provider, *opt_buffered_file);
                 break;
             }

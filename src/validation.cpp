@@ -4609,12 +4609,7 @@ void LoadExternalBlockFile(const CChainParams& chainparams, FILE* fileIn, FlatFi
             unsigned int nSize = 0;
             try {
                 // locate a header
-                unsigned char buf[CMessageHeader::MESSAGE_START_SIZE];
-                blkdat.FindByte(chainparams.MessageStart()[0]);
-                nRewind = blkdat.GetPos()+1;
-                blkdat >> buf;
-                if (memcmp(buf, chainparams.MessageStart(), CMessageHeader::MESSAGE_START_SIZE))
-                    continue;
+                blkdat.Search(&(chainparams.MessageStart()[0]), CMessageHeader::MESSAGE_START_SIZE);
                 // read size
                 blkdat >> nSize;
                 if (nSize < 80 || nSize > MAX_BLOCK_SERIALIZED_SIZE)

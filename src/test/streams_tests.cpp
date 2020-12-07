@@ -329,9 +329,65 @@ BOOST_AUTO_TEST_CASE(streams_buffered_file)
     // by the rewind window (relative to our farthest read position, 40).
     BOOST_CHECK(bf.GetPos() <= 30);
 
+    bf.FindByte(31);
+    BOOST_CHECK_EQUAL(bf.GetPos(), 31U);
+
+    // If the byte isn't found, end of file.
+    BOOST_CHECK_EXCEPTION(bf.FindByte(99), std::ios_base::failure, HasReason("CBufferedFile::Fill: end of file"));
+    BOOST_CHECK_EQUAL(bf.GetPos(), 40U);
+    BOOST_CHECK(bf.eof());
+
+    // Test Search(), it leaves the postion just after the found bytes.
+    BOOST_CHECK(bf.SetPos(30));
+    {
+        unsigned char needle[2] = {32, 33};
+        bf.Search(needle, 2);
+    }
+    BOOST_CHECK_EQUAL(bf.GetPos(), 34U);
+
+    // The bytes must be consecutive, this won't be found.
+    {
+        unsigned char needle[2] = {36, 38};
+        BOOST_CHECK_EXCEPTION(bf.Search(needle, 2), std::ios_base::failure, HasReason("CBufferedFile::Fill: end of file"));
+    }
+    BOOST_CHECK_EQUAL(bf.GetPos(), 40U);
+    BOOST_CHECK(bf.eof());
+
     // We can explicitly close the file, or the destructor will do it.
     bf.fclose();
 
+    fs::remove("streams_test_tmp");
+}
+
+//! Ensure that CBufferedFile::Search() skips partial matches,
+//! accomodates buffer wraparound, and stops at the next match.
+BOOST_AUTO_TEST_CASE(streams_search)
+{
+    FILE* file = fsbridge::fopen("streams_test_tmp", "w+b");
+    {
+        // This is the pattern that will be searched for.
+        unsigned char MessageStartChars[4] = {0xaa, 0xbb, 0xcc, 0xdd};
+
+        fwrite(MessageStartChars, 1, 3, file);
+        fwrite(MessageStartChars, 1, 1, file);
+        fwrite(MessageStartChars, 1, 4, file);
+        fwrite(MessageStartChars, 1, 1, file);
+        fwrite(MessageStartChars, 1, 4, file);
+        rewind(file);
+        // The file contents (this checks edge cases):
+        //    0     1     2     3     4     5     6     7     8     9    10    11    12
+        // [0xaa, 0xbb, 0xcc, 0xaa, 0xaa, 0xbb, 0xcc, 0xdd, 0xaa, 0xaa, 0xbb, 0xcc, 0xdd]
+
+        CBufferedFile bf(file, 4, 2, 0, 0);
+        bf.Search(MessageStartChars, 4);
+
+        // The stream should be positioned just after the end of the pattern.
+        BOOST_CHECK_EQUAL(bf.GetPos(), 8U);
+
+        // The search should begin at the second instance of the pattern.
+        bf.Search(MessageStartChars, 4);
+        BOOST_CHECK_EQUAL(bf.GetPos(), 13U);
+    }
     fs::remove("streams_test_tmp");
 }
 
@@ -407,7 +463,7 @@ BOOST_AUTO_TEST_CASE(streams_buffered_file_rand)
                 size_t find = currentPos + InsecureRandRange(8);
                 if (find >= fileSize)
                     find = fileSize - 1;
-                bf.FindByte(static_cast<char>(find));
+                bf.FindByte(static_cast<unsigned char>(find));
                 // The value at each offset is the offset.
                 BOOST_CHECK_EQUAL(bf.GetPos(), find);
                 currentPos = find;
