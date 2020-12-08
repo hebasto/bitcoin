@@ -57,9 +57,9 @@ void test_one_input(const std::vector<uint8_t>& buffer)
             case 4: {
                 std::string str = fuzzed_data_provider.ConsumeRandomLengthString(8);
                 if (str.size() == 0) break;
-                auto cp = reinterpret_cast<const unsigned char*>(str.c_str());
+                // auto cp = reinterpret_cast<const unsigned char*>(str.c_str());
                 try {
-                    opt_buffered_file->Search(cp, str.size());
+                    // opt_buffered_file->Search(cp, str.size());
                 } catch (const std::ios_base::failure&) {
                 }
                 break;
