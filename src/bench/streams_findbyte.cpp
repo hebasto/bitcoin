@@ -3,8 +3,10 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <bench/bench.h>
+
+#include <fs.h>
+#include <stdio.h>
 #include <streams.h>
-#include <test/util/setup_common.h>
 
 static void FindByte(benchmark::Bench& bench)
 {
