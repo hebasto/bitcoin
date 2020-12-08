@@ -835,13 +835,13 @@ public:
     {
         while (true) {
             if (nReadPos == nSrcPos) Fill();
-            const size_t i = nReadPos % vchBuf.size();
-            const size_t n = std::min<size_t>(vchBuf.size() - i, nSrcPos - nReadPos);
-            const auto it_start = vchBuf.begin() + i;
-            const auto it_find = std::find(it_start, it_start + n, ch);
+            const size_t first_byte = nReadPos % vchBuf.size();
+            const size_t num_bytes = std::min<size_t>(vchBuf.size() - first_byte, nSrcPos - nReadPos);
+            const auto it_start = vchBuf.begin() + first_byte;
+            const auto it_find = std::find(it_start, it_start + num_bytes, ch);
             const size_t inc = it_find - it_start;
             nReadPos += inc;
-            if (inc < n) break;
+            if (inc < num_bytes) break;
         }
     }
 
