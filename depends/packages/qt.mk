@@ -11,7 +11,7 @@ $(package)_qt_libs=corelib network widgets gui plugins testlib
 $(package)_patches=fix_qt_pkgconfig.patch mac-qmake.conf fix_configure_mac.patch fix_no_printer.patch
 $(package)_patches+= fix_rcc_determinism.patch fix_riscv64_arch.patch xkb-default.patch no-xlib.patch
 $(package)_patches+= fix_android_qmake_conf.patch fix_android_jni_static.patch dont_hardcode_pwd.patch
-$(package)_patches+= freetype_back_compat.patch drop_lrelease_dependency.patch fix_powerpc_libpng.patch
+$(package)_patches+= freetype_back_compat.patch fix_powerpc_libpng.patch
 $(package)_patches+= fix_mingw_cross_compile.patch fix_qpainter_non_determinism.patch qt.pro
 
 $(package)_qttranslations_file_name=qttranslations-$($(package)_suffix)
@@ -224,7 +224,6 @@ define $(package)_preprocess_cmds
   cp $($(package)_patch_dir)/qt.pro qt.pro && \
   patch -p1 -i $($(package)_patch_dir)/freetype_back_compat.patch && \
   patch -p1 -i $($(package)_patch_dir)/fix_powerpc_libpng.patch && \
-  patch -p1 -i $($(package)_patch_dir)/drop_lrelease_dependency.patch && \
   patch -p1 -i $($(package)_patch_dir)/dont_hardcode_pwd.patch && \
   patch -p1 -i $($(package)_patch_dir)/fix_qt_pkgconfig.patch && \
   patch -p1 -i $($(package)_patch_dir)/fix_configure_mac.patch && \
@@ -263,10 +262,10 @@ define $(package)_config_cmds
   echo "CONFIG += force_bootstrap" >> mkspecs/qconfig.pri && \
   bin/qmake -o Makefile qtbase.pro && \
   $(MAKE) sub-src-clean && \
-  cd ../qttranslations && ../qtbase/bin/qmake qttranslations.pro -o Makefile && \
-  cd translations && ../../qtbase/bin/qmake translations.pro -o Makefile && cd ../.. && \
-  cd qttools/src/linguist/lrelease/ && ../../../../qtbase/bin/qmake lrelease.pro -o Makefile && \
-  cd ../lupdate/ && ../../../../qtbase/bin/qmake lupdate.pro -o Makefile && cd ../../../..
+  cd ../qttools/src/linguist/lrelease/ && ../../../../qtbase/bin/qmake lrelease.pro -o Makefile && \
+  cd ../lupdate/ && ../../../../qtbase/bin/qmake lupdate.pro -o Makefile && \
+  cd ../../../../qttranslations && ../qtbase/bin/qmake qttranslations.pro -o Makefile && \
+  cd translations && ../../qtbase/bin/qmake translations.pro -o Makefile
 endef
 
 define $(package)_build_cmds
