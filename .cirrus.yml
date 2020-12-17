@@ -26,6 +26,7 @@ base_template: &BASE_TEMPLATE
       COMMIT_RANGE="${CIRRUS_LAST_GREEN_CHANGE}..HEAD"
     fi
     export COMMIT_RANGE
+    echo "CIRRUS_LAST_GREEN_CHANGE = $CIRRUS_LAST_GREEN_CHANGE"
 
 ### Global task template
 global_task_template: &GLOBAL_TASK_TEMPLATE
