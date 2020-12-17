@@ -3,7 +3,6 @@
 
 
 env:
-  PACKAGE_MANAGER_INSTALL: "apt-get update && apt-get install -y"
   MAKEJOBS: "-j4"
   DANGER_RUN_CI_ON_HOST: "1"  # Containers will be discarded after the run, so there is no risk that the ci scripts modify the system
   TEST_RUNNER_PORT_MIN: "14000"  # Must be larger than 12321, which is used for the http cache. See https://cirrus-ci.org/guide/writing-tasks/#http-cache
@@ -15,16 +14,18 @@ env:
 base_template: &BASE_TEMPLATE
   skip: $CIRRUS_REPO_FULL_NAME == "bitcoin-core/gui" && $CIRRUS_PR == "" # No need to run on the read-only mirror, unless it is a PR. https://cirrus-ci.org/guide/writing-tasks/#conditional-task-execution
   merge_base_script: |
+    apt-get update && apt-get install -y apt-utils
+    apt-get install -y git
     if [ -n "$CIRRUS_PR" ]; then
-      bash -c "$PACKAGE_MANAGER_INSTALL git"
       git fetch $CIRRUS_REPO_CLONE_URL $CIRRUS_BASE_BRANCH
       COMMIT_RANGE="$(git merge-base --fork-point FETCH_HEAD HEAD)..HEAD"
       git config --global user.email "ci@ci.ci"
       git config --global user.name "ci"
       git merge FETCH_HEAD  # Merge base to detect silent merge conflicts
     else
-      COMMIT_RANGE="$CIRRUS_LAST_GREEN_CHANGE..HEAD"
+      COMMIT_RANGE="${CIRRUS_LAST_GREEN_CHANGE}..HEAD"
     fi
+    export COMMIT_RANGE
 
 ### Global task template
 global_task_template: &GLOBAL_TASK_TEMPLATE
