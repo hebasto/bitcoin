@@ -9,6 +9,7 @@ export LC_ALL=C
 echo "CIRRUS_BRANCH = $CIRRUS_BRANCH"
 echo "CIRRUS_BASE_BRANCH = $CIRRUS_BASE_BRANCH"
 echo "git branch = $(git branch)"
+echo "CIRRUS_CHANGE_IN_REPO = $CIRRUS_CHANGE_IN_REPO"
 
 test/lint/lint-all.sh
 

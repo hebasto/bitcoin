@@ -8,8 +8,6 @@
 
 # We can't run this check unless we know the commit range for the PR.
 
-set -x
-
 export LC_ALL=C
 while getopts "?" opt; do
   case $opt in
@@ -23,6 +21,8 @@ while getopts "?" opt; do
     ;;
   esac
 done
+
+set -x
 
 # TRAVIS_BRANCH will be present in a Travis environment. For builds triggered
 # by a pull request this is the name of the branch targeted by the pull request.
