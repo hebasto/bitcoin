@@ -6,23 +6,9 @@
 
 export LC_ALL=C
 
-if [ -n "$CIRRUS_PR" ]; then
-  # CIRRUS_PR will be present in a Cirrus environment. For builds triggered
-  # by a pull request this is the name of the branch targeted by the pull request.
-  # https://cirrus-ci.org/guide/writing-tasks/#environment-variables
-  COMMIT_RANGE="$CIRRUS_BRANCH..HEAD"
-  test/lint/commit-script-check.sh $COMMIT_RANGE
-fi
+echo "CIRRUS_BRANCH = $CIRRUS_BRANCH"
+echo "CIRRUS_BASE_BRANCH = $CIRRUS_BASE_BRANCH"
 
-# This only checks that the trees are pure subtrees, it is not doing a full
-# check with -r to not have to fetch all the remotes.
-test/lint/git-subtree-check.sh src/crypto/ctaes
-test/lint/git-subtree-check.sh src/secp256k1
-test/lint/git-subtree-check.sh src/univalue
-test/lint/git-subtree-check.sh src/leveldb
-test/lint/git-subtree-check.sh src/crc32c
-test/lint/check-doc.py
-test/lint/check-rpc-mappings.py .
 test/lint/lint-all.sh
 
 if [ "$CIRRUS_REPO_FULL_NAME" = "bitcoin/bitcoin" ] && [ -n "$CIRRUS_CRON" ]; then
