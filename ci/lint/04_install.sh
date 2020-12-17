@@ -4,6 +4,8 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+set -x
+
 export LC_ALL=C
 
 ${CI_RETRY_EXE} apt update && apt install -y clang-format-9 python3-pip curl git
@@ -18,3 +20,6 @@ ${CI_RETRY_EXE} pip3 install mypy==0.781
 SHELLCHECK_VERSION=v0.7.1
 curl -sL "https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_VERSION}/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" | tar --xz -xf - --directory /tmp/
 export PATH="/tmp/shellcheck-${SHELLCHECK_VERSION}:${PATH}"
+
+echo "HEBASTO = $HEBASTO"
+echo "DOCKER_NAME_TAG = $DOCKER_NAME_TAG"
