@@ -8,5 +8,8 @@ export LC_ALL=C.UTF-8
 
 set -o errexit; source ./ci/test/00_setup_env.sh
 set -o errexit; source ./ci/lint/04_install.sh
-set -o errexit; source ./ci/lint/05_before_script.sh
 set -o errexit; source ./ci/lint/06_script.sh
+
+echo "CIRRUS_LAST_GREEN_CHANGE = $CIRRUS_LAST_GREEN_CHANGE"
+echo "CIRRUS_DEFAULT_BRANCH = $CIRRUS_DEFAULT_BRANCH"
+echo "COMMIT_RANGE = $COMMIT_RANGE"
