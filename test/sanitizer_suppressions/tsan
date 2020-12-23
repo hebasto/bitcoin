@@ -44,6 +44,10 @@ deadlock:src/qt/test/*
 deadlock:libdb
 race:libzmq
 
+# https://github.com/bitcoin/bitcoin/issues/20748
+race:zmq::encoder_base_t
+race:zmq::ypipe_t
+
 # Intermittent issues
 # -------------------
 #
