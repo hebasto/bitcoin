@@ -845,6 +845,48 @@ class TxReconciliationTracker::Impl {
         LogPrint(BCLog::NET, "Received reconciliation extension request from peer=%d.\n", peer_id);
     }
 
+    bool FinalizeInitByThem(NodeId peer_id, bool recon_result,
+        const std::vector<uint32_t>& remote_missing_short_ids, std::vector<uint256>& remote_missing)
+    {
+        LOCK(m_mutex);
+        auto recon_state = m_states.find(peer_id);
+        if (recon_state == m_states.end()) return false;
+        assert(!recon_state->second.m_we_initiate);
+
+        // Check that reconciliation is in the right phase.
+        if (recon_state->second.m_state_init_by_them.m_phase != Phase::INIT_RESPONDED &&
+            recon_state->second.m_state_init_by_them.m_phase != Phase::EXT_RESPONDED) return false;
+
+        // Note that now matter at which phase this happened, transactions must have been stored in
+        // the snapshot, so we should operate over the snapshot here.
+
+        // Identify missing transactions based on the reconciliation result peer sent us.
+        if (recon_result) {
+            remote_missing = recon_state->second.m_local_set_snapshot.GetWTXIDsFromShortIDs(remote_missing_short_ids);
+        } else {
+            // Usually, reconciliation fails only after extension, but it also may fail at initial
+            // phase if of the peers have no transactions locally. In either case, the transactions
+            // we have for the peer are stored in the snapshot.
+            remote_missing = recon_state->second.m_local_set_snapshot.GetAllTransactions();
+        }
+
+        // Filter out transactions received from the peer during the extension phase.
+        std::set<uint256> announced_during_extension = recon_state->second.m_announced_during_extension;
+        remote_missing.erase(std::remove_if(remote_missing.begin(), remote_missing.end(), [announced_during_extension](const auto&x) {
+            return std::find(announced_during_extension.begin(), announced_during_extension.end(), x) != announced_during_extension.end();
+        }), remote_missing.end());
+
+        // Update local reconciliation state for the peer.
+        recon_state->second.m_local_set_snapshot.Clear();
+        recon_state->second.m_announced_during_extension.clear();
+        recon_state->second.m_state_init_by_them.m_phase = Phase::NONE;
+
+        LogPrint(BCLog::NET, "Finalizing reconciliation init by peer=%d with result=%i, announcing %i txs (requested by shortID).\n",
+            peer_id, recon_result, remote_missing.size());
+
+        return true;
+    }
+
     void ForgetPeer(NodeId peer_id)
     {
         LOCK(m_mutex);
@@ -972,6 +1014,12 @@ bool TxReconciliationTracker::HandleSketch(NodeId peer_id, const std::vector<uin
 void TxReconciliationTracker::HandleExtensionRequest(NodeId peer_id)
 {
     m_impl->HandleExtensionRequest(peer_id);
+}
+
+bool TxReconciliationTracker::FinalizeInitByThem(NodeId peer_id, bool recon_result,
+    const std::vector<uint32_t>& remote_missing_short_ids, std::vector<uint256>& remote_missing)
+{
+    return m_impl->FinalizeInitByThem(peer_id, recon_result, remote_missing_short_ids, remote_missing);
 }
 
 void TxReconciliationTracker::ForgetPeer(NodeId peer_id)
