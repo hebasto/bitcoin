@@ -120,6 +120,9 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
   CXXFLAGS="$PIC_FLAGS $CXXFLAGS"
   _BITCOIN_QT_IS_STATIC
   if test "x$bitcoin_cv_static_qt" = xyes; then
+    if test "x$TARGET_OS" = xlinux; then
+      QT_LIBS="$QT_LIBS -ldl -lfreetype -lfontconfig -lxcb -lxkbcommon -lxkbcommon-x11"
+    fi
     _BITCOIN_QT_CHECK_STATIC_LIBS
 
     if test "x$qt_plugin_path" != x; then
