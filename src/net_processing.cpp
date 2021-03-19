@@ -31,6 +31,7 @@
 #include <tinyformat.h>
 #include <txmempool.h>
 #include <txorphanage.h>
+#include <txreconciliation.h>
 #include <txrequest.h>
 #include <util/check.h> // For NDEBUG compile time check
 #include <util/strencodings.h>
@@ -416,6 +417,7 @@ private:
     ChainstateManager& m_chainman;
     CTxMemPool& m_mempool;
     TxRequestTracker m_txrequest GUARDED_BY(::cs_main);
+    TxReconciliationTracker m_reconciliation;
 
     /** The height of the best chain */
     std::atomic<int> m_best_height{-1};
@@ -2574,6 +2576,15 @@ void PeerManagerImpl::ProcessMessage(CNode& pfrom, const std::string& msg_type, 
 
         if (greatest_common_version >= WTXID_RELAY_VERSION) {
             m_connman.PushMessage(&pfrom, msg_maker.Make(NetMsgType::WTXIDRELAY));
+
+            // Reconciliation is supported only when wtxid relay is supported for only
+            // those connections which (at least might) support transaction relay.
+            if (pfrom.m_tx_relay) {
+                const auto [we_initiate_recon, we_respond_recon, recon_version, recon_salt] =
+                    m_reconciliation.PreRegisterPeer(pfrom.GetId(), pfrom.IsInboundConn());
+                m_connman.PushMessage(&pfrom, msg_maker.Make(NetMsgType::SENDRECON,
+                    we_initiate_recon, we_respond_recon, recon_version, recon_salt));
+            }
         }
 
         // Signal ADDRv2 support (BIP155).
