@@ -58,6 +58,14 @@ class TxReconciliationTracker {
      */
     std::tuple<bool, bool, uint32_t, uint64_t> PreRegisterPeer(NodeId peer_id, bool peer_inbound);
 
+    /**
+     * Step 0. Once the peer agreed to reconcile with us, generate the state required to track
+     * ongoing reconciliations. Should be called only after pre-registering the peer and only once.
+     * Does nothing and returns false if the peer violates the protocol.
+     */
+    bool RegisterPeer(NodeId peer_id, bool peer_inbound,
+        bool recon_requestor, bool recon_responder, uint32_t recon_version, uint64_t remote_salt);
+
     // Helpers
 
     /**
