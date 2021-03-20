@@ -115,6 +115,13 @@ class TxReconciliationTracker::Impl {
      */
     std::unordered_map<NodeId, ReconciliationState> m_states GUARDED_BY(m_mutex);
 
+    /**
+     * Maintains a queue of reconciliations we should initiate. To achieve higher bandwidth
+     * conservation and avoid overflows, we should reconcile in the same order, because then it’s
+     * easier to estimate set difference size.
+     */
+    std::deque<NodeId> m_queue GUARDED_BY(m_mutex);
+
     public:
 
     std::tuple<bool, bool, uint32_t, uint64_t> PreRegisterPeer(NodeId peer_id, bool peer_inbound)
@@ -174,6 +181,10 @@ class TxReconciliationTracker::Impl {
         // The peer set both flags to false, we treat it as a protocol violation.
         if (!(they_initiate || we_initiate)) return false;
 
+        if (we_initiate) {
+            m_queue.push_back(peer_id);
+        }
+
         LogPrint(BCLog::NET, "Register peer=%d for reconciling with the following params: " /* Continued */
             "we_initiate=%i, they_initiate=%i.\n", peer_id, we_initiate, they_initiate);
 
@@ -219,6 +230,7 @@ class TxReconciliationTracker::Impl {
         if (salt_erased || state_erased) {
             LogPrint(BCLog::NET, "Forget reconciliation state of peer=%d.\n", peer_id);
         }
+        m_queue.erase(std::remove(m_queue.begin(), m_queue.end(), peer_id), m_queue.end());
     }
 
     bool IsPeerRegistered(NodeId peer_id) const
