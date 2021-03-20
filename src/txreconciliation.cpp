@@ -51,6 +51,15 @@ class TxReconciliationTracker::Impl {
         LogPrint(BCLog::NET, "Pre-register peer=%d for reconciling.\n", peer_id);
         return std::make_tuple(we_initiate_recon, we_respond_recon, RECON_VERSION, m_local_recon_salt);
     }
+
+    void ForgetPeer(NodeId peer_id)
+    {
+        LOCK(m_mutex);
+        if (m_local_salts.erase(peer_id)) {
+            LogPrint(BCLog::NET, "Forget reconciliation state of peer=%d.\n", peer_id);
+        }
+    }
+
 };
 
 TxReconciliationTracker::TxReconciliationTracker() :
@@ -61,4 +70,9 @@ TxReconciliationTracker::~TxReconciliationTracker() = default;
 std::tuple<bool, bool, uint32_t, uint64_t>TxReconciliationTracker::PreRegisterPeer(NodeId peer_id, bool peer_inbound)
 {
     return m_impl->PreRegisterPeer(peer_id, peer_inbound);
+}
+
+void TxReconciliationTracker::ForgetPeer(NodeId peer_id)
+{
+    m_impl->ForgetPeer(peer_id);
 }
