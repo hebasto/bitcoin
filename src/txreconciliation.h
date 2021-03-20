@@ -73,6 +73,11 @@ class TxReconciliationTracker {
      * After this, we won't be able to reconcile with the peer.
      */
     void ForgetPeer(NodeId peer_id);
+
+    /**
+     * Check if a peer is registered to reconcile with us.
+     */
+    bool IsPeerRegistered(NodeId peer_id) const;
 };
 
 #endif // BITCOIN_TXRECONCILIATION_H

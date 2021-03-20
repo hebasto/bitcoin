@@ -154,6 +154,11 @@ class TxReconciliationTracker::Impl {
         }
     }
 
+    bool IsPeerRegistered(NodeId peer_id) const
+    {
+        LOCK(m_mutex);
+        return m_states.find(peer_id) != m_states.end();
+    }
 };
 
 TxReconciliationTracker::TxReconciliationTracker() :
@@ -176,4 +181,9 @@ bool TxReconciliationTracker::RegisterPeer(NodeId peer_id, bool peer_inbound,
 void TxReconciliationTracker::ForgetPeer(NodeId peer_id)
 {
     m_impl->ForgetPeer(peer_id);
+}
+
+bool TxReconciliationTracker::IsPeerRegistered(NodeId peer_id) const
+{
+    return m_impl->IsPeerRegistered(peer_id);
 }
