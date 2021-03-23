@@ -29,6 +29,22 @@ static uint256 ComputeSalt(uint64_t local_salt, uint64_t remote_salt)
 }
 
 /**
+ * Keeps track of the transactions we want to announce to the peer along with the state
+ * required to reconcile them.
+ */
+struct ReconciliationSet {
+    /** Transactions we want to announce to the peer */
+    std::set<uint256> m_wtxids;
+
+    /** This should be called at the end of every reconciliation to avoid unbounded state growth. */
+    void Clear() {
+        m_wtxids.clear();
+    }
+
+};
+
+
+/**
  * Used to keep track of the ongoing reconciliations, the transactions we want to announce to the
  * peer when next transaction reconciliation happens, and also all parameters required to perform
  * reconciliations.
@@ -49,6 +65,14 @@ class ReconciliationState {
      * initiator (requesting sketches), or responder (sending sketches). This defines our role.
      * */
     const bool m_we_initiate;
+
+    /**
+     * Store all transactions which we would relay to the peer (policy checks passed, etc.)
+     * in this set instead of announcing them right away. When reconciliation time comes, we will
+     * compute an efficient representation of this set ("sketch") and use it to efficient reconcile
+     * this set with a similar set on the other side of the connection.
+     */
+    ReconciliationSet m_local_set;
 
     ReconciliationState(uint64_t k0, uint64_t k1, bool we_initiate) :
         m_k0(k0), m_k1(k1), m_we_initiate(we_initiate) {}
@@ -144,6 +168,24 @@ class TxReconciliationTracker::Impl {
         return true;
     }
 
+    void AddToReconSet(NodeId peer_id, const std::vector<uint256>& txs_to_reconcile)
+    {
+        assert(txs_to_reconcile.size() > 0);
+        LOCK(m_mutex);
+        auto recon_state = m_states.find(peer_id);
+        assert(recon_state != m_states.end());
+
+        size_t added = 0;
+        for (auto& wtxid: txs_to_reconcile) {
+            if (recon_state->second.m_local_set.m_wtxids.insert(wtxid).second) {
+                ++added;
+            }
+        }
+
+        LogPrint(BCLog::NET, "Added %i new transactions to the reconciliation set for peer=%d. " /* Continued */
+            "Now the set contains %i transactions.\n", added, peer_id, recon_state->second.m_local_set.m_wtxids.size());
+    }
+
     void ForgetPeer(NodeId peer_id)
     {
         LOCK(m_mutex);
@@ -176,6 +218,11 @@ bool TxReconciliationTracker::RegisterPeer(NodeId peer_id, bool peer_inbound,
 {
     return m_impl->RegisterPeer(peer_id, peer_inbound, recon_requestor, recon_responder,
         recon_version, remote_salt);
+}
+
+void TxReconciliationTracker::AddToReconSet(NodeId peer_id, const std::vector<uint256>& txs_to_reconcile)
+{
+    m_impl->AddToReconSet(peer_id, txs_to_reconcile);
 }
 
 void TxReconciliationTracker::ForgetPeer(NodeId peer_id)
