@@ -1,0 +1,11 @@
+--- old/qtbase/mkspecs/common/macx.conf
++++ new/qtbase/mkspecs/common/macx.conf
+@@ -5,7 +5,7 @@
+ QMAKE_PLATFORM         += macos osx macx
+ QMAKE_MAC_SDK           = macosx
+ 
+-QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.12
++QMAKE_MACOSX_DEPLOYMENT_TARGET = $${OSX_MIN_VERSION}
+ QMAKE_APPLE_DEVICE_ARCHS = x86_64
+ QT_MAC_SDK_VERSION_MIN = 10.13
+ QT_MAC_SDK_VERSION_MAX = 10.15
