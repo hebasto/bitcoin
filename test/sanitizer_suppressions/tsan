@@ -4,12 +4,6 @@
 # https://github.com/google/sanitizers/wiki/ThreadSanitizerSuppressions
 
 # race (TODO fix)
-race:LoadWallet
-race:WalletBatch::WriteHDChain
-race:BerkeleyBatch
-race:BerkeleyDatabase
-race:DatabaseBatch
-race:zmq::*
 race:bitcoin-qt
 
 # deadlock (TODO fix)
@@ -26,9 +20,9 @@ deadlock:src/qt/test/*
 # Can be removed once upgraded to boost test 1.74 in depends
 race:validation_chainstatemanager_tests
 
-# External libraries
-deadlock:libdb
-race:libzmq
+# Uninstrumented external libraries.
+called_from_lib:libevent
+called_from_lib:libdb
 
 # Intermittent issues
 # -------------------
@@ -38,6 +32,3 @@ race:libzmq
 
 # https://github.com/bitcoin/bitcoin/issues/20618
 race:CZMQAbstractPublishNotifier::SendZmqMessage
-
-# https://github.com/bitcoin/bitcoin/pull/20218, https://github.com/bitcoin/bitcoin/pull/20745
-race:epoll_ctl
