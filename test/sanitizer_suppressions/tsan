@@ -23,6 +23,7 @@ race:validation_chainstatemanager_tests
 # Uninstrumented external libraries.
 called_from_lib:libevent
 called_from_lib:libdb
+called_from_lib:zmq
 
 # Intermittent issues
 # -------------------
