@@ -32,4 +32,3 @@ race:CZMQAbstractPublishNotifier::SendZmqMessage
 
 # Uninstrumented external libraries.
 called_from_lib:libdb
-called_from_lib:libevent
