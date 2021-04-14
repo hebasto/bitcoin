@@ -7,9 +7,6 @@
 race:zmq::*
 race:bitcoin-qt
 
-# deadlock (TODO fix)
-deadlock:CChainState::ConnectTip
-
 # Intentional deadlock in tests
 deadlock:TestPotentialDeadLockDetected
 
