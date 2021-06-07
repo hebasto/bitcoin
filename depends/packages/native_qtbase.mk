@@ -125,6 +125,8 @@ $(package)_config_opts += -reduce-exports
 $(package)_config_opts += -static
 $(package)_config_opts += -v
 
+$(package)_config_opts_i686_linux += -xplatform linux-g++-32
+
 # required for C++17 support on macOS
 $(package)_config_opts_darwin = QMAKE_MACOSX_DEPLOYMENT_TARGET=$(OSX_MIN_VERSION)
 
