@@ -160,21 +160,15 @@ define $(package)_config_cmds
   cd .. && \
   $(MAKE) -C qtbase && \
   qtbase/bin/qmake -o qtbase/src/tools/uic/Makefile qtbase/src/tools/uic/uic.pro && \
-  qtbase/bin/qmake -o qtbase/src/tools/qfloat16-tables/Makefile qtbase/src/tools/qfloat16-tables/qfloat16-tables.pro && \
   qtbase/bin/qmake -o qtbase/src/tools/qvkgen/Makefile qtbase/src/tools/qvkgen/qvkgen.pro && \
-  qtbase/bin/qmake -o qtbase/qmake/Makefile qtbase/qmake/qmake-aux.pro && \
   qtbase/bin/qmake -o qttools/src/linguist/lrelease/Makefile qttools/src/linguist/lrelease/lrelease.pro && \
   qtbase/bin/qmake -o qttools/src/linguist/lupdate/Makefile qttools/src/linguist/lupdate/lupdate.pro && \
   qtbase/bin/qmake -o qttools/src/linguist/lconvert/Makefile qttools/src/linguist/lconvert/lconvert.pro
 endef
 
 define $(package)_build_cmds
-  $(MAKE) -C qtbase/src/tools/moc && \
-  $(MAKE) -C qtbase/src/tools/qfloat16-tables && \
-  $(MAKE) -C qtbase/src/tools/qlalr && \
-  $(MAKE) -C qtbase/src/tools/qvkgen && \
-  $(MAKE) -C qtbase/src/tools/rcc && \
   $(MAKE) -C qtbase/src/tools/uic && \
+  $(MAKE) -C qtbase/src/tools/qvkgen && \
   $(MAKE) -C qttools/src/linguist/lrelease && \
   $(MAKE) -C qttools/src/linguist/lupdate && \
   $(MAKE) -C qttools/src/linguist/lconvert
