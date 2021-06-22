@@ -1,0 +1,34 @@
+Avoid new glibc symbols for compatibility with older distros:
+  - getentropy@GLIBC_2.25
+  - renameat2@GLIBC_2.28
+  - statx@GLIBC_2.28
+
+--- old/qtbase/src/corelib/configure.json
++++ new/qtbase/src/corelib/configure.json
+@@ -595,7 +595,7 @@
+         },
+         "getentropy": {
+             "label": "getentropy()",
+-            "condition": "config.unix && tests.getentropy",
++            "condition": false,
+             "output": [ "privateFeature" ]
+         },
+         "glib": {
+@@ -729,7 +729,7 @@
+         },
+         "renameat2": {
+             "label": "renameat2()",
+-            "condition": "config.linux && tests.renameat2",
++            "condition": false,
+             "output": [ "privateFeature" ]
+         },
+         "slog2": {
+@@ -739,7 +739,7 @@
+         },
+         "statx": {
+             "label": "statx() in libc",
+-            "condition": "config.linux && tests.statx",
++            "condition": false,
+             "output": [ "privateFeature" ]
+         },
+         "syslog": {
