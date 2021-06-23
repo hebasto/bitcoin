@@ -76,6 +76,8 @@ ELF_ALLOWED_LIBRARIES = {
 'libxkbcommon-x11.so.0', # keyboard keymapping
 'libfontconfig.so.1', # font support
 'libfreetype.so.6', # font parsing
+'libicui18n.so.66', # International Components for Unicode
+'libicuuc.so.66', # International Components for Unicode
 'libdl.so.2' # programming interface to dynamic linker
 }
 ARCH_MIN_GLIBC_VER = {

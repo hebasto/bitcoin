@@ -20,6 +20,7 @@ packages:
 - "gcc-8"
 - "git"
 - "libtool"
+- "libicu-dev"
 - "patch"
 - "pkg-config"
 - "python3"
