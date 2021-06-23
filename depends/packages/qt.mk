@@ -37,7 +37,6 @@ $(package)_config_opts += -no-eglfs
 $(package)_config_opts += -no-freetype
 $(package)_config_opts += -no-gif
 $(package)_config_opts += -no-glib
-$(package)_config_opts += -no-icu
 $(package)_config_opts += -no-ico
 $(package)_config_opts += -no-iconv
 $(package)_config_opts += -no-kms
@@ -110,6 +109,7 @@ $(package)_config_opts += -no-feature-wizard
 $(package)_config_opts += -no-feature-xml
 
 $(package)_config_opts_darwin = -no-dbus
+$(package)_config_opts_darwin += -no-icu
 $(package)_config_opts_darwin += -no-opengl
 $(package)_config_opts_darwin += -pch
 $(package)_config_opts_darwin += -no-feature-corewlan
@@ -147,6 +147,7 @@ $(package)_config_opts_s390x_linux = -platform linux-g++ -xplatform bitcoin-linu
 
 $(package)_config_opts_mingw32 = -no-opengl
 $(package)_config_opts_mingw32 += -no-dbus
+$(package)_config_opts_mingw32 += -no-icu
 $(package)_config_opts_mingw32 += -xplatform win32-g++
 $(package)_config_opts_mingw32 += "QMAKE_CFLAGS = '$($(package)_cflags) $($(package)_cppflags)'"
 $(package)_config_opts_mingw32 += "QMAKE_CXXFLAGS = '$($(package)_cflags) $($(package)_cppflags)'"
@@ -163,6 +164,7 @@ $(package)_config_opts_android += -egl
 $(package)_config_opts_android += -qpa xcb
 $(package)_config_opts_android += -no-eglfs
 $(package)_config_opts_android += -no-dbus
+$(package)_config_opts_android += -no-icu
 $(package)_config_opts_android += -opengl es2
 $(package)_config_opts_android += -qt-freetype
 $(package)_config_opts_android += -no-fontconfig
