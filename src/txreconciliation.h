@@ -96,6 +96,11 @@ class TxReconciliationTracker {
      * If the peer was not previously registered for reconciliations, returns nullopt.
      */
     std::optional<size_t> GetPeerSetSize(NodeId peer_id) const;
+
+    /**
+     * Returns whether for the given call the peer is chosen as a low-fanout destination.
+     */
+    bool ShouldFloodTo(uint256 wtxid, NodeId peer_id) const;
 };
 
 #endif // BITCOIN_TXRECONCILIATION_H
