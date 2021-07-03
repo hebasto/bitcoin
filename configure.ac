@@ -1372,14 +1372,19 @@ fi
 
 dnl Check for libminiupnpc (optional)
 if test x$use_upnp != xno; then
-  AC_CHECK_HEADERS(
-    [miniupnpc/miniupnpc.h miniupnpc/upnpcommands.h miniupnpc/upnperrors.h],
-    [AC_CHECK_LIB([miniupnpc], [upnpDiscover], [MINIUPNPC_LIBS=-lminiupnpc], [have_miniupnpc=no])],
-    [have_miniupnpc=no]
-  )
+  PKG_CHECK_MODULES([MINIUPNPC], [miniupnpc], [have_miniupnpc=yes],
+    dnl Our depends and some older distros (e.g., stretch, bionic)
+    dnl do not provide the pkgconfig/miniupnpc.pc file.
+    AC_CHECK_HEADERS(
+      [miniupnpc/miniupnpc.h miniupnpc/upnpcommands.h miniupnpc/upnperrors.h],
+      [AC_CHECK_LIB([miniupnpc], [upnpDiscover], [MINIUPNPC_LIBS=-lminiupnpc], [have_miniupnpc=no])],
+      [have_miniupnpc=no]))
+
   dnl The minimum supported miniUPnPc API version is set to 10. This keeps compatibility
   dnl with Ubuntu 16.04 LTS and Debian 8 libminiupnpc-dev packages.
   if test x$have_miniupnpc != xno; then
+    TEMP_CPPFLAGS="$CPPFLAGS"
+    CPPFLAGS="$CPPFLAGS $MINIUPNPC_CFLAGS"
     AC_MSG_CHECKING([whether miniUPnPc API version is supported])
     AC_PREPROC_IFELSE([AC_LANG_PROGRAM([[
         @%:@include <miniupnpc/miniupnpc.h>
@@ -1396,6 +1401,7 @@ if test x$use_upnp != xno; then
       AC_MSG_WARN([miniUPnPc API version < 10 is unsupported, disabling UPnP support.])
       have_miniupnpc=no
     ])
+    CPPFLAGS="$TEMP_CPPFLAGS"
   fi
 fi
 
