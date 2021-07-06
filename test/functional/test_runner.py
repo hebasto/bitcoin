@@ -109,6 +109,8 @@ BASE_SCRIPTS = [
     'p2p_segwit.py',
     'p2p_timeouts.py',
     'p2p_tx_download.py',
+    'p2p_txrecon_initiator.py',
+    'p2p_txrecon_responder.py',
     'mempool_updatefromblock.py',
     'wallet_dump.py --legacy-wallet',
     'feature_taproot.py --previous_release',
