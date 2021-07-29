@@ -251,6 +251,15 @@ class ReconciliationState {
      */
     ReconciliationSet m_local_set_snapshot;
 
+    /**
+     * A peer could announce a transaction to us during reconciliation and after we snapshoted
+     * the initial set. We can't remove this new transaction from the snapshot, because
+     * then we won't be able to compute a valid extension (for the sketch already transmitted).
+     * Instead, we just remember those transaction, and not announce them when we announce
+     * stuff from the snapshot.
+     */
+    std::set<uint256> m_announced_during_extension;
+
     /** Keep track of reconciliations with the peer. */
     ReconciliationInitByUs m_state_init_by_us;
     ReconciliationInitByThem m_state_init_by_them;
@@ -328,6 +337,7 @@ class ReconciliationState {
         assert(m_we_initiate);
         if (clear_local_set) m_local_set.Clear();
         m_local_set_snapshot.Clear();
+        m_announced_during_extension.clear();
         // This is currently belt-and-suspenders, as the code should work even without these calls.
         m_capacity_snapshot = 0;
         m_state_init_by_us.m_remote_sketch_snapshot.clear();
@@ -586,6 +596,10 @@ class TxReconciliationTracker::Impl {
         if (recon_state == m_states.end()) return;
 
         recon_state->second.m_local_set.m_wtxids.erase(wtxid_to_remove);
+        if (recon_state->second.m_local_set_snapshot.m_wtxids.find(wtxid_to_remove) !=
+            recon_state->second.m_local_set_snapshot.m_wtxids.end()) {
+                recon_state->second.m_announced_during_extension.insert(wtxid_to_remove);
+            }
     }
 
     std::optional<std::pair<uint16_t, uint16_t>> MaybeRequestReconciliation(NodeId peer_id)
