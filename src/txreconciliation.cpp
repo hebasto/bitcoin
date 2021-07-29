@@ -186,6 +186,15 @@ class TxReconciliationTracker::Impl {
             "Now the set contains %i transactions.\n", added, peer_id, recon_state->second.m_local_set.m_wtxids.size());
     }
 
+    void TryRemovingFromReconSet(NodeId peer_id, const uint256 wtxid_to_remove)
+    {
+        LOCK(m_mutex);
+        auto recon_state = m_states.find(peer_id);
+        if (recon_state == m_states.end()) return;
+
+        recon_state->second.m_local_set.m_wtxids.erase(wtxid_to_remove);
+    }
+
     void ForgetPeer(NodeId peer_id)
     {
         LOCK(m_mutex);
@@ -223,6 +232,11 @@ bool TxReconciliationTracker::RegisterPeer(NodeId peer_id, bool peer_inbound,
 void TxReconciliationTracker::AddToReconSet(NodeId peer_id, const std::vector<uint256>& txs_to_reconcile)
 {
     m_impl->AddToReconSet(peer_id, txs_to_reconcile);
+}
+
+void TxReconciliationTracker::TryRemovingFromReconSet(NodeId peer_id, const uint256 wtxid_to_remove)
+{
+    m_impl->TryRemovingFromReconSet(peer_id, wtxid_to_remove);
 }
 
 void TxReconciliationTracker::ForgetPeer(NodeId peer_id)

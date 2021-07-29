@@ -72,6 +72,12 @@ class TxReconciliationTracker {
      */
     void AddToReconSet(NodeId peer_id, const std::vector<uint256>& txs_to_reconcile);
 
+    /**
+     * Before Step 2, we might want to remove a wtxid from the reconciliation set, for example if
+     * the peer just announced the transaction to us.
+     */
+    void TryRemovingFromReconSet(NodeId peer_id, const uint256 wtxid_to_remove);
+
     // Helpers
 
     /**
