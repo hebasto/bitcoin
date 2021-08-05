@@ -4880,8 +4880,13 @@ bool PeerManagerImpl::SendMessages(CNode* pto)
                             continue;
                         }
                         if (pto->m_tx_relay->pfilter && !pto->m_tx_relay->pfilter->IsRelevantAndUpdate(*txinfo.tx)) continue;
+
                         // Send
-                        State(pto->GetId())->m_recently_announced_invs.insert(hash);
+
+                        // Make a transaction requestable by both txid and wtxid, to avoid making
+                        // an assumption that a child arrives after the parent.
+                        State(pto->GetId())->m_recently_announced_invs.insert(txid);
+                        State(pto->GetId())->m_recently_announced_invs.insert(wtxid);
 
                         bool adding_to_recon_set = false;
                         // Check if peer supports reconciliations.
