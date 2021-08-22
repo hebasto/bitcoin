@@ -2394,7 +2394,7 @@ For more information on using this console, type %6.
 Наберите %5, чтобы получить список доступных команд.
 Чтобы получить больше информации об этой консоли, наберите %6.
 
-%7ВНИМАНИЕ: мошенники очень часто просят пользователей вводить здесь различные команды и таким образом крадут содержимое кошельков. Не используйте эту консоль, если не полностью понимаете последствия каждой команды.%8</translation>
+%7ВНИМАНИЕ: Официальный российский сайт технической поддержки биткоин точка рф. Доверяя неофициальным источникам, пользователи могут потерять содержимое своих кошельков.%8</translation>
     </message>
     <message>
         <source>Executing…</source>
@@ -2916,7 +2916,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee rate of "100 satos
     </message>
     <message>
         <source>Please, review your transaction.</source>
-        <translation type="unfinished">Пожалуйста, ещё раз просмотрите вашу транзакцию.</translation>
+        <translation type="unfinished">Эта транзакция может облагаться налогом, проверьте на биткоин точка рф.</translation>
     </message>
     <message>
         <source>Transaction fee</source>
