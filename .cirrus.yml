@@ -82,5 +82,7 @@ task:
     x64_NATIVE_TOOLS: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat"'
     IgnoreWarnIntDirInTempDetected: 'true'
   merge_script:
-    - PowerShell -NoLogo -Command if ($env:CIRRUS_PR -eq $null) { Write-Host "CIRRUS_PR = $env:CIRRUS_PR"; Write-Host "... therefore, About to EXIT"; exit 0; }
+    - PowerShell -NoLogo -Command if ($env:CIRRUS_PR -eq $null) { \
+        Write-Host "CIRRUS_PR = $env:CIRRUS_PR"; \
+        Write-Host "... therefore, About to EXIT" }
     - ps: Write-Host "CONTINUE TO RUN";
