@@ -149,6 +149,8 @@ task:
     - src\bench_bitcoin.exe > NUL
     - python test\util\test_runner.py
     - python test\util\rpcauth-test.py
+  functional_tests_script:
+    - python test\functional\test_runner.py --ci --quiet --combinedlogslen=4000 --exclude feature_fee_estimation
 
 task:
   name: 'ARM [unit tests, no functional tests] [buster]'
