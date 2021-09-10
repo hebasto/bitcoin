@@ -39,6 +39,7 @@ public:
     path(std::filesystem::path path) : std::filesystem::path::path(std::move(path)) {}
     path(const std::string& string) = delete;
     path& operator=(std::string&) = delete;
+    path& operator/=(const std::string& element) = delete;
     std::string string() const = delete;
     std::string u8string() const { return std::filesystem::path::string(); }
 };
@@ -62,6 +63,11 @@ static inline path PathFromString(const std::string& string)
 static inline path u8path(const std::string& string)
 {
     return std::filesystem::path(string);
+}
+
+static inline path AppendPathWithString(const std::filesystem::path& path, const std::string& string)
+{
+    return PathFromString(path.string() + "/" + string).make_preferred();
 }
 }
 

@@ -613,10 +613,10 @@ bool BerkeleyDatabase::Backup(const std::string& strDest) const
                 env->CheckpointLSN(strFile);
 
                 // Copy wallet file
-                fs::path pathSrc = env->Directory() / strFile;
+                fs::path pathSrc = fs::AppendPathWithString(env->Directory(), strFile);
                 fs::path pathDest(fs::PathFromString(strDest));
                 if (fs::is_directory(pathDest))
-                    pathDest /= strFile;
+                    pathDest = fs::AppendPathWithString(pathDest, strFile);
 
                 try {
                     if (fs::exists(pathDest) && fs::equivalent(pathSrc, pathDest)) {

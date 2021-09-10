@@ -401,8 +401,8 @@ const fs::path& ArgsManager::GetBlocksDirPath() const
         path = GetDataDirBase();
     }
 
-    path /= BaseParams().DataDir();
-    path /= "blocks";
+    path = fs::AppendPathWithString(path, BaseParams().DataDir());
+    path = fs::AppendPathWithString(path, "blocks");
     fs::create_directories(path);
     path = fs::canonical(path);
     return path;
@@ -428,11 +428,11 @@ const fs::path& ArgsManager::GetDataDir(bool net_specific) const
         path = GetDefaultDataDir();
     }
     if (net_specific)
-        path /= BaseParams().DataDir();
+        path = fs::AppendPathWithString(path, BaseParams().DataDir());
 
     if (fs::create_directories(path)) {
         // This is the first run, create wallets subdirectory too
-        fs::create_directories(path / "wallets");
+        fs::create_directories(fs::AppendPathWithString(path, "wallets"));
     }
 
     path = fs::canonical(path);
