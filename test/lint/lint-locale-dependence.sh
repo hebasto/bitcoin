@@ -44,7 +44,6 @@ KNOWN_VIOLATIONS=(
     "src/node/blockstorage.cpp:.*atoi"
     "src/qt/rpcconsole.cpp:.*atoi"
     "src/rest.cpp:.*strtol"
-    "src/test/dbwrapper_tests.cpp:.*setlocale"
     "src/test/dbwrapper_tests.cpp:.*snprintf"
     "src/test/fuzz/locale.cpp"
     "src/test/fuzz/parse_numbers.cpp:.*atoi"
