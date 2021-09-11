@@ -11,6 +11,7 @@
 #include <ext/stdio_filebuf.h>
 #endif
 
+#include <clocale>
 #include <filesystem>
 #include <fstream>
 
@@ -57,7 +58,11 @@ static inline std::string PathToString(const std::filesystem::path& path)
 
 static inline path PathFromString(const std::string& string)
 {
-    return std::filesystem::path(string);
+    const auto loc = std::setlocale(LC_ALL, nullptr);
+    std::setlocale(LC_ALL, "en_US.UTF-8");
+    const auto path = std::filesystem::path(string);
+    std::setlocale(LC_ALL, loc);
+    return path;
 }
 
 static inline path u8path(const std::string& string)
