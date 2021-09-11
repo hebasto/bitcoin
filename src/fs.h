@@ -72,7 +72,11 @@ static inline path u8path(const std::string& string)
 
 static inline path AppendPathWithString(const std::filesystem::path& path, const std::string& string)
 {
-    return PathFromString(path.string() + "/" + string).make_preferred();
+    const auto loc = std::setlocale(LC_ALL, nullptr);
+    std::setlocale(LC_ALL, "en_US.UTF-8");
+    const auto path = PathFromString(path.string() + "/" + string).make_preferred();
+    std::setlocale(LC_ALL, loc);
+    return path;
 }
 }
 
