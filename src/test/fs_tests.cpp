@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(fsbridge_pathtostring)
 
 BOOST_AUTO_TEST_CASE(fsbridge_fstream)
 {
-    fs::path tmpfolder = m_args.GetDataDirBase();
+    fs::path tmpfolder = m_args.GetDataDirBase() / "fs_tests_₿_🏃";
     // tmpfile1 should be the same as tmpfile2
     fs::path tmpfile1 = tmpfolder / "fs_tests_₿_🏃";
     fs::path tmpfile2 = tmpfolder / "fs_tests_₿_🏃";
