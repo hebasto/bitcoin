@@ -1,4 +1,3 @@
-
 Bitcoin Core integration/staging tree
 =====================================
 
