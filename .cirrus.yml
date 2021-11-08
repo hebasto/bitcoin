@@ -40,7 +40,8 @@ main_template: &MAIN_TEMPLATE
     cpu: 2
     memory: 8G  # Set to 8GB to avoid OOM. https://cirrus-ci.org/guide/linux/#linux-containers
   ccache_cache:
-    folder: "/tmp/ccache_dir"
+    folder: "$CCACHE_DIR"
+    fingerprint_script: echo $CIRRUS_TASK_NAME
   depends_built_cache:
     folder: "depends/built"
     fingerprint_script: echo $CIRRUS_TASK_NAME $(git rev-list -1 HEAD ./depends)
