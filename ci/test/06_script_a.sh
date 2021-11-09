@@ -15,7 +15,7 @@ if [ -n "$ANDROID_TOOLS_URL" ]; then
   DOCKER_EXEC make distclean || true
   DOCKER_EXEC ./autogen.sh
   DOCKER_EXEC ./configure "$BITCOIN_CONFIG_ALL" "$BITCOIN_CONFIG" || ( (DOCKER_EXEC cat config.log) && false)
-  DOCKER_EXEC "make $MAKEJOBS && cd src/qt && ANDROID_HOME=${ANDROID_HOME} ANDROID_NDK_HOME=${ANDROID_NDK_HOME} make apk"
+  DOCKER_EXEC "make $MAKEJOBS && cd src/qt && make apk"
   exit 0
 fi
 
