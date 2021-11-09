@@ -6,18 +6,21 @@
 
 export LC_ALL=C.UTF-8
 
+BITCOIN_CONFIG_ALL="--enable-suppress-external-warnings --disable-dependency-tracking --prefix=${DEPENDS_DIR}/${HOST}"
+if [ -z "$NO_WERROR" ]; then
+  BITCOIN_CONFIG_ALL="${BITCOIN_CONFIG_ALL} --enable-werror"
+fi
+
 if [ -n "$ANDROID_TOOLS_URL" ]; then
   DOCKER_EXEC make distclean || true
   DOCKER_EXEC ./autogen.sh
-  DOCKER_EXEC ./configure $BITCOIN_CONFIG --prefix=$DEPENDS_DIR/aarch64-linux-android || ( (DOCKER_EXEC cat config.log) && false)
+  DOCKER_EXEC ./configure "$BITCOIN_CONFIG_ALL" "$BITCOIN_CONFIG" || ( (DOCKER_EXEC cat config.log) && false)
   DOCKER_EXEC "make $MAKEJOBS && cd src/qt && ANDROID_HOME=${ANDROID_HOME} ANDROID_NDK_HOME=${ANDROID_NDK_HOME} make apk"
   exit 0
 fi
 
-BITCOIN_CONFIG_ALL="--enable-suppress-external-warnings --disable-dependency-tracking --prefix=$DEPENDS_DIR/$HOST --bindir=$BASE_OUTDIR/bin --libdir=$BASE_OUTDIR/lib"
-if [ -z "$NO_WERROR" ]; then
-  BITCOIN_CONFIG_ALL="${BITCOIN_CONFIG_ALL} --enable-werror"
-fi
+BITCOIN_CONFIG_ALL="${BITCOIN_CONFIG_ALL} --bindir=${BASE_OUTDIR}/bin --libdir=${BASE_OUTDIR}/lib"
+
 DOCKER_EXEC "ccache --zero-stats --max-size=$CCACHE_SIZE"
 
 if [ -n "$CONFIG_SHELL" ]; then
