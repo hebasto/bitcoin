@@ -4,6 +4,7 @@
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test RPC misc output."""
 import xml.etree.ElementTree as ET
+import time
 
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import (
@@ -84,7 +85,9 @@ class RpcMiscTest(BitcoinTestFramework):
 
         # Restart the node with indices and wait for them to sync
         self.restart_node(0, ["-txindex", "-blockfilterindex", "-coinstatsindex"])
+        start = time.time()
         self.wait_until(lambda: all(i["synced"] for i in node.getindexinfo().values()))
+        self.log.info(f"Total time taken by `wait_until` call: {time.time() - start} seconds.")
 
         # Returns a list of all running indices by default
         values = {"synced": True, "best_block_height": 200}
