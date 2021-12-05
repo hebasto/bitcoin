@@ -1,9 +1,8 @@
 package=qt
-$(package)_version=5.15.2
-$(package)_download_path=https://download.qt.io/official_releases/qt/5.15/$($(package)_version)/submodules
-$(package)_suffix=everywhere-src-$($(package)_version).tar.xz
-$(package)_file_name=qtbase-$($(package)_suffix)
-$(package)_sha256_hash=909fad2591ee367993a75d7e2ea50ad4db332f05e1c38dd7a5a274e156a4e0f8
+$(package)_version=d3806f677b6d6417cf181e58fbe753cd76a53e11
+$(package)_download_path=https://invent.kde.org/qt/qt/qtbase/-/archive/$($(package)_version)
+$(package)_file_name=qtbase-$($(package)_version).tar.bz2
+$(package)_sha256_hash=8508b608e430ae858d2ed20a43874970cbd13c0def14c5f406d61af539e82b06
 $(package)_linux_dependencies=freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
 $(package)_qt_libs=corelib network widgets gui plugins testlib
 $(package)_linguist_tools = lrelease lupdate lconvert
@@ -11,14 +10,17 @@ $(package)_patches = qt.pro qttools_src.pro
 $(package)_patches += fix_qt_pkgconfig.patch mac-qmake.conf fix_no_printer.patch no-xlib.patch
 $(package)_patches += dont_hardcode_x86_64.patch fix_montery_include.patch
 $(package)_patches += fix_android_jni_static.patch dont_hardcode_pwd.patch
-$(package)_patches += qtbase-moc-ignore-gcc-macro.patch fix_limits_header.patch
-$(package)_patches += fix_bigsur_style.patch
+$(package)_patches += qtbase-moc-ignore-gcc-macro.patch
 
-$(package)_qttranslations_file_name=qttranslations-$($(package)_suffix)
-$(package)_qttranslations_sha256_hash=d5788e86257b21d5323f1efd94376a213e091d1e5e03b45a95dd052b5f570db8
+$(package)_qttranslations_version=8fbbdf21f127197f97b58c7d80d2fa2a59135638
+$(package)_qttranslations_download_path=https://invent.kde.org/qt/qt/qttranslations/-/archive/$($(package)_qttranslations_version)
+$(package)_qttranslations_file_name=qttranslations-$($(package)_qttranslations_version).tar.bz2
+$(package)_qttranslations_sha256_hash=dc9dba25b26a7b869093f29c54f4fbb25c323300792f57867d10ae61df2c0125
 
-$(package)_qttools_file_name=qttools-$($(package)_suffix)
-$(package)_qttools_sha256_hash=c189d0ce1ff7c739db9a3ace52ac3e24cb8fd6dbf234e49f075249b38f43c1cc
+$(package)_qttools_version=33693a928986006d79c1ee743733cde5966ac402
+$(package)_qttools_download_path=https://invent.kde.org/qt/qt/qttools/-/archive/$($(package)_qttools_version)
+$(package)_qttools_file_name=qttools-$($(package)_qttools_version).tar.bz2
+$(package)_qttools_sha256_hash=e5ee14a50d5be68ba53e11c76c6e90cc7d7023eab5050447869e7f5e472478a8
 
 $(package)_extra_sources  = $($(package)_qttranslations_file_name)
 $(package)_extra_sources += $($(package)_qttools_file_name)
@@ -187,8 +189,8 @@ endef
 
 define $(package)_fetch_cmds
 $(call fetch_file,$(package),$($(package)_download_path),$($(package)_download_file),$($(package)_file_name),$($(package)_sha256_hash)) && \
-$(call fetch_file,$(package),$($(package)_download_path),$($(package)_qttranslations_file_name),$($(package)_qttranslations_file_name),$($(package)_qttranslations_sha256_hash)) && \
-$(call fetch_file,$(package),$($(package)_download_path),$($(package)_qttools_file_name),$($(package)_qttools_file_name),$($(package)_qttools_sha256_hash))
+$(call fetch_file,$(package),$($(package)_qttranslations_download_path),$($(package)_qttranslations_file_name),$($(package)_qttranslations_file_name),$($(package)_qttranslations_sha256_hash)) && \
+$(call fetch_file,$(package),$($(package)_qttools_download_path),$($(package)_qttools_file_name),$($(package)_qttools_file_name),$($(package)_qttools_sha256_hash))
 endef
 
 define $(package)_extract_cmds
@@ -234,9 +236,7 @@ define $(package)_preprocess_cmds
   patch -p1 -i $($(package)_patch_dir)/no-xlib.patch && \
   patch -p1 -i $($(package)_patch_dir)/dont_hardcode_x86_64.patch && \
   patch -p1 -i $($(package)_patch_dir)/qtbase-moc-ignore-gcc-macro.patch && \
-  patch -p1 -i $($(package)_patch_dir)/fix_limits_header.patch && \
   patch -p1 -i $($(package)_patch_dir)/fix_montery_include.patch && \
-  patch -p1 -i $($(package)_patch_dir)/fix_bigsur_style.patch && \
   mkdir -p qtbase/mkspecs/macx-clang-linux &&\
   cp -f qtbase/mkspecs/macx-clang/qplatformdefs.h qtbase/mkspecs/macx-clang-linux/ &&\
   cp -f $($(package)_patch_dir)/mac-qmake.conf qtbase/mkspecs/macx-clang-linux/qmake.conf && \
