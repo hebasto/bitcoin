@@ -17,3 +17,30 @@
 -
 -!winrt:qtHaveModule(printsupport): \
 -    SUBDIRS += printsupport
+
+--- old/qtbase/src/tools/rcc/rcc.cpp
++++ new/qtbase/src/tools/rcc/rcc.cpp
+@@ -42,6 +42,7 @@
+ #include <qxmlstream.h>
+ 
+ #include <algorithm>
++#include <iostream>
+ 
+ #if QT_CONFIG(zstd)
+ #  include <zstd.h>
+@@ -233,9 +234,14 @@ void RCCFileInfo::writeDataInfo(RCCResourceLibrary &lib)
+         if (sourceDate != 0)
+             lastmod = sourceDate;
+         static const quint64 sourceDate2 = 1000 * qgetenv("SOURCE_DATE_EPOCH").toULongLong();
+-        if (sourceDate2 != 0)
++        if (sourceDate2 != 0) {
+             lastmod = sourceDate2;
++            std::cerr << "----------------------------------------------------------------------------------------------------------------------" << std::endl;
++        }
+         lib.writeNumber8(lastmod);
++        std::cerr << "======================================================================================================================" << std::endl;
++        std::cerr << "======================================================================================================================:" << lastmod << std::endl;
++        std::cerr << "======================================================================================================================" << std::endl;
+         if (text || pass1)
+             lib.writeChar('\n');
+         else if (python)
