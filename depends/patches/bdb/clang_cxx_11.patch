@@ -53,7 +53,7 @@ index 5fdee5a..0b75f57 100644
  		/* Initialize enough so we can call __memp_bhfree. */
  		alloc_bhp->flags = 0;
 -		atomic_init(&alloc_bhp->ref, 1);
-+		atomic_init_db(&alloc_bhp->ref, 1);
++		atomic_init_db(&alloc_bhp->ref, 1)
  #ifdef DIAGNOSTIC
  		if ((uintptr_t)alloc_bhp->buf & (sizeof(size_t) - 1)) {
  			__db_errx(env,
