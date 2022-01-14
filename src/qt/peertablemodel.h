@@ -109,4 +109,26 @@ private:
     QTimer *timer;
 };
 
+inline uint64_t ErlaySentBytes(CNodeStats s)
+{
+    uint64_t size{0};
+    size += s.mapSendBytesPerMsgCmd["sendrecon"];
+    size += s.mapSendBytesPerMsgCmd["reqrecon"];
+    size += s.mapSendBytesPerMsgCmd["sketch"];
+    size += s.mapSendBytesPerMsgCmd["reconcildiff"];
+    size += s.mapSendBytesPerMsgCmd["reqsketchext"];
+    return size;
+}
+
+inline uint64_t ErlayReceievedBytes(CNodeStats s)
+{
+    uint64_t size{0};
+    size += s.mapRecvBytesPerMsgCmd["sendrecon"];
+    size += s.mapRecvBytesPerMsgCmd["reqrecon"];
+    size += s.mapRecvBytesPerMsgCmd["sketch"];
+    size += s.mapRecvBytesPerMsgCmd["reconcildiff"];
+    size += s.mapRecvBytesPerMsgCmd["reqsketchext"];
+    return size;
+}
+
 #endif // BITCOIN_QT_PEERTABLEMODEL_H
