@@ -18,8 +18,8 @@ PeerTableSortProxy::PeerTableSortProxy(QObject* parent)
 
 bool PeerTableSortProxy::lessThan(const QModelIndex& left_index, const QModelIndex& right_index) const
 {
-    const CNodeStats left_stats = Assert(sourceModel()->data(left_index, PeerTableModel::StatsRole).value<CNodeCombinedStats*>())->nodeStats;
-    const CNodeStats right_stats = Assert(sourceModel()->data(right_index, PeerTableModel::StatsRole).value<CNodeCombinedStats*>())->nodeStats;
+    CNodeStats left_stats = Assert(sourceModel()->data(left_index, PeerTableModel::StatsRole).value<CNodeCombinedStats*>())->nodeStats;
+    CNodeStats right_stats = Assert(sourceModel()->data(right_index, PeerTableModel::StatsRole).value<CNodeCombinedStats*>())->nodeStats;
 
     switch (static_cast<PeerTableModel::ColumnIndex>(left_index.column())) {
     case PeerTableModel::NetNodeId:
@@ -38,6 +38,10 @@ bool PeerTableSortProxy::lessThan(const QModelIndex& left_index, const QModelInd
         return ErlaySentBytes(left_stats) < ErlaySentBytes(right_stats);
     case PeerTableModel::ErlayReceived:
         return ErlayReceievedBytes(left_stats) < ErlayReceievedBytes(right_stats);
+    case PeerTableModel::TxSent:
+        return left_stats.mapSendBytesPerMsgCmd["tx"] < right_stats.mapSendBytesPerMsgCmd["tx"];
+    case PeerTableModel::TxReceived:
+        return left_stats.mapRecvBytesPerMsgCmd["tx"] < right_stats.mapRecvBytesPerMsgCmd["tx"];
     case PeerTableModel::Sent:
         return left_stats.nSendBytes < right_stats.nSendBytes;
     case PeerTableModel::Received:

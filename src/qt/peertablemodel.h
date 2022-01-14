@@ -54,6 +54,8 @@ public:
         Ping,
         ErlaySent,
         ErlayReceived,
+        TxSent,
+        TxReceived,
         Sent,
         Received,
         Subversion
@@ -101,6 +103,8 @@ private:
         tr("Ping"),
         tr("Erlay Sent"),
         tr("Erlay Received"),
+        tr("Tx Sent"),
+        tr("Tx Received"),
         /*: Title of Peers Table column which indicates the total amount of
             network information we have sent to the peer. */
         tr("Sent"),
