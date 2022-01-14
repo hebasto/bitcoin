@@ -52,6 +52,8 @@ public:
         ConnectionType,
         Network,
         Ping,
+        ErlaySent,
+        ErlayReceived,
         Sent,
         Received,
         Subversion
@@ -97,6 +99,8 @@ private:
         /*: Title of Peers Table column which indicates the current latency
             of the connection with the peer. */
         tr("Ping"),
+        tr("Erlay Sent"),
+        tr("Erlay Received"),
         /*: Title of Peers Table column which indicates the total amount of
             network information we have sent to the peer. */
         tr("Sent"),
