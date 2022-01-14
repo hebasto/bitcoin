@@ -85,6 +85,10 @@ QVariant PeerTableModel::data(const QModelIndex& index, int role) const
             return GUIUtil::NetworkToQString(rec->nodeStats.m_network);
         case Ping:
             return GUIUtil::formatPingTime(rec->nodeStats.m_min_ping_time);
+        case ErlaySent:
+            return GUIUtil::formatBytes(ErlaySentBytes(rec->nodeStats));
+        case ErlayReceived:
+            return GUIUtil::formatBytes(ErlayReceievedBytes(rec->nodeStats));
         case Sent:
             return GUIUtil::formatBytes(rec->nodeStats.nSendBytes);
         case Received:
@@ -104,6 +108,8 @@ QVariant PeerTableModel::data(const QModelIndex& index, int role) const
         case Network:
             return QVariant(Qt::AlignCenter);
         case Ping:
+        case ErlaySent:
+        case ErlayReceived:
         case Sent:
         case Received:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
