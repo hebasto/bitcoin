@@ -52,7 +52,7 @@ ClientModel::ClientModel(interfaces::Node& node, OptionsModel *_optionsModel, QO
         // no locking required at this point
         // the following calls will acquire the required lock
         Q_EMIT mempoolSizeChanged(m_node.getMempoolSize(), m_node.getMempoolDynamicUsage());
-        Q_EMIT bytesChanged(m_node.getTotalBytesRecv().total, m_node.getTotalBytesSent());
+        Q_EMIT bytesChanged(m_node.getTotalBytesRecv().total, m_node.getTotalBytesRecv().tx, m_node.getTotalBytesRecv().erlay, m_node.getTotalBytesSent());
     });
     connect(m_thread, &QThread::finished, timer, &QObject::deleteLater);
     connect(m_thread, &QThread::started, [timer] { timer->start(); });
