@@ -675,7 +675,7 @@ void RPCConsole::setClientModel(ClientModel *model, int bestblock_height, int64_
         interfaces::Node& node = clientModel->node();
         updateTrafficStats(
             node.getTotalBytesRecv().total, node.getTotalBytesRecv().tx, node.getTotalBytesRecv().erlay,
-            node.getTotalBytesSent().total);
+            node.getTotalBytesSent().total, node.getTotalBytesSent().tx, node.getTotalBytesSent().erlay);
         connect(model, &ClientModel::bytesChanged, this, &RPCConsole::updateTrafficStats);
 
         connect(model, &ClientModel::mempoolSizeChanged, this, &RPCConsole::setMempoolSize);
@@ -1142,13 +1142,17 @@ void RPCConsole::setTrafficGraphRange(int mins)
     ui->lblGraphRange->setText(GUIUtil::formatDurationStr(mins * 60));
 }
 
-void RPCConsole::updateTrafficStats(quint64 total_bytes_in, quint64 total_tx_bytes_in, quint64 total_erlay_bytes_in, quint64 totalBytesOut)
+void RPCConsole::updateTrafficStats(
+    quint64 total_bytes_in, quint64 total_tx_bytes_in, quint64 total_erlay_bytes_in,
+    quint64 total_bytes_out, quint64 total_tx_bytes_out, quint64 total_erlay_bytes_out)
 {
     ui->lblBytesIn->setText(GUIUtil::formatBytes(total_bytes_in));
     ui->tx_received_bytes->setText(GUIUtil::formatBytes(total_tx_bytes_in));
     ui->erlay_received_bytes->setText(GUIUtil::formatBytes(total_erlay_bytes_in));
 
-    ui->lblBytesOut->setText(GUIUtil::formatBytes(totalBytesOut));
+    ui->lblBytesOut->setText(GUIUtil::formatBytes(total_bytes_out));
+    ui->tx_pushed_bytes->setText(GUIUtil::formatBytes(total_tx_bytes_out));
+    ui->erlay_pushed_bytes->setText(GUIUtil::formatBytes(total_erlay_bytes_out));
 }
 
 void RPCConsole::updateDetailWidget()
