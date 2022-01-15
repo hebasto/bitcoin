@@ -737,6 +737,13 @@ protected:
     ~NetEventsInterface() = default;
 };
 
+struct ProcessedBytes
+{
+    uint64_t total{0};
+    uint64_t tx{0};
+    uint64_t erlay{0};
+};
+
 class CConnman
 {
 public:
