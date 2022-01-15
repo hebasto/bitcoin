@@ -842,6 +842,54 @@
              </layout>
             </item>
             <item>
+             <layout class="QHBoxLayout" name="tx_received_layout">
+              <item>
+               <widget class="QLabel" name="tx_received_label">
+                <property name="text">
+                 <string>Tx Received</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="tx_received_bytes">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="erlay_received_layout">
+              <item>
+               <widget class="QLabel" name="erlay_received_label">
+                <property name="text">
+                 <string>Erlay Received</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="erlay_received_bytes">
+                <property name="minimumSize">
+                 <size>
+                  <width>50</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
              <spacer name="verticalSpacer_4">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
