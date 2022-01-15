@@ -1039,6 +1039,8 @@ private:
     uint64_t m_total_erlay_received_bytes GUARDED_BY(cs_totalBytesRecv) {0};
     mutable RecursiveMutex cs_totalBytesSent;
     uint64_t nTotalBytesSent GUARDED_BY(cs_totalBytesSent) {0};
+    uint64_t m_total_tx_processed_bytes GUARDED_BY(cs_totalBytesSent) {0};
+    uint64_t m_total_erlay_processed_bytes GUARDED_BY(cs_totalBytesSent) {0};
 
     // outbound limit & stats
     uint64_t nMaxOutboundTotalBytesSentInCycle GUARDED_BY(cs_totalBytesSent) {0};
