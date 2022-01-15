@@ -628,7 +628,7 @@ void CNode::CopyStats(CNodeStats& stats)
 }
 #undef X
 
-bool CNode::ReceiveMsgBytes(Span<const uint8_t> msg_bytes, bool& complete)
+bool CNode::ReceiveMsgBytes(Span<const uint8_t> msg_bytes, bool& complete, uint64_t* received_tx_bytes, uint64_t* received_erlay_bytes)
 {
     bool stay_connected{true};
     complete = false;
@@ -664,6 +664,13 @@ bool CNode::ReceiveMsgBytes(Span<const uint8_t> msg_bytes, bool& complete)
             }
             assert(i != mapRecvBytesPerMsgCmd.end());
             i->second += msg.m_raw_message_size;
+
+            if (received_tx_bytes && msg.m_command == "tx") {
+                *received_tx_bytes += msg.m_raw_message_size;
+            }
+            if (received_erlay_bytes && (msg.m_command == "sendrecon" || msg.m_command == "reqrecon" || msg.m_command == "sketch" || msg.m_command == "reconcildiff" || msg.m_command == "reqsketchext")) {
+                *received_erlay_bytes += msg.m_raw_message_size;
+            }
 
             // push the message to the process queue,
             vRecvMsg.push_back(std::move(msg));

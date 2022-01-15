@@ -605,7 +605,7 @@ public:
      * @return  True if the peer should stay connected,
      *          False if the peer should be disconnected from.
      */
-    bool ReceiveMsgBytes(Span<const uint8_t> msg_bytes, bool& complete);
+    bool ReceiveMsgBytes(Span<const uint8_t> msg_bytes, bool& complete, uint64_t* received_tx_bytes = nullptr, uint64_t* received_erlay_bytes = nullptr);
 
     void SetCommonVersion(int greatest_common_version)
     {
