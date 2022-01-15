@@ -3054,6 +3054,14 @@ void CConnman::PushMessage(CNode* pnode, CSerializedNetMsg&& msg)
     pnode->m_serializer->prepareForTransport(msg, serializedHeader);
     size_t nTotalSize = nMessageSize + serializedHeader.size();
 
+    if (msg.m_type == "tx") {
+        WITH_LOCK(cs_totalBytesSent, m_total_tx_processed_bytes += nTotalSize);
+    }
+
+    if (msg.m_type == "sendrecon" || msg.m_type == "reqrecon" || msg.m_type == "sketch" || msg.m_type == "reconcildiff" || msg.m_type == "reqsketchext") {
+        WITH_LOCK(cs_totalBytesSent, m_total_erlay_processed_bytes += nTotalSize);
+    }
+
     size_t nBytesSent = 0;
     {
         LOCK(pnode->cs_vSend);
