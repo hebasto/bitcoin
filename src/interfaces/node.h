@@ -125,7 +125,7 @@ public:
     virtual std::vector<std::unique_ptr<ExternalSigner>> listExternalSigners() = 0;
 
     //! Get total bytes recv.
-    virtual int64_t getTotalBytesRecv() = 0;
+    virtual ProcessedBytes getTotalBytesRecv() = 0;
 
     //! Get total bytes sent.
     virtual int64_t getTotalBytesSent() = 0;

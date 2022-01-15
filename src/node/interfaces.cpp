@@ -205,7 +205,7 @@ public:
         return {};
 #endif // ENABLE_EXTERNAL_SIGNER
     }
-    int64_t getTotalBytesRecv() override { return m_context->connman ? m_context->connman->GetTotalBytesRecv() : 0; }
+    ProcessedBytes getTotalBytesRecv() override { return m_context->connman ? m_context->connman->GetTotalBytesRecv() : ProcessedBytes{}; }
     int64_t getTotalBytesSent() override { return m_context->connman ? m_context->connman->GetTotalBytesSent() : 0; }
     size_t getMempoolSize() override { return m_context->mempool ? m_context->mempool->size() : 0; }
     size_t getMempoolDynamicUsage() override { return m_context->mempool ? m_context->mempool->DynamicMemoryUsage() : 0; }

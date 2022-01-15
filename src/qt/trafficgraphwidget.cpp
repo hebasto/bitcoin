@@ -37,7 +37,7 @@ void TrafficGraphWidget::setClientModel(ClientModel *model)
 {
     clientModel = model;
     if(model) {
-        nLastBytesIn = model->node().getTotalBytesRecv();
+        nLastBytesIn = model->node().getTotalBytesRecv().total;
         nLastBytesOut = model->node().getTotalBytesSent();
     }
 }
@@ -126,7 +126,7 @@ void TrafficGraphWidget::updateRates()
 {
     if(!clientModel) return;
 
-    quint64 bytesIn = clientModel->node().getTotalBytesRecv(),
+    quint64 bytesIn = clientModel->node().getTotalBytesRecv().total,
             bytesOut = clientModel->node().getTotalBytesSent();
     float in_rate_kilobytes_per_sec = static_cast<float>(bytesIn - nLastBytesIn) / timer->interval();
     float out_rate_kilobytes_per_sec = static_cast<float>(bytesOut - nLastBytesOut) / timer->interval();
@@ -172,7 +172,7 @@ void TrafficGraphWidget::clear()
     fMax = 0.0f;
 
     if(clientModel) {
-        nLastBytesIn = clientModel->node().getTotalBytesRecv();
+        nLastBytesIn = clientModel->node().getTotalBytesRecv().total;
         nLastBytesOut = clientModel->node().getTotalBytesSent();
     }
     timer->start();

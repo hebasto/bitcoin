@@ -932,7 +932,7 @@ public:
     //! in case of no limit, it will always return 0
     std::chrono::seconds GetMaxOutboundTimeLeftInCycle() const;
 
-    uint64_t GetTotalBytesRecv() const;
+    ProcessedBytes GetTotalBytesRecv() const;
     uint64_t GetTotalBytesSent() const;
 
     /** Get a unique deterministic randomizer. */
