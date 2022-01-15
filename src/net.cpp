@@ -1587,9 +1587,11 @@ void CConnman::SocketHandler()
             if (nBytes > 0)
             {
                 bool notify = false;
-                if (!pnode->ReceiveMsgBytes(Span<const uint8_t>(pchBuf, nBytes), notify))
+                uint64_t tx_bytes{0};
+                uint64_t erlay_bytes{0};
+                if (!pnode->ReceiveMsgBytes(Span<const uint8_t>(pchBuf, nBytes), notify, &tx_bytes, &erlay_bytes))
                     pnode->CloseSocketDisconnect();
-                RecordBytesRecv(nBytes);
+                RecordBytesRecv(nBytes, tx_bytes, erlay_bytes);
                 if (notify) {
                     size_t nSizeAdded = 0;
                     auto it(pnode->vRecvMsg.begin());
@@ -2890,10 +2892,12 @@ bool CConnman::DisconnectNode(NodeId id)
     return false;
 }
 
-void CConnman::RecordBytesRecv(uint64_t bytes)
+void CConnman::RecordBytesRecv(uint64_t total_bytes, uint64_t tx_bytes, uint64_t erlay_bytes)
 {
     LOCK(cs_totalBytesRecv);
-    nTotalBytesRecv += bytes;
+    nTotalBytesRecv += total_bytes;
+    m_total_tx_received_bytes += tx_bytes;
+    m_total_erlay_received_bytes += erlay_bytes;
 }
 
 void CConnman::RecordBytesSent(uint64_t bytes)
