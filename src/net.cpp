@@ -630,6 +630,7 @@ void CNode::CopyStats(CNodeStats& stats)
 
 bool CNode::ReceiveMsgBytes(Span<const uint8_t> msg_bytes, bool& complete)
 {
+    bool stay_connected{true};
     complete = false;
     const auto time = GetTime<std::chrono::microseconds>();
     LOCK(cs_vRecv);
@@ -640,7 +641,8 @@ bool CNode::ReceiveMsgBytes(Span<const uint8_t> msg_bytes, bool& complete)
         int handled = m_deserializer->Read(msg_bytes);
         if (handled < 0) {
             // Serious header problem, disconnect from the peer.
-            return false;
+            stay_connected = false;
+            break;
         }
 
         if (m_deserializer->Complete()) {
@@ -670,7 +672,7 @@ bool CNode::ReceiveMsgBytes(Span<const uint8_t> msg_bytes, bool& complete)
         }
     }
 
-    return true;
+    return stay_connected;
 }
 
 int V1TransportDeserializer::readHeader(Span<const uint8_t> msg_bytes)
