@@ -206,7 +206,7 @@ public:
 #endif // ENABLE_EXTERNAL_SIGNER
     }
     ProcessedBytes getTotalBytesRecv() override { return m_context->connman ? m_context->connman->GetTotalBytesRecv() : ProcessedBytes{}; }
-    int64_t getTotalBytesSent() override { return m_context->connman ? m_context->connman->GetTotalBytesSent() : 0; }
+    ProcessedBytes getTotalBytesSent() override { return m_context->connman ? m_context->connman->GetTotalBytesSent() : ProcessedBytes{}; }
     size_t getMempoolSize() override { return m_context->mempool ? m_context->mempool->size() : 0; }
     size_t getMempoolDynamicUsage() override { return m_context->mempool ? m_context->mempool->DynamicMemoryUsage() : 0; }
     bool getHeaderTip(int& height, int64_t& block_time) override

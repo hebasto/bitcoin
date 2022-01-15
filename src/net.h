@@ -933,7 +933,7 @@ public:
     std::chrono::seconds GetMaxOutboundTimeLeftInCycle() const;
 
     ProcessedBytes GetTotalBytesRecv() const;
-    uint64_t GetTotalBytesSent() const;
+    ProcessedBytes GetTotalBytesSent() const;
 
     /** Get a unique deterministic randomizer. */
     CSipHasher GetDeterministicRandomizer(uint64_t id) const;
