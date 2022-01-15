@@ -673,7 +673,9 @@ void RPCConsole::setClientModel(ClientModel *model, int bestblock_height, int64_
         connect(model, &ClientModel::networkActiveChanged, this, &RPCConsole::setNetworkActive);
 
         interfaces::Node& node = clientModel->node();
-        updateTrafficStats(node.getTotalBytesRecv().total, node.getTotalBytesRecv().tx, node.getTotalBytesRecv().erlay, node.getTotalBytesSent());
+        updateTrafficStats(
+            node.getTotalBytesRecv().total, node.getTotalBytesRecv().tx, node.getTotalBytesRecv().erlay,
+            node.getTotalBytesSent().total);
         connect(model, &ClientModel::bytesChanged, this, &RPCConsole::updateTrafficStats);
 
         connect(model, &ClientModel::mempoolSizeChanged, this, &RPCConsole::setMempoolSize);

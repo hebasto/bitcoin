@@ -128,7 +128,7 @@ public:
     virtual ProcessedBytes getTotalBytesRecv() = 0;
 
     //! Get total bytes sent.
-    virtual int64_t getTotalBytesSent() = 0;
+    virtual ProcessedBytes getTotalBytesSent() = 0;
 
     //! Get mempool size.
     virtual size_t getMempoolSize() = 0;

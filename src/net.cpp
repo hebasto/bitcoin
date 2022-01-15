@@ -2977,10 +2977,10 @@ ProcessedBytes CConnman::GetTotalBytesRecv() const
     return {nTotalBytesRecv, m_total_tx_received_bytes, m_total_erlay_received_bytes};
 }
 
-uint64_t CConnman::GetTotalBytesSent() const
+ProcessedBytes CConnman::GetTotalBytesSent() const
 {
     LOCK(cs_totalBytesSent);
-    return nTotalBytesSent;
+    return {nTotalBytesSent, m_total_tx_processed_bytes, m_total_erlay_processed_bytes};
 }
 
 ServiceFlags CConnman::GetLocalServices() const

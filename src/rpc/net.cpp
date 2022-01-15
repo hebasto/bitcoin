@@ -545,7 +545,7 @@ static RPCHelpMan getnettotals()
 
     UniValue obj(UniValue::VOBJ);
     obj.pushKV("totalbytesrecv", connman.GetTotalBytesRecv().total);
-    obj.pushKV("totalbytessent", connman.GetTotalBytesSent());
+    obj.pushKV("totalbytessent", connman.GetTotalBytesSent().total);
     obj.pushKV("timemillis", GetTimeMillis());
 
     UniValue outboundLimit(UniValue::VOBJ);
