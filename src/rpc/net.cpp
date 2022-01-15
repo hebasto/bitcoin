@@ -544,7 +544,7 @@ static RPCHelpMan getnettotals()
     const CConnman& connman = EnsureConnman(node);
 
     UniValue obj(UniValue::VOBJ);
-    obj.pushKV("totalbytesrecv", connman.GetTotalBytesRecv());
+    obj.pushKV("totalbytesrecv", connman.GetTotalBytesRecv().total);
     obj.pushKV("totalbytessent", connman.GetTotalBytesSent());
     obj.pushKV("timemillis", GetTimeMillis());
 

@@ -2971,10 +2971,10 @@ uint64_t CConnman::GetOutboundTargetBytesLeft() const
     return (nMaxOutboundTotalBytesSentInCycle >= nMaxOutboundLimit) ? 0 : nMaxOutboundLimit - nMaxOutboundTotalBytesSentInCycle;
 }
 
-uint64_t CConnman::GetTotalBytesRecv() const
+ProcessedBytes CConnman::GetTotalBytesRecv() const
 {
     LOCK(cs_totalBytesRecv);
-    return nTotalBytesRecv;
+    return {nTotalBytesRecv, m_total_tx_received_bytes, m_total_erlay_received_bytes};
 }
 
 uint64_t CConnman::GetTotalBytesSent() const
