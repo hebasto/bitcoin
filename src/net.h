@@ -1014,7 +1014,7 @@ private:
     void DumpAddresses();
 
     // Network stats
-    void RecordBytesRecv(uint64_t bytes);
+    void RecordBytesRecv(uint64_t total_bytes, uint64_t tx_bytes, uint64_t erlay_bytes);
     void RecordBytesSent(uint64_t bytes);
 
     /**
@@ -1027,8 +1027,10 @@ private:
 
     // Network usage totals
     mutable RecursiveMutex cs_totalBytesRecv;
-    mutable RecursiveMutex cs_totalBytesSent;
     uint64_t nTotalBytesRecv GUARDED_BY(cs_totalBytesRecv) {0};
+    uint64_t m_total_tx_received_bytes GUARDED_BY(cs_totalBytesRecv) {0};
+    uint64_t m_total_erlay_received_bytes GUARDED_BY(cs_totalBytesRecv) {0};
+    mutable RecursiveMutex cs_totalBytesSent;
     uint64_t nTotalBytesSent GUARDED_BY(cs_totalBytesSent) {0};
 
     // outbound limit & stats
