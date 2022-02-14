@@ -1310,8 +1310,6 @@ else
     QT_DBUS_INCLUDES=SUPPRESS_WARNINGS($QT_DBUS_INCLUDES)
     QT_TEST_INCLUDES=SUPPRESS_WARNINGS($QT_TEST_INCLUDES)
   fi
-
-  CPPFLAGS="$CPPFLAGS -DPROVIDE_FUZZ_MAIN_FUNCTION"
 fi
 
 if test "$enable_wallet" != "no"; then
@@ -1782,6 +1780,7 @@ if test "$build_bitcoin_wallet$build_bitcoin_cli$build_bitcoin_tx$build_bitcoin_
 fi
 
 if test "$enable_fuzz_binary" = "yes"; then
+  CPPFLAGS="$CPPFLAGS -DPROVIDE_FUZZ_MAIN_FUNCTION"
   CHECK_RUNTIME_LIB
 fi
 
