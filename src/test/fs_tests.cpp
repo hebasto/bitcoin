@@ -118,4 +118,25 @@ BOOST_AUTO_TEST_CASE(fsbridge_fstream)
     }
 }
 
+BOOST_AUTO_TEST_CASE(create_directories)
+{
+    const fs::path tmpfolder{m_args.GetDataDirBase()};
+
+    const fs::path dir{GetUniquePath(tmpfolder)};
+    fs::create_directory(dir);
+    BOOST_CHECK(fs::exists(dir));
+    BOOST_CHECK(fs::is_directory(dir));
+    BOOST_CHECK(!fs::create_directories(dir));
+
+    const fs::path symlink{GetUniquePath(tmpfolder)};
+    fs::create_directory_symlink(dir, symlink);
+    BOOST_CHECK(fs::exists(symlink));
+    BOOST_CHECK(fs::is_symlink(symlink));
+    BOOST_CHECK(fs::is_directory(symlink));
+    BOOST_CHECK(!fs::create_directories(symlink));
+
+    fs::remove(symlink);
+    fs::remove(dir);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
