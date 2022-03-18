@@ -1,0 +1,27 @@
+From aabbb9aa945f663e8e9f300859ed832b061426b5 Mon Sep 17 00:00:00 2001
+From: Andrew Chow <achow101-github@achow101.com>
+Date: Fri, 18 Mar 2022 10:46:22 -0400
+Subject: [PATCH] Remap Guix store paths to /usr
+
+---
+ Makeconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Makeconfig b/Makeconfig
+index 03fd89c13e..8fffb4f64b 100644
+--- a/Makeconfig
++++ b/Makeconfig
+@@ -950,6 +950,10 @@ object-suffixes-for-libc += .oS
+ # shared objects.  We don't want to use CFLAGS-os because users may, for
+ # example, make that processor-specific.
+ CFLAGS-.oS = $(CFLAGS-.o) $(PIC-ccflag)
++
++# Map Guix store paths to /usr
++CFLAGS-.oS += `find /gnu/store -maxdepth 1 -mindepth 1 -type d -exec echo -n " -fdebug-prefix-map={}=/usr" \;`
++
+ CPPFLAGS-.oS = $(CPPFLAGS-.o) -DPIC -DLIBC_NONSHARED=1
+ libtype.oS = lib%_nonshared.a
+ endif
+-- 
+2.35.1
+

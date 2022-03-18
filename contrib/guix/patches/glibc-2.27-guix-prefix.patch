@@ -1,0 +1,27 @@
+From bedeb307bfca626921b7765baf530ad83e777bac Mon Sep 17 00:00:00 2001
+From: Andrew Chow <achow101-github@achow101.com>
+Date: Fri, 18 Mar 2022 18:53:00 -0400
+Subject: [PATCH] Remap Guix store paths to /usr
+
+---
+ Makeconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Makeconfig b/Makeconfig
+index 86a71e5802..370e7ecffe 100644
+--- a/Makeconfig
++++ b/Makeconfig
+@@ -992,6 +992,10 @@ object-suffixes :=
+ CPPFLAGS-.o = $(pic-default)
+ # libc.a must be compiled with -fPIE/-fpie for static PIE.
+ CFLAGS-.o = $(filter %frame-pointer,$(+cflags)) $(pie-default)
++
++# Map Guix store paths to /usr
++CFLAGS-.o += `find /gnu/store -maxdepth 1 -mindepth 1 -type d -exec echo -n " -fdebug-prefix-map={}=/usr" \;`
++
+ libtype.o := lib%.a
+ object-suffixes += .o
+ ifeq (yes,$(build-shared))
+-- 
+2.35.1
+
