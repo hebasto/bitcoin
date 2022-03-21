@@ -102,6 +102,10 @@ dnl See more: https://wiki.debian.org/RpathIssue
 LT_PREREQ([1.5.2])
 dnl Libtool init checks.
 LT_INIT([pic-only win32-dll])
+_LT_TAGVAR(hardcode_libdir_flag_spec, )=""
+_LT_TAGVAR(hardcode_libdir_flag_spec, CXX)=""
+_LT_TAGVAR(hardcode_into_libs, )="no"
+_LT_TAGVAR(hardcode_into_libs, CXX)="no"
 
 dnl Check/return PATH for base programs.
 AC_PATH_TOOL([AR], [ar])
