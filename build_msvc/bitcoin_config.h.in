@@ -29,6 +29,12 @@
 /* Copyright year */
 #define COPYRIGHT_YEAR $
 
+/* Define this symbol to build in assembly routines */
+#define USE_ASM 1
+
+/* Define this symbol to build code that uses AVX2 intrinsics */
+#define ENABLE_AVX2 1
+
 /* Define to 1 to enable wallet functions */
 #define ENABLE_WALLET 1
 
