@@ -1,10 +1,9 @@
 package := wayland
-native_package := native_wayland_scanner
-$(package)_version := $($(native_package)_version)
-$(package)_download_path := $($(native_package)_download_path)
-$(package)_file_name := $($(native_package)_file_name)
-$(package)_sha256_hash := $($(native_package)_sha256_hash)
-$(package)_dependencies := $(native_package) libffi expat
+$(package)_version := 1.19.0
+$(package)_download_path := https://wayland.freedesktop.org/releases
+$(package)_file_name := wayland-$($(package)_version).tar.xz
+$(package)_sha256_hash := baccd902300d354581cd5ad3cc49daa4921d55fb416a5883e218750fef166d15
+$(package)_dependencies := libffi expat
 
 define $(package)_set_vars
   $(package)_config_opts := --enable-option-checking --disable-dependency-tracking
@@ -13,7 +12,7 @@ define $(package)_set_vars
 endef
 
 define $(package)_config_cmds
-  $($(package)_autoconf)
+  PATH="/usr/bin:$(PATH)" $($(package)_autoconf)
 endef
 
 define $(package)_build_cmds
