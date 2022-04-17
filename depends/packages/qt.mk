@@ -167,7 +167,6 @@ $(package)_config_opts_linux += -no-feature-wayland-client-xdg-shell-v6
 $(package)_config_opts_linux += -no-feature-wayland-client-ivi-shell
 $(package)_config_opts_linux += -no-feature-wayland-client-wl-shell
 $(package)_config_opts_linux += -no-feature-wayland-server
-$(package)_config_opts_linux += "QMAKE_WAYLAND_SCANNER = /usr/bin/wayland-scanner"
 
 $(package)_config_opts_arm_linux += -platform linux-g++ -xplatform bitcoin-linux-g++
 $(package)_config_opts_i686_linux  = -xplatform linux-g++-32
