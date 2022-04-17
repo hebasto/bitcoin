@@ -3,10 +3,10 @@ $(package)_version := 1.20.0
 $(package)_download_path := https://wayland.freedesktop.org/releases
 $(package)_file_name := wayland-$($(package)_version).tar.xz
 $(package)_sha256_hash := b8a034154c7059772e0fdbd27dbfcda6c732df29cae56a82274f6ec5d7cd8725
-$(package)_dependencies := libffi expat
+$(package)_dependencies := libffi
 
 define $(package)_config_cmds
-  env -u PKG_CONFIG_LIBDIR PKG_CONFIG_PATH=$(SYSTEM_PKG_CONFIG_PATH) \
+  export PKG_CONFIG_WAYLAND_SCANNER_WAYLAND_SCANNER=$$$$(env -u PKG_CONFIG_LIBDIR PKG_CONFIG_PATH=$(SYSTEM_PKG_CONFIG_PATH) pkg-config --variable=wayland_scanner wayland-scanner) && \
   meson -Dscanner=false -Dtests=false -Ddocumentation=false -Ddtd_validation=false build/ --prefix=$($(package)_staging_dir)
 endef
 
