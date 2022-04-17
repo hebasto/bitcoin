@@ -6,7 +6,8 @@ $(package)_sha256_hash := b8a034154c7059772e0fdbd27dbfcda6c732df29cae56a82274f6e
 $(package)_dependencies := libffi expat
 
 define $(package)_config_cmds
-  PKG_CONFIG_LIBDIR=/usr/lib/x86_64-linux-gnu/pkgconfig meson -Dscanner=false -Dtests=false -Ddocumentation=false -Ddtd_validation=false build/ --prefix=$($(package)_staging_dir)
+  env -u PKG_CONFIG_LIBDIR PKG_CONFIG_PATH=$(SYSTEM_PKG_CONFIG_PATH) \
+  meson -Dscanner=false -Dtests=false -Ddocumentation=false -Ddtd_validation=false build/ --prefix=$($(package)_staging_dir)
 endef
 
 define $(package)_build_cmds
