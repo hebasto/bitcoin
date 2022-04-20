@@ -97,7 +97,11 @@ public:
     explicit RPCExecutor(interfaces::Node& node) : m_node(node) {}
 
 public Q_SLOTS:
-    void request(const QString &command, const WalletModel* wallet_model);
+#ifdef ENABLE_WALLET
+    void request(const QString& command, const WalletModel* wallet_model);
+#else
+    void request(const QString& command);
+#endif // ENABLE_WALLET
 
 Q_SIGNALS:
     void reply(int category, const QString &command);
@@ -416,7 +420,11 @@ bool RPCConsole::RPCParseCommandLine(interfaces::Node* node, std::string &strRes
     }
 }
 
-void RPCExecutor::request(const QString &command, const WalletModel* wallet_model)
+#ifdef ENABLE_WALLET
+void RPCExecutor::request(const QString& command, const WalletModel* wallet_model)
+#else
+void RPCExecutor::request(const QString& command)
+#endif // ENABLE_WALLET
 {
     try
     {
@@ -446,7 +454,12 @@ void RPCExecutor::request(const QString &command, const WalletModel* wallet_mode
                 "   example:    getblock(getblockhash(0),1)[tx][0]\n\n")));
             return;
         }
+
+#ifdef ENABLE_WALLET
         if (!RPCConsole::RPCExecuteCommandLine(m_node, result, executableCommand, nullptr, wallet_model)) {
+#else
+        if (!RPCConsole::RPCExecuteCommandLine(m_node, result, executableCommand)) {
+#endif // ENABLE_WALLET
             Q_EMIT reply(RPCConsole::CMD_ERROR, QString("Parse error: unbalanced ' or \""));
             return;
         }
@@ -1049,7 +1062,12 @@ void RPCConsole::on_lineEdit_returnPressed()
     //: A console message indicating an entered command is currently being executed.
     message(CMD_REPLY, tr("Executing…"));
     m_is_executing = true;
+
+#ifdef ENABLE_WALLET
     Q_EMIT cmdRequest(cmd, m_last_wallet_model);
+#else
+    Q_EMIT cmdRequest(cmd);
+#endif // ENABLE_WALLET
 
     cmd = QString::fromStdString(strFilteredCmd);
 

@@ -134,7 +134,11 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     // For RPC command executor
-    void cmdRequest(const QString &command, const WalletModel* wallet_model);
+#ifdef ENABLE_WALLET
+    void cmdRequest(const QString& command, const WalletModel* wallet_model);
+#else
+    void cmdRequest(const QString& command);
+#endif // ENABLE_WALLET
 
 private:
     struct TranslatedStrings {
