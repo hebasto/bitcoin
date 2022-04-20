@@ -13,6 +13,9 @@
 #include <shutdown.h>
 #include <test/util/setup_common.h>
 #include <validation.h>
+#ifdef ENABLE_WALLET
+#include <qt/walletmodel.h>
+#endif // ENABLE_WALLET
 
 #if defined(HAVE_CONFIG_H)
 #include <config/bitcoin-config.h>
@@ -76,6 +79,9 @@ void AppTests::appTests()
     }());
 
     qRegisterMetaType<interfaces::BlockAndHeaderTipInfo>("interfaces::BlockAndHeaderTipInfo");
+#ifdef ENABLE_WALLET
+    qRegisterMetaType<const WalletModel*>();
+#endif // ENABLE_WALLET
     m_app.parameterSetup();
     m_app.createOptionsModel(true /* reset settings */);
     QScopedPointer<const NetworkStyle> style(NetworkStyle::instantiate(Params().NetworkIDString()));

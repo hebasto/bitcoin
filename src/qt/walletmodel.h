@@ -19,6 +19,7 @@
 
 #include <vector>
 
+#include <QMetaType>
 #include <QObject>
 
 enum class OutputType;
@@ -239,5 +240,7 @@ public Q_SLOTS:
     /* Current, immature or unconfirmed balance might have changed - emit 'balanceChanged' if so */
     void pollBalanceChanged();
 };
+
+Q_DECLARE_METATYPE(const WalletModel*)
 
 #endif // BITCOIN_QT_WALLETMODEL_H

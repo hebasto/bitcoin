@@ -84,9 +84,10 @@ static void RegisterMetaTypes()
     // Register meta types used for QMetaObject::invokeMethod and Qt::QueuedConnection
     qRegisterMetaType<bool*>();
     qRegisterMetaType<SynchronizationState>();
-  #ifdef ENABLE_WALLET
+#ifdef ENABLE_WALLET
     qRegisterMetaType<WalletModel*>();
-  #endif
+    qRegisterMetaType<const WalletModel*>();
+#endif
     // Register typedefs (see https://doc.qt.io/qt-5/qmetatype.html#qRegisterMetaType)
     // IMPORTANT: if CAmount is no longer a typedef use the normal variant above (see https://doc.qt.io/qt-5/qmetatype.html#qRegisterMetaType-1)
     qRegisterMetaType<CAmount>("CAmount");
