@@ -302,7 +302,7 @@ BerkeleyDatabase::~BerkeleyDatabase()
         assert(!m_db);
         size_t erased = env->m_databases.erase(m_filename);
         assert(erased == 1);
-        env->m_fileids.erase(m_filename);
+        env->m_fileids.erase(fs::PathToString(m_filename));
     }
 }
 
