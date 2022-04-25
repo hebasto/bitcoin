@@ -689,7 +689,7 @@ case $host in
 
      dnl -static is interpreted by libtool, where it has a different meaning.
      dnl In libtool-speak, it's -all-static.
-     AX_CHECK_LINK_FLAG([-static], [LIBTOOL_APP_LDFLAGS="$LIBTOOL_APP_LDFLAGS -all-static"])
+     AX_CHECK_LINK_FLAG([-static], [LIBTOOL_APP_LDFLAGS="$LIBTOOL_APP_LDFLAGS -static-libtool-libs"])
 
      AC_PATH_PROG([MAKENSIS], [makensis], [none])
      if test "$MAKENSIS" = "none"; then
