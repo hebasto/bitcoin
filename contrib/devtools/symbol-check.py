@@ -81,11 +81,12 @@ ELF_INTERPRETER_NAMES: Dict[lief.ELF.ARCH, Dict[lief.ENDIANNESS, str]] = {
 
 # Allowed NEEDED libraries
 ELF_ALLOWED_LIBRARIES = {
-# bitcoind and bitcoin-qt
+# libbitcoinconsensus.so.0, bitcoind and bitcoin-qt
 'libgcc_s.so.1', # GCC base support
 'libc.so.6', # C library
-'libpthread.so.0', # threading
 'libm.so.6', # math library
+# bitcoind and bitcoin-qt
+'libpthread.so.0', # threading
 'librt.so.1', # real-time (clock)
 'libatomic.so.1',
 'ld-linux-x86-64.so.2', # 64-bit dynamic linker
@@ -117,7 +118,7 @@ ELF_ALLOWED_LIBRARIES = {
 }
 
 MACHO_ALLOWED_LIBRARIES = {
-# bitcoind and bitcoin-qt
+# libbitcoinconsensus.0.dylib, bitcoind and bitcoin-qt
 'libc++.1.dylib', # C++ Standard Library
 'libSystem.B.dylib', # libc, libm, libpthread, libinfo
 # bitcoin-qt only
@@ -141,14 +142,16 @@ MACHO_ALLOWED_LIBRARIES = {
 }
 
 PE_ALLOWED_LIBRARIES = {
+# libbitcoinconsensus-0.dll, bitcoind.exe and bitcoin-qt.exe
 'ADVAPI32.dll', # security & registry
-'IPHLPAPI.DLL', # IP helper API
 'KERNEL32.dll', # win32 base APIs
 'msvcrt.dll', # C standard library for MSVC
+# bitcoind.exe and bitcoin-qt.exe
+'IPHLPAPI.DLL', # IP helper API
 'SHELL32.dll', # shell API
 'USER32.dll', # user interface
 'WS2_32.dll', # sockets
-# bitcoin-qt only
+# bitcoin-qt.exe only
 'dwmapi.dll', # desktop window manager
 'GDI32.dll', # graphics device interface
 'IMM32.dll', # input method editor
@@ -176,7 +179,7 @@ def check_version(max_versions, version, arch) -> bool:
 def check_imported_symbols(binary) -> bool:
     ok: bool = True
 
-    for symbol in binary.imported_symbols:
+    for symbol in binary.concrete.imported_symbols:
         if not symbol.imported:
             continue
 
@@ -184,7 +187,7 @@ def check_imported_symbols(binary) -> bool:
 
         if version:
             aux_version = version.symbol_version_auxiliary.name if version.has_auxiliary_version else None
-            if aux_version and not check_version(MAX_VERSIONS, aux_version, binary.header.machine_type):
+            if aux_version and not check_version(MAX_VERSIONS, aux_version, binary.concrete.header.machine_type):
                 print(f'{filename}: symbol {symbol.name} from unsupported version {version}')
                 ok = False
     return ok
@@ -192,64 +195,68 @@ def check_imported_symbols(binary) -> bool:
 def check_exported_symbols(binary) -> bool:
     ok: bool = True
 
-    for symbol in binary.dynamic_symbols:
+    for symbol in binary.concrete.dynamic_symbols:
         if not symbol.exported:
             continue
         name = symbol.name
-        if binary.header.machine_type == lief.ELF.ARCH.RISCV or name in IGNORE_EXPORTS:
+        if binary.concrete.header.machine_type == lief.ELF.ARCH.RISCV or name in IGNORE_EXPORTS:
             continue
-        print(f'{binary.name}: export of symbol {name} not allowed!')
+        print(f'{binary.concrete.name}: export of symbol {name} not allowed!')
         ok = False
     return ok
 
 def check_ELF_libraries(binary) -> bool:
     ok: bool = True
-    for library in binary.libraries:
+    for library in binary.concrete.libraries:
         if library not in ELF_ALLOWED_LIBRARIES:
+            # if binary.abstract.header.object_type == lief.OBJECT_TYPES.LIBRARY and library == 'libstdc++.so.6':
+            #     continue
             print(f'{filename}: {library} is not in ALLOWED_LIBRARIES!')
             ok = False
     return ok
 
 def check_MACHO_libraries(binary) -> bool:
     ok: bool = True
-    for dylib in binary.libraries:
-        split = dylib.name.split('/')
-        if split[-1] not in MACHO_ALLOWED_LIBRARIES:
-            print(f'{split[-1]} is not in ALLOWED_LIBRARIES!')
+    for dylib in binary.concrete.libraries:
+        library = dylib.name.split('/')[-1]
+        if binary.abstract.header.object_type == lief.OBJECT_TYPES.LIBRARY and library == 'libbitcoinconsensus.0.dylib':
+            continue
+        if library not in MACHO_ALLOWED_LIBRARIES:
+            print(f'{library} is not in ALLOWED_LIBRARIES!')
             ok = False
     return ok
 
 def check_MACHO_min_os(binary) -> bool:
-    if binary.build_version.minos == [10,15,0]:
+    if binary.concrete.build_version.minos == [10,15,0]:
         return True
     return False
 
 def check_MACHO_sdk(binary) -> bool:
-    if binary.build_version.sdk == [11, 0, 0]:
+    if binary.concrete.build_version.sdk == [11, 0, 0]:
         return True
     return False
 
 def check_PE_libraries(binary) -> bool:
     ok: bool = True
-    for dylib in binary.libraries:
+    for dylib in binary.concrete.libraries:
         if dylib not in PE_ALLOWED_LIBRARIES:
             print(f'{dylib} is not in ALLOWED_LIBRARIES!')
             ok = False
     return ok
 
 def check_PE_subsystem_version(binary) -> bool:
-    major: int = binary.optional_header.major_subsystem_version
-    minor: int = binary.optional_header.minor_subsystem_version
+    major: int = binary.concrete.optional_header.major_subsystem_version
+    minor: int = binary.concrete.optional_header.minor_subsystem_version
     if major == 6 and minor == 1:
         return True
     return False
 
 def check_ELF_interpreter(binary) -> bool:
-    expected_interpreter = ELF_INTERPRETER_NAMES[binary.header.machine_type][binary.abstract.header.endianness]
+    expected_interpreter = ELF_INTERPRETER_NAMES[binary.concrete.header.machine_type][binary.abstract.header.endianness]
 
     return binary.concrete.interpreter == expected_interpreter
 
-CHECKS = {
+EXE_CHECKS = {
 lief.EXE_FORMATS.ELF: [
     ('IMPORTED_SYMBOLS', check_imported_symbols),
     ('EXPORTED_SYMBOLS', check_exported_symbols),
@@ -267,21 +274,47 @@ lief.EXE_FORMATS.PE: [
 ]
 }
 
+LIB_CHECKS = {
+lief.EXE_FORMATS.ELF: [
+    ('LIBRARY_DEPENDENCIES', check_ELF_libraries),
+],
+lief.EXE_FORMATS.MACHO: [
+    ('DYNAMIC_LIBRARIES', check_MACHO_libraries),
+    ('MIN_OS', check_MACHO_min_os),
+    ('SDK', check_MACHO_sdk),
+],
+lief.EXE_FORMATS.PE: [
+    ('DYNAMIC_LIBRARIES', check_PE_libraries),
+    ('SUBSYSTEM_VERSION', check_PE_subsystem_version),
+]
+}
+
 if __name__ == '__main__':
     retval: int = 0
     for filename in sys.argv[1:]:
         try:
             binary = lief.parse(filename)
-            etype = binary.format
-            if etype == lief.EXE_FORMATS.UNKNOWN:
+            exe_format = binary.concrete.format
+            if exe_format == lief.EXE_FORMATS.UNKNOWN:
                 print(f'{filename}: unknown executable format')
                 retval = 1
                 continue
 
+            obj_type = binary.abstract.header.object_type
+            if obj_type != lief.OBJECT_TYPES.EXECUTABLE and obj_type != lief.OBJECT_TYPES.LIBRARY:
+                print(f'{filename}: unsupported file type')
+                retval = 1
+                continue
+
             failed: List[str] = []
-            for (name, func) in CHECKS[etype]:
-                if not func(binary):
-                    failed.append(name)
+            if obj_type == lief.OBJECT_TYPES.EXECUTABLE:
+                for (name, func) in EXE_CHECKS[exe_format]:
+                    if not func(binary):
+                        failed.append(name)
+            elif obj_type == lief.OBJECT_TYPES.LIBRARY:
+                for (name, func) in LIB_CHECKS[exe_format]:
+                    if not func(binary):
+                        failed.append(name)
             if failed:
                 print(f'{filename}: failed {" ".join(failed)}')
                 retval = 1
