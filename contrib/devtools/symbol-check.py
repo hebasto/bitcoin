@@ -81,11 +81,12 @@ ELF_INTERPRETER_NAMES: Dict[lief.ELF.ARCH, Dict[lief.ENDIANNESS, str]] = {
 
 # Allowed NEEDED libraries
 ELF_ALLOWED_LIBRARIES = {
-# bitcoind and bitcoin-qt
+# libbitcoinconsensus.so.0, bitcoind and bitcoin-qt
 'libgcc_s.so.1', # GCC base support
 'libc.so.6', # C library
-'libpthread.so.0', # threading
 'libm.so.6', # math library
+# bitcoind and bitcoin-qt
+'libpthread.so.0', # threading
 'librt.so.1', # real-time (clock)
 'libatomic.so.1',
 'ld-linux-x86-64.so.2', # 64-bit dynamic linker
@@ -117,7 +118,7 @@ ELF_ALLOWED_LIBRARIES = {
 }
 
 MACHO_ALLOWED_LIBRARIES = {
-# bitcoind and bitcoin-qt
+# libbitcoinconsensus.0.dylib, bitcoind and bitcoin-qt
 'libc++.1.dylib', # C++ Standard Library
 'libSystem.B.dylib', # libc, libm, libpthread, libinfo
 # bitcoin-qt only
@@ -141,14 +142,16 @@ MACHO_ALLOWED_LIBRARIES = {
 }
 
 PE_ALLOWED_LIBRARIES = {
+# libbitcoinconsensus-0.dll, bitcoind.exe and bitcoin-qt.exe
 'ADVAPI32.dll', # security & registry
-'IPHLPAPI.DLL', # IP helper API
 'KERNEL32.dll', # win32 base APIs
 'msvcrt.dll', # C standard library for MSVC
+# bitcoind.exe and bitcoin-qt.exe
+'IPHLPAPI.DLL', # IP helper API
 'SHELL32.dll', # shell API
 'USER32.dll', # user interface
 'WS2_32.dll', # sockets
-# bitcoin-qt only
+# bitcoin-qt.exe only
 'dwmapi.dll', # desktop window manager
 'GDI32.dll', # graphics device interface
 'IMM32.dll', # input method editor
@@ -206,6 +209,8 @@ def check_ELF_libraries(binary) -> bool:
     ok: bool = True
     for library in binary.libraries:
         if library not in ELF_ALLOWED_LIBRARIES:
+            # if binary.abstract.header.object_type == lief.OBJECT_TYPES.LIBRARY and library == 'libstdc++.so.6':
+            #     continue
             print(f'{filename}: {library} is not in ALLOWED_LIBRARIES!')
             ok = False
     return ok
@@ -213,9 +218,14 @@ def check_ELF_libraries(binary) -> bool:
 def check_MACHO_libraries(binary) -> bool:
     ok: bool = True
     for dylib in binary.libraries:
-        split = dylib.name.split('/')
-        if split[-1] not in MACHO_ALLOWED_LIBRARIES:
-            print(f'{split[-1]} is not in ALLOWED_LIBRARIES!')
+        if binary.abstract.header.object_type == lief.OBJECT_TYPES.LIBRARY:
+            library = dylib.split('/')[-1]
+            if library == 'libbitcoinconsensus.0.dylib':
+                continue
+        else:
+            library = dylib.name.split('/')[-1]
+        if library not in MACHO_ALLOWED_LIBRARIES:
+            print(f'{library} is not in ALLOWED_LIBRARIES!')
             ok = False
     return ok
 
@@ -249,7 +259,7 @@ def check_ELF_interpreter(binary) -> bool:
 
     return binary.concrete.interpreter == expected_interpreter
 
-CHECKS = {
+EXE_CHECKS = {
 lief.EXE_FORMATS.ELF: [
     ('IMPORTED_SYMBOLS', check_imported_symbols),
     ('EXPORTED_SYMBOLS', check_exported_symbols),
@@ -267,21 +277,44 @@ lief.EXE_FORMATS.PE: [
 ]
 }
 
+LIB_CHECKS = {
+lief.EXE_FORMATS.ELF: [
+    ('LIBRARY_DEPENDENCIES', check_ELF_libraries),
+],
+lief.EXE_FORMATS.MACHO: [
+    ('DYNAMIC_LIBRARIES', check_MACHO_libraries),
+],
+lief.EXE_FORMATS.PE: [
+    ('DYNAMIC_LIBRARIES', check_PE_libraries),
+]
+}
+
 if __name__ == '__main__':
     retval: int = 0
     for filename in sys.argv[1:]:
         try:
             binary = lief.parse(filename)
-            etype = binary.format
-            if etype == lief.EXE_FORMATS.UNKNOWN:
+            exe_format = binary.format
+            if exe_format == lief.EXE_FORMATS.UNKNOWN:
                 print(f'{filename}: unknown executable format')
                 retval = 1
                 continue
 
+            obj_type = binary.abstract.header.object_type
+            if obj_type != lief.OBJECT_TYPES.EXECUTABLE and obj_type != lief.OBJECT_TYPES.LIBRARY:
+                print(f'{filename}: unsupported file type')
+                retval = 1
+                continue
+
             failed: List[str] = []
-            for (name, func) in CHECKS[etype]:
-                if not func(binary):
-                    failed.append(name)
+            if obj_type == lief.OBJECT_TYPES.EXECUTABLE:
+                for (name, func) in EXE_CHECKS[exe_format]:
+                    if not func(binary):
+                        failed.append(name)
+            elif obj_type == lief.OBJECT_TYPES.LIBRARY:
+                for (name, func) in LIB_CHECKS[exe_format]:
+                    if not func(binary):
+                        failed.append(name)
             if failed:
                 print(f'{filename}: failed {" ".join(failed)}')
                 retval = 1
