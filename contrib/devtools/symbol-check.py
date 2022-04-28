@@ -278,6 +278,12 @@ if __name__ == '__main__':
                 retval = 1
                 continue
 
+            obj_type = binary.abstract.header.object_type
+            if obj_type != lief.OBJECT_TYPES.EXECUTABLE and obj_type != lief.OBJECT_TYPES.LIBRARY:
+                print(f'{filename}: unsupported file type')
+                retval = 1
+                continue
+
             failed: List[str] = []
             for (name, func) in CHECKS[etype]:
                 if not func(binary):
