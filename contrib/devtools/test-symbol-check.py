@@ -117,7 +117,7 @@ class TestSymbolChecks(unittest.TestCase):
         ''')
 
         self.assertEqual(call_symbol_check(cc, source, executable, ['-lexpat', '-Wl,-platform_version','-Wl,macos', '-Wl,11.4', '-Wl,11.4']),
-            (1, 'libexpat.1.dylib is not in ALLOWED_LIBRARIES!\n' +
+            (1, f'{executable}: libexpat.1.dylib is not in ALLOWED_LIBRARIES!\n' +
                 f'{executable}: failed DYNAMIC_LIBRARIES MIN_OS SDK'))
 
         source = 'test2.c'
