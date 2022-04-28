@@ -176,7 +176,7 @@ def check_version(max_versions, version, arch) -> bool:
 def check_imported_symbols(binary) -> bool:
     ok: bool = True
 
-    for symbol in binary.imported_symbols:
+    for symbol in binary.concrete.imported_symbols:
         if not symbol.imported:
             continue
 
@@ -184,7 +184,7 @@ def check_imported_symbols(binary) -> bool:
 
         if version:
             aux_version = version.symbol_version_auxiliary.name if version.has_auxiliary_version else None
-            if aux_version and not check_version(MAX_VERSIONS, aux_version, binary.header.machine_type):
+            if aux_version and not check_version(MAX_VERSIONS, aux_version, binary.concrete.header.machine_type):
                 print(f'{filename}: symbol {symbol.name} from unsupported version {version}')
                 ok = False
     return ok
@@ -192,19 +192,19 @@ def check_imported_symbols(binary) -> bool:
 def check_exported_symbols(binary) -> bool:
     ok: bool = True
 
-    for symbol in binary.dynamic_symbols:
+    for symbol in binary.concrete.dynamic_symbols:
         if not symbol.exported:
             continue
         name = symbol.name
-        if binary.header.machine_type == lief.ELF.ARCH.RISCV or name in IGNORE_EXPORTS:
+        if binary.concrete.header.machine_type == lief.ELF.ARCH.RISCV or name in IGNORE_EXPORTS:
             continue
-        print(f'{binary.name}: export of symbol {name} not allowed!')
+        print(f'{filename}: export of symbol {name} not allowed!')
         ok = False
     return ok
 
 def check_ELF_libraries(binary) -> bool:
     ok: bool = True
-    for library in binary.libraries:
+    for library in binary.concrete.libraries:
         if library not in ELF_ALLOWED_LIBRARIES:
             print(f'{filename}: {library} is not in ALLOWED_LIBRARIES!')
             ok = False
@@ -245,7 +245,7 @@ def check_PE_subsystem_version(binary) -> bool:
     return False
 
 def check_ELF_interpreter(binary) -> bool:
-    expected_interpreter = ELF_INTERPRETER_NAMES[binary.header.machine_type][binary.abstract.header.endianness]
+    expected_interpreter = ELF_INTERPRETER_NAMES[binary.concrete.header.machine_type][binary.abstract.header.endianness]
 
     return binary.concrete.interpreter == expected_interpreter
 
@@ -272,7 +272,7 @@ if __name__ == '__main__':
     for filename in sys.argv[1:]:
         try:
             binary = lief.parse(filename)
-            etype = binary.format
+            etype = binary.concrete.format
             if etype == lief.EXE_FORMATS.UNKNOWN:
                 print(f'{filename}: unknown executable format')
                 retval = 1
