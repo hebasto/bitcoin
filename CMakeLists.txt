@@ -65,6 +65,7 @@ endif()
 
 include(cmake/subtree-crc32c.cmake)
 include(cmake/subtree-leveldb.cmake)
+include(cmake/subtree-minisketch.cmake)
 
 message("\n")
 message("CXX: ${CMAKE_CXX_COMPILER_LAUNCHER} ${CMAKE_CXX_COMPILER}")
