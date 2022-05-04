@@ -54,6 +54,8 @@ if(USE_CCACHE)
   endif()
 endif()
 
+include(cmake/subtree-crc32c.cmake)
+
 message(NOTICE "\n")
 message(NOTICE "CXX: ${CMAKE_CXX_COMPILER_LAUNCHER} ${CMAKE_CXX_COMPILER}")
 message(NOTICE "\n")
