@@ -30,6 +30,9 @@ set(COPYRIGHT_HOLDERS "The %s developers")
 set(COPYRIGHT_HOLDERS_SUBSTITUTION ${PROJECT_NAME})
 set(COPYRIGHT_HOLDERS_FINAL "The Bitcoin Core developers")
 
+# Configurable options.
+option(USE_CCACHE "Use ccache for building" ON)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -52,3 +55,14 @@ include(cmake/introspection.cmake)
 configure_file(cmake/bitcoin-config.h.in src/config/bitcoin-config.h @ONLY)
 include_directories(${CMAKE_BINARY_DIR}/src)
 add_compile_definitions(HAVE_CONFIG_H)
+
+if(USE_CCACHE)
+  find_program(CCACHE ccache)
+  if(CCACHE)
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE})
+  endif()
+endif()
+
+message("\n")
+message("CXX: ${CMAKE_CXX_COMPILER_LAUNCHER} ${CMAKE_CXX_COMPILER}")
+message("\n")
