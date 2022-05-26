@@ -25,7 +25,7 @@ class CleanupHandler : public Handler
 {
 public:
     explicit CleanupHandler(std::function<void()> cleanup) : m_cleanup(std::move(cleanup)) {}
-    ~CleanupHandler() override { if (!m_cleanup) return; m_cleanup(); m_cleanup = nullptr; }
+    ~CleanupHandler() override { disconnect(); }
     void disconnect() override { if (!m_cleanup) return; m_cleanup(); m_cleanup = nullptr; }
     std::function<void()> m_cleanup;
 };
