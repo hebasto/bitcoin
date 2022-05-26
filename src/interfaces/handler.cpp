@@ -14,7 +14,7 @@ namespace {
 class HandlerImpl : public Handler
 {
 public:
-    explicit HandlerImpl(boost::signals2::connection connection) : m_connection(std::move(connection)) {}
+    explicit HandlerImpl(boost::signals2::scoped_connection connection) : m_connection(std::move(connection)) {}
 
     void disconnect() override { m_connection.disconnect(); }
 
@@ -32,7 +32,7 @@ public:
 
 } // namespace
 
-std::unique_ptr<Handler> MakeHandler(boost::signals2::connection connection)
+std::unique_ptr<Handler> MakeHandler(boost::signals2::scoped_connection connection)
 {
     return std::make_unique<HandlerImpl>(std::move(connection));
 }

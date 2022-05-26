@@ -10,7 +10,7 @@
 
 namespace boost {
 namespace signals2 {
-class connection;
+class scoped_connection;
 } // namespace signals2
 } // namespace boost
 
@@ -29,7 +29,7 @@ public:
 };
 
 //! Return handler wrapping a boost signal connection.
-std::unique_ptr<Handler> MakeHandler(boost::signals2::connection connection);
+std::unique_ptr<Handler> MakeHandler(boost::signals2::scoped_connection connection);
 
 //! Return handler wrapping a cleanup function.
 std::unique_ptr<Handler> MakeHandler(std::function<void()> cleanup);
