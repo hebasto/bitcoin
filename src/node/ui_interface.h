@@ -13,6 +13,7 @@
 class CBlockIndex;
 enum class SynchronizationState;
 struct bilingual_str;
+struct PeersNumByType;
 
 namespace boost {
 namespace signals2 {
@@ -85,7 +86,7 @@ public:
     ADD_SIGNALS_DECL_WRAPPER(InitWallet, void, );
 
     /** Number of network connections changed. */
-    ADD_SIGNALS_DECL_WRAPPER(NotifyNumConnectionsChanged, void, int newNumConnections);
+    ADD_SIGNALS_DECL_WRAPPER(NotifyNumConnectionsChanged, void, PeersNumByType newNumConnections);
 
     /** Network activity state changed. */
     ADD_SIGNALS_DECL_WRAPPER(NotifyNetworkActiveChanged, void, bool networkActive);
