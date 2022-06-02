@@ -173,6 +173,7 @@ task:
     - cd %CIRRUS_WORKING_DIR%
     - ccache --zero-stats
     - python build_msvc\msvc-autogen.py
+    - set CL=/DDISABLE_DESIGNATED_INITIALIZER_ERRORS
     - msbuild build_msvc\bitcoin.sln -property:CLToolExe=%WRAPPED_CL% -property:Configuration=Release -maxCpuCount -verbosity:minimal -noLogo
     - ccache --show-stats
   unit_tests_script:
