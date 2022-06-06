@@ -61,3 +61,5 @@ include(cmake/subtree-leveldb.cmake)
 include(cmake/subtree-minisketch.cmake)
 include(cmake/subtree-secp256k1.cmake)
 include(cmake/subtree-univalue.cmake)
+
+add_subdirectory(src)
