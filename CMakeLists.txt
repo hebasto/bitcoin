@@ -36,6 +36,17 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
   link_libraries(-Wl,-O2)
 endif()
 
+if(WIN32)
+  add_compile_definitions(_MT WIN32 _WINDOWS _WIN32_WINNT=0x0601 _WIN32_IE=0x0501 WIN32_LEAN_AND_MEAN)
+  link_libraries(-Wl,--major-subsystem-version -Wl,6 -Wl,--minor-subsystem-version -Wl,1)
+endif()
+
+if(CMAKE_CROSSCOMPILING)
+  add_definitions(${CPPFLAGS_FROM_DEPENDS})
+  add_compile_options(${CFLAGS_FROM_DEPENDS} ${CXXFLAGS_FROM_DEPENDS})
+  link_libraries(${LDFLAGS_FROM_DEPENDS})
+endif()
+
 include(cmake/introspection.cmake)
 
 configure_file(cmake/bitcoin-config.h.in src/config/bitcoin-config.h @ONLY)
@@ -72,5 +83,8 @@ endif()
 add_subdirectory(src)
 
 message(NOTICE "\n")
+if(CMAKE_CROSSCOMPILING)
+  message(NOTICE "Cross compiling for ${CMAKE_SYSTEM_NAME}")
+endif()
 message(NOTICE "CXX: ${CMAKE_CXX_COMPILER_LAUNCHER} ${CMAKE_CXX_COMPILER}")
 message(NOTICE "\n")
