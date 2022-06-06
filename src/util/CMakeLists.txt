@@ -53,12 +53,12 @@ target_sources(bitcoin_util
 target_include_directories(bitcoin_util
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>/src
+    $<BUILD_INTERFACE:${CMAKE_PREFIX_PATH}/include>
 )
 if(HAVE_GMTIME_R)
   target_compile_definitions(bitcoin_util PRIVATE HAVE_GMTIME_R)
 endif()
-target_link_libraries(bitcoin_util
-  PRIVATE
-    univalue
-    Boost::headers
-)
+target_link_libraries(bitcoin_util PRIVATE univalue)
+if(NOT CMAKE_CROSSCOMPILING)
+  target_link_libraries(bitcoin_util PRIVATE Boost::headers)
+endif()

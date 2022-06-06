@@ -165,6 +165,7 @@ target_sources(bitcoin_node
 target_include_directories(bitcoin_node
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_PREFIX_PATH}/include>
 )
 
 target_link_libraries(bitcoin_node
@@ -172,5 +173,7 @@ target_link_libraries(bitcoin_node
     minisketch
     leveldb
     univalue
-    Boost::headers
 )
+if(NOT CMAKE_CROSSCOMPILING)
+  target_link_libraries(bitcoin_node PRIVATE Boost::headers)
+endif()
