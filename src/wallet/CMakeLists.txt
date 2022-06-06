@@ -54,6 +54,7 @@ target_include_directories(bitcoin_wallet
 target_link_libraries(bitcoin_wallet
   PRIVATE
     univalue
+    Boost::headers
 )
 
 if(USE_SQLITE)
