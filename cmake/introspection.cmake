@@ -57,3 +57,29 @@ if(HAVE_UNISTD_H)
   check_cxx_symbol_exists(pipe2 "unistd.h" HAVE_DECL_PIPE2)
   check_cxx_symbol_exists(setsid "unistd.h" HAVE_DECL_SETSID)
 endif()
+
+# Check for gmtime_r(), fallback to gmtime_s() if that is unavailable.
+# Fail if neither are available.
+check_cxx_source_compiles("
+  #include <ctime>
+  int main(int argc, char** argv)
+  {
+    gmtime_r((const time_t*)nullptr, (struct tm*)nullptr);
+    return 0;
+  }"
+  HAVE_GMTIME_R
+)
+if(NOT HAVE_GMTIME_R)
+  check_cxx_source_compiles("
+    #include <ctime>
+    int main(int argc, char** argv)
+    {
+      gmtime_s((struct tm*)nullptr, (const time_t*)nullptr);
+      return 0;
+    }"
+    HAVE_GMTIME_S
+  )
+  if(NOT HAVE_GMTIME_S)
+    message(FATAL_ERROR "Both gmtime_r and gmtime_s are unavailable")
+  endif()
+endif()
