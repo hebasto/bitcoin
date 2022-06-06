@@ -205,3 +205,32 @@ if(BUILD_DAEMON)
     target_link_libraries(bitcoind PRIVATE ${LIBEVENT_PTHREADS_STATIC_LDFLAGS})
   endif()
 endif()
+
+
+if(BUILD_CLI)
+  # Bitcoin Core RPC client
+  add_executable(bitcoin-cli)
+
+  set_target_properties(bitcoin-cli PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+  )
+
+  target_sources(bitcoin-cli
+    PRIVATE
+      bitcoin-cli.cpp
+      compat/stdin.cpp
+      rpc/client.cpp
+  )
+
+  target_link_libraries(bitcoin-cli
+    PRIVATE
+      bitcoin_util
+      bitcoin_crypto
+      univalue
+      ${LIBEVENT_STATIC_LDFLAGS}
+  )
+
+  if(WIN32)
+    target_link_libraries(bitcoin-cli PRIVATE iphlpapi -static)
+  endif()
+endif()
