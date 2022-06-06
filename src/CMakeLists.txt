@@ -173,3 +173,34 @@ target_link_libraries(bitcoin_node
     leveldb
     univalue
 )
+
+
+if(BUILD_DAEMON)
+  # Bitcoin Core bitcoind
+  add_executable(bitcoind)
+
+  set_target_properties(bitcoind PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+  )
+
+  target_sources(bitcoind
+    PRIVATE
+      bitcoind.cpp
+      init/bitcoind.cpp
+  )
+
+  target_link_libraries(bitcoind
+    PRIVATE
+      bitcoin_node
+      bitcoin_consensus
+      bitcoin_common
+      bitcoin_util
+      bitcoin_crypto
+      ${LIBEVENT_STATIC_LDFLAGS}
+  )
+  if(WIN32)
+    target_link_libraries(bitcoind PRIVATE iphlpapi -static)
+  else()
+    target_link_libraries(bitcoind PRIVATE ${LIBEVENT_PTHREADS_STATIC_LDFLAGS})
+  endif()
+endif()
