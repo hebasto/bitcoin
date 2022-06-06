@@ -110,6 +110,8 @@ option(BUILD_BITCOINCONSENSUS_LIB "Build bitcoinconsensus shared library" ON)
 option(BUILD_BITCOINKERNEL_LIB "Build experimental bitcoinkernel shared library" ON)
 option(ENABLE_WALLET "Enable wallet" ON)
 
+find_package(Boost 1.64.0 REQUIRED COMPONENTS headers)
+
 if(BUILD_DAEMON OR BUILD_CLI)
   pkg_check_modules(LIBEVENT REQUIRED libevent>=2.1.8)
   message(STATUS "  LDFLAGS: ${LIBEVENT_STATIC_LDFLAGS}")
