@@ -153,4 +153,7 @@
 /* Define to 1 if you have the declaration of `setsid', and to 0 if you don't. */
 #cmakedefine01 HAVE_DECL_SETSID
 
+/* Define if gmtime_r is available. */
+#cmakedefine HAVE_GMTIME_R
+
 #endif // BITCOIN_CONFIG_H
