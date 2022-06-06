@@ -7,6 +7,9 @@ include(ExternalProject)
 # Optimized C library for ECDSA signatures and secret/public key operations on curve secp256k1.
 # See https://github.com/bitcoin-core/secp256k1
 set(libsecp256k1_configure_cmd "${CMAKE_SOURCE_DIR}/src/secp256k1/configure")
+if(CMAKE_CROSSCOMPILING)
+    list(APPEND libsecp256k1_configure_cmd "CONFIG_SITE=${CONFIG_SITE}")
+endif()
 list(APPEND libsecp256k1_configure_cmd "--disable-shared")
 list(APPEND libsecp256k1_configure_cmd "--with-pic")
 list(APPEND libsecp256k1_configure_cmd "--enable-benchmark=no")
