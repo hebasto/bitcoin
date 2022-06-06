@@ -207,12 +207,12 @@ if(BUILD_DAEMON)
       bitcoin_common
       bitcoin_util
       bitcoin_crypto
-      ${LIBEVENT_STATIC_LDFLAGS}
+      PkgConfig::libevent
   )
   if(WIN32)
     target_link_libraries(bitcoind PRIVATE iphlpapi -static)
   else()
-    target_link_libraries(bitcoind PRIVATE ${LIBEVENT_PTHREADS_STATIC_LDFLAGS})
+    target_link_libraries(bitcoind PRIVATE PkgConfig::libevent_pthreads)
   endif()
 endif()
 
@@ -237,7 +237,7 @@ if(BUILD_CLI)
       bitcoin_util
       bitcoin_crypto
       univalue
-      ${LIBEVENT_STATIC_LDFLAGS}
+      PkgConfig::libevent
   )
 
   if(WIN32)
