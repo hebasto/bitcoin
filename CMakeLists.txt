@@ -38,6 +38,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 include(CheckCXXSourceCompiles)
 include(CheckCXXSymbolExists)
+include(FindPkgConfig)
 include(TestBigEndian)
 
 # Global checks.
@@ -85,6 +86,18 @@ if(NOT HAVE_GMTIME_R)
   endif()
 endif()
 
-find_package(Boost 1.64.0 REQUIRED COMPONENTS headers)
+option(BUILD_DAEMON "Build bitcoind" ON)
+
+if(BUILD_DAEMON)
+  find_package(Boost 1.64.0 REQUIRED COMPONENTS headers)
+  pkg_check_modules(LIBEVENT REQUIRED libevent>=2.1.8)
+  message(STATUS "  LDFLAGS: ${LIBEVENT_STATIC_LDFLAGS}")
+endif()
+if(NOT WIN32)
+  if(BUILD_DAEMON)
+    pkg_check_modules(LIBEVENT_PTHREADS REQUIRED libevent_pthreads>=2.1.8)
+    message(STATUS "  LDFLAGS: ${LIBEVENT_PTHREADS_STATIC_LDFLAGS}")
+  endif()
+endif()
 
 add_subdirectory(src)
