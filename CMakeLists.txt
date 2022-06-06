@@ -84,8 +84,9 @@ if(NOT HAVE_GMTIME_R)
 endif()
 
 option(BUILD_DAEMON "Build bitcoind" ON)
+option(BUILD_CLI "Build bitcoin-cli" ON)
 
-if(BUILD_DAEMON)
+if(BUILD_DAEMON OR BUILD_CLI)
   pkg_check_modules(LIBEVENT REQUIRED libevent>=2.1.8)
   message(STATUS "  LDFLAGS: ${LIBEVENT_STATIC_LDFLAGS}")
 endif()
