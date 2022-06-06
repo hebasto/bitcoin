@@ -14,6 +14,7 @@ target_include_directories(secp256k1
 )
 
 set(libsecp256k1_configure_cmd "${CMAKE_SOURCE_DIR}/src/secp256k1/configure")
+list(APPEND libsecp256k1_configure_cmd "--host=${HOST_FROM_DEPENDS}")
 list(APPEND libsecp256k1_configure_cmd "--disable-shared")
 list(APPEND libsecp256k1_configure_cmd "--with-pic")
 list(APPEND libsecp256k1_configure_cmd "--enable-benchmark=no")

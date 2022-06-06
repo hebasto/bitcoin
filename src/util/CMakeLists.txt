@@ -53,6 +53,7 @@ target_sources(bitcoin_util
 target_include_directories(bitcoin_util
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>/src
+    $<BUILD_INTERFACE:${CMAKE_PREFIX_PATH}/include>
 )
 if(HAVE_GMTIME_R)
   target_compile_definitions(bitcoin_util PRIVATE HAVE_GMTIME_R)

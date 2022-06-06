@@ -92,6 +92,7 @@ add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL)
 target_include_directories(bitcoin_node
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_PREFIX_PATH}/include>
 )
 
 target_sources(bitcoin_node
