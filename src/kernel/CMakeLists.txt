@@ -85,6 +85,10 @@ target_sources(bitcoinkernel
     ../versionbits.cpp
     ../warnings.cpp
 )
+target_include_directories(bitcoinkernel
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_PREFIX_PATH}/include>
+)
 if(HAVE_GMTIME_R)
   target_compile_definitions(bitcoinkernel PRIVATE HAVE_GMTIME_R)
 endif()
