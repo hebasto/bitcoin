@@ -56,6 +56,17 @@ if(USE_CCACHE)
   endif()
 endif()
 
+if(WIN32)
+  add_compile_definitions(_MT WIN32 _WINDOWS _WIN32_WINNT=0x0601 _WIN32_IE=0x0501 WIN32_LEAN_AND_MEAN)
+  link_libraries(-Wl,--major-subsystem-version -Wl,6 -Wl,--minor-subsystem-version -Wl,1 -lws2_32)
+endif()
+
+if(CMAKE_CROSSCOMPILING)
+  add_definitions(${CPPFLAGS_FROM_DEPENDS})
+  add_compile_options(${CFLAGS_FROM_DEPENDS} ${CXXFLAGS_FROM_DEPENDS})
+  link_libraries(${LDFLAGS_FROM_DEPENDS})
+endif()
+
 include(cmake/subtree-crc32c.cmake)
 include(cmake/subtree-leveldb.cmake)
 include(cmake/subtree-minisketch.cmake)
@@ -110,4 +121,8 @@ endif()
 
 if(BUILD_BITCOINKERNEL_LIB)
   add_subdirectory(src/kernel)
+endif()
+
+if(CMAKE_CROSSCOMPILING)
+  message("\nCross compiling for ${CMAKE_SYSTEM_NAME} (${HOST_FROM_DEPENDS})\n")
 endif()
