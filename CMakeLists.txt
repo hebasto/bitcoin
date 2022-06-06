@@ -88,6 +88,7 @@ endif()
 
 option(BUILD_DAEMON "Build bitcoind" ON)
 option(BUILD_CLI "Build bitcoin-cli" ON)
+option(BUILD_BITCOINCONSENSUS_LIB "Build bitcoinconsensus shared library" ON)
 
 if(BUILD_DAEMON OR BUILD_CLI)
   find_package(Boost 1.64.0 REQUIRED COMPONENTS headers)
@@ -102,3 +103,7 @@ if(NOT WIN32)
 endif()
 
 add_subdirectory(src)
+
+if(BUILD_BITCOINCONSENSUS_LIB)
+  add_subdirectory(src/script)
+endif()
