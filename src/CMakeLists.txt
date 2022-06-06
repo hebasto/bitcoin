@@ -53,3 +53,34 @@ target_link_libraries(bitcoin_common
     univalue
     secp256k1
 )
+
+
+# Stable, backwards-compatible consensus functionality
+# also exposed as a shared library.
+add_library(bitcoin_consensus OBJECT EXCLUDE_FROM_ALL)
+target_sources(bitcoin_consensus
+  PRIVATE
+    arith_uint256.cpp
+    consensus/merkle.cpp
+    consensus/tx_check.cpp
+    hash.cpp
+    primitives/block.cpp
+    primitives/transaction.cpp
+    pubkey.cpp
+    script/interpreter.cpp
+    script/script.cpp
+    script/script_error.cpp
+    uint256.cpp
+    util/strencodings.cpp
+)
+target_include_directories(bitcoin_consensus
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+)
+target_link_libraries(bitcoin_consensus
+  PRIVATE
+    secp256k1
+)
+set_target_properties(bitcoin_consensus PROPERTIES
+  POSITION_INDEPENDENT_CODE ON
+)
