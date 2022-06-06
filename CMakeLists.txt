@@ -69,6 +69,8 @@ include(cmake/subtree-minisketch.cmake)
 include(cmake/subtree-secp256k1.cmake)
 include(cmake/subtree-univalue.cmake)
 
+add_subdirectory(src)
+
 message("\n")
 message("CXX: ${CMAKE_CXX_COMPILER_LAUNCHER} ${CMAKE_CXX_COMPILER}")
 message("\n")
