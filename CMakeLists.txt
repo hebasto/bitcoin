@@ -108,6 +108,7 @@ option(BUILD_DAEMON "Build bitcoind" ON)
 option(BUILD_CLI "Build bitcoin-cli" ON)
 option(BUILD_BITCOINCONSENSUS_LIB "Build bitcoinconsensus shared library" ON)
 option(BUILD_BITCOINKERNEL_LIB "Build experimental bitcoinkernel shared library" ON)
+option(ENABLE_WALLET "Enable wallet" ON)
 
 if(BUILD_DAEMON OR BUILD_CLI OR BUILD_BITCOINKERNEL_LIB)
   find_package(Boost 1.64.0 REQUIRED COMPONENTS headers)
