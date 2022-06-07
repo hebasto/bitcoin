@@ -35,6 +35,7 @@ option(BUILD_DAEMON "Build bitcoind" ON)
 option(BUILD_CLI "Build bitcoin-cli" ON)
 option(BUILD_BITCOINCONSENSUS_LIB "Build bitcoinconsensus shared library" ON)
 option(BUILD_BITCOINKERNEL_LIB "Build experimental bitcoinkernel shared library" ON)
+option(ENABLE_WALLET "Enable wallet" ON)
 option(USE_CCACHE "Use ccache for building" ON)
 option(REDUCE_EXPORTS "Attempt to reduce exported symbols in the resulting executables" OFF)
 
