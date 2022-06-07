@@ -67,6 +67,7 @@ endif()
 
 option(BUILD_DAEMON "Build bitcoind" ON)
 option(BUILD_CLI "Build bitcoin-cli" ON)
+option(BUILD_BITCOINCONSENSUS_LIB "Build bitcoinconsensus shared library" ON)
 
 include(cmake/subtree-crc32c.cmake)
 include(cmake/subtree-leveldb.cmake)

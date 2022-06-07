@@ -83,3 +83,9 @@ if(NOT HAVE_GMTIME_R)
     message(FATAL_ERROR "Both gmtime_r and gmtime_s are unavailable")
   endif()
 endif()
+
+check_cxx_source_compiles("
+  int foo(void) __attribute__((visibility(\"default\")));
+  int main(){}"
+  HAVE_DEFAULT_VISIBILITY_ATTRIBUTE
+)
