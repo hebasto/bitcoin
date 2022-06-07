@@ -32,6 +32,7 @@ set(COPYRIGHT_HOLDERS_FINAL "The Bitcoin Core developers")
 
 # Configurable options.
 option(BUILD_DAEMON "Build bitcoind" ON)
+option(BUILD_CLI "Build bitcoin-cli" ON)
 option(USE_CCACHE "Use ccache for building" ON)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -82,7 +83,7 @@ include(cmake/subtree-univalue.cmake)
 
 include(FindPkgConfig)
 
-if(BUILD_DAEMON)
+if(BUILD_DAEMON OR BUILD_CLI)
   # Find Boost headers only.
   find_package(Boost 1.64.0 REQUIRED)
 
