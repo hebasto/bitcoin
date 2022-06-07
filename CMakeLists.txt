@@ -113,6 +113,8 @@ option(ENABLE_WALLET "Enable wallet" ON)
 if(BUILD_DAEMON OR BUILD_CLI OR BUILD_BITCOINKERNEL_LIB)
   # Find Boost headers only.
   find_package(Boost 1.64.0 REQUIRED)
+  set(THREADS_PREFER_PTHREAD_FLAG ON)
+  find_package(Threads REQUIRED)
 endif()
 
 if(BUILD_DAEMON OR BUILD_CLI)

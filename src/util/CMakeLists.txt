@@ -61,4 +61,5 @@ target_link_libraries(bitcoin_util
   PRIVATE
     univalue
     Boost::headers
+    Threads::Threads
 )
