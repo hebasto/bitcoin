@@ -66,6 +66,7 @@ if(USE_CCACHE)
 endif()
 
 option(BUILD_DAEMON "Build bitcoind" ON)
+option(BUILD_CLI "Build bitcoin-cli" ON)
 
 include(cmake/subtree-crc32c.cmake)
 include(cmake/subtree-leveldb.cmake)
@@ -75,7 +76,7 @@ include(cmake/subtree-univalue.cmake)
 
 include(FindPkgConfig)
 
-if(BUILD_DAEMON)
+if(BUILD_DAEMON OR BUILD_CLI)
   # Find Boost headers only.
   find_package(Boost 1.64.0 REQUIRED)
 
