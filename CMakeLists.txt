@@ -33,6 +33,7 @@ set(COPYRIGHT_HOLDERS_FINAL "The Bitcoin Core developers")
 # Configurable options.
 option(BUILD_DAEMON "Build bitcoind" ON)
 option(BUILD_CLI "Build bitcoin-cli" ON)
+option(BUILD_BITCOINCONSENSUS_LIB "Build bitcoinconsensus shared library" ON)
 option(USE_CCACHE "Use ccache for building" ON)
 
 set(CMAKE_CXX_STANDARD 17)
