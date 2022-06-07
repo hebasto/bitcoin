@@ -156,4 +156,7 @@
 /* Define if gmtime_r is available. */
 #cmakedefine HAVE_GMTIME_R
 
+/* Define if the visibility attribute is supported. */
+#define HAVE_DEFAULT_VISIBILITY_ATTRIBUTE
+
 #endif // BITCOIN_CONFIG_H

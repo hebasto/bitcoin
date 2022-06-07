@@ -215,3 +215,9 @@ if(BUILD_CLI)
     target_link_options(bitcoin-cli PRIVATE -static)
   endif()
 endif()
+
+
+# Shared library build of static libbitcoin_consensus library.
+if(BUILD_BITCOINCONSENSUS_LIB)
+  add_subdirectory(script)
+endif()
