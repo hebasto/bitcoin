@@ -65,6 +65,8 @@ if(USE_CCACHE)
   endif()
 endif()
 
+option(BUILD_DAEMON "Build bitcoind" ON)
+
 include(cmake/subtree-crc32c.cmake)
 include(cmake/subtree-leveldb.cmake)
 include(cmake/subtree-minisketch.cmake)
@@ -73,15 +75,21 @@ include(cmake/subtree-univalue.cmake)
 
 include(FindPkgConfig)
 
-# Find Boost headers only.
-find_package(Boost 1.64.0 REQUIRED)
+if(BUILD_DAEMON)
+  # Find Boost headers only.
+  find_package(Boost 1.64.0 REQUIRED)
 
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
+  set(THREADS_PREFER_PTHREAD_FLAG ON)
+  find_package(Threads REQUIRED)
 
-pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
-if(WIN32)
-  target_link_libraries(PkgConfig::libevent INTERFACE iphlpapi ws2_32)
+  pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
+  if(WIN32)
+    target_link_libraries(PkgConfig::libevent INTERFACE iphlpapi ws2_32)
+  endif()
+endif()
+
+if(NOT WIN32 AND BUILD_DAEMON)
+  pkg_check_modules(libevent_pthreads REQUIRED libevent_pthreads>=2.1.8 IMPORTED_TARGET)
 endif()
 
 add_subdirectory(src)
