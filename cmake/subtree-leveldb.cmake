@@ -107,7 +107,3 @@ target_link_libraries(leveldb
   PRIVATE
     crc32c
 )
-
-set_target_properties(leveldb PROPERTIES
-  POSITION_INDEPENDENT_CODE ON
-)

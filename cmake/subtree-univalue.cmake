@@ -19,7 +19,3 @@ target_include_directories(univalue
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src/univalue/include>
 )
-
-set_target_properties(univalue PROPERTIES
-  POSITION_INDEPENDENT_CODE ON
-)

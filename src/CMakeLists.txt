@@ -84,9 +84,6 @@ target_link_libraries(bitcoin_consensus
   PRIVATE
     secp256k1
 )
-set_target_properties(bitcoin_consensus PROPERTIES
-  POSITION_INDEPENDENT_CODE ON
-)
 
 
 # P2P and RPC server functionality used by `bitcoind` and `bitcoin-qt` executables.
@@ -186,10 +183,6 @@ if(BUILD_DAEMON)
   # Bitcoin Core bitcoind
   add_executable(bitcoind)
 
-  set_target_properties(bitcoind PROPERTIES
-    POSITION_INDEPENDENT_CODE ON
-  )
-
   target_sources(bitcoind
     PRIVATE
       bitcoind.cpp
@@ -219,10 +212,6 @@ endif()
 if(BUILD_CLI)
   # Bitcoin Core RPC client
   add_executable(bitcoin-cli)
-
-  set_target_properties(bitcoin-cli PROPERTIES
-    POSITION_INDEPENDENT_CODE ON
-  )
 
   target_sources(bitcoin-cli
     PRIVATE
