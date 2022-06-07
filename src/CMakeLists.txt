@@ -237,6 +237,7 @@ if(BUILD_CLI)
       bitcoin_crypto
       univalue
       PkgConfig::libevent
+      Threads::Threads
   )
 
   if(WIN32)
