@@ -36,6 +36,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL Linux)
   link_libraries(-Wl,-O2)
 endif()
 
+include(cmake/introspection.cmake)
+
 configure_file(cmake/bitcoin-config.h.in src/config/bitcoin-config.h @ONLY)
 include_directories(${CMAKE_BINARY_DIR}/src)
 add_compile_definitions(HAVE_CONFIG_H)
