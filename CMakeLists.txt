@@ -40,6 +40,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
   link_libraries(-Wl,-headerpad_max_install_names)
 endif()
 
+include(cmake/introspection.cmake)
+
 configure_file(cmake/bitcoin-config.h.in src/config/bitcoin-config.h @ONLY)
 include_directories(${CMAKE_BINARY_DIR}/src)
 add_compile_definitions(HAVE_CONFIG_H)
