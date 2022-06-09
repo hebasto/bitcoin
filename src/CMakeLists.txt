@@ -205,7 +205,7 @@ if(BUILD_DAEMON)
 endif()
 
 
-if(BUILD_CLI)
+if(BUILD_CLI OR BUILD_QT5_GUI)
   add_library(rpc_client STATIC EXCLUDE_FROM_ALL)
   target_sources(rpc_client PRIVATE rpc/client.cpp)
   target_include_directories(rpc_client
@@ -245,4 +245,9 @@ endif()
 
 if(BUILD_BITCOINKERNEL_LIB)
   add_subdirectory(kernel)
+endif()
+
+
+if(BUILD_QT5_GUI)
+  add_subdirectory(qt)
 endif()
