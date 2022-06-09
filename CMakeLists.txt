@@ -39,6 +39,20 @@ option(ENABLE_WALLET "Enable wallet" ON)
 option(USE_CCACHE "Use ccache for building" ON)
 option(REDUCE_EXPORTS "Attempt to reduce exported symbols in the resulting executables" OFF)
 
+set(BUILD_GUI_VALUES ON Qt5 OFF)
+set(BUILD_GUI "ON" CACHE STRING "Build GUI ([ON], Qt5, OFF)")
+if(NOT BUILD_GUI IN_LIST BUILD_GUI_VALUES)
+  message(FATAL_ERROR "BUILD_GUI value is \"${BUILD_GUI}\", but must be one of \"ON\", \"Qt5\" or \"OFF\".")
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin AND NOT BUILD_GUI STREQUAL OFF)
+  if(${CMAKE_VERSION} VERSION_LESS 3.16)
+    message(FATAL_ERROR "CMake >= 3.16 is required to build the GUI for macOS.")
+  else()
+    enable_language(OBJCXX)
+  endif()
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -93,7 +107,7 @@ include(cmake/subtree-univalue.cmake)
 
 include(FindPkgConfig)
 
-if(BUILD_DAEMON OR BUILD_CLI OR BUILD_BITCOINKERNEL_LIB)
+if(BUILD_DAEMON OR BUILD_CLI OR BUILD_BITCOINKERNEL_LIB OR NOT BUILD_GUI STREQUAL OFF)
   # Find Boost headers only.
   find_package(Boost 1.64.0 REQUIRED)
 
@@ -101,14 +115,14 @@ if(BUILD_DAEMON OR BUILD_CLI OR BUILD_BITCOINKERNEL_LIB)
   find_package(Threads REQUIRED)
 endif()
 
-if(BUILD_DAEMON OR BUILD_CLI)
+if(BUILD_DAEMON OR BUILD_CLI OR NOT BUILD_GUI STREQUAL OFF)
   pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
   if(WIN32)
     target_link_libraries(PkgConfig::libevent INTERFACE iphlpapi ws2_32)
   endif()
 endif()
 
-if(NOT WIN32 AND BUILD_DAEMON)
+if(NOT WIN32 AND (BUILD_DAEMON OR NOT BUILD_GUI STREQUAL OFF))
   pkg_check_modules(libevent_pthreads REQUIRED libevent_pthreads>=2.1.8 IMPORTED_TARGET)
 endif()
 
