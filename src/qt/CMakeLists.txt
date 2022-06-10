@@ -142,3 +142,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL Windows)
   target_sources(bitcoin-qt PRIVATE winshutdownmonitor.cpp)
   target_link_options(bitcoin-qt PRIVATE -static)
 endif()
+
+
+qt5_import_plugins(bitcoin-qt
+    # INCLUDE Qt5::QWindowsIntegrationPlugin
+    EXCLUDE Qt5::QCocoaIntegrationPlugin Qt5::QMacStylePlugin
+    # INCLUDE_BY_TYPE imageformats Qt5::QGifPlugin Qt5::QJpegPlugin
+    # EXCLUDE_BY_TYPE sqldrivers
+)
