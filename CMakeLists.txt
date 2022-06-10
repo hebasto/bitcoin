@@ -14,7 +14,7 @@ project("Bitcoin Core"
   VERSION 23.0.0
   DESCRIPTION "Bitcoin client software"
   HOMEPAGE_URL "https://bitcoincore.org/"
-  LANGUAGES CXX C ASM
+  LANGUAGES CXX OBJCXX C ASM
 )
 
 set(PACKAGE_NAME ${PROJECT_NAME})

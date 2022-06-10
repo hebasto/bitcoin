@@ -13,29 +13,38 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/forms")
 
 find_package(Qt5 5.11.3 REQUIRED COMPONENTS Core Gui Widgets LinguistTools)
 
-if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+# if(CMAKE_SYSTEM_NAME STREQUAL Windows)
   target_link_libraries(Qt5::Core
     INTERFACE
       ${CMAKE_PREFIX_PATH}/lib/libqtpcre2.a
-      userenv
-      version
-      netapi32
-      winmm
-      shlwapi
+      # userenv
+      # version
+      # netapi32
+      # winmm
+      # shlwapi
+      # "-framework DiskArbitration"
+      "-framework IOKit"  # 350
+      "-framework AppKit" # 3
+      "-framework Security" #0
+      "-framework Metal"  # 114
+      "-framework CoreGraphics" # 114
+      "-framework CoreServices"
   )
   target_link_libraries(Qt5::Gui
     INTERFACE
       ${CMAKE_PREFIX_PATH}/lib/libqtlibpng.a
       ${CMAKE_PREFIX_PATH}/lib/libqtharfbuzz.a
-      dwmapi
-      imm32
-      wtsapi32
+      # dwmapi
+      # imm32
+      # wtsapi32
+      "-framework CoreFoundation"
   )
   target_link_libraries(Qt5::Widgets
     INTERFACE
-      uxtheme
+      # uxtheme
+      "-framework CoreFoundation"
   )
-endif()
+# endif()
 
 file(GLOB TS_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "locale/*.ts")
 set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/locale")
@@ -72,6 +81,14 @@ target_sources(bitcoinqt
     trafficgraphwidget.cpp
     utilitydialog.cpp
 )
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+  target_sources(bitcoinqt
+    PRIVATE
+      macdockiconhandler.mm
+      macnotificationhandler.mm
+      macos_appnap.mm
+)
+endif()
 # TODO: Rename `node/ui_interface.h`, and drop `SKIP_AUTOUIC ON`.
 set_property(
   SOURCE
