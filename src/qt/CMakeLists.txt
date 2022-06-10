@@ -99,6 +99,68 @@ target_link_libraries(bitcoinqt
     leveldb
     Boost::headers
 )
+if(CMAKE_CROSSCOMPILING)
+  target_compile_definitions(bitcoinqt PRIVATE QT_STATICPLUGIN)
+  target_link_libraries(Qt5::Core
+    INTERFACE
+      ${CMAKE_PREFIX_PATH}/lib/libqtpcre2.a
+      ${CMAKE_PREFIX_PATH}/lib/libqtlibpng.a
+      ${CMAKE_PREFIX_PATH}/lib/libqtharfbuzz.a
+  )
+  if(CMAKE_SYSTEM_NAME STREQUAL Linux AND TARGET Qt5::QXcbIntegrationPlugin)
+    target_compile_definitions(bitcoinqt PRIVATE QT_QPA_PLATFORM_XCB)
+    target_link_libraries(Qt5::Core
+      INTERFACE
+        -L${CMAKE_PREFIX_PATH}/lib
+        freetype
+        fontconfig
+        xcb
+        xcb-icccm
+        xcb-image
+        xcb-keysyms
+        xcb-randr
+        xcb-render
+        xcb-render-util
+        xcb-shape
+        xcb-shm
+        xcb-sync
+        xcb-xfixes
+        xcb-xinerama
+        xcb-xkb
+        xkbcommon
+        xkbcommon-x11
+    )
+  elseif(CMAKE_SYSTEM_NAME STREQUAL Windows AND TARGET Qt5::QWindowsIntegrationPlugin AND TARGET Qt5::QWindowsVistaStylePlugin)
+    target_compile_definitions(bitcoinqt PRIVATE QT_QPA_PLATFORM_WINDOWS)
+    target_link_libraries(Qt5::Core
+      INTERFACE
+        dwmapi
+        imm32
+        netapi32
+        shlwapi
+        userenv
+        uxtheme
+        version
+        winmm
+        wtsapi32
+    )
+  elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin AND TARGET Qt5::QCocoaIntegrationPlugin AND TARGET Qt5::QMacStylePlugin)
+    target_compile_definitions(bitcoinqt PRIVATE QT_QPA_PLATFORM_COCOA)
+    target_link_libraries(Qt5::Core
+      INTERFACE
+        "-framework AppKit"
+        "-framework Carbon"
+        "-framework CoreVideo"
+        "-framework IOKit"
+        "-framework IOSurface"
+        "-framework Metal"
+        "-framework QuartzCore"
+        "-framework Security"
+    )
+  elseif(CMAKE_SYSTEM_NAME STREQUAL Android AND TARGET Qt5::QAndroidPlatformIntegrationPlugin)
+    target_compile_definitions(bitcoinqt PRIVATE QT_QPA_PLATFORM_ANDROID)
+  endif()
+endif()
 
 add_executable(bitcoin-qt)
 target_sources(bitcoin-qt
