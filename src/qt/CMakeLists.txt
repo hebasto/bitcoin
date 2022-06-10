@@ -13,6 +13,30 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/forms")
 
 find_package(Qt5 5.11.3 REQUIRED COMPONENTS Core Gui Widgets LinguistTools)
 
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+  target_link_libraries(Qt5::Core
+    INTERFACE
+      ${CMAKE_PREFIX_PATH}/lib/libqtpcre2.a
+      userenv
+      version
+      netapi32
+      winmm
+      shlwapi
+  )
+  target_link_libraries(Qt5::Gui
+    INTERFACE
+      ${CMAKE_PREFIX_PATH}/lib/libqtlibpng.a
+      ${CMAKE_PREFIX_PATH}/lib/libqtharfbuzz.a
+      dwmapi
+      imm32
+      wtsapi32
+  )
+  target_link_libraries(Qt5::Widgets
+    INTERFACE
+      uxtheme
+  )
+endif()
+
 file(GLOB TS_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "locale/*.ts")
 set_source_files_properties(${TS_FILES} PROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/locale")
 qt5_add_translation(QM_FILES ${TS_FILES})
@@ -69,6 +93,18 @@ target_link_libraries(bitcoinqt
     rpc_client
     leveldb
 )
+if(CMAKE_CROSSCOMPILING)
+  target_compile_definitions(bitcoinqt PRIVATE QT_STATICPLUGIN)
+  if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    target_compile_definitions(bitcoinqt PRIVATE QT_QPA_PLATFORM_XCB)
+  elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
+    target_compile_definitions(bitcoinqt PRIVATE QT_QPA_PLATFORM_WINDOWS)
+  elseif(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+    target_compile_definitions(bitcoinqt PRIVATE QT_QPA_PLATFORM_COCOA)
+  elseif(CMAKE_SYSTEM_NAME STREQUAL Android)
+    target_compile_definitions(bitcoinqt PRIVATE QT_QPA_PLATFORM_ANDROID)
+  endif()
+endif()
 
 add_executable(bitcoin-qt)
 target_sources(bitcoin-qt
