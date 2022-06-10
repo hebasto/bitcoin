@@ -68,11 +68,11 @@ if(USE_CCACHE)
   endif()
 endif()
 
-option(REDUCE_EXPORTS "Attempt to reduce exported symbols in the resulting executables" OFF)
+option(REDUCE_EXPORTS "Attempt to reduce exported symbols in the resulting executables" ON)
 if(REDUCE_EXPORTS)
   set(CMAKE_CXX_VISIBILITY_PRESET hidden)
   set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
-  link_libraries(-Wl,--exclude-libs,ALL)
+  # link_libraries(-Wl,--exclude-libs,ALL)
 endif()
 
 option(BUILD_DAEMON "Build bitcoind" ON)
