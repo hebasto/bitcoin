@@ -5,22 +5,44 @@
 # See:
 #  - https://cmake.org/cmake/help/latest/manual/cmake-qt.7.html
 #  - https://doc.qt.io/qt-5/cmake-manual.html
+#  - https://doc.qt.io/qt-6/cmake-manual.html
+
+if(${CMAKE_VERSION} VERSION_LESS 3.16)
+  if(BUILD_GUI STREQUAL Qt6)
+    message(FATAL_ERROR "CMake >= 3.16 is required to build the GUI with Qt 6.")
+  elseif(BUILD_GUI STREQUAL ON)
+    set(BUILD_GUI Qt5)
+  endif()
+endif()
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_CURRENT_SOURCE_DIR}/forms)
+set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS ON)
+set(QT_NO_CREATE_VERSIONLESS_TARGETS ON)
 
 if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
   execute_process(COMMAND brew --prefix qt@5 OUTPUT_VARIABLE qt5_brew_prefix ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
-find_package(Qt5 5.11.3 REQUIRED COMPONENTS Widgets LinguistTools PATHS ${qt5_brew_prefix})
-message(STATUS "Found Qt, version ${Qt5_VERSION}")
+if(BUILD_GUI STREQUAL ON)
+  find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core PATHS ${qt5_brew_prefix})
+  set(qt_package Qt${QT_VERSION_MAJOR})
+else()
+  set(qt_package ${BUILD_GUI})
+endif()
+
+find_package(${qt_package} 5.11.3 REQUIRED COMPONENTS Widgets LinguistTools PATHS ${qt5_brew_prefix})
+message(STATUS "Found Qt, version ${${qt_package}_VERSION}")
 
 file(GLOB ts_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} locale/*.ts)
 set_source_files_properties(${ts_files} PROPERTIES OUTPUT_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/locale)
-qt5_add_translation(qm_files ${ts_files})
+if(${${qt_package}_VERSION_MAJOR} EQUAL 5)
+  qt5_add_translation(qm_files ${ts_files})
+else()
+  qt6_add_translation(qm_files ${ts_files})
+endif()
 
 add_library(bitcoinqt STATIC EXCLUDE_FROM_ALL)
 target_sources(bitcoinqt
@@ -71,7 +93,7 @@ target_include_directories(bitcoinqt
 )
 target_link_libraries(bitcoinqt
   PUBLIC
-    Qt5::Widgets
+    ${qt_package}::Widgets
   PRIVATE
     rpc_client
     leveldb

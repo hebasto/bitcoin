@@ -39,10 +39,10 @@ option(ENABLE_WALLET "Enable wallet" ON)
 option(USE_CCACHE "Use ccache for building" ON)
 option(REDUCE_EXPORTS "Attempt to reduce exported symbols in the resulting executables" OFF)
 
-set(BUILD_GUI_VALUES ON Qt5 OFF)
-set(BUILD_GUI "ON" CACHE STRING "Build GUI ([ON], Qt5, OFF)")
+set(BUILD_GUI_VALUES ON Qt5 Qt6 OFF)
+set(BUILD_GUI "ON" CACHE STRING "Build GUI ([ON], Qt5, Qt6, OFF)")
 if(NOT BUILD_GUI IN_LIST BUILD_GUI_VALUES)
-  message(FATAL_ERROR "BUILD_GUI value is \"${BUILD_GUI}\", but must be one of \"ON\", \"Qt5\" or \"OFF\".")
+  message(FATAL_ERROR "BUILD_GUI value is \"${BUILD_GUI}\", but must be one of \"ON\", \"Qt5\", \"Qt6\" or \"OFF\".")
 endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Darwin AND NOT BUILD_GUI STREQUAL OFF)
