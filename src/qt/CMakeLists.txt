@@ -124,6 +124,7 @@ if(ENABLE_WALLET)
       transactiondesc.cpp
       transactiondescdialog.cpp
       transactionfilterproxy.cpp
+      transactionoverviewwidget.cpp
       transactionrecord.cpp
       transactiontablemodel.cpp
       transactionview.cpp
