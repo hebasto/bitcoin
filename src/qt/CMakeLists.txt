@@ -133,7 +133,11 @@ if(ENABLE_WALLET)
       walletmodeltransaction.cpp
       walletview.cpp
   )
-  target_link_libraries(bitcoinqt PUBLIC ${qt_package}::Network)
+  target_link_libraries(bitcoinqt
+    PUBLIC
+      ${qt_package}::Network
+      bitcoin_wallet
+  )
 endif()
 
 if(CMAKE_CROSSCOMPILING)
@@ -208,6 +212,7 @@ target_sources(bitcoin-qt
 target_link_libraries(bitcoin-qt
   PRIVATE
     bitcoinqt
+    bitcoin_wallet
     bitcoin_node
     bitcoin_consensus
     bitcoin_common
