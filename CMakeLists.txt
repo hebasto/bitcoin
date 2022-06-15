@@ -31,10 +31,11 @@ foreach(optional_package_option WITH_NATPMP)
   endif()
 endforeach()
 
-message("CMAKE_LIBRARY_PATH is ${CMAKE_LIBRARY_PATH}")
-
 if(NOT WITH_NATPMP STREQUAL no)
-  find_library(natpmp natpmp)
+  # find_path(LIBNATPMP_INCLUDE_DIR natpmp.h)
+  # message(STATUS "Found=========== libnatpmp: ${LIBNATPMP_INCLUDE_DIR}")
+
+  find_library(LIBNATPMP_LIBRARY natpmp)
   # find_library(natpmp libnatpmp /usr/lib/x86_64-linux-gnu)
   # if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
   #   execute_process(COMMAND brew --prefix libnatpmp OUTPUT_VARIABLE libnatpmp_brew_prefix ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -48,15 +49,37 @@ if(NOT WITH_NATPMP STREQUAL no)
   # if(HAVE_NATPMP_H)
   #   CHECK_LIBRARY_EXISTS(natpmp initnatpmp LOCATION HAVE_NATPMP_LIB)
   # endif()
-
-  message("natpmp is ${natpmp}")
+  if(LIBNATPMP_LIBRARY STREQUAL LIBNATPMP_LIBRARY-NOTFOUND)
+    if(WITH_NATPMP STREQUAL yes)
+      message(FATAL_ERROR "libnatpmp requested, but not found.")
+    else()
+      message(WARNING "libnatpmp not found, disabling.\nTo skip libnatpmp check, use \"-DWITH_NATPMP=no\".")
+    endif()
+    unset(USE_NATPMP)
+  else()
+    message(STATUS "Found libnatpmp: ${LIBNATPMP_LIBRARY}")
+    add_library(natpmp UNKNOWN IMPORTED GLOBAL)
+    set(USE_NATPMP 0)
+    set_target_properties(natpmp PROPERTIES
+      IMPORTED_LOCATION ${LIBNATPMP_LIBRARY}
+      # INTERFACE_INCLUDE_DIRECTORIES ${LIBNATPMP_INCLUDE_DIR}
+      INTERFACE_COMPILE_DEFINITIONS USE_NATPMP=${USE_NATPMP}
+    )
+    if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+      set_property(
+        TARGET natpmp
+        APPEND
+        PROPERTY INTERFACE_COMPILE_DEFINITIONS NATPMP_STATICLIB
+      )
+    endif()
+  endif()
 endif()
 
 
 
 
 
-message(FATAL_ERROR "Stop.")
+# message(FATAL_ERROR "Stop.")
 
 set(PACKAGE_NAME ${PROJECT_NAME})
 set(PACKAGE_VERSION ${PROJECT_VERSION})
