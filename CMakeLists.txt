@@ -17,6 +17,29 @@ project("Bitcoin Core"
   LANGUAGES CXX C ASM
 )
 
+
+include(CheckIncludeFileCXX)
+
+set(WITH_NATPMP "auto" CACHE STRING "Enable NAT-PMP ([auto], yes, no). \"auto\" means \"yes\" if libnatpmp is found")
+
+set(OPTIONAL_PACKAGE_OPTION_VALUES auto yes no)
+foreach(optional_package_option WITH_NATPMP)
+  if(NOT ${optional_package_option} IN_LIST OPTIONAL_PACKAGE_OPTION_VALUES)
+    message(FATAL_ERROR "${optional_package_option} value is \"${${optional_package_option}}\", but must be one of \"auto\", \"yes\" or \"no\".")
+  endif()
+endforeach()
+
+if(NOT WITH_NATPMP STREQUAL no)
+  CHECK_INCLUDE_FILE_CXX(natpmp.h HAVE_NATPMP_H)
+  message("HAVE_NATPMP_H is ${HAVE_NATPMP_H}")
+endif()
+
+
+
+
+
+message(FATAL_ERROR "Stop.")
+
 set(PACKAGE_NAME ${PROJECT_NAME})
 set(PACKAGE_VERSION ${PROJECT_VERSION})
 set(CLIENT_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
