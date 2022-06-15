@@ -4,6 +4,7 @@
 
 # We are able to build on Ubuntu Bionic.
 # On the other hand, some useful features lack:
+#  - 3.11: The target_*() commands learned to set the INTERFACE properties on Imported Targets
 #  - 3.12: Object libraries can be linked to with target_link_libraries()
 #  - 3.12: If the CONFIGURE_DEPENDS flag is specified, CMake will add logic to the main
 #          build system check target to rerun the flagged GLOB commands at build time
