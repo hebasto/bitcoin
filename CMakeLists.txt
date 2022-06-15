@@ -20,6 +20,7 @@ project("Bitcoin Core"
 
 
 include(CheckIncludeFileCXX)
+include(CheckLibraryExists)
 
 set(WITH_NATPMP "auto" CACHE STRING "Enable NAT-PMP ([auto], yes, no). \"auto\" means \"yes\" if libnatpmp is found")
 
@@ -30,17 +31,25 @@ foreach(optional_package_option WITH_NATPMP)
   endif()
 endforeach()
 
-if(NOT WITH_NATPMP STREQUAL no)
-  if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
-    execute_process(COMMAND brew --prefix libnatpmp OUTPUT_VARIABLE libnatpmp_brew_prefix ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
-    set(NATPMP_INCLUDES ${libnatpmp_brew_prefix}/include)
-  endif()
-  set(TEMP_CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
-  set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} ${NATPMP_INCLUDES}")
-  CHECK_INCLUDE_FILE_CXX(natpmp.h HAVE_NATPMP_H)
-  set(CMAKE_REQUIRED_INCLUDES ${TEMP_CMAKE_REQUIRED_INCLUDES})
+message("CMAKE_LIBRARY_PATH is ${CMAKE_LIBRARY_PATH}")
 
-  message("HAVE_NATPMP_H is ${HAVE_NATPMP_H}")
+if(NOT WITH_NATPMP STREQUAL no)
+  find_library(natpmp natpmp)
+  # find_library(natpmp libnatpmp /usr/lib/x86_64-linux-gnu)
+  # if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+  #   execute_process(COMMAND brew --prefix libnatpmp OUTPUT_VARIABLE libnatpmp_brew_prefix ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE)
+  #   set(NATPMP_INCLUDES ${libnatpmp_brew_prefix}/include)
+  # endif()
+  # set(TEMP_CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
+  # set(CMAKE_REQUIRED_INCLUDES "${CMAKE_REQUIRED_INCLUDES} ${NATPMP_INCLUDES}")
+  # CHECK_INCLUDE_FILE_CXX(natpmp.h HAVE_NATPMP_H)
+  # set(CMAKE_REQUIRED_INCLUDES ${TEMP_CMAKE_REQUIRED_INCLUDES})
+
+  # if(HAVE_NATPMP_H)
+  #   CHECK_LIBRARY_EXISTS(natpmp initnatpmp LOCATION HAVE_NATPMP_LIB)
+  # endif()
+
+  message("natpmp is ${natpmp}")
 endif()
 
 
