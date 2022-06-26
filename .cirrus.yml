@@ -92,12 +92,12 @@ task:
     - ./build/test/functional/test_runner.py --ci -j$(nproc) --tmpdirprefix ${CIRRUS_WORKING_DIR}/test_runner --ansi --combinedlogslen=4000 --timeout-factor=40 --quiet
 
 task:
-  name: '[CMake, depends NO_WALLET=1, ENABLE_WALLET=OFF] [jammy]'
+  name: '[CMake, depends NO_WALLET=1, ENABLE_WALLET=OFF] [bionic]'
   << : *BASE_TEMPLATE
   container:
-    image: ubuntu:jammy
+    image: ubuntu:bionic
     cpu: 4
-    memory: 10G
+    memory: 16G
   depends_built_cache:
     folder: "depends/built"
     fingerprint_script: echo $CIRRUS_TASK_NAME $(git rev-list -1 HEAD ./depends)
@@ -107,15 +107,17 @@ task:
     << : *CIRRUS_EPHEMERAL_WORKER_TEMPLATE_ENV
   install_script:
     - apt-get update
-    - apt-get install -y --no-install-recommends --no-upgrade build-essential libtool autotools-dev automake pkg-config bsdmainutils curl ccache python3 rsync bison cmake
+    - apt-get install -y --no-install-recommends --no-upgrade g++-8 build-essential libtool autotools-dev automake pkg-config bsdmainutils curl ccache python3 bison cmake
   depends_script:
     - export LC_ALL=C.UTF-8
     - make -C depends -j$(nproc) NO_WALLET=1
   configure_script:
-    - cmake --toolchain depends/x86_64-pc-linux-gnu/share/toolchain.cmake -DENABLE_WALLET=OFF -S . -B build
+    - mkdir build
+    - cd build
+    - CC=gcc-8 CXX=g++-8 cmake -DCMAKE_TOOLCHAIN_FILE=depends/x86_64-pc-linux-gnu/share/toolchain.cmake -DENABLE_WALLET=OFF ..
   build_script:
     - export LC_ALL=C.UTF-8
-    - cmake --build build -j$(nproc)
+    - cmake --build build -- -j$(nproc)
   functional_tests_script:
     - export LC_ALL=C.UTF-8
     - ./build/test/functional/test_runner.py --ci -j$(nproc) --tmpdirprefix ${CIRRUS_WORKING_DIR}/test_runner --ansi --combinedlogslen=4000 --timeout-factor=40 --quiet
