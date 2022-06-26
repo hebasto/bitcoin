@@ -110,11 +110,12 @@ task:
     - apt-get install -y --no-install-recommends --no-upgrade g++-8 build-essential libtool autotools-dev automake pkg-config bsdmainutils curl ccache python3 bison cmake
   depends_script:
     - export LC_ALL=C.UTF-8
-    - make -C depends -j$(nproc) NO_WALLET=1
+    - make -C depends -j$(nproc) NO_WALLET=1 LOG=1 CC=gcc-8 CXX=g++-8
+    - cat /tmp/cirrus-ci-build/depends/x86_64-pc-linux-gnu/share/toolchain.cmake
   configure_script:
     - mkdir build
     - cd build
-    - CC=gcc-8 CXX=g++-8 cmake -DCMAKE_TOOLCHAIN_FILE=depends/x86_64-pc-linux-gnu/share/toolchain.cmake -DENABLE_WALLET=OFF ..
+    - cmake -DCMAKE_TOOLCHAIN_FILE=/tmp/cirrus-ci-build/depends/x86_64-pc-linux-gnu/share/toolchain.cmake -DENABLE_WALLET=OFF ..
   build_script:
     - export LC_ALL=C.UTF-8
     - cmake --build build -- -j$(nproc)
