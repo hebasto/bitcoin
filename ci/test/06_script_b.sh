@@ -55,6 +55,7 @@ if [ "${RUN_TIDY}" = "true" ]; then
           " src/rpc/signmessage.cpp"\
           " src/test/fuzz/txorphan.cpp"\
           " src/threadinterrupt.cpp"\
+          " src/txmempool_entry.cpp"\
           " src/util/bip32.cpp"\
           " src/util/bytevectorhash.cpp"\
           " src/util/error.cpp"\
