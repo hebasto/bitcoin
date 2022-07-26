@@ -339,7 +339,9 @@ dnl -----------------------------
 dnl
 dnl Outputs: QT_LIBS is prepended.
 AC_DEFUN([_BITCOIN_QT_CHECK_STATIC_LIBS], [
-  PKG_CHECK_MODULES([QT_ACCESSIBILITY], [${qt_lib_prefix}AccessibilitySupport${qt_lib_suffix}], [QT_LIBS="$QT_ACCESSIBILITY_LIBS $QT_LIBS"])
+  if test "$TARGET_OS" != "windows"; then
+    PKG_CHECK_MODULES([QT_ACCESSIBILITY], [${qt_lib_prefix}AccessibilitySupport${qt_lib_suffix}], [QT_LIBS="$QT_ACCESSIBILITY_LIBS $QT_LIBS"])
+  fi
   PKG_CHECK_MODULES([QT_DEVICEDISCOVERY], [${qt_lib_prefix}DeviceDiscoverySupport${qt_lib_suffix}], [QT_LIBS="$QT_DEVICEDISCOVERY_LIBS $QT_LIBS"])
   PKG_CHECK_MODULES([QT_EDID], [${qt_lib_prefix}EdidSupport${qt_lib_suffix}], [QT_LIBS="$QT_EDID_LIBS $QT_LIBS"])
   PKG_CHECK_MODULES([QT_EVENTDISPATCHER], [${qt_lib_prefix}EventDispatcherSupport${qt_lib_suffix}], [QT_LIBS="$QT_EVENTDISPATCHER_LIBS $QT_LIBS"])
@@ -355,8 +357,6 @@ AC_DEFUN([_BITCOIN_QT_CHECK_STATIC_LIBS], [
     PKG_CHECK_MODULES([QT_CLIPBOARD], [${qt_lib_prefix}ClipboardSupport${qt_lib_suffix}], [QT_LIBS="$QT_CLIPBOARD_LIBS $QT_LIBS"])
     PKG_CHECK_MODULES([QT_GRAPHICS], [${qt_lib_prefix}GraphicsSupport${qt_lib_suffix}], [QT_LIBS="$QT_GRAPHICS_LIBS $QT_LIBS"])
     PKG_CHECK_MODULES([QT_SERVICE], [${qt_lib_prefix}ServiceSupport${qt_lib_suffix}], [QT_LIBS="$QT_SERVICE_LIBS $QT_LIBS"])
-  elif test "$TARGET_OS" = "windows"; then
-    PKG_CHECK_MODULES([QT_WINDOWSUIAUTOMATION], [${qt_lib_prefix}WindowsUIAutomationSupport${qt_lib_suffix}], [QT_LIBS="$QT_WINDOWSUIAUTOMATION_LIBS $QT_LIBS"])
   elif test "$TARGET_OS" = "android"; then
     PKG_CHECK_MODULES([QT_EGL], [${qt_lib_prefix}EglSupport${qt_lib_suffix}], [QT_LIBS="$QT_EGL_LIBS $QT_LIBS"])
     PKG_CHECK_MODULES([QT_SERVICE], [${qt_lib_prefix}ServiceSupport${qt_lib_suffix}], [QT_LIBS="$QT_SERVICE_LIBS $QT_LIBS"])
