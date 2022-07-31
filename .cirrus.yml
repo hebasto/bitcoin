@@ -92,7 +92,7 @@ task:
     - ./build/test/functional/test_runner.py --ci -j$(nproc) --tmpdirprefix ${CIRRUS_WORKING_DIR}/test_runner --ansi --combinedlogslen=4000 --timeout-factor=40 --quiet
 
 task:
-  name: '[CMake, depends NO_WALLET=1, ENABLE_WALLET=OFF] [bionic]'
+  name: '[CMake, depends NO_QT=1, BUILD_GUI=OFF] [bionic]'
   << : *BASE_TEMPLATE
   container:
     image: ubuntu:bionic
@@ -110,15 +110,44 @@ task:
     - apt-get install -y --no-install-recommends --no-upgrade g++-8 build-essential libtool autotools-dev automake pkg-config bsdmainutils curl ccache python3 bison cmake
   depends_script:
     - export LC_ALL=C.UTF-8
-    - make -C depends -j$(nproc) NO_WALLET=1 LOG=1 CC=gcc-8 CXX=g++-8
+    - make -C depends -j$(nproc) NO_QT=1 LOG=1 CC=gcc-8 CXX=g++-8
     - cat /tmp/cirrus-ci-build/depends/x86_64-pc-linux-gnu/share/toolchain.cmake
   configure_script:
     - mkdir build
     - cd build
-    - cmake -DCMAKE_TOOLCHAIN_FILE=/tmp/cirrus-ci-build/depends/x86_64-pc-linux-gnu/share/toolchain.cmake -DENABLE_WALLET=OFF ..
+    - cmake -DCMAKE_TOOLCHAIN_FILE=/tmp/cirrus-ci-build/depends/x86_64-pc-linux-gnu/share/toolchain.cmake -DBUILD_GUI=OFF ..
   build_script:
     - export LC_ALL=C.UTF-8
     - cmake --build build -- -j$(nproc)
+  functional_tests_script:
+    - export LC_ALL=C.UTF-8
+    - ./build/test/functional/test_runner.py --ci -j$(nproc) --tmpdirprefix ${CIRRUS_WORKING_DIR}/test_runner --ansi --combinedlogslen=4000 --timeout-factor=40 --quiet
+
+task:
+  name: '[CMake, depends NO_WALLET=1, ENABLE_WALLET=OFF] [jammy]'
+  << : *BASE_TEMPLATE
+  container:
+    image: ubuntu:jammy
+    cpu: 4
+    memory: 16G
+  depends_built_cache:
+    folder: "depends/built"
+    fingerprint_script: echo $CIRRUS_TASK_NAME $(git rev-list -1 HEAD ./depends)
+  ccache_cache:
+    folder: "/tmp/ccache_dir"
+  env:
+    << : *CIRRUS_EPHEMERAL_WORKER_TEMPLATE_ENV
+  install_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends --no-upgrade build-essential libtool autotools-dev automake pkg-config bsdmainutils curl ccache python3 rsync bison cmake
+  depends_script:
+    - export LC_ALL=C.UTF-8
+    - make -C depends -j$(nproc) NO_WALLET=1
+  configure_script:
+    - cmake --toolchain depends/x86_64-pc-linux-gnu/share/toolchain.cmake -DENABLE_WALLET=OFF -S . -B build
+  build_script:
+    - export LC_ALL=C.UTF-8
+    - cmake --build build -j$(nproc)
   functional_tests_script:
     - export LC_ALL=C.UTF-8
     - ./build/test/functional/test_runner.py --ci -j$(nproc) --tmpdirprefix ${CIRRUS_WORKING_DIR}/test_runner --ansi --combinedlogslen=4000 --timeout-factor=40 --quiet
