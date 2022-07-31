@@ -15,6 +15,13 @@ if(${CMAKE_VERSION} VERSION_LESS 3.16)
   endif()
 endif()
 
+if(${CMAKE_VERSION} VERSION_LESS 3.12)
+  if(BUILD_GUI STREQUAL Qt5 AND CMAKE_CROSSCOMPILING)
+    # Qt 5.15 uses `$<IN_LIST:>` in the `mkspecs/features/data/cmake/Qt5PluginTarget.cmake.in`.
+    message(FATAL_ERROR "CMake >= 3.12 is required to build the GUI statically with Qt 5.")
+  endif()
+endif()
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
