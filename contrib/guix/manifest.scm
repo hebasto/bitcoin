@@ -618,12 +618,7 @@ inspecting signatures in Mach-O binaries.")
                  (make-nsis-for-gcc-10 nsis-x86_64)
                  osslsigncode))
           ((string-contains target "-linux-")
-           (list (cond ((string-contains target "riscv64-")
-                        (make-bitcoin-cross-toolchain target
-                                                      #:base-libc (make-glibc-with-stack-protector
-                                                        (make-glibc-with-bind-now (make-glibc-without-werror glibc-2.27/bitcoin-patched)))))
-                       (else
-                        (make-bitcoin-cross-toolchain target)))))
+           (list clang-toolchain-10 binutils))
           ((string-contains target "darwin")
            (list clang-toolchain-10 binutils cmake xorriso python-signapple))
           (else '())))))
