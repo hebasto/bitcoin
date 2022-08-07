@@ -133,6 +133,8 @@ endif()
 
 include(cmake/introspection.cmake)
 
+include(cmake/subtree-minisketch.cmake)
+
 include(cmake/optional.cmake)
 
 add_subdirectory(src)
