@@ -46,6 +46,7 @@ set(COPYRIGHT_HOLDERS_FINAL "The Bitcoin Core developers")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+include(cmake/check_filesystem.cmake)
 
 # Configurable options.
 option(REDUCE_EXPORTS "Attempt to reduce exported symbols in the resulting executables" OFF)
