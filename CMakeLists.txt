@@ -134,6 +134,7 @@ endif()
 include(cmake/introspection.cmake)
 
 include(cmake/subtree-minisketch.cmake)
+include(cmake/subtree-secp256k1.cmake)
 
 include(cmake/optional.cmake)
 
