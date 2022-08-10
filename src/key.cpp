@@ -292,8 +292,8 @@ bool CKey::SignSchnorr(const uint256& hash, Span<unsigned char> sig, const uint2
     if (ret) {
         // Additional verification step to prevent using a potentially corrupted signature
         secp256k1_xonly_pubkey pubkey_verify;
-        ret = secp256k1_keypair_xonly_pub(GetVerifyContext(), &pubkey_verify, nullptr, &keypair);
-        ret &= secp256k1_schnorrsig_verify(GetVerifyContext(), sig.data(), hash.begin(), 32, &pubkey_verify);
+        ret = secp256k1_keypair_xonly_pub(GetVerifyContext(), &pubkey_verify, nullptr, &keypair) &
+              secp256k1_schnorrsig_verify(GetVerifyContext(), sig.data(), hash.begin(), 32, &pubkey_verify);
     }
     if (!ret) memory_cleanse(sig.data(), sig.size());
     memory_cleanse(&keypair, sizeof(keypair));
