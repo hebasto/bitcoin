@@ -233,7 +233,9 @@ endef
 #
 # 4. Put our C, CXX and LD FLAGS into gcc-base.conf. Only used for non-host builds.
 #
-# 5. In clang.conf, swap out clang & clang++, for our compiler + flags. See #17466.
+# 5. In g++-base.conf, swap out gcc & g++, for our compiler + flags. See #25822.
+#
+# 6. In clang.conf, swap out clang & clang++, for our compiler + flags. See #17466.
 define $(package)_preprocess_cmds
   cp $($(package)_patch_dir)/qt.pro qt.pro && \
   cp $($(package)_patch_dir)/qttools_src.pro qttools/src/src.pro && \
@@ -257,6 +259,8 @@ define $(package)_preprocess_cmds
   echo "!host_build: QMAKE_CFLAGS     += $($(package)_cflags) $($(package)_cppflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
   echo "!host_build: QMAKE_CXXFLAGS   += $($(package)_cxxflags) $($(package)_cppflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
   echo "!host_build: QMAKE_LFLAGS     += $($(package)_ldflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
+  echo "!host_build: QMAKE_CC = $($(package)_cc)" >> qtbase/mkspecs/common/g++-base.conf && \
+  echo "!host_build: QMAKE_CXX = $($(package)_cxx)" >> qtbase/mkspecs/common/g++-base.conf && \
   sed -i.old "s|QMAKE_CC                = \$$$$\$$$${CROSS_COMPILE}clang|QMAKE_CC                = $($(package)_cc)|" qtbase/mkspecs/common/clang.conf && \
   sed -i.old "s|QMAKE_CXX               = \$$$$\$$$${CROSS_COMPILE}clang++|QMAKE_CXX               = $($(package)_cxx)|" qtbase/mkspecs/common/clang.conf
 endef
