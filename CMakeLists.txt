@@ -50,16 +50,44 @@ set(CMAKE_CXX_FLAGS_RELWITHASSERTS "${release_cxx_flags}" CACHE STRING
   "Flags used by the C++ compiler during \"RelWithAsserts\" builds."
   FORCE
 )
+# Define custom "RelHardened" build type
+set(hardened_cxx_flags "")
+try_append_cxxflag(hardened_cxx_flags "-Wstack-protector")
+try_append_cxxflag(hardened_cxx_flags "-fstack-protector-all")
+try_append_cxxflag(hardened_cxx_flags "-fcf-protection=full")
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+  try_append_cxxflag(hardened_cxx_flags "-fstack-clash-protection")
+endif()
+set(CMAKE_CXX_FLAGS_RELHARDENED "${release_cxx_flags} ${hardened_cxx_flags}" CACHE STRING
+  "Flags used by the C++ compiler during \"RelHardened\" builds."
+  FORCE
+)
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+  set(hardened_linker_flags "-Wl,-z,relro -Wl,-z,now -Wl,-z,separate-code")
+elseif(CMAKE_SYSTEM_NAME STREQUAL Windows)
+  set(hardened_linker_flags "-Wl,--enable-reloc-section -Wl,--dynamicbase -Wl,--nxcompat -Wl,--high-entropy-va")
+endif()
+set(CMAKE_EXE_LINKER_FLAGS_RELHARDENED "${hardened_linker_flags}" CACHE STRING
+  "Flags used for linking binaries during \"RelHardened\" builds."
+  FORCE
+)
+set(CMAKE_SHARED_LINKER_FLAGS_RELHARDENED "${hardened_linker_flags}" CACHE STRING
+  "Flags used by the shared libraries linker during \"RelHardened\" builds."
+  FORCE
+)
 mark_as_advanced(
   CMAKE_CXX_FLAGS_RELWITHASSERTS
+  CMAKE_CXX_FLAGS_RELHARDENED
+  CMAKE_EXE_LINKER_FLAGS_RELHARDENED
+  CMAKE_SHARED_LINKER_FLAGS_RELHARDENED
 )
 get_property(cached_cmake_build_type CACHE CMAKE_BUILD_TYPE PROPERTY TYPE)
 if(cached_cmake_build_type)
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
-    STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo" "RelWithAsserts"
+    STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo" "RelWithAsserts" "RelHardened"
   )
 endif()
-set(default_build_type "RelWithAsserts")
+set(default_build_type "RelHardened")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to \"${default_build_type}\" as none was specified")
   set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE STRING "Choose the type of build." FORCE)
