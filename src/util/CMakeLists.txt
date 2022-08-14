@@ -58,7 +58,7 @@ target_link_libraries(bitcoin_util
     Threads::Threads
 )
 
-if(TARGET PkgConfig::libevent)
+if(TARGET libevent)
   target_sources(bitcoin_util PRIVATE url.cpp)
-  target_link_libraries(bitcoin_util PRIVATE PkgConfig::libevent)
+  target_link_libraries(bitcoin_util PRIVATE libevent)
 endif()

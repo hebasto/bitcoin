@@ -138,16 +138,21 @@ include(cmake/subtree-secp256k1.cmake)
 
 include(cmake/optional.cmake)
 
-include(FindPkgConfig)
-
 # Find Boost headers only.
 find_package(Boost 1.64.0 REQUIRED)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
-pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
-if(WIN32)
+if(CXX_COMPILER_ID STREQUAL MSVC)
+  find_package(Libevent CONFIG REQUIRED)
+  add_library(libevent ALIAS libevent::core)
+else()
+  include(FindPkgConfig)
+  pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
+  add_library(libevent ALIAS PkgConfig::libevent)
+endif()
+if(CMAKE_SYSTEM_NAME STREQUAL Windows AND TARGET PkgConfig::libevent)
   target_link_libraries(PkgConfig::libevent INTERFACE iphlpapi ws2_32)
 endif()
 
