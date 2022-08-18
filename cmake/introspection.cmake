@@ -147,3 +147,8 @@ if(HAVE_STRING_H)
   }
   " STRERROR_R_CHAR_P)
 endif()
+
+check_cxx_source_compiles("
+int foo(void) __attribute__((visibility(\"default\")));
+int main(){}
+" HAVE_DEFAULT_VISIBILITY_ATTRIBUTE)

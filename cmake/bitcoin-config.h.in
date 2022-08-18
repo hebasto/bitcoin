@@ -171,4 +171,10 @@
 /* Define to 1 if strerror_r returns char *. */
 #cmakedefine STRERROR_R_CHAR_P 1
 
+
+// Compiler features.
+
+/* Define if the visibility attribute is supported. */
+#define HAVE_DEFAULT_VISIBILITY_ATTRIBUTE
+
 #endif // BITCOIN_CONFIG_H
