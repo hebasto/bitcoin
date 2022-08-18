@@ -250,6 +250,8 @@ if(APPLE)
   endif()
 endif()
 
+include(cmake/introspection.cmake)
+
 include(CheckStdFilesystem)
 check_std_filesystem()
 
