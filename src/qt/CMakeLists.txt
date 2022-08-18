@@ -15,7 +15,7 @@ set(qt_minimum_required_version 5.11.3)
 set(qt_package ${WITH_GUI})
 
 find_package(${qt_package} ${qt_minimum_required_version} REQUIRED
-  COMPONENTS Widgets LinguistTools
+  COMPONENTS Widgets Network LinguistTools
   HINTS ${qt5_brew_prefix}
   PATH_SUFFIXES Qt5 # Required on OpenBSD systems.
 )
@@ -78,6 +78,47 @@ target_link_libraries(bitcoinqt
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   target_link_libraries(bitcoinqt PRIVATE "-framework AppKit")
   target_compile_options(bitcoinqt PRIVATE "-Wno-error=deprecated-declarations")
+endif()
+
+if(ENABLE_WALLET)
+  target_sources(bitcoinqt
+    PRIVATE
+      addressbookpage.cpp
+      addresstablemodel.cpp
+      askpassphrasedialog.cpp
+      coincontroldialog.cpp
+      coincontroltreewidget.cpp
+      createwalletdialog.cpp
+      editaddressdialog.cpp
+      openuridialog.cpp
+      overviewpage.cpp
+      paymentserver.cpp
+      psbtoperationsdialog.cpp
+      qrimagewidget.cpp
+      receivecoinsdialog.cpp
+      receiverequestdialog.cpp
+      recentrequeststablemodel.cpp
+      sendcoinsdialog.cpp
+      sendcoinsentry.cpp
+      signverifymessagedialog.cpp
+      transactiondesc.cpp
+      transactiondescdialog.cpp
+      transactionfilterproxy.cpp
+      transactionoverviewwidget.cpp
+      transactionrecord.cpp
+      transactiontablemodel.cpp
+      transactionview.cpp
+      walletcontroller.cpp
+      walletframe.cpp
+      walletmodel.cpp
+      walletmodeltransaction.cpp
+      walletview.cpp
+  )
+  target_link_libraries(bitcoinqt
+    PRIVATE
+      bitcoin_wallet
+      ${qt_package}::Network
+  )
 endif()
 
 add_executable(bitcoin-qt "")
