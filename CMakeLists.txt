@@ -250,6 +250,9 @@ if(APPLE)
   endif()
 endif()
 
+include(CheckStdFilesystem)
+check_std_filesystem()
+
 add_subdirectory(src)
 
 message("\n")
