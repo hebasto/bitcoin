@@ -150,7 +150,6 @@ task:
     - .\vcpkg integrate install
     - .\vcpkg version
   build_script:
-    - '%x64_NATIVE_TOOLS%'
     - cd %CIRRUS_WORKING_DIR%
     - ccache --zero-stats --max-size=%CCACHE_SIZE%
     - python build_msvc\msvc-autogen.py
