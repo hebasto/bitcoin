@@ -1224,7 +1224,7 @@ struct KeyParser {
         assert(m_out);
         Key key = m_keys.size();
         auto pk = ParsePubkey(key, {&*begin, &*end}, ParseScriptContext::P2WSH, *m_out, m_key_parsing_error);
-        if (!pk) return {};
+        if (!pk) return std::nullopt;
         m_keys.push_back(std::move(pk));
         return key;
     }
@@ -1259,7 +1259,7 @@ struct KeyParser {
             m_keys.push_back(InferPubkey(pubkey, ParseScriptContext::P2WSH, *m_in));
             return key;
         }
-        return {};
+        return std::nullopt;
     }
 };
 
