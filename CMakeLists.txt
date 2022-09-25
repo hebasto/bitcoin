@@ -68,7 +68,9 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/module)
 
 # Configurable options.
 # When adding a new option, end the <help_text> with a full stop for consistency.
+option(BUILD_DAEMON "Build bitcoind executable." ON)
 option(ASM "Use assembly routines." ON)
+
 option(CXX20 "Enable compilation in c++20 mode." OFF)
 option(HARDENING "Attempt to harden the resulting executables." ON)
 option(REDUCE_EXPORTS "Attempt to reduce exported symbols in the resulting executables." OFF)
@@ -261,32 +263,34 @@ include(cmake/subtree-secp256k1.cmake)
 include(CheckStdFilesystem)
 check_std_filesystem()
 
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-find_package(Threads REQUIRED)
+find_package(PkgConfig)
+if(BUILD_DAEMON)
+  set(THREADS_PREFER_PTHREAD_FLAG ON)
+  find_package(Threads REQUIRED)
 
-# Find Boost headers only.
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-  execute_process(
-    COMMAND brew --prefix boost
-    OUTPUT_VARIABLE BOOST_ROOT
-    ERROR_QUIET
-    OUTPUT_STRIP_TRAILING_WHITESPACE
+  # Find Boost headers only.
+  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    execute_process(
+      COMMAND brew --prefix boost
+      OUTPUT_VARIABLE BOOST_ROOT
+      ERROR_QUIET
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+  endif()
+  set(Boost_NO_BOOST_CMAKE ON)
+  find_package(Boost 1.64.0 REQUIRED)
+  mark_as_advanced(Boost_INCLUDE_DIR)
+  set_property(TARGET Boost::boost APPEND PROPERTY
+    INTERFACE_COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_MULTI_INDEX_ENABLE_SAFE_MODE>
+  )
+
+  pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
+  set_property(TARGET PkgConfig::libevent APPEND PROPERTY
+    INTERFACE_LINK_LIBRARIES $<$<PLATFORM_ID:Windows>:iphlpapi;ws2_32>
   )
 endif()
-set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost 1.64.0 REQUIRED)
-mark_as_advanced(Boost_INCLUDE_DIR)
-set_property(TARGET Boost::boost APPEND PROPERTY
-  INTERFACE_COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_MULTI_INDEX_ENABLE_SAFE_MODE>
-)
 
-find_package(PkgConfig)
-pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
-set_property(TARGET PkgConfig::libevent APPEND PROPERTY
-  INTERFACE_LINK_LIBRARIES $<$<PLATFORM_ID:Windows>:iphlpapi;ws2_32>
-)
-
-if(NOT WIN32)
+if(NOT WIN32 AND BUILD_DAEMON)
   pkg_check_modules(libevent_pthreads REQUIRED libevent_pthreads>=2.1.8 IMPORTED_TARGET)
 endif()
 
@@ -297,6 +301,9 @@ add_subdirectory(src)
 message("\n")
 message("Configure summary")
 message("=================")
+message("Executables:")
+message("  bitcoind ............................ ${BUILD_DAEMON}")
+message("")
 get_directory_property(definitions COMPILE_DEFINITIONS)
 string(REPLACE ";" " " definitions "${definitions}")
 message("Preprocessor defined macros ........... ${definitions}")
