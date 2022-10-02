@@ -27,6 +27,11 @@ BOOST_AUTO_TEST_CASE(minisketch_test)
         uint32_t start_b = start_a + a_not_b;
         uint32_t end_b = start_b + both + b_not_a;
 
+#ifdef _MSC_VER
+        // FIXME
+        BOOST_TEST_MESSAGE("This message *breaks* this test when running with '-l test_suite'");
+#endif
+
         Minisketch sketch_a = MakeMinisketch32(10);
         for (uint32_t a = start_a; a < end_a; ++a) sketch_a.Add(a);
         Minisketch sketch_b = MakeMinisketch32(10);
