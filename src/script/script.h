@@ -66,8 +66,7 @@ std::vector<unsigned char> ToByteVector(const T& in)
 }
 
 /** Script opcodes */
-enum opcodetype
-{
+enum opcodetype : uint8_t {
     // push value
     OP_0 = 0x00,
     OP_FALSE = OP_0,
@@ -209,7 +208,7 @@ enum opcodetype
 };
 
 // Maximum value that an opcode can be
-static const unsigned int MAX_OPCODE = OP_NOP10;
+static const uint8_t MAX_OPCODE = OP_NOP10;
 
 std::string GetOpName(opcodetype opcode);
 
