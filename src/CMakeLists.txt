@@ -2,6 +2,8 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+include(CopyTargetForTests)
+
 configure_file(${CMAKE_SOURCE_DIR}/cmake/bitcoin-config.h.in config/bitcoin-config.h @ONLY)
 add_compile_definitions(HAVE_CONFIG_H)
 include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
@@ -106,6 +108,7 @@ if(ENABLE_WALLET)
       bitcoin_util
       Boost::headers
     )
+    copy_target_for_tests(bitcoin-wallet)
   endif()
 endif()
 
@@ -235,6 +238,7 @@ if(BUILD_DAEMON)
     PRIVATE
       $<$<BOOL:${MINGW}>:-static>
   )
+  copy_target_for_tests(bitcoind)
 endif()
 
 
@@ -257,6 +261,7 @@ if(BUILD_CLI)
     bitcoin_util
     libevent::libevent
   )
+  copy_target_for_tests(bitcoin-cli)
 endif()
 
 
@@ -267,6 +272,7 @@ if(BUILD_TX)
     bitcoin_util
     univalue
   )
+  copy_target_for_tests(bitcoin-tx)
 endif()
 
 
@@ -276,6 +282,7 @@ if(BUILD_UTIL)
     bitcoin_common
     bitcoin_util
   )
+  copy_target_for_tests(bitcoin-util)
 endif()
 
 
