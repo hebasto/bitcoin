@@ -2,6 +2,8 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+include(CopyTargetForTests)
+
 set(CRC32C_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(CRC32C_BUILD_BENCHMARKS OFF CACHE BOOL "" FORCE)
 set(CRC32C_USE_GLOG OFF CACHE BOOL "" FORCE)
@@ -161,6 +163,7 @@ if(ENABLE_WALLET)
         bitcoin_util
         Boost::boost
     )
+    copy_target_for_tests(bitcoin-wallet)
   endif()
 endif()
 
@@ -292,6 +295,7 @@ if(BUILD_DAEMON)
     PRIVATE
       bitcoin_node
   )
+  copy_target_for_tests(bitcoind)
 endif()
 
 
@@ -321,6 +325,7 @@ if(BUILD_CLI)
       bitcoin_util
       PkgConfig::libevent
   )
+  copy_target_for_tests(bitcoin-cli)
 endif()
 
 
@@ -336,6 +341,7 @@ if(BUILD_TX)
       bitcoin_util
       univalue
   )
+  copy_target_for_tests(bitcoin-tx)
 endif()
 
 
@@ -350,6 +356,7 @@ if(BUILD_UTIL)
       bitcoin_common
       bitcoin_util
   )
+  copy_target_for_tests(bitcoin-util)
 endif()
 
 
