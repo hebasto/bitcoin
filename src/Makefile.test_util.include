@@ -29,10 +29,10 @@ libtest_util_a_SOURCES = \
   test/util/mining.cpp \
   test/util/net.cpp \
   test/util/script.cpp \
+  test/util/txmempool.cpp \
   test/util/setup_common.cpp \
   test/util/str.cpp \
   test/util/transaction_utils.cpp \
-  test/util/txmempool.cpp \
   test/util/validation.cpp \
   test/util/wallet.cpp \
   $(TEST_UTIL_H)
