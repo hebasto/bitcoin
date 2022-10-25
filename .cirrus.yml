@@ -52,6 +52,14 @@ global_task_template: &GLOBAL_TASK_TEMPLATE
   << : *BASE_TEMPLATE
   << : *MAIN_TEMPLATE
 
+macos_native_task_template: &MACOS_NATIVE_TASK_TEMPLATE
+  << : *BASE_TEMPLATE
+  check_clang_script:
+    - clang --version
+  brew_install_script:
+    - brew install boost libevent qt@5 miniupnpc libnatpmp ccache zeromq qrencode libtool automake gnu-getopt
+  << : *MAIN_TEMPLATE
+
 compute_credits_template: &CREDITS_TEMPLATE
   # https://cirrus-ci.org/pricing/#compute-credits
   # Only use credits for pull requests to the main repo
@@ -281,18 +289,16 @@ task:
     FILE_ENV: "./ci/test/00_setup_env_mac.sh"
 
 task:
-  name: 'macOS 12 native [gui, system sqlite only] [no depends]'
-  brew_install_script:
-    - brew install boost libevent qt@5 miniupnpc libnatpmp ccache zeromq qrencode libtool automake gnu-getopt
-  << : *GLOBAL_TASK_TEMPLATE
+  name: 'macOS 13 native arm64 [gui, sqlite only] [no depends]'
   macos_instance:
     # Use latest image, but hardcode version to avoid silent upgrades (and breaks)
-    image: monterey-xcode-13.2  # https://cirrus-ci.org/guide/macOS
+    image: ghcr.io/cirruslabs/macos-ventura-xcode:14.1  # https://cirrus-ci.org/guide/macOS
+  << : *MACOS_NATIVE_TASK_TEMPLATE
   env:
     << : *CIRRUS_EPHEMERAL_WORKER_TEMPLATE_ENV
     CI_USE_APT_INSTALL: "no"
     PACKAGE_MANAGER_INSTALL: "echo"  # Nothing to do
-    FILE_ENV: "./ci/test/00_setup_env_mac_host.sh"
+    FILE_ENV: "./ci/test/00_setup_env_mac_native_arm64.sh"
 
 task:
   name: 'ARM64 Android APK [focal]'
