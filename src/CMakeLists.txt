@@ -326,3 +326,8 @@ if(BUILD_UTIL)
       bitcoin_util
   )
 endif()
+
+
+if(BUILD_BITCOINCONSENSUS_LIB)
+  add_subdirectory(script)
+endif()
