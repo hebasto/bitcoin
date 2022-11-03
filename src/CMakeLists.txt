@@ -85,6 +85,9 @@ target_link_libraries(bitcoin_consensus
     secp256k1
 )
 
+if(WITH_ZMQ)
+  add_subdirectory(zmq EXCLUDE_FROM_ALL)
+endif()
 
 # Home for common functionality shared by different executables and libraries.
 # Similar to `bitcoin_util` library, but higher-level.
@@ -283,6 +286,9 @@ if(TARGET NATPMP::NATPMP)
 endif()
 if(TARGET MiniUPnPc::MiniUPnPc)
   target_link_libraries(bitcoin_node PRIVATE MiniUPnPc::MiniUPnPc)
+endif()
+if(TARGET bitcoin_zmq)
+  target_link_libraries(bitcoin_node PRIVATE bitcoin_zmq)
 endif()
 
 
