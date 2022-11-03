@@ -142,3 +142,105 @@ if(TARGET PkgConfig::libevent)
   target_sources(bitcoin_common PRIVATE common/url.cpp)
   target_link_libraries(bitcoin_common PRIVATE PkgConfig::libevent)
 endif()
+
+
+# P2P and RPC server functionality used by `bitcoind` and `bitcoin-qt` executables.
+add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL "")
+target_sources(bitcoin_node
+  PRIVATE
+    addrdb.cpp
+    addrman.cpp
+    banman.cpp
+    blockencodings.cpp
+    blockfilter.cpp
+    chain.cpp
+    consensus/tx_verify.cpp
+    dbwrapper.cpp
+    deploymentstatus.cpp
+    flatfile.cpp
+    headerssync.cpp
+    httprpc.cpp
+    httpserver.cpp
+    i2p.cpp
+    index/base.cpp
+    index/blockfilterindex.cpp
+    index/coinstatsindex.cpp
+    index/txindex.cpp
+    init.cpp
+    kernel/chain.cpp
+    kernel/checks.cpp
+    kernel/coinstats.cpp
+    kernel/context.cpp
+    kernel/mempool_persist.cpp
+    mapport.cpp
+    net.cpp
+    netgroup.cpp
+    net_processing.cpp
+    node/blockstorage.cpp
+    node/caches.cpp
+    node/chainstate.cpp
+    node/chainstatemanager_args.cpp
+    node/coin.cpp
+    node/connection_types.cpp
+    node/context.cpp
+    node/eviction.cpp
+    node/interface_ui.cpp
+    node/interfaces.cpp
+    node/mempool_args.cpp
+    node/mempool_persist_args.cpp
+    node/miner.cpp
+    node/minisketchwrapper.cpp
+    node/psbt.cpp
+    node/transaction.cpp
+    node/txreconciliation.cpp
+    node/utxo_snapshot.cpp
+    node/validation_cache_args.cpp
+    noui.cpp
+    policy/fees.cpp
+    policy/fees_args.cpp
+    policy/packages.cpp
+    policy/rbf.cpp
+    policy/settings.cpp
+    pow.cpp
+    rest.cpp
+    rpc/blockchain.cpp
+    rpc/fees.cpp
+    rpc/mempool.cpp
+    rpc/mining.cpp
+    rpc/net.cpp
+    rpc/node.cpp
+    rpc/output_script.cpp
+    rpc/rawtransaction.cpp
+    rpc/server.cpp
+    rpc/server_util.cpp
+    rpc/signmessage.cpp
+    rpc/txoutproof.cpp
+    script/sigcache.cpp
+    shutdown.cpp
+    signet.cpp
+    timedata.cpp
+    torcontrol.cpp
+    txdb.cpp
+    txmempool.cpp
+    txorphanage.cpp
+    txrequest.cpp
+    validation.cpp
+    validationinterface.cpp
+    versionbits.cpp
+
+    dummywallet.cpp
+)
+target_include_directories(bitcoin_node
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+)
+target_link_libraries(bitcoin_node
+  PRIVATE
+    bitcoin_common
+    bitcoin_consensus
+    minisketch
+    leveldb
+    univalue
+    Boost::boost
+    $<$<NOT:$<PLATFORM_ID:Windows>>:PkgConfig::libevent_pthreads>
+)
