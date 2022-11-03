@@ -279,7 +279,7 @@ include(cmake/subtree-secp256k1.cmake)
 include(CheckStdFilesystem)
 check_std_filesystem()
 
-if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX OR BUILD_BITCOINKERNEL_LIB OR BUILD_WALLET_TOOL)
+if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX OR BUILD_BITCOINKERNEL_LIB OR BUILD_WALLET_TOOL OR NOT WITH_GUI STREQUAL "no")
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
 
@@ -301,17 +301,18 @@ if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX OR BUILD_BITCOINKERNEL_LIB OR BUILD_WAL
 endif()
 
 find_package(PkgConfig)
-if(BUILD_DAEMON OR BUILD_CLI)
+if(BUILD_DAEMON OR BUILD_CLI OR NOT WITH_GUI STREQUAL "no")
   pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
   set_property(TARGET PkgConfig::libevent APPEND PROPERTY
     INTERFACE_LINK_LIBRARIES $<$<PLATFORM_ID:Windows>:iphlpapi;ws2_32>
   )
 endif()
 
-if(NOT WIN32 AND BUILD_DAEMON)
+if(NOT WIN32 AND (BUILD_DAEMON OR NOT WITH_GUI STREQUAL "no"))
   pkg_check_modules(libevent_pthreads REQUIRED libevent_pthreads>=2.1.8 IMPORTED_TARGET)
 endif()
 
+include(cmake/optional_qt.cmake)
 include(cmake/optional.cmake)
 
 if(BUILD_BITCOINCONSENSUS_LIB)
@@ -338,6 +339,8 @@ message("  libbitcoinkernel (experimental) ..... ${BUILD_BITCOINKERNEL_LIB}")
 message("Wallet support:")
 message("  SQLite, descriptor wallets .......... ${WITH_SQLITE}")
 message("  Berkeley DB, legacy wallets ......... ${WITH_BDB}")
+message("Optional packages:")
+message("  GUI ................................. ${WITH_GUI}")
 message("")
 get_directory_property(definitions COMPILE_DEFINITIONS)
 string(REPLACE ";" " " definitions "${definitions}")
