@@ -206,3 +206,8 @@ target_link_libraries(bitcoin-qt
     bitcoinqt
     bitcoin_node
 )
+
+install(TARGETS bitcoin-qt
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  COMPONENT GUI
+)
