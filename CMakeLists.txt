@@ -394,6 +394,15 @@ else()
   execute_process(COMMAND ln -s ${CMAKE_SOURCE_DIR}/test/functional/test_runner.py ${CMAKE_BINARY_DIR}/test/functional/test_runner.py)
 endif()
 
+set(BITCOIN_GUI_NAME "bitcoin-qt")
+set(BITCOIN_DAEMON_NAME "bitcoind")
+set(BITCOIN_CLI_NAME "bitcoin-cli")
+set(BITCOIN_TX_NAME "bitcoin-tx")
+set(BITCOIN_WALLET_TOOL_NAME "bitcoin-wallet")
+set(BITCOIN_TEST_NAME "test_bitcoin")
+set(PACKAGE_TARNAME "bitcoin")
+configure_file(share/setup.nsi.in share/setup.nsi @ONLY)
+
 # https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/EmulateMakeCheck
 include(ProcessorCount)
 ProcessorCount(nproc)
