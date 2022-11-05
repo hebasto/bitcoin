@@ -419,6 +419,12 @@ else()
   execute_process(COMMAND ln -s ${CMAKE_SOURCE_DIR}/test/util/test_runner.py ${CMAKE_BINARY_DIR}/test/util/test_runner.py)
 endif()
 
+if(NOT APPLE)
+  set(OBJCOPY ${CMAKE_OBJCOPY})
+  set(STRIP ${CMAKE_STRIP})
+  configure_file(contrib/devtools/split-debug.sh.in split-debug.sh @ONLY)
+endif()
+
 message("\n")
 message("Configure summary")
 message("=================")
