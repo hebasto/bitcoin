@@ -432,6 +432,12 @@ if(TARGET bench_bitcoin)
   add_dependencies(check bench_bitcoin)
 endif()
 
+if(NOT APPLE)
+  set(OBJCOPY ${CMAKE_OBJCOPY})
+  set(STRIP ${CMAKE_STRIP})
+  configure_file(contrib/devtools/split-debug.sh.in split-debug.sh @ONLY)
+endif()
+
 message("\n")
 message("Configure summary")
 message("=================")
