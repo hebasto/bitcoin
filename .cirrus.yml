@@ -68,6 +68,7 @@ task:
   << : *BASE_TEMPLATE
   container:
     image: ubuntu:bionic  # For python 3.6, oldest supported version according to doc/dependencies.md
+    use_in_memory_disk: true
     cpu: 1
     memory: 1G
   # For faster CI feedback, immediately schedule the linters
@@ -82,6 +83,7 @@ task:
   << : *GLOBAL_TASK_TEMPLATE
   container:
     image: ubuntu:jammy
+    use_in_memory_disk: true
     cpu: 2
     memory: 5G
   # For faster CI feedback, immediately schedule the linters
@@ -212,6 +214,7 @@ task:
   << : *GLOBAL_TASK_TEMPLATE
   container:
     image: quay.io/centos/centos:stream8
+    use_in_memory_disk: true
   env:
     << : *CIRRUS_EPHEMERAL_WORKER_TEMPLATE_ENV
     PACKAGE_MANAGER_INSTALL: "yum install -y"
