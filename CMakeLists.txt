@@ -517,6 +517,16 @@ if(APPLE AND CMAKE_CROSSCOMPILING AND TARGET bitcoin-qt)
   add_custom_target(deploydir
     DEPENDS dist/${macos_app}/Contents/MacOS/Bitcoin-Qt
   )
+
+  set(xorrisofs_options)
+  if(DEFINED ENV{SOURCE_DATE_EPOCH})
+    set(xorrisofs_options -volume_date all_file_dates =$ENV{SOURCE_DATE_EPOCH})
+  endif()
+  add_custom_target(deploy
+    COMMAND xorrisofs -D -l -V "${OSX_VOLNAME}" -no-pad -r -dir-mode 0755 -o ${OSX_VOLNAME}.dmg ${CMAKE_BINARY_DIR}/dist -- ${xorrisofs_options}
+    VERBATIM
+  )
+  add_dependencies(deploy deploydir)
 endif()
 
 message("\n")
