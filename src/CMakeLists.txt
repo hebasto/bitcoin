@@ -15,6 +15,42 @@ mark_as_advanced(
 )
 add_subdirectory(crc32c EXCLUDE_FROM_ALL)
 
+set(LEVELDB_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(LEVELDB_BUILD_BENCHMARKS OFF CACHE BOOL "" FORCE)
+set(LEVELDB_INSTALL OFF CACHE BOOL "" FORCE)
+set(HAVE_CRC32C ON CACHE BOOL "" FORCE)
+set(HAVE_SNAPPY OFF CACHE BOOL "" FORCE)
+set(HAVE_TCMALLOC OFF CACHE BOOL "" FORCE)
+# Disabling TSA warnings because leveldb simultaneously
+# enables -Werror as a usage requirement.
+set(HAVE_CLANG_THREAD_SAFETY OFF CACHE BOOL "" FORCE)
+mark_as_advanced(
+  LEVELDB_BUILD_TESTS
+  LEVELDB_BUILD_BENCHMARKS
+  LEVELDB_INSTALL
+  HAVE_CRC32C
+  HAVE_SNAPPY
+  HAVE_TCMALLOC
+  HAVE_CLANG_THREAD_SAFETY
+)
+add_subdirectory(leveldb EXCLUDE_FROM_ALL)
+target_compile_definitions(leveldb
+  PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:_CRT_NONSTDC_NO_WARNINGS>
+)
+target_compile_options(leveldb
+  PRIVATE
+    # RTTI has been forcibly disabled in CMake configuration since leveldb v1.23.
+    # Commit: 69061b464ab1da287da9b7ffec1ed911b754403b
+    # Using leveldb::Logger as a base class to derive CBitcoinLevelDBLogger
+    # requires RTTI been enabled.
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-frtti>
+    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Release>>:/wd4722>
+)
+set_property(TARGET leveldb leveldbutil
+  PROPERTY EXPORT_COMPILE_COMMANDS OFF
+)
+
 configure_file(${CMAKE_SOURCE_DIR}/cmake/bitcoin-config.h.in config/bitcoin-config.h @ONLY)
 add_definitions(-DHAVE_CONFIG_H)
 include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
