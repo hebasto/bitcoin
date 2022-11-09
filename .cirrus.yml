@@ -72,6 +72,8 @@ task:
   << : *MAIN_TEMPLATE
   container:
     image: ubuntu:focal
+    cpu: 2
+    memory: 8G
   env:
     MACOS_SDK: "Xcode-12.2-12B45b-extracted-SDK-with-libcxx-headers"
     << : *CIRRUS_EPHEMERAL_WORKER_TEMPLATE_ENV
