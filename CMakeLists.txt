@@ -306,6 +306,10 @@ include(cmake/subtree-secp256k1.cmake)
 include(CheckStdFilesystem)
 check_std_filesystem()
 
+if(CMAKE_CROSSCOMPILING AND DEPENDS_ALLOW_HOST_PACKAGES)
+  list(APPEND CMAKE_FIND_ROOT_PATH "${CMAKE_SYSTEM_PREFIX_PATH}")
+endif()
+
 if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX OR BUILD_BITCOINKERNEL_LIB OR BUILD_WALLET_TOOL OR WITH_GUI)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
@@ -327,16 +331,16 @@ if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX OR BUILD_BITCOINKERNEL_LIB OR BUILD_WAL
   )
 endif()
 
-find_package(PkgConfig)
+include(CrossPkgConfig)
 if(BUILD_DAEMON OR BUILD_CLI OR WITH_GUI)
-  pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
+  cross_pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
   set_property(TARGET PkgConfig::libevent APPEND PROPERTY
     INTERFACE_LINK_LIBRARIES $<$<PLATFORM_ID:Windows>:iphlpapi;ws2_32>
   )
 endif()
 
 if(NOT WIN32 AND (BUILD_DAEMON OR WITH_GUI))
-  pkg_check_modules(libevent_pthreads REQUIRED libevent_pthreads>=2.1.8 IMPORTED_TARGET)
+  cross_pkg_check_modules(libevent_pthreads REQUIRED libevent_pthreads>=2.1.8 IMPORTED_TARGET)
 endif()
 
 include(cmake/optional_qt.cmake)
@@ -434,6 +438,12 @@ message("  ZeroMQ .............................. ${WITH_ZMQ}")
 message("  USDT tracing ........................ ${WITH_USDT}")
 message("  experimental syscall sandbox ........ ${WITH_SECCOMP}")
 message("")
+if(CMAKE_CROSSCOMPILING)
+  set(cross_status "TRUE, for ${CMAKE_SYSTEM_NAME}, ${CMAKE_SYSTEM_PROCESSOR}")
+else()
+  set(cross_status "FALSE")
+endif()
+message("Cross compiling ....................... ${cross_status}")
 get_directory_property(definitions COMPILE_DEFINITIONS)
 string(REPLACE ";" " " definitions "${definitions}")
 message("Preprocessor defined macros ........... ${definitions}")
