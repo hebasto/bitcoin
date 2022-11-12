@@ -66,3 +66,7 @@ if(ENABLE_WALLET)
   )
   target_link_libraries(bench_bitcoin PRIVATE bitcoin_wallet)
 endif()
+
+install(TARGETS bench_bitcoin
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

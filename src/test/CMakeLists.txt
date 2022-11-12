@@ -173,6 +173,10 @@ if(ENABLE_WALLET)
   endif()
 endif()
 
+install(TARGETS test_bitcoin
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
 function(add_boost_test source_file_name)
   set(source_file_path "${CMAKE_CURRENT_SOURCE_DIR}/${source_file_name}")
   if(NOT EXISTS ${source_file_path})
