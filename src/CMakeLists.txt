@@ -289,3 +289,17 @@ if(BUILD_TX)
       univalue
   )
 endif()
+
+
+if(BUILD_UTIL)
+  add_executable(bitcoin-util "")
+  target_sources(bitcoin-util
+    PRIVATE
+      bitcoin-util.cpp
+  )
+  target_link_libraries(bitcoin-util
+    PRIVATE
+      bitcoin_common
+      bitcoin_util
+  )
+endif()
