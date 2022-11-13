@@ -79,6 +79,7 @@ if(NOT BUILD_SHARED AND NOT BUILD_STATIC)
   message(FATAL_ERROR "At least one of BUILD_SHARED and BUILD_STATIC must be enabled.")
 endif()
 option(BUILD_BITCOINCONSENSUS_LIB "Build bitcoinconsensus library." ON)
+option(BUILD_BITCOINKERNEL_LIB "Build experimental bitcoinkernel library." OFF)
 option(ASM "Use assembly routines." ON)
 
 option(CXX20 "Enable compilation in c++20 mode." OFF)
@@ -273,8 +274,7 @@ include(cmake/subtree-secp256k1.cmake)
 include(CheckStdFilesystem)
 check_std_filesystem()
 
-find_package(PkgConfig)
-if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX)
+if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX OR BUILD_BITCOINKERNEL_LIB)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
 
@@ -293,7 +293,10 @@ if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX)
   set_property(TARGET Boost::boost APPEND PROPERTY
     INTERFACE_COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_MULTI_INDEX_ENABLE_SAFE_MODE>
   )
+endif()
 
+find_package(PkgConfig)
+if(BUILD_DAEMON OR BUILD_CLI)
   pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
   set_property(TARGET PkgConfig::libevent APPEND PROPERTY
     INTERFACE_LINK_LIBRARIES $<$<PLATFORM_ID:Windows>:iphlpapi;ws2_32>
@@ -324,6 +327,7 @@ message("Libraries:")
 message("  build shared ........................ ${BUILD_SHARED}")
 message("  build static ........................ ${BUILD_STATIC}")
 message("  libbitcoinconsensus ................. ${BUILD_BITCOINCONSENSUS_LIB}")
+message("  libbitcoinkernel (experimental) ..... ${BUILD_BITCOINKERNEL_LIB}")
 message("")
 get_directory_property(definitions COMPILE_DEFINITIONS)
 string(REPLACE ";" " " definitions "${definitions}")
