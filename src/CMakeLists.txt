@@ -312,3 +312,28 @@ endif()
 if(BUILD_BITCOINKERNEL_LIB)
   add_subdirectory(kernel)
 endif()
+
+if(BUILD_UTIL_CHAINSTATE)
+  add_executable(bitcoin-chainstate "")
+  target_sources(bitcoin-chainstate
+    PRIVATE
+      $<TARGET_OBJECTS:bitcoin_crypto>
+      bitcoin-chainstate.cpp
+  )
+  if(TARGET bitcoinkernel_static)
+    target_link_libraries(bitcoin-chainstate PRIVATE bitcoinkernel_static)
+  elseif(TARGET bitcoinkernel AND NOT WIN32)
+    target_link_libraries(bitcoin-chainstate PRIVATE bitcoinkernel)
+  endif()
+  target_link_libraries(bitcoin-chainstate
+    PRIVATE
+      leveldb
+      univalue
+      secp256k1
+      Boost::boost
+      $<$<PLATFORM_ID:Windows>:ws2_32>
+  )
+  if(TARGET std_filesystem)
+    target_link_libraries(bitcoin-chainstate PRIVATE std_filesystem)
+  endif()
+endif()
