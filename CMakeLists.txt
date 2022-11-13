@@ -471,6 +471,28 @@ add_custom_target(test-security-check
   VERBATIM
 )
 
+if(MINGW AND TARGET bitcoin-qt)
+  # TODO: After dropping Autotools-based build system, replace
+  #       this code with the CPack NSIS Generator.
+  # See https://cmake.org/cmake/help/latest/cpack_gen/nsis.html
+  add_custom_target(deploy
+    COMMAND "${CMAKE_COMMAND}" --install "${CMAKE_BINARY_DIR}" --config "$<CONFIG>" --prefix "${CMAKE_BINARY_DIR}/release" --strip
+    COMMAND "${CMAKE_COMMAND}" -E rename "${CMAKE_BINARY_DIR}/release/bin/$<TARGET_FILE_NAME:bitcoind>" "${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoind>"
+    COMMAND "${CMAKE_COMMAND}" -E rename "${CMAKE_BINARY_DIR}/release/bin/$<TARGET_FILE_NAME:bitcoin-qt>" "${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-qt>"
+    COMMAND "${CMAKE_COMMAND}" -E rename "${CMAKE_BINARY_DIR}/release/bin/$<TARGET_FILE_NAME:test_bitcoin>" "${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:test_bitcoin>"
+    COMMAND "${CMAKE_COMMAND}" -E rename "${CMAKE_BINARY_DIR}/release/bin/$<TARGET_FILE_NAME:bitcoin-cli>" "${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-cli>"
+    COMMAND "${CMAKE_COMMAND}" -E rename "${CMAKE_BINARY_DIR}/release/bin/$<TARGET_FILE_NAME:bitcoin-tx>" "${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-tx>"
+    COMMAND "${CMAKE_COMMAND}" -E rename "${CMAKE_BINARY_DIR}/release/bin/$<TARGET_FILE_NAME:bitcoin-wallet>" "${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-wallet>"
+    COMMAND "${CMAKE_COMMAND}" -E rename "${CMAKE_BINARY_DIR}/release/bin/$<TARGET_FILE_NAME:bitcoin-util>" "${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-util>"
+    COMMAND "${CMAKE_COMMAND}" -E remove_directory "${CMAKE_BINARY_DIR}/release/bin"
+    COMMAND "${CMAKE_COMMAND}" -E remove_directory "${CMAKE_BINARY_DIR}/release/lib"
+    COMMAND "${CMAKE_COMMAND}" -E remove_directory "${CMAKE_BINARY_DIR}/release/include"
+    COMMAND "${CMAKE_COMMAND}" -E remove_directory "${CMAKE_BINARY_DIR}/release/share"
+    COMMAND makensis -V2 "${CMAKE_BINARY_DIR}/share/setup.nsi"
+    VERBATIM
+  )
+endif()
+
 message("\n")
 message("Configure summary")
 message("=================")
