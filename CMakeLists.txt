@@ -286,6 +286,10 @@ set_property(TARGET PkgConfig::libevent APPEND PROPERTY
   INTERFACE_LINK_LIBRARIES $<$<PLATFORM_ID:Windows>:iphlpapi;ws2_32>
 )
 
+if(NOT WIN32)
+  pkg_check_modules(libevent_pthreads REQUIRED libevent_pthreads>=2.1.8 IMPORTED_TARGET)
+endif()
+
 include(cmake/optional.cmake)
 
 add_subdirectory(src)
