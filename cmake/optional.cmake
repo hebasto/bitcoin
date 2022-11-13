@@ -101,3 +101,30 @@ if(WITH_MINIUPNPC)
     set(WITH_MINIUPNPC OFF)
   endif()
 endif()
+
+if(WITH_ZMQ)
+  if(MSVC)
+    find_package(ZeroMQ CONFIG)
+  else()
+    pkg_check_modules(libzmq libzmq>=4 IMPORTED_TARGET)
+    if(libzmq_FOUND)
+      set_property(TARGET PkgConfig::libzmq APPEND PROPERTY
+        INTERFACE_COMPILE_DEFINITIONS $<$<PLATFORM_ID:Windows>:ZMQ_STATIC>
+      )
+      set_property(TARGET PkgConfig::libzmq APPEND PROPERTY
+        INTERFACE_LINK_LIBRARIES $<$<PLATFORM_ID:Windows>:iphlpapi;ws2_32>
+      )
+    endif()
+  endif()
+  if(TARGET libzmq OR TARGET PkgConfig::libzmq)
+    set(WITH_ZMQ ON)
+  else()
+    if(WITH_ZMQ STREQUAL ON)
+      message(FATAL_ERROR "libzmq requested, but not found.")
+    else()
+      message(WARNING "libzmq not found, disabling.\n"
+                      "To skip libzmq check, use \"-DWITH_ZMQ=OFF\".\n")
+    endif()
+    set(WITH_ZMQ OFF)
+  endif()
+endif()
