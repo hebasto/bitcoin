@@ -276,3 +276,20 @@ target_link_libraries(bitcoin_cli
   PUBLIC
     univalue
 )
+
+
+# Bitcoin Core RPC client
+if(BUILD_CLI)
+  add_executable(bitcoin-cli "")
+  target_sources(bitcoin-cli
+    PRIVATE
+      bitcoin-cli.cpp
+  )
+  target_link_libraries(bitcoin-cli
+    PRIVATE
+      bitcoin_cli
+      bitcoin_common
+      bitcoin_util
+      PkgConfig::libevent
+  )
+endif()
