@@ -52,6 +52,7 @@ option(BUILD_STATIC "Build static libraries." ON)
 if(NOT BUILD_SHARED AND NOT BUILD_STATIC)
   message(FATAL_ERROR "At least one of BUILD_SHARED and BUILD_STATIC must be enabled.")
 endif()
+option(BUILD_BITCOINCONSENSUS_LIB "Build bitcoinconsensus library." ON)
 option(ASM "Use assembly routines." ON)
 
 include(CMakeDependentOption)
@@ -280,6 +281,10 @@ endif()
 
 include(cmake/optional.cmake)
 
+if(BUILD_BITCOINCONSENSUS_LIB)
+  set(HAVE_CONSENSUS_LIB ON)
+endif()
+
 add_subdirectory(src)
 
 message("\n")
@@ -293,6 +298,7 @@ message("  bitcoin-util ........................ ${BUILD_UTIL}")
 message("Libraries:")
 message("  build shared ........................ ${BUILD_SHARED}")
 message("  build static ........................ ${BUILD_STATIC}")
+message("  libbitcoinconsensus ................. ${BUILD_BITCOINCONSENSUS_LIB}")
 message("")
 get_directory_property(definitions COMPILE_DEFINITIONS)
 string(REPLACE ";" " " definitions "${definitions}")
