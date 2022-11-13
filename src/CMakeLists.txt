@@ -274,3 +274,18 @@ if(BUILD_CLI)
       PkgConfig::libevent
   )
 endif()
+
+
+if(BUILD_TX)
+  add_executable(bitcoin-tx "")
+  target_sources(bitcoin-tx
+    PRIVATE
+      bitcoin-tx.cpp
+  )
+  target_link_libraries(bitcoin-tx
+    PRIVATE
+      bitcoin_common
+      bitcoin_util
+      univalue
+  )
+endif()
