@@ -65,7 +65,7 @@ compute_credits_template: &CREDITS_TEMPLATE
   use_compute_credits: $CIRRUS_REPO_FULL_NAME == 'bitcoin/bitcoin' && $CIRRUS_PR != ""
 
 task:
-  name: 'lint [jammy]'
+  name: 'CMake: lint [jammy]'
   << : *BASE_TEMPLATE
   container:
     image: ubuntu:jammy
@@ -82,7 +82,7 @@ task:
     << : *CIRRUS_EPHEMERAL_WORKER_TEMPLATE_ENV
 
 task:
-  name: 'tidy [jammy]'
+  name: 'CMake: tidy [jammy]'
   << : *GLOBAL_TASK_TEMPLATE
   container:
     image: ubuntu:jammy
@@ -192,7 +192,7 @@ task:
     - python test\functional\test_runner.py --configfile=build\test\config.ini --nocleanup --ci --quiet --combinedlogslen=99999999 --jobs=6 --timeout-factor=8 --extended --exclude feature_dbcrash
 
 task:
-  name: 'ARM [unit tests, no functional tests] [bullseye]'
+  name: 'CMake: ARM [unit tests, no functional tests] [bullseye]'
   << : *GLOBAL_TASK_TEMPLATE
   arm_container:
     image: debian:bullseye
@@ -204,7 +204,7 @@ task:
     QEMU_USER_CMD: ""  # Disable qemu and run the test natively
 
 task:
-  name: 'Win64 [unit tests, no gui tests, no boost::process, no functional tests] [jammy]'
+  name: 'CMake: Win64 [unit tests, no gui tests, no boost::process, no functional tests] [jammy]'
   << : *GLOBAL_TASK_TEMPLATE
   container:
     image: ubuntu:jammy
@@ -213,7 +213,7 @@ task:
     FILE_ENV: "./ci/test/00_setup_env_win64.sh"
 
 task:
-  name: '32-bit + dash [gui] [CentOS 8]'
+  name: 'CMake: 32-bit + dash [gui] [CentOS 8]'
   << : *GLOBAL_TASK_TEMPLATE
   container:
     image: quay.io/centos/centos:stream8
@@ -225,7 +225,7 @@ task:
     FILE_ENV: "./ci/test/00_setup_env_i686_centos.sh"
 
 task:
-  name: '[previous releases, uses qt5 dev package and some depends packages, DEBUG] [unsigned char] [buster]'
+  name: 'CMake: [previous releases, uses qt5 dev package and some depends packages, DEBUG] [unsigned char] [buster]'
   previous_releases_cache:
     folder: "releases"
   << : *GLOBAL_TASK_TEMPLATE
@@ -235,7 +235,7 @@ task:
     FILE_ENV: "./ci/test/00_setup_env_native_qt5.sh"
 
 task:
-  name: '[TSan, depends, gui] [jammy]'
+  name: 'CMake: [TSan, depends, gui] [jammy]'
   << : *GLOBAL_TASK_TEMPLATE
   container:
     image: ubuntu:jammy
@@ -246,7 +246,7 @@ task:
     FILE_ENV: "./ci/test/00_setup_env_native_tsan.sh"
 
 task:
-  name: '[MSan, depends] [focal]'
+  name: 'CMake: [MSan, depends] [focal]'
   << : *GLOBAL_TASK_TEMPLATE
   container:
     image: ubuntu:focal
@@ -256,7 +256,7 @@ task:
     MAKEJOBS: "-j4"  # Avoid excessive memory use due to MSan
 
 task:
-  name: '[ASan + LSan + UBSan + integer, no depends, USDT] [jammy]'
+  name: 'CMake: [ASan + LSan + UBSan + integer, no depends, USDT] [jammy]'
   << : *GLOBAL_TASK_TEMPLATE
   # We can't use a 'container' for the USDT interface tests as the CirrusCI
   # containers don't have privileges to hook into bitcoind. CirrusCI uses
@@ -274,7 +274,7 @@ task:
     MAKEJOBS: "-j4"  # Avoid excessive memory use
 
 task:
-  name: '[fuzzer,address,undefined,integer, no depends] [jammy]'
+  name: 'CMake: [fuzzer,address,undefined,integer, no depends] [jammy]'
   << : *GLOBAL_TASK_TEMPLATE
   container:
     image: ubuntu:jammy
@@ -285,7 +285,7 @@ task:
     FILE_ENV: "./ci/test/00_setup_env_native_fuzz.sh"
 
 task:
-  name: '[multiprocess, i686, DEBUG] [focal]'
+  name: 'CMake: [multiprocess, i686, DEBUG] [focal]'
   << : *GLOBAL_TASK_TEMPLATE
   container:
     image: ubuntu:focal
@@ -296,7 +296,7 @@ task:
     FILE_ENV: "./ci/test/00_setup_env_i686_multiprocess.sh"
 
 task:
-  name: '[no wallet, libbitcoinkernel] [buster]'
+  name: 'CMake: [no wallet, libbitcoinkernel] [buster]'
   << : *GLOBAL_TASK_TEMPLATE
   container:
     image: debian:buster
@@ -305,7 +305,7 @@ task:
     FILE_ENV: "./ci/test/00_setup_env_native_nowallet_libbitcoinkernel.sh"
 
 task:
-  name: 'macOS 10.15 [gui, no tests] [focal]'
+  name: 'CMake: macOS 10.15 [gui, no tests] [focal]'
   << : *BASE_TEMPLATE
   macos_sdk_cache:
     folder: "depends/SDKs/$MACOS_SDK"
@@ -313,13 +313,15 @@ task:
   << : *MAIN_TEMPLATE
   container:
     image: ubuntu:focal
+    cpu: 2
+    memory: 8G
   env:
     MACOS_SDK: "Xcode-12.2-12B45b-extracted-SDK-with-libcxx-headers"
     << : *CIRRUS_EPHEMERAL_WORKER_TEMPLATE_ENV
     FILE_ENV: "./ci/test/00_setup_env_mac.sh"
 
 task:
-  name: 'macOS 13 native arm64 [gui, sqlite only] [no depends]'
+  name: 'CMake: macOS 13 native arm64 [gui, sqlite only] [no depends]'
   macos_instance:
     # Use latest image, but hardcode version to avoid silent upgrades (and breaks)
     image: ghcr.io/cirruslabs/macos-ventura-xcode:14.1  # https://cirrus-ci.org/guide/macOS
