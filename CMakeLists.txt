@@ -261,6 +261,31 @@ include(cmake/subtree-secp256k1.cmake)
 include(CheckStdFilesystem)
 check_std_filesystem()
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
+# Find Boost headers only.
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  execute_process(
+    COMMAND brew --prefix boost
+    OUTPUT_VARIABLE BOOST_ROOT
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+endif()
+set(Boost_NO_BOOST_CMAKE ON)
+find_package(Boost 1.64.0 REQUIRED)
+mark_as_advanced(Boost_INCLUDE_DIR)
+set_property(TARGET Boost::boost APPEND PROPERTY
+  INTERFACE_COMPILE_DEFINITIONS $<$<CONFIG:Debug>:BOOST_MULTI_INDEX_ENABLE_SAFE_MODE>
+)
+
+find_package(PkgConfig)
+pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
+set_property(TARGET PkgConfig::libevent APPEND PROPERTY
+  INTERFACE_LINK_LIBRARIES $<$<PLATFORM_ID:Windows>:iphlpapi;ws2_32>
+)
+
 include(cmake/optional.cmake)
 
 add_subdirectory(src)
