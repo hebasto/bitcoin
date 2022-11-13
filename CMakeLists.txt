@@ -69,6 +69,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/module)
 # Configurable options.
 # When adding a new option, end the <help_text> with a full stop for consistency.
 option(BUILD_DAEMON "Build bitcoind executable." ON)
+option(BUILD_CLI "Build bitcoin-cli executable." ON)
 option(ASM "Use assembly routines." ON)
 
 option(CXX20 "Enable compilation in c++20 mode." OFF)
@@ -264,7 +265,7 @@ include(CheckStdFilesystem)
 check_std_filesystem()
 
 find_package(PkgConfig)
-if(BUILD_DAEMON)
+if(BUILD_DAEMON OR BUILD_CLI)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
 
@@ -303,6 +304,7 @@ message("Configure summary")
 message("=================")
 message("Executables:")
 message("  bitcoind ............................ ${BUILD_DAEMON}")
+message("  bitcoin-cli ......................... ${BUILD_CLI}")
 message("")
 get_directory_property(definitions COMPILE_DEFINITIONS)
 string(REPLACE ";" " " definitions "${definitions}")
