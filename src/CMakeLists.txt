@@ -140,6 +140,23 @@ endif()
 
 if(ENABLE_WALLET)
   add_subdirectory(wallet)
+
+  if(BUILD_WALLET_TOOL)
+    add_executable(bitcoin-wallet "")
+    target_sources(bitcoin-wallet
+      PRIVATE
+        bitcoin-wallet.cpp
+        init/bitcoin-wallet.cpp
+        wallet/wallettool.cpp
+    )
+    target_link_libraries(bitcoin-wallet
+      PRIVATE
+        bitcoin_wallet
+        bitcoin_common
+        bitcoin_util
+        Boost::boost
+    )
+  endif()
 endif()
 
 
