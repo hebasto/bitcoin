@@ -281,7 +281,7 @@ if(BUILD_DAEMON)
 endif()
 
 
-if(BUILD_CLI)
+if(BUILD_CLI OR NOT WITH_GUI STREQUAL "no")
   add_library(rpc_client STATIC EXCLUDE_FROM_ALL "")
   target_sources(rpc_client PRIVATE rpc/client.cpp)
   target_link_libraries(rpc_client PUBLIC univalue)
@@ -366,4 +366,9 @@ if(BUILD_UTIL_CHAINSTATE)
   if(TARGET std_filesystem)
     target_link_libraries(bitcoin-chainstate PRIVATE std_filesystem)
   endif()
+endif()
+
+
+if(NOT WITH_GUI STREQUAL "no")
+  add_subdirectory(qt)
 endif()
