@@ -32,6 +32,9 @@
 /* Define this symbol to build in assembly routines */
 #define USE_ASM 1
 
+/* Define this symbol to build code that uses SSE4.1 intrinsics */
+#define ENABLE_SSE41 1
+
 /* Define this symbol to build code that uses AVX2 intrinsics */
 #define ENABLE_AVX2 1
 
