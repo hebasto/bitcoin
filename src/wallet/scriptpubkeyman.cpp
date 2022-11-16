@@ -222,7 +222,7 @@ isminetype LegacyScriptPubKeyMan::IsMine(const CScript& script) const
         return ISMINE_WATCH_ONLY;
     case IsMineResult::SPENDABLE:
         return ISMINE_SPENDABLE;
-    }
+    } // no default case, so the compiler can warn about missing cases
     UNREACHABLE();
 }
 

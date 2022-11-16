@@ -40,8 +40,7 @@ bilingual_str TransactionErrorString(const TransactionError err)
             return Untranslated("External signer failed to sign");
         case TransactionError::INVALID_PACKAGE:
             return Untranslated("Transaction rejected due to invalid package");
-        // no default case, so the compiler can warn about missing cases
-    }
+    } // no default case, so the compiler can warn about missing cases
     UNREACHABLE();
 }
 
