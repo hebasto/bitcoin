@@ -4,6 +4,8 @@
 
 #include <bench/bench.h>
 
+#include <crypto/sha256.h>
+
 #include <clientversion.h>
 #include <crypto/sha256.h>
 #include <fs.h>
@@ -59,6 +61,7 @@ static uint8_t parsePriorityLevel(const std::string& str) {
 
 int main(int argc, char** argv)
 {
+    std::cout << SHA256AutoDetect() << std::endl;
     ArgsManager argsman;
     SetupBenchArgs(argsman);
     SHA256AutoDetect();

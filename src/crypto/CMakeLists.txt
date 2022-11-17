@@ -2,7 +2,7 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-if(ASM AND NOT MSVC)
+if(ASM)
   # Check for SSE4.1 intrinsics.
   set(SSE41_CXXFLAGS -msse4.1)
   string(REPLACE ";" " " CMAKE_REQUIRED_FLAGS "${SSE41_CXXFLAGS}")

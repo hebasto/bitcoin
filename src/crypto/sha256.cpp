@@ -2,6 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <iostream>
+
 #include <crypto/sha256.h>
 #include <crypto/common.h>
 
@@ -604,6 +606,7 @@ std::string SHA256AutoDetect()
     uint32_t eax, ebx, ecx, edx;
     GetCPUID(1, 0, eax, ebx, ecx, edx);
     have_sse4 = (ecx >> 19) & 1;
+    std::cerr << "=== have_sse4 ========================================== " << have_sse4 << std::endl;
     have_xsave = (ecx >> 27) & 1;
     have_avx = (ecx >> 28) & 1;
     if (have_xsave && have_avx) {
@@ -612,7 +615,9 @@ std::string SHA256AutoDetect()
     if (have_sse4) {
         GetCPUID(7, 0, eax, ebx, ecx, edx);
         have_avx2 = (ebx >> 5) & 1;
+        std::cerr << "=== have_avx2 ========================================== " << have_avx2 << std::endl;
         have_x86_shani = (ebx >> 29) & 1;
+        std::cerr << "=== have_x86_shani ========================================== " << have_x86_shani << std::endl;
     }
 
 #if defined(ENABLE_X86_SHANI) && !defined(BUILD_BITCOIN_INTERNAL)
