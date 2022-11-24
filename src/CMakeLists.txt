@@ -264,3 +264,15 @@ if(BUILD_DAEMON)
       bitcoin_node
   )
 endif()
+
+
+add_library(bitcoin_cli STATIC EXCLUDE_FROM_ALL "")
+target_sources(bitcoin_cli
+  PRIVATE
+    compat/stdin.cpp
+    rpc/client.cpp
+)
+target_link_libraries(bitcoin_cli
+  PUBLIC
+    univalue
+)
