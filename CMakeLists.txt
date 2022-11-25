@@ -121,6 +121,11 @@ tristate_option(WITH_EXTERNAL_SIGNER "Enable external signer support." "if Boost
 
 option(BUILD_TESTS "Build test_bitcoin executable." ON)
 option(BUILD_BENCH "Build bench_bitcoin executable." ON)
+
+if(NOT MSVC)
+  option(BUILD_FUZZ_BINARY "Build fuzz binary." ON)
+endif()
+
 option(INSTALL_MAN "Install man pages." ON)
 
 if(CXX20 OR MSVC)
@@ -314,7 +319,7 @@ if(CMAKE_CROSSCOMPILING AND DEPENDS_ALLOW_HOST_PACKAGES)
   list(APPEND CMAKE_FIND_ROOT_PATH "${CMAKE_SYSTEM_PREFIX_PATH}")
 endif()
 
-if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX OR BUILD_BITCOINKERNEL_LIB OR BUILD_WALLET_TOOL OR WITH_GUI)
+if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX OR BUILD_BITCOINKERNEL_LIB OR BUILD_WALLET_TOOL OR WITH_GUI OR BUILD_FUZZ_BINARY)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
 
@@ -336,14 +341,14 @@ if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX OR BUILD_BITCOINKERNEL_LIB OR BUILD_WAL
 endif()
 
 include(CrossPkgConfig)
-if(BUILD_DAEMON OR BUILD_CLI OR WITH_GUI)
+if(BUILD_DAEMON OR BUILD_CLI OR WITH_GUI OR BUILD_FUZZ_BINARY)
   cross_pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
   set_property(TARGET PkgConfig::libevent APPEND PROPERTY
     INTERFACE_LINK_LIBRARIES $<$<PLATFORM_ID:Windows>:iphlpapi;ws2_32>
   )
 endif()
 
-if(NOT WIN32 AND (BUILD_DAEMON OR WITH_GUI))
+if(NOT WIN32 AND (BUILD_DAEMON OR WITH_GUI OR BUILD_FUZZ_BINARY))
   cross_pkg_check_modules(libevent_pthreads REQUIRED libevent_pthreads>=2.1.8 IMPORTED_TARGET)
 endif()
 
@@ -605,6 +610,7 @@ message("  experimental syscall sandbox ........ ${WITH_SECCOMP}")
 message("Tests:")
 message("  test_bitcoin ........................ ${BUILD_TESTS}")
 message("  bench_bitcoin ....................... ${BUILD_BENCH}")
+message("  fuzz binary ......................... ${BUILD_FUZZ_BINARY}")
 message("")
 if(CMAKE_CROSSCOMPILING)
   set(cross_status "TRUE, for ${CMAKE_SYSTEM_NAME}, ${CMAKE_SYSTEM_PROCESSOR}")

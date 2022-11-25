@@ -413,6 +413,11 @@ if(BUILD_BENCH)
   add_subdirectory(bench)
 endif()
 
+add_subdirectory(test/fuzz/util)
+if(BUILD_FUZZ_BINARY)
+  add_subdirectory(test/fuzz)
+endif()
+
 
 include(GNUInstallDirs)
 install(TARGETS ${installable_targets}
