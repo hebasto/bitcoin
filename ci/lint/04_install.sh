@@ -21,6 +21,9 @@ export PATH="${PYTHON_BIN_PATH}:${PATH}"
 command -v python
 python --version
 
+ls -l "${PYTHON_BIN_PATH}"
+command -v pip
+
 echo =================================== LINE 24
 ${CI_RETRY_EXE} python -m pip install codespell==2.2.1
 echo =================================== LINE 26
