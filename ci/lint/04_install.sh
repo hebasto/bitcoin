@@ -18,6 +18,7 @@ if [ ! -d "$PYTHON_BIN_PATH" ]; then
   "${PYENV_ROOT}/bin/pyenv" install "$PYTHON_VERSION"
 fi
 export PATH="${PYTHON_BIN_PATH}:${PATH}"
+command -v python
 python --version
 
 (

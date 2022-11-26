@@ -74,11 +74,8 @@ task:
   << : *CREDITS_TEMPLATE
   python_cache:
     folder: "$HOME/.pyenv"
-    fingerprint_script:
-      - echo $CIRRUS_OS
-      - cat .python-version
-    populate_script:
-      - rm -rf "$HOME/.pyenv"
+    fingerprint_script: cat .python-version /etc/os-release
+    populate_script: rm -rf "$HOME/.pyenv"
   lint_script:
     - ./ci/lint_run_all.sh
   env:
