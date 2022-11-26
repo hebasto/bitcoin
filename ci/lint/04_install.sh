@@ -21,14 +21,6 @@ export PATH="${PYTHON_BIN_PATH}:${PATH}"
 command -v python
 python --version
 
-(
-  # Temporary workaround for https://github.com/bitcoin/bitcoin/pull/26130#issuecomment-1260499544
-  # Can be removed once the underlying image is bumped to something that includes git2.34 or later
-  sed -i -e 's/bionic/jammy/g' /etc/apt/sources.list
-  ${CI_RETRY_EXE} apt-get update
-  ${CI_RETRY_EXE} apt-get install -y --reinstall git
-)
-
 ${CI_RETRY_EXE} python -m pip install codespell==2.2.1
 ${CI_RETRY_EXE} python -m pip install flake8==4.0.1
 ${CI_RETRY_EXE} python -m pip install mypy==0.942
