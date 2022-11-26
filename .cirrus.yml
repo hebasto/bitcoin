@@ -72,6 +72,13 @@ task:
     memory: 4G
   # For faster CI feedback, immediately schedule the linters
   << : *CREDITS_TEMPLATE
+  python_cache:
+    folder: "$HOME/.pyenv"
+    fingerprint_script:
+      - echo $CIRRUS_OS
+      - cat .python-version
+    populate_script:
+      - rm -rf "$HOME/.pyenv"
   lint_script:
     - ./ci/lint_run_all.sh
   env:
