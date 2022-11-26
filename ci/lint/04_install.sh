@@ -13,7 +13,7 @@ export PYENV_ROOT="${HOME}/.pyenv"
 PYTHON_VERSION=$(cat "${BASE_ROOT_DIR}/.python-version")
 PYTHON_BIN_PATH="${PYENV_ROOT}/versions/${PYTHON_VERSION}/bin"
 if [ ! -d "$PYTHON_BIN_PATH" ]; then
-  ${CI_RETRY_EXE} apt-get install -y build-essential libbz2-dev libncursesw5-dev libreadline-dev libssl-dev libsqlite3-dev liblzma-dev zlib1g-dev
+  ${CI_RETRY_EXE} apt-get install -y build-essential libbz2-dev libffi-dev libncursesw5-dev libreadline-dev libssl-dev libsqlite3-dev liblzma-dev zlib1g-dev
   curl -sL https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
   "${PYENV_ROOT}/bin/pyenv" install "$PYTHON_VERSION"
 fi
