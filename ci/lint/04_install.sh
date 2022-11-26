@@ -17,11 +17,10 @@ if [ ! -d "$PYTHON_BIN_PATH" ]; then
     cd pyenv/plugins/python-build || exit 1
     ./install.sh
   )
-  ${CI_RETRY_EXE} apt-get install -y build-essential libncursesw5-dev libreadline-dev libssl-dev zlib1g-dev
-  python-build "$PYTHON_VERSION" /tmp/python
-else
-  ${CI_RETRY_EXE} apt-get install -y build-essential libncursesw5-dev libreadline-dev libssl-dev zlib1g-dev
-  
+  ${CI_RETRY_EXE} apt-get install -y build-essential clang libncursesw5-dev libreadline-dev libssl-dev zlib1g-dev
+  env CC=clang python-build "$PYTHON_VERSION" /tmp/python
+# else
+  # ${CI_RETRY_EXE} apt-get install -y build-essential libncursesw5-dev libreadline-dev libssl-dev zlib1g-dev
   # ${CI_RETRY_EXE} apt-get install -y libncursesw5 libreadline8 libssl3 zlib1g
 fi
 export PATH="${PYTHON_BIN_PATH}:${PATH}"
