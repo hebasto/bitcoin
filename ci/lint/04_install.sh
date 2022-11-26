@@ -20,7 +20,9 @@ if [ ! -d "$PYTHON_BIN_PATH" ]; then
   ${CI_RETRY_EXE} apt-get install -y build-essential libncursesw5-dev libreadline-dev libssl-dev zlib1g-dev
   python-build "$PYTHON_VERSION" /tmp/python
 else
-  ${CI_RETRY_EXE} apt-get install -y libncursesw5 libreadline8 libssl3 zlib1g
+  ${CI_RETRY_EXE} apt-get install -y build-essential libncursesw5-dev libreadline-dev libssl-dev zlib1g-dev
+  
+  # ${CI_RETRY_EXE} apt-get install -y libncursesw5 libreadline8 libssl3 zlib1g
 fi
 export PATH="${PYTHON_BIN_PATH}:${PATH}"
 echo ================================================== 24
@@ -33,6 +35,9 @@ echo ================================================== 30
 command -v pip
 pip --version
 echo ================================================== 33
+command -v pip3
+pip3 --version
+echo ================================================== 40
 
 ${CI_RETRY_EXE} pip install codespell==2.2.1
 ${CI_RETRY_EXE} pip install flake8==4.0.1
