@@ -7,7 +7,23 @@
 export LC_ALL=C
 
 ${CI_RETRY_EXE} apt-get update
-${CI_RETRY_EXE} apt-get install -y python3-pip curl git gawk jq
+${CI_RETRY_EXE} apt-get install -y curl git gawk jq xz-utils
+
+PYTHON_VERSION=$(cat "${BASE_ROOT_DIR}/.python-version")
+PYTHON_BIN_PATH=/tmp/python/bin
+if [ ! -d "$PYTHON_BIN_PATH" ]; then
+  (
+    git clone https://github.com/pyenv/pyenv.git
+    cd pyenv/plugins/python-build || exit 1
+    ./install.sh
+  )
+  ${CI_RETRY_EXE} apt-get install -y build-essential libncursesw5-dev libreadline-dev libssl-dev zlib1g-dev
+  python-build "$PYTHON_VERSION" /tmp/python
+fi
+export PATH="${PYTHON_BIN_PATH}:${PATH}"
+command -v python
+python --version
+
 (
   # Temporary workaround for https://github.com/bitcoin/bitcoin/pull/26130#issuecomment-1260499544
   # Can be removed once the underlying image is bumped to something that includes git2.34 or later
