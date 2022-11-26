@@ -21,11 +21,17 @@ export PATH="${PYTHON_BIN_PATH}:${PATH}"
 command -v python
 python --version
 
+echo =================================== LINE 24
 ${CI_RETRY_EXE} python -m pip install codespell==2.2.1
+echo =================================== LINE 26
 ${CI_RETRY_EXE} python -m pip install flake8==4.0.1
+echo =================================== LINE 28
 ${CI_RETRY_EXE} python -m pip install mypy==0.942
+echo =================================== LINE 30
 ${CI_RETRY_EXE} python -m pip install pyzmq==22.3.0
+echo =================================== LINE 32
 ${CI_RETRY_EXE} python -m pip install vulture==2.3
+echo =================================== LINE 34
 
 SHELLCHECK_VERSION=v0.8.0
 curl -sL "https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_VERSION}/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" | tar --xz -xf - --directory /tmp/

@@ -69,7 +69,7 @@ task:
   container:
     image: ubuntu:jammy  # For python 3.6, oldest supported version according to doc/dependencies.md
     cpu: 2
-    memory: 4G
+    memory: 8G
   # For faster CI feedback, immediately schedule the linters
   << : *CREDITS_TEMPLATE
   python_cache:
