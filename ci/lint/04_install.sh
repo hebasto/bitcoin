@@ -16,20 +16,12 @@ if [ ! -d "${PYTHON_PATH}/bin" ]; then
     cd pyenv/plugins/python-build || exit 1
     ./install.sh
   )
-  ${CI_RETRY_EXE} apt-get install -y build-essential libbz2-dev liblzma-dev libncursesw5-dev libreadline-dev libssl-dev libsqlite3-dev zlib1g-dev
-  python-build "$(cat "${BASE_ROOT_DIR}/.python-version")" "${PYTHON_PATH}"
+  ${CI_RETRY_EXE} apt-get install -y build-essential clang libbz2-dev liblzma-dev libncursesw5-dev libreadline-dev libssl-dev libsqlite3-dev zlib1g-dev
+  env CC=clang python-build "$(cat "${BASE_ROOT_DIR}/.python-version")" "${PYTHON_PATH}"
 fi
 export PATH="${PYTHON_PATH}/bin:${PATH}"
 command -v python
 python --version
-
-(
-  # Temporary workaround for https://github.com/bitcoin/bitcoin/pull/26130#issuecomment-1260499544
-  # Can be removed once the underlying image is bumped to something that includes git2.34 or later
-  sed -i -e 's/bionic/jammy/g' /etc/apt/sources.list
-  ${CI_RETRY_EXE} apt-get update
-  ${CI_RETRY_EXE} apt-get install -y --reinstall git
-)
 
 ${CI_RETRY_EXE} pip3 install codespell==2.2.1
 ${CI_RETRY_EXE} pip3 install flake8==4.0.1
