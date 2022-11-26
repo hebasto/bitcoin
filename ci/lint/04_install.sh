@@ -17,7 +17,7 @@ if [ ! -d "$PYTHON_BIN_PATH" ]; then
     cd pyenv/plugins/python-build || exit 1
     ./install.sh
   )
-  ${CI_RETRY_EXE} apt-get install -y make clang libncursesw5-dev libreadline-dev libssl-dev zlib1g-dev
+  ${CI_RETRY_EXE} apt-get install -y make clang libbz2-dev libncursesw5-dev libreadline-dev libssl-dev libsqlite3-dev liblzma-dev zlib1g-dev
   env CC=clang python-build "$PYTHON_VERSION" /tmp/python
 fi
 export PATH="${PYTHON_BIN_PATH}:${PATH}"
