@@ -8,6 +8,32 @@ export LC_ALL=C
 
 ${CI_RETRY_EXE} apt-get update
 ${CI_RETRY_EXE} apt-get install -y python3-pip curl git gawk jq
+
+
+export PYENV_ROOT="${HOME}/.pyenv"
+# export PATH="$PYENV_ROOT/bin:$PATH"
+if [ ! -d "${PYENV_ROOT}/versions/$(cat "${BASE_ROOT_DIR}/.python-version")" ]; then
+  echo Install python...
+  ${CI_RETRY_EXE} apt-get install -y zlib1g-dev libncursesw5-dev libreadline-dev libssl-dev
+  curl -sL https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+  ${PYENV_ROOT}/bin/pyenv install $(cat "${BASE_ROOT_DIR}/.python-version")
+fi
+export PATH="${PYENV_ROOT}/bin:${PATH}"
+
+python --version || echo Line 22
+
+pyenv global $(cat "${BASE_ROOT_DIR}/.python-version")
+
+python --version || echo Line 26
+
+
+
+
+
+
+
+
+
 (
   # Temporary workaround for https://github.com/bitcoin/bitcoin/pull/26130#issuecomment-1260499544
   # Can be removed once the underlying image is bumped to something that includes git2.34 or later
