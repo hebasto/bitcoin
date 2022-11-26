@@ -25,15 +25,15 @@ ls -l "${PYTHON_BIN_PATH}"
 command -v pip
 
 echo =================================== LINE 24
-${CI_RETRY_EXE} python -m pip install codespell==2.2.1
+${CI_RETRY_EXE} pip install codespell==2.2.1
 echo =================================== LINE 26
-${CI_RETRY_EXE} python -m pip install flake8==4.0.1
+${CI_RETRY_EXE} pip install flake8==4.0.1
 echo =================================== LINE 28
-${CI_RETRY_EXE} python -m pip install mypy==0.942
+${CI_RETRY_EXE} pip install mypy==0.942
 echo =================================== LINE 30
-${CI_RETRY_EXE} python -m pip install pyzmq==22.3.0
+${CI_RETRY_EXE} pip install pyzmq==22.3.0
 echo =================================== LINE 32
-${CI_RETRY_EXE} python -m pip install vulture==2.3
+${CI_RETRY_EXE} pip install vulture==2.3
 echo =================================== LINE 34
 
 SHELLCHECK_VERSION=v0.8.0
