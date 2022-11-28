@@ -21,6 +21,7 @@
     <ClCompile Include="..\..\src\crypto\sha256_avx2.cpp" />
     <ClCompile Include="..\..\src\crypto\sha256_sse4.cpp" />
     <ClCompile Include="..\..\src\crypto\sha256_sse41.cpp" />
+    <ClCompile Include="..\..\src\crypto\sha256_x86_shani.cpp" />
     <ClCompile Include="..\..\src\crypto\sha512.cpp" />
     <ClCompile Include="..\..\src\hash.cpp" />
     <ClCompile Include="..\..\src\primitives\block.cpp" />
