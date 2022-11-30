@@ -71,9 +71,13 @@ public:
     {
     }
 
-    typename base::value_type* allocate(std::size_t n, const void* hint = nullptr)
+#if __cplusplus < 202002L
+    typename base::value_type* allocate(std::size_t n)
+#else
+    [[nodiscard]] constexpr typename base::value_type* allocate(std::size_t n)
+#endif
     {
-        typename base::value_type* allocation = base::allocate(n, hint);
+        typename base::value_type* allocation = base::allocate(n);
         if (m_allocated) *m_allocated += MallocUsage(sizeof(typename base::value_type) * n);
         return allocation;
     }
