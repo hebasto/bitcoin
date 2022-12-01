@@ -17,6 +17,11 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#if __cplusplus < 202002L
+#  define CONSTEXPR
+#else
+#  define CONSTEXPR constexpr
+#endif
 
 namespace memusage
 {
@@ -34,32 +39,35 @@ static size_t MallocUsage(size_t alloc);
 template <typename T>
 class AccountingAllocator : public std::allocator<T>
 {
+    using base = std::allocator<T>;
+
     //! Pointer to accounting variable, if any.
-    size_t* m_allocated;
+    size_t* m_allocated = nullptr;
 
     template <typename U>
     friend class AccountingAllocator;
-    typedef std::allocator<T> base;
 
 public:
     //! Default constructor constructs a non-accounting allocator.
-    AccountingAllocator() noexcept : m_allocated(nullptr) {}
+    AccountingAllocator() = default;
 
     /** Construct an allocator that increments/decrements 'allocated' on allocate/free.
      *
      * In a multithreaded environment, the accounting variable needs to be
      * protected by the same lock as the container(s) that use this allocator.
      */
-    explicit AccountingAllocator(size_t& allocated) noexcept : m_allocated(&allocated) {}
+    explicit CONSTEXPR AccountingAllocator(size_t& allocated) noexcept : m_allocated{&allocated} {}
 
     //! A copy-constructed container will be non-accounting.
-    AccountingAllocator select_on_container_copy_construction() const { return AccountingAllocator(); }
+    AccountingAllocator select_on_container_copy_construction() const { return {}; }
     //! A copy-assigned container will be non-accounting.
     typedef std::false_type propagate_on_container_copy_assignment;
     //! The accounting will follow a container as it's moved.
     typedef std::true_type propagate_on_container_move_assignment;
     //! The accounting will follow a container as it's swapped.
     typedef std::true_type propagate_on_container_swap;
+
+    typedef std::false_type is_always_equal;
 
     // Construct an allocator for a different data type, inheriting the accounting.
     template <typename U>
@@ -77,7 +85,7 @@ public:
         return base::allocate(n);
     }
 
-    void deallocate(typename base::value_type* p, std::size_t n)
+    CONSTEXPR void deallocate(typename base::value_type* p, std::size_t n)
     {
         base::deallocate(p, n);
         if (m_allocated) *m_allocated -= MallocUsage(sizeof(typename base::value_type) * n);
