@@ -37,9 +37,12 @@ static size_t MallocUsage(size_t alloc);
  * allocating/deallocating memory.
  */
 template <typename T>
-class AccountingAllocator : public std::allocator<T>
+class AccountingAllocator
 {
     using base = std::allocator<T>;
+
+    //! Base allocator
+    base m_base;
 
     //! Pointer to accounting variable, if any.
     size_t* m_allocated = nullptr;
@@ -48,6 +51,14 @@ class AccountingAllocator : public std::allocator<T>
     friend class AccountingAllocator;
 
 public:
+    using value_type = typename base::value_type;
+    // using pointer = typename base::pointer;
+    // using const_pointer = typename base::const_pointer;
+    // using reference = typename base::reference;
+    // using const_reference = typename base::const_reference;
+    using size_type = typename base::size_type;
+    using difference_type = typename base::size_type;
+
     //! Default constructor constructs a non-accounting allocator.
     AccountingAllocator() = default;
 
@@ -61,19 +72,19 @@ public:
     //! A copy-constructed container will be non-accounting.
     AccountingAllocator select_on_container_copy_construction() const { return {}; }
     //! A copy-assigned container will be non-accounting.
-    typedef std::false_type propagate_on_container_copy_assignment;
+    using propagate_on_container_copy_assignment = std::false_type;
     //! The accounting will follow a container as it's moved.
-    typedef std::true_type propagate_on_container_move_assignment;
+    using propagate_on_container_move_assignment = std::true_type;
     //! The accounting will follow a container as it's swapped.
-    typedef std::true_type propagate_on_container_swap;
+    using propagate_on_container_swap = std::true_type;
 
-    typedef std::false_type is_always_equal;
+    using is_always_equal = std::false_type;
 
     // Construct an allocator for a different data type, inheriting the accounting.
     template <typename U>
-    AccountingAllocator(AccountingAllocator<U>&& a) noexcept : base(std::move(a)), m_allocated(a.m_allocated) {}
+    AccountingAllocator(AccountingAllocator<U>&& a) noexcept : m_base(std::move(a.m_base)), m_allocated(a.m_allocated) {}
     template <typename U>
-    AccountingAllocator(const AccountingAllocator<U>& a) noexcept : base(a), m_allocated(a.m_allocated) {}
+    AccountingAllocator(const AccountingAllocator<U>& a) noexcept : m_base(a.m_base), m_allocated(a.m_allocated) {}
 
 #if __cplusplus < 202002L
     typename base::value_type* allocate(std::size_t n)
@@ -81,15 +92,23 @@ public:
     [[nodiscard]] constexpr typename base::value_type* allocate(std::size_t n)
 #endif
     {
-        if (m_allocated) *m_allocated += MallocUsage(sizeof(typename base::value_type) * n);
-        return base::allocate(n);
+        if (m_allocated) *m_allocated += MallocUsage(sizeof(value_type) * n);
+        return m_base.allocate(n);
     }
 
     CONSTEXPR void deallocate(typename base::value_type* p, std::size_t n)
     {
-        base::deallocate(p, n);
-        if (m_allocated) *m_allocated -= MallocUsage(sizeof(typename base::value_type) * n);
+        m_base.deallocate(p, n);
+        if (m_allocated) *m_allocated -= MallocUsage(sizeof(value_type) * n);
     }
+
+    // template<typename P>
+    // void destroy(P* ptr) { m_base.destroy(ptr); }
+    // template<typename P, typename... Args>
+    // void construct(P* ptr, Args&&... args) { m_base.construct(ptr, std::forward<Args>(args)...); }
+    // pointer address(reference x) { return m_base.address(x); }
+    // const_pointer address(const_reference x) { return m_base.address(x); }
+    // size_type max_size() const noexcept { return m_base.max_size(); }
 
     template <typename U>
     struct rebind {
