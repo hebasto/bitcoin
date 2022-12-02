@@ -100,8 +100,8 @@ int main(int argc, char* argv[])
     num_test_failures += QTest::qExec(&test3);
 
 #ifdef ENABLE_WALLET
-    // WalletTests test5(app.node());
-    // num_test_failures += QTest::qExec(&test5);
+    WalletTests test5(app.node());
+    num_test_failures += QTest::qExec(&test5);
 
     AddressBookTests test6(app.node());
     num_test_failures += QTest::qExec(&test6);
