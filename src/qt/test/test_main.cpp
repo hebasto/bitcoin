@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
     int num_test_failures{0};
 
     AppTests app_tests(app);
-//     num_test_failures += QTest::qExec(&app_tests);
+    num_test_failures += QTest::qExec(&app_tests);
 
 //     OptionTests options_tests(app.node());
 //     num_test_failures += QTest::qExec(&options_tests);
