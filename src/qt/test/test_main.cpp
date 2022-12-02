@@ -99,13 +99,13 @@ int main(int argc, char* argv[])
 //     RPCNestedTests test3(app.node());
 //     num_test_failures += QTest::qExec(&test3);
 
-// #ifdef ENABLE_WALLET
+#ifdef ENABLE_WALLET
 //     WalletTests test5(app.node());
 //     num_test_failures += QTest::qExec(&test5);
 
-//     AddressBookTests test6(app.node());
-//     num_test_failures += QTest::qExec(&test6);
-// #endif
+    AddressBookTests test6(app.node());
+    num_test_failures += QTest::qExec(&test6);
+#endif
 
     if (num_test_failures) {
         qWarning("\nFailed tests: %d\n", num_test_failures);
