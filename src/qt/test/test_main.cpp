@@ -96,8 +96,8 @@ int main(int argc, char* argv[])
 //     URITests test1;
 //     num_test_failures += QTest::qExec(&test1);
 
-//     RPCNestedTests test3(app.node());
-//     num_test_failures += QTest::qExec(&test3);
+    RPCNestedTests test3(app.node());
+    num_test_failures += QTest::qExec(&test3);
 
 // #ifdef ENABLE_WALLET
 //     WalletTests test5(app.node());
