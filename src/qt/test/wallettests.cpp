@@ -80,12 +80,12 @@ uint256 SendCoins(CWallet& wallet, SendCoinsDialog& sendCoinsDialog, const CTxDe
         ->findChild<QCheckBox*>("optInRBF")
         ->setCheckState(rbf ? Qt::Checked : Qt::Unchecked);
     uint256 txid;
-    boost::signals2::scoped_connection c(wallet.NotifyTransactionChanged.connect([&txid](const uint256& hash, ChangeType status) {
-        if (status == CT_NEW) txid = hash;
-    }));
-    ConfirmSend();
-    bool invoked = QMetaObject::invokeMethod(&sendCoinsDialog, "sendButtonClicked", Q_ARG(bool, false));
-    assert(invoked);
+    // boost::signals2::scoped_connection c(wallet.NotifyTransactionChanged.connect([&txid](const uint256& hash, ChangeType status) {
+    //     if (status == CT_NEW) txid = hash;
+    // }));
+    // ConfirmSend();
+    // bool invoked = QMetaObject::invokeMethod(&sendCoinsDialog, "sendButtonClicked", Q_ARG(bool, false));
+    // assert(invoked);
     return txid;
 }
 
