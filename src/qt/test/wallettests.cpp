@@ -189,8 +189,8 @@ void TestGUI(interfaces::Node& node)
 
     // Create widgets for sending coins and listing transactions.
     std::unique_ptr<const PlatformStyle> platformStyle(PlatformStyle::instantiate("other"));
-    SendCoinsDialog sendCoinsDialog(platformStyle.get());
-    TransactionView transactionView(platformStyle.get());
+    auto sendCoinsDialog = std::make_unique<SendCoinsDialog>(platformStyle.get());
+    auto transactionView = std::make_unique<TransactionView>(platformStyle.get());
     OptionsModel optionsModel(node);
     bilingual_str error;
     QVERIFY(optionsModel.Init(error));
@@ -199,28 +199,28 @@ void TestGUI(interfaces::Node& node)
     AddWallet(context, wallet);
     WalletModel walletModel(interfaces::MakeWallet(context, wallet), clientModel, platformStyle.get());
     RemoveWallet(context, wallet, /* load_on_start= */ std::nullopt);
-    sendCoinsDialog.setModel(&walletModel);
-    transactionView.setModel(&walletModel);
+    sendCoinsDialog->setModel(&walletModel);
+    transactionView->setModel(&walletModel);
 
     // Update walletModel cached balance which will trigger an update for the 'labelBalance' QLabel.
     walletModel.pollBalanceChanged();
     // Check balance in send dialog
-    CompareBalance(walletModel, walletModel.wallet().getBalance(), sendCoinsDialog.findChild<QLabel*>("labelBalance"));
+    CompareBalance(walletModel, walletModel.wallet().getBalance(), sendCoinsDialog->findChild<QLabel*>("labelBalance"));
 
     // Send two transactions, and verify they are added to transaction list.
     TransactionTableModel* transactionTableModel = walletModel.getTransactionTableModel();
     QCOMPARE(transactionTableModel->rowCount({}), 105);
-    uint256 txid1 = SendCoins(*wallet.get(), sendCoinsDialog, PKHash(), 5 * COIN, false /* rbf */);
-    uint256 txid2 = SendCoins(*wallet.get(), sendCoinsDialog, PKHash(), 10 * COIN, true /* rbf */);
+    uint256 txid1 = SendCoins(*wallet.get(), *sendCoinsDialog, PKHash(), 5 * COIN, false /* rbf */);
+    uint256 txid2 = SendCoins(*wallet.get(), *sendCoinsDialog, PKHash(), 10 * COIN, true /* rbf */);
     QCOMPARE(transactionTableModel->rowCount({}), 107);
     QVERIFY(FindTx(*transactionTableModel, txid1).isValid());
     QVERIFY(FindTx(*transactionTableModel, txid2).isValid());
 
     // Call bumpfee. Test disabled, canceled, enabled, then failing cases.
-    BumpFee(transactionView, txid1, true /* expect disabled */, "not BIP 125 replaceable" /* expected error */, false /* cancel */);
-    BumpFee(transactionView, txid2, false /* expect disabled */, {} /* expected error */, true /* cancel */);
-    BumpFee(transactionView, txid2, false /* expect disabled */, {} /* expected error */, false /* cancel */);
-    BumpFee(transactionView, txid2, true /* expect disabled */, "already bumped" /* expected error */, false /* cancel */);
+    BumpFee(*transactionView, txid1, true /* expect disabled */, "not BIP 125 replaceable" /* expected error */, false /* cancel */);
+    BumpFee(*transactionView, txid2, false /* expect disabled */, {} /* expected error */, true /* cancel */);
+    BumpFee(*transactionView, txid2, false /* expect disabled */, {} /* expected error */, false /* cancel */);
+    BumpFee(*transactionView, txid2, true /* expect disabled */, "already bumped" /* expected error */, false /* cancel */);
 
     // // Check current balance on OverviewPage
     // OverviewPage overviewPage(platformStyle.get());
