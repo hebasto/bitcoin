@@ -24,3 +24,4 @@ export DOCKER_NAME_TAG=ubuntu:22.04
 export NO_DEPENDS=1
 export GOAL="install"
 export BITCOIN_CONFIG="--enable-usdt --enable-zmq --with-incompatible-bdb --with-gui=qt5 CPPFLAGS='-DARENA_DEBUG -DDEBUG_LOCKORDER' --with-sanitizers=address,integer,undefined CC=clang CXX=clang++"
+export NO_WERROR=1
