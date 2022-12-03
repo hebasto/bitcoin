@@ -25,3 +25,4 @@ export NO_DEPENDS=1
 export GOAL="install"
 export BITCOIN_CONFIG="--enable-usdt --enable-zmq --with-incompatible-bdb --with-gui=qt5 CPPFLAGS='-DARENA_DEBUG -DDEBUG_LOCKORDER' --with-sanitizers=address,integer,undefined CC=clang CXX=clang++"
 export NO_WERROR=1
+export QT_QPA_PLATFORM=minimal
