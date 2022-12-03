@@ -84,8 +84,8 @@ uint256 SendCoins(CWallet& wallet, SendCoinsDialog& sendCoinsDialog, const CTxDe
         if (status == CT_NEW) txid = hash;
     }));
     ConfirmSend();
-    // bool invoked = QMetaObject::invokeMethod(&sendCoinsDialog, "sendButtonClicked", Q_ARG(bool, false));
-    // assert(invoked);
+    bool invoked = QMetaObject::invokeMethod(&sendCoinsDialog, "sendButtonClicked", Q_ARG(bool, false));
+    assert(invoked);
     return txid;
 }
 
@@ -210,7 +210,10 @@ void TestGUI(interfaces::Node& node)
     // Send two transactions, and verify they are added to transaction list.
     TransactionTableModel* transactionTableModel = walletModel.getTransactionTableModel();
     QCOMPARE(transactionTableModel->rowCount({}), 105);
+
+    std::cerr << "======================= " << QApplication::topLevelWidgets().size() << std::endl;
     uint256 txid1 = SendCoins(*wallet.get(), *sendCoinsDialog, PKHash(), 5 * COIN, false /* rbf */);
+    std::cerr << "======================= " << QApplication::topLevelWidgets().size() << std::endl;
     // uint256 txid2 = SendCoins(*wallet.get(), *sendCoinsDialog, PKHash(), 10 * COIN, true /* rbf */);
     // QCOMPARE(transactionTableModel->rowCount({}), 107);
     // QVERIFY(FindTx(*transactionTableModel, txid1).isValid());
