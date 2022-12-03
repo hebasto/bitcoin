@@ -36,7 +36,7 @@ bool IsFinalTx(const CTransaction &tx, int nBlockHeight, int64_t nBlockTime)
     return true;
 }
 
-std::pair<int, int64_t> CalculateSequenceLocks(const CTransaction &tx, int flags, std::vector<int>& prevHeights, const CBlockIndex& block)
+std::pair<int, int64_t> CalculateSequenceLocks(const CTransaction &tx, int flags, const std::vector<int>& prevHeights, const CBlockIndex& block)
 {
     assert(prevHeights.size() == tx.vin.size());
 
@@ -67,8 +67,6 @@ std::pair<int, int64_t> CalculateSequenceLocks(const CTransaction &tx, int flags
         // treated as relative lock-times, nor are they given any
         // consensus-enforced meaning at this point.
         if (txin.nSequence & CTxIn::SEQUENCE_LOCKTIME_DISABLE_FLAG) {
-            // The height of this input is not relevant for sequence locks
-            prevHeights[txinIndex] = 0;
             continue;
         }
 
