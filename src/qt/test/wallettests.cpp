@@ -207,8 +207,8 @@ void TestGUI(interfaces::Node& node)
     // Check balance in send dialog
     CompareBalance(walletModel, walletModel.wallet().getBalance(), sendCoinsDialog.findChild<QLabel*>("labelBalance"));
 
-    // // Send two transactions, and verify they are added to transaction list.
-    // TransactionTableModel* transactionTableModel = walletModel.getTransactionTableModel();
+    // Send two transactions, and verify they are added to transaction list.
+    TransactionTableModel* transactionTableModel = walletModel.getTransactionTableModel();
     // QCOMPARE(transactionTableModel->rowCount({}), 105);
     // uint256 txid1 = SendCoins(*wallet.get(), sendCoinsDialog, PKHash(), 5 * COIN, false /* rbf */);
     // uint256 txid2 = SendCoins(*wallet.get(), sendCoinsDialog, PKHash(), 10 * COIN, true /* rbf */);
