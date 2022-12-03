@@ -197,6 +197,7 @@ bool CheckSequenceLocksAtTip(CBlockIndex* tip,
     else {
         std::vector<int> prevheights;
         prevheights.resize(tx.vin.size());
+        int max_input_height{0};
         for (size_t txinIndex = 0; txinIndex < tx.vin.size(); txinIndex++) {
             const CTxIn& txin = tx.vin[txinIndex];
             Coin coin;
@@ -208,40 +209,31 @@ bool CheckSequenceLocksAtTip(CBlockIndex* tip,
                 prevheights[txinIndex] = tip->nHeight + 1;
             } else {
                 prevheights[txinIndex] = coin.nHeight;
+                if (txin.nSequence & CTxIn::SEQUENCE_LOCKTIME_DISABLE_FLAG) continue;
+
+                // It is impossible to correctly calculate a max_input_height
+                // if any of the sequence locked inputs depend on unconfirmed txs,
+                // except in the special case where the relative lock time/height
+                // is 0, which is equivalent to no sequence lock.
+                max_input_height = std::max<int>(max_input_height, coin.nHeight);
             }
         }
         lockPair = CalculateSequenceLocks(tx, STANDARD_LOCKTIME_VERIFY_FLAGS, prevheights, index);
         if (lp) {
             lp->height = lockPair.first;
             lp->time = lockPair.second;
-            // Also store the hash of the block with the highest height of
-            // all the blocks which have sequence locked prevouts.
-            // This hash needs to still be on the chain
-            // for these LockPoint calculations to be valid
-            // Note: It is impossible to correctly calculate a maxInputBlock
-            // if any of the sequence locked inputs depend on unconfirmed txs,
-            // except in the special case where the relative lock time/height
-            // is 0, which is equivalent to no sequence lock. Since we assume
-            // input height of tip+1 for mempool txs and test the resulting
-            // lockPair from CalculateSequenceLocks against tip+1.  We know
-            // EvaluateSequenceLocks will fail if there was a non-zero sequence
-            // lock on a mempool input, so we can use the return value of
-            // CheckSequenceLocksAtTip to indicate the LockPoints validity
-            int maxInputHeight = 0;
-            for (const int height : prevheights) {
-                // Can ignore mempool inputs since we'll fail if they had non-zero locks
-                if (height != tip->nHeight+1) {
-                    maxInputHeight = std::max(maxInputHeight, height);
-                }
-            }
-            // tip->GetAncestor(maxInputHeight) should never return a nullptr
-            // because maxInputHeight is always less than the tip height.
+            // tip->GetAncestor(max_input_height) should never return a nullptr
+            // because max_input_height is always less than the tip height.
             // It would, however, be a bad bug to continue execution, since a
             // LockPoints object with the maxInputBlock member set to nullptr
             // signifies no relative lock time.
-            lp->maxInputBlock = Assert(tip->GetAncestor(maxInputHeight));
+            lp->maxInputBlock = Assert(tip->GetAncestor(max_input_height));
         }
     }
+
+    // We know EvaluateSequenceLocks will fail if there was a non-zero
+    // sequence lock on a mempool input, so we can use the return value
+    // of CheckSequenceLocksAtTip to indicate the LockPoints validity.
     return EvaluateSequenceLocks(index, lockPair);
 }
 
