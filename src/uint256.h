@@ -24,6 +24,7 @@ protected:
     static constexpr int WIDTH = BITS / 8;
     std::array<uint8_t, WIDTH> m_data;
     static_assert(WIDTH == sizeof(m_data), "Sanity check");
+
 public:
     /* construct 0 value by default */
     constexpr base_blob() : m_data() {}
@@ -39,7 +40,7 @@ public:
 
     constexpr bool IsNull() const
     {
-        return std::all_of(m_data.begin(), m_data.end(), [](uint8_t val){
+        return std::all_of(m_data.begin(), m_data.end(), [](uint8_t val) {
             return val == 0;
         });
     }
@@ -63,7 +64,7 @@ public:
     constexpr const unsigned char* data() const { return m_data.data(); }
     constexpr unsigned char* data() { return m_data.data(); }
 
-    constexpr unsigned char* begin() { return m_data.data();}
+    constexpr unsigned char* begin() { return m_data.data(); }
     constexpr unsigned char* end() { return m_data.data() + WIDTH; }
 
     constexpr const unsigned char* begin() const { return m_data.data(); }
