@@ -9,12 +9,12 @@
 #include <crypto/common.h>
 #include <span.h>
 
+#include <algorithm>
 #include <array>
 #include <cassert>
 #include <cstring>
 #include <stdint.h>
 #include <string>
-#include <vector>
 
 /** Template base class for fixed-sized opaque blobs. */
 template<unsigned int BITS>

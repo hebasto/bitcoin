@@ -7,8 +7,6 @@
 
 #include <util/strencodings.h>
 
-#include <string.h>
-
 template <unsigned int BITS>
 std::string base_blob<BITS>::GetHex() const
 {
