@@ -32,7 +32,7 @@ public:
     /* constructor for constants between 1 and 255 */
     constexpr explicit base_blob(uint8_t v) : m_data{v} {}
 
-    constexpr base_blob(Span<const unsigned char> vch)
+    constexpr explicit base_blob(Span<const unsigned char> vch)
     {
         assert(vch.size() == WIDTH);
         std::copy(vch.begin(), vch.end(), m_data.begin());
