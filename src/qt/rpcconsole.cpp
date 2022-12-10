@@ -20,6 +20,7 @@
 #include <qt/walletmodel.h>
 #include <rpc/client.h>
 #include <rpc/server.h>
+#include <util/check.h>
 #include <util/strencodings.h>
 #include <util/string.h>
 #include <util/system.h>
@@ -1358,7 +1359,7 @@ QKeySequence RPCConsole::tabShortcut(TabTypes tab_type) const
     case TabTypes::PEERS: return QKeySequence(tr("Ctrl+P"));
     } // no default case, so the compiler can warn about missing cases
 
-    assert(false);
+    UNREACHABLE();
 }
 
 void RPCConsole::updateAlerts(const QString& warnings)

@@ -7,6 +7,7 @@
 #include <script/script.h>
 #include <script/standard.h>
 #include <script/miniscript.h>
+#include <util/check.h>
 
 #include <assert.h>
 
@@ -244,7 +245,7 @@ Type ComputeType(Fragment fragment, Type x, Type y, Type z, const std::vector<Ty
                    acc_tl; // timelock info
             }
     }
-    assert(false);
+    UNREACHABLE();
 }
 
 size_t ComputeScriptLen(Fragment fragment, Type sub0typ, size_t subsize, uint32_t k, size_t n_subs, size_t n_keys) {
@@ -276,7 +277,7 @@ size_t ComputeScriptLen(Fragment fragment, Type sub0typ, size_t subsize, uint32_
         case Fragment::WRAP_J: return subsize + 4;
         case Fragment::THRESH: return subsize + n_subs + BuildScript(k).size();
     }
-    assert(false);
+    UNREACHABLE();
 }
 
 std::optional<std::vector<Opcode>> DecomposeScript(const CScript& script)

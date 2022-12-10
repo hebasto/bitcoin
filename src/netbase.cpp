@@ -8,6 +8,7 @@
 #include <compat/compat.h>
 #include <sync.h>
 #include <tinyformat.h>
+#include <util/check.h>
 #include <util/sock.h>
 #include <util/strencodings.h>
 #include <util/string.h>
@@ -115,7 +116,7 @@ std::string GetNetworkName(enum Network net)
     case NET_MAX: assert(false);
     } // no default case, so the compiler can warn about missing cases
 
-    assert(false);
+    UNREACHABLE();
 }
 
 std::vector<std::string> GetNetworkNames(bool append_unroutable)
