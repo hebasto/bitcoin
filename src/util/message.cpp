@@ -9,6 +9,7 @@
 #include <pubkey.h>
 #include <script/standard.h>
 #include <uint256.h>
+#include <util/check.h>
 #include <util/message.h>
 #include <util/strencodings.h>
 
@@ -90,5 +91,5 @@ std::string SigningResultString(const SigningResult res)
             return "Sign failed";
         // no default case, so the compiler can warn about missing cases
     }
-    assert(false);
+    UNREACHABLE();
 }

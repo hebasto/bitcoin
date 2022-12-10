@@ -10,6 +10,7 @@
 #include <test/util/chainstate.h>
 #include <test/util/setup_common.h>
 #include <uint256.h>
+#include <util/check.h>
 #include <validation.h>
 
 #include <vector>
@@ -113,7 +114,7 @@ BOOST_FIXTURE_TEST_CASE(chainstate_update_tip, TestChain100Setup)
                 return cs;
             }
         }
-        assert(false);
+        UNREACHABLE();
     }()};
 
     // Create a block to append to the validation chain.

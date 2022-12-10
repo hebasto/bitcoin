@@ -513,7 +513,7 @@ std::string GetAlgorithmName(const SelectionAlgorithm algo)
     case SelectionAlgorithm::MANUAL: return "manual";
     // No default case to allow for compiler to warn
     }
-    assert(false);
+    UNREACHABLE();
 }
 
 CAmount SelectionResult::GetChange(const CAmount min_viable_change, const CAmount change_fee) const
