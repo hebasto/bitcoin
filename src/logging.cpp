@@ -4,6 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <logging.h>
+#include <util/check.h>
 #include <util/fs.h>
 #include <util/string.h>
 #include <util/threadnames.h>
@@ -217,7 +218,7 @@ std::string BCLog::Logger::LogLevelToStr(BCLog::Level level) const
     case BCLog::Level::None:
         return "";
     }
-    assert(false);
+    UNREACHABLE();
 }
 
 std::string LogCategoryToStr(BCLog::LogFlags category)
@@ -289,7 +290,7 @@ std::string LogCategoryToStr(BCLog::LogFlags category)
     case BCLog::LogFlags::ALL:
         return "all";
     }
-    assert(false);
+    UNREACHABLE();
 }
 
 static std::optional<BCLog::Level> GetLogLevel(const std::string& level_str)

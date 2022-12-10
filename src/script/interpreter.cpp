@@ -11,6 +11,7 @@
 #include <pubkey.h>
 #include <script/script.h>
 #include <uint256.h>
+#include <util/check.h>
 
 typedef std::vector<unsigned char> valtype;
 
@@ -400,7 +401,7 @@ static bool EvalChecksig(const valtype& sig, const valtype& pubkey, CScript::con
         // Key path spending in Taproot has no script, so this is unreachable.
         break;
     }
-    assert(false);
+    UNREACHABLE();
 }
 
 bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& script, unsigned int flags, const BaseSignatureChecker& checker, SigVersion sigversion, ScriptExecutionData& execdata, ScriptError* serror)
@@ -1471,7 +1472,7 @@ static bool HandleMissingData(MissingDataBehavior mdb)
     case MissingDataBehavior::FAIL:
         return false;
     }
-    assert(!"Unknown MissingDataBehavior value");
+    UNREACHABLE();
 }
 
 template<typename T>

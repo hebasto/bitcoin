@@ -9,6 +9,7 @@
 #include <script/descriptor.h>
 #include <script/sign.h>
 #include <util/bip32.h>
+#include <util/check.h>
 #include <util/strencodings.h>
 #include <util/string.h>
 #include <util/time.h>
@@ -220,7 +221,7 @@ isminetype LegacyScriptPubKeyMan::IsMine(const CScript& script) const
     case IsMineResult::SPENDABLE:
         return ISMINE_SPENDABLE;
     }
-    assert(false);
+    UNREACHABLE();
 }
 
 bool LegacyScriptPubKeyMan::CheckDecryptionKey(const CKeyingMaterial& master_key, bool accept_no_keys)
