@@ -20,6 +20,7 @@
 #include <protocol.h>
 #include <script/script.h>
 #include <script/standard.h>
+#include <util/check.h>
 #include <util/system.h>
 #include <util/time.h>
 
@@ -680,7 +681,7 @@ QString NetworkToQString(Network net)
     case NET_INTERNAL: return QObject::tr("Internal");
     case NET_MAX: assert(false);
     } // no default case, so the compiler can warn about missing cases
-    assert(false);
+    UNREACHABLE();
 }
 
 QString ConnectionTypeToQString(ConnectionType conn_type, bool prepend_direction)
@@ -709,7 +710,7 @@ QString ConnectionTypeToQString(ConnectionType conn_type, bool prepend_direction
     //: Short-lived peer connection type that solicits known addresses from a peer.
     case ConnectionType::ADDR_FETCH: return prefix + QObject::tr("Address Fetch");
     } // no default case, so the compiler can warn about missing cases
-    assert(false);
+    UNREACHABLE();
 }
 
 QString formatDurationStr(std::chrono::seconds dur)

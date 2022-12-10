@@ -10,6 +10,7 @@
 #include <hash.h>
 #include <prevector.h>
 #include <tinyformat.h>
+#include <util/check.h>
 #include <util/strencodings.h>
 #include <util/string.h>
 
@@ -39,7 +40,7 @@ CNetAddr::BIP155Network CNetAddr::GetBIP155Network() const
         assert(false);
     } // no default case, so the compiler can warn about missing cases
 
-    assert(false);
+    UNREACHABLE();
 }
 
 bool CNetAddr::SetNetFromBIP155Network(uint8_t possible_bip155_net, size_t address_size)
@@ -512,7 +513,7 @@ bool CNetAddr::IsAddrV1Compatible() const
         assert(false);
     } // no default case, so the compiler can warn about missing cases
 
-    assert(false);
+    UNREACHABLE();
 }
 
 enum Network CNetAddr::GetNetwork() const
@@ -619,7 +620,7 @@ std::string CNetAddr::ToStringIP() const
         assert(false);
     } // no default case, so the compiler can warn about missing cases
 
-    assert(false);
+    UNREACHABLE();
 }
 
 std::string CNetAddr::ToString() const
@@ -695,7 +696,7 @@ uint32_t CNetAddr::GetLinkedIPv4() const
         // Teredo tunneled IPv4: the IPv4 address is in the last 4 bytes of the address, but bitflipped
         return ~ReadBE32(Span{m_addr}.last(ADDR_IPV4_SIZE).data());
     }
-    assert(false);
+    UNREACHABLE();
 }
 
 Network CNetAddr::GetNetClass() const

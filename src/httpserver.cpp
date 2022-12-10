@@ -15,6 +15,7 @@
 #include <rpc/protocol.h> // For HTTP status codes
 #include <shutdown.h>
 #include <sync.h>
+#include <util/check.h>
 #include <util/strencodings.h>
 #include <util/syscall_sandbox.h>
 #include <util/system.h>
@@ -201,7 +202,7 @@ std::string RequestMethodString(HTTPRequest::RequestMethod m)
     case HTTPRequest::UNKNOWN:
         return "unknown";
     } // no default case, so the compiler can warn about missing cases
-    assert(false);
+    UNREACHABLE();
 }
 
 /** HTTP request callback */

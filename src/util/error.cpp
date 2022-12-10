@@ -5,6 +5,7 @@
 #include <util/error.h>
 
 #include <tinyformat.h>
+#include <util/check.h>
 #include <util/translation.h>
 
 #include <cassert>
@@ -41,7 +42,7 @@ bilingual_str TransactionErrorString(const TransactionError err)
             return Untranslated("Transaction rejected due to invalid package");
         // no default case, so the compiler can warn about missing cases
     }
-    assert(false);
+    UNREACHABLE();
 }
 
 bilingual_str ResolveErrMsg(const std::string& optname, const std::string& strBind)
