@@ -16,6 +16,7 @@
 #include <init.h>
 #include <util/system.h>
 #include <util/strencodings.h>
+#include <util/string.h>
 
 #include <cstdio>
 
