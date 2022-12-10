@@ -125,4 +125,9 @@ template <typename T1, size_t PREFIX_LEN>
            std::equal(std::begin(prefix), std::end(prefix), std::begin(obj));
 }
 
+std::string CopyrightHolders(const std::string& strPrefix);
+
+/** Returns licensing information (for -version) */
+std::string LicenseInfo();
+
 #endif // BITCOIN_UTIL_STRING_H

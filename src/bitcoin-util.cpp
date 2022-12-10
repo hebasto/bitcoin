@@ -14,6 +14,7 @@
 #include <compat/compat.h>
 #include <core_io.h>
 #include <streams.h>
+#include <util/string.h>
 #include <util/system.h>
 #include <util/translation.h>
 #include <version.h>
