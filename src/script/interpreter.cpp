@@ -400,7 +400,7 @@ static bool EvalChecksig(const valtype& sig, const valtype& pubkey, CScript::con
     case SigVersion::TAPROOT:
         // Key path spending in Taproot has no script, so this is unreachable.
         break;
-    }
+    } // no default case, so the compiler can warn about missing cases
     UNREACHABLE();
 }
 
@@ -1471,7 +1471,7 @@ static bool HandleMissingData(MissingDataBehavior mdb)
         break;
     case MissingDataBehavior::FAIL:
         return false;
-    }
+    } // no default case, so the compiler can warn about missing cases
     UNREACHABLE();
 }
 

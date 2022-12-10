@@ -614,7 +614,7 @@ public:
                     }
                     return BuildScript(std::move(script), node.k, verify ? OP_EQUALVERIFY : OP_EQUAL);
                 }
-            }
+            } // no default case, so the compiler can warn about missing cases
             UNREACHABLE();
         };
         return TreeEval<CScript>(false, downfn, upfn);
@@ -793,7 +793,7 @@ private:
                 assert(k <= sats.size());
                 return {count, sats[k], sats[0]};
             }
-        }
+        } // no default case, so the compiler can warn about missing cases
         UNREACHABLE();
     }
 
@@ -843,7 +843,7 @@ private:
                 assert(k <= sats.size());
                 return {sats[k], sats[0]};
             }
-        }
+        } // no default case, so the compiler can warn about missing cases
         UNREACHABLE();
     }
 
