@@ -34,3 +34,9 @@ void assertion_fail(const char* file, int line, const char* func, const char* as
     fwrite(str.data(), 1, str.size(), stderr);
     std::abort();
 }
+
+void unreachable_fail(const char* file, int line, const char* func)
+{
+    std::cerr << StrFormatInternalBug("Unreachable code reached (fatal, aborting)", file, line, func);
+    std::abort();
+}
