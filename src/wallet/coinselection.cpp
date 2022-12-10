@@ -505,14 +505,12 @@ std::string COutput::ToString() const
 
 std::string GetAlgorithmName(const SelectionAlgorithm algo)
 {
-    switch (algo)
-    {
+    switch (algo) {
     case SelectionAlgorithm::BNB: return "bnb";
     case SelectionAlgorithm::KNAPSACK: return "knapsack";
     case SelectionAlgorithm::SRD: return "srd";
     case SelectionAlgorithm::MANUAL: return "manual";
-    // No default case to allow for compiler to warn
-    }
+    } // no default case, so the compiler can warn about missing cases
     UNREACHABLE();
 }
 
