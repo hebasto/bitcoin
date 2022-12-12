@@ -11,6 +11,7 @@
 #include <pubkey.h>
 #include <script/script.h>
 #include <uint256.h>
+#include <util/check.h>
 
 typedef std::vector<unsigned char> valtype;
 
@@ -400,6 +401,8 @@ static bool EvalChecksig(const valtype& sig, const valtype& pubkey, CScript::con
         // Key path spending in Taproot has no script, so this is unreachable.
         break;
     }
+    STR_INTERNAL_BUG("");
+    NONFATAL_UNREACHABLE();
     assert(false);
 }
 
