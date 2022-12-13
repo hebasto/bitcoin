@@ -39,16 +39,15 @@ if [ -z "$DANGER_RUN_CI_ON_HOST" ]; then
     systemctl restart docker
   fi
 
-  # shellcheck disable=SC2086
-  DOCKER_ID=$(docker run $DOCKER_ADMIN --rm --interactive --detach --tty \
-                  --mount type=bind,src=$BASE_ROOT_DIR,dst=/ro_base,readonly \
-                  --mount type=bind,src=$CCACHE_DIR,dst=$CCACHE_DIR \
-                  --mount type=bind,src=$DEPENDS_DIR,dst=$DEPENDS_DIR \
-                  --mount type=bind,src=$PREVIOUS_RELEASES_DIR,dst=$PREVIOUS_RELEASES_DIR \
-                  -w $BASE_ROOT_DIR \
+  DOCKER_ID=$(docker run "$DOCKER_ADMIN" --rm --interactive --detach --tty \
+                  --mount type=bind,src="$BASE_ROOT_DIR",dst=/ro_base,readonly \
+                  --mount type=bind,src="$CCACHE_DIR",dst="$CCACHE_DIR" \
+                  --mount type=bind,src="$DEPENDS_DIR",dst="$DEPENDS_DIR" \
+                  --mount type=bind,src="$PREVIOUS_RELEASES_DIR",dst="$PREVIOUS_RELEASES_DIR" \
+                  -w "$BASE_ROOT_DIR" \
                   --env-file /tmp/env \
-                  --name $CONTAINER_NAME \
-                  $DOCKER_NAME_TAG)
+                  --name "$CONTAINER_NAME" \
+                  "$DOCKER_NAME_TAG")
 
   # Create a non-root user inside the container which matches the local user.
   #
