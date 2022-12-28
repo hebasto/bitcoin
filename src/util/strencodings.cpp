@@ -7,7 +7,6 @@
 
 #include <span.h>
 
-#include <algorithm>
 #include <array>
 #include <cassert>
 #include <cstring>
