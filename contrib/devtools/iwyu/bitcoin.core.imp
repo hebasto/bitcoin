@@ -1,4 +1,9 @@
 # Fixups / upstreamed changes
 [
   { include: [ "<bits/chrono.h>", private, "<chrono>", public ] },
+
+  # workaround: https://github.com/include-what-you-use/include-what-you-use/issues/908
+  # the symbol is OK from either header
+  { symbol: ["std::max", "private", "<vector>", "public" ] },
+  { symbol: ["std::max", "private", "<algorithm>", "public" ] },
 ]
