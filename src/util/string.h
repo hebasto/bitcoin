@@ -7,6 +7,7 @@
 
 #include <util/spanparsing.h>
 
+#include <algorithm>
 #include <array>
 #include <cstdint>
 #include <cstring>
