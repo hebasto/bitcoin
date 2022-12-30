@@ -46,9 +46,6 @@ private:
     //! As the order of booleans doesn't matter, it is used as a LIFO (stack)
     std::vector<T> queue GUARDED_BY(m_mutex);
 
-    //! The number of workers (including the master) that are idle.
-    int nIdle GUARDED_BY(m_mutex){0};
-
     //! The total number of workers (including the master).
     int nTotal GUARDED_BY(m_mutex){0};
 
@@ -104,9 +101,7 @@ private:
                         // return the current status
                         return to_return;
                     }
-                    nIdle++;
                     cond.wait(lock); // wait
-                    nIdle--;
                 }
                 if (m_request_stop) {
                     // return value does not matter, because m_request_stop is only set in the destructor.
@@ -116,9 +111,8 @@ private:
                 // Decide how many work units to process now.
                 // * Do not try to do everything at once, but aim for increasingly smaller batches so
                 //   all workers finish approximately simultaneously.
-                // * Try to account for idle jobs which will instantly start helping.
                 // * Don't do batches smaller than 1 (duh), or larger than nBatchSize.
-                nNow = std::max(1U, std::min(nBatchSize, (unsigned int)queue.size() / (nTotal + nIdle + 1)));
+                nNow = std::max(1U, std::min(nBatchSize, (unsigned int)queue.size() / (nTotal + 1)));
                 auto start_it = queue.end() - nNow;
                 vChecks.assign(std::make_move_iterator(start_it), std::make_move_iterator(queue.end()));
                 queue.erase(start_it, queue.end());
