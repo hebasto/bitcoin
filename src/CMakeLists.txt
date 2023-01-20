@@ -94,3 +94,59 @@ target_include_directories(bitcoin_consensus
   PRIVATE
     secp256k1/include
 )
+
+
+# Home for common functionality shared by different executables and libraries.
+# Similar to `bitcoin_util` library, but higher-level.
+add_library(bitcoin_common STATIC EXCLUDE_FROM_ALL "")
+target_sources(bitcoin_common
+  PRIVATE
+    $<TARGET_OBJECTS:bitcoin_consensus>
+    base58.cpp
+    bech32.cpp
+    chainparams.cpp
+    coins.cpp
+    common/bloom.cpp
+    common/interfaces.cpp
+    common/run_command.cpp
+    compressor.cpp
+    core_read.cpp
+    core_write.cpp
+    deploymentinfo.cpp
+    external_signer.cpp
+    init/common.cpp
+    key.cpp
+    key_io.cpp
+    merkleblock.cpp
+    net_types.cpp
+    netaddress.cpp
+    netbase.cpp
+    net_permissions.cpp
+    outputtype.cpp
+    policy/feerate.cpp
+    policy/policy.cpp
+    protocol.cpp
+    psbt.cpp
+    rpc/rawtransaction_util.cpp
+    rpc/request.cpp
+    rpc/external_signer.cpp
+    rpc/util.cpp
+    scheduler.cpp
+    script/descriptor.cpp
+    script/miniscript.cpp
+    script/sign.cpp
+    script/signingprovider.cpp
+    script/standard.cpp
+    warnings.cpp
+)
+target_link_libraries(bitcoin_common
+  PRIVATE
+    bitcoin_util
+    univalue
+    secp256k1
+    Boost::boost
+)
+if(TARGET PkgConfig::libevent)
+  target_sources(bitcoin_common PRIVATE common/url.cpp)
+  target_link_libraries(bitcoin_common PRIVATE PkgConfig::libevent)
+endif()
