@@ -43,6 +43,8 @@ cmake_dependent_option(CXX20 "Enable compilation in C++20 mode." OFF "NOT MSVC" 
 option(HARDENING "Attempt to harden the resulting executables." ON)
 option(REDUCE_EXPORTS "Attempt to reduce exported symbols in the resulting executables." OFF)
 option(WERROR "Treat compiler warnings as errors." OFF)
+include(TristateOption)
+tristate_option(CCACHE "Use ccache for compiling." "if ccache is found." AUTO)
 
 if(CXX20)
   set(CMAKE_CXX_STANDARD 20)
@@ -226,6 +228,8 @@ include(cmake/introspection.cmake)
 include(CheckStdFilesystem)
 check_std_filesystem()
 
+include(cmake/optional.cmake)
+
 add_subdirectory(src)
 
 message("\n")
@@ -266,4 +270,5 @@ else()
   message(" - LDFLAGS for shared libraries ....... ${CMAKE_SHARED_LINKER_FLAGS_RELEASE}")
 endif()
 message("Treat compiler warnings as errors ..... ${WERROR}")
+message("Use ccache for compiling .............. ${CCACHE}")
 message("\n")
