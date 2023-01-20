@@ -172,3 +172,77 @@ if(ENABLE_WALLET)
     target_link_libraries(test_bitcoin PRIVATE BerkeleyDB::BerkeleyDB)
   endif()
 endif()
+
+function(add_boost_test source_file_name)
+  set(source_file_path "${CMAKE_CURRENT_SOURCE_DIR}/${source_file_name}")
+  if(NOT EXISTS ${source_file_path})
+    return()
+  endif()
+
+  file(READ "${source_file_path}" source_file_content)
+  string(REGEX
+    MATCH "(BOOST_FIXTURE_TEST_SUITE|BOOST_AUTO_TEST_SUITE)\\(([A-Za-z0-9_]+)"
+    test_suite_macro "${source_file_content}"
+  )
+  string(REGEX
+    REPLACE "(BOOST_FIXTURE_TEST_SUITE|BOOST_AUTO_TEST_SUITE)\\(" ""
+    test_suite_name "${test_suite_macro}"
+  )
+  if(test_suite_name)
+    add_test(NAME "${test_suite_name}:${source_file_name}"
+      COMMAND test_bitcoin --run_test=${test_suite_name} --catch_system_error=no
+    )
+  endif()
+endfunction()
+
+function(add_all_test_targets)
+  get_target_property(test_sources test_bitcoin SOURCES)
+  foreach(test_source ${test_sources})
+    add_boost_test(${test_source})
+  endforeach()
+endfunction()
+
+include(CTest)
+enable_testing()
+add_all_test_targets()
+
+# https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/EmulateMakeCheck
+set(ctest_command_jobs_arg "")
+if(DEFINED ENV{TESTJOBS})
+  set(ctest_command_jobs_arg "$ENV{TESTJOBS}")
+else()
+  include(ProcessorCount)
+  ProcessorCount(nproc)
+  if(NOT nproc EQUAL 0)
+    set(ctest_command_jobs_arg "-j ${nproc}")
+  endif()
+endif()
+
+set(run_bench_bitcoin "")
+if(BUILD_BENCH)
+  set(run_bench_bitcoin COMMAND $<TARGET_FILE:bench_bitcoin> --sanity-check)
+endif()
+
+set(run_util_test_runner "")
+if(BUILD_TX AND BUILD_UTIL)
+  set(run_util_test_runner COMMAND echo "Running test/util/test_runner.py..." COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_BINARY_DIR}/test/util/test_runner.py)
+endif()
+
+set(CTEST_CONFIGURATION_TYPE "$<$<CONFIG:Release>:Release>$<$<CONFIG:Debug>:Debug>")
+add_custom_target(check
+  ${run_bench_bitcoin}
+  ${run_util_test_runner}
+  COMMAND echo "Running test/util/rpcauth-test.py..."
+  COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_BINARY_DIR}/test/util/rpcauth-test.py
+  COMMAND ${CMAKE_CTEST_COMMAND} -C ${CTEST_CONFIGURATION_TYPE} ${ctest_command_jobs_arg}
+  VERBATIM
+)
+add_dependencies(check test_bitcoin)
+
+if(BUILD_BENCH)
+  add_dependencies(check bench_bitcoin)
+endif()
+
+if(BUILD_TX AND BUILD_UTIL)
+  add_dependencies(check bitcoin-tx bitcoin-util)
+endif()
