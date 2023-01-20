@@ -425,6 +425,15 @@ if(NOT APPLE)
   configure_file(contrib/devtools/split-debug.sh.in split-debug.sh @ONLY)
 endif()
 
+include(GetAllExecutables)
+get_all_executables(executables)
+
+add_custom_target(check-symbols
+  COMMAND echo "Running symbol and dynamic library checks..."
+  COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/contrib/devtools/symbol-check.py ${executables}
+  VERBATIM
+)
+
 message("\n")
 message("Configure summary")
 message("=================")
