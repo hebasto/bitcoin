@@ -604,6 +604,7 @@ inspecting signatures in Mach-O binaries.")
         gzip
         xz
         ;; Build tools
+        cmake
         gnu-make
         libtool-2.4.7
         autoconf-2.71
@@ -634,5 +635,5 @@ inspecting signatures in Mach-O binaries.")
                        (else
                         (make-bitcoin-cross-toolchain target)))))
           ((string-contains target "darwin")
-           (list clang-toolchain-10 binutils cmake xorriso python-signapple))
+           (list clang-toolchain-10 binutils xorriso python-signapple))
           (else '())))))
