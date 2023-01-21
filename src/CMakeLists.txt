@@ -152,6 +152,11 @@ if(TARGET PkgConfig::libevent)
 endif()
 
 
+if(ENABLE_WALLET)
+  add_subdirectory(wallet)
+endif()
+
+
 # P2P and RPC server functionality used by `bitcoind` and `bitcoin-qt` executables.
 add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL "")
 target_sources(bitcoin_node
@@ -236,9 +241,16 @@ target_sources(bitcoin_node
     validation.cpp
     validationinterface.cpp
     versionbits.cpp
-
-    dummywallet.cpp
 )
+if(ENABLE_WALLET)
+  target_sources(bitcoin_node PRIVATE wallet/init.cpp)
+  target_link_libraries(bitcoin_node PRIVATE bitcoin_wallet)
+  if(USE_BDB)
+    target_link_libraries(bitcoin_node PRIVATE BerkeleyDB::BerkeleyDB)
+  endif()
+else()
+  target_sources(bitcoin_node PRIVATE dummywallet.cpp)
+endif()
 target_link_libraries(bitcoin_node
   PRIVATE
     bitcoin_util
