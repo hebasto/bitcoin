@@ -303,6 +303,20 @@ if(BUILD_DAEMON)
   copy_target_for_tests(bitcoind)
   list(APPEND installable_targets bitcoind)
 endif()
+if(MULTIPROCESS)
+  add_executable(bitcoin-node "")
+  target_sources(bitcoin-node
+    PRIVATE
+      bitcoind.cpp
+      init/bitcoin-node.cpp
+  )
+  target_link_libraries(bitcoin-node
+    PRIVATE
+      bitcoin_node
+      bitcoin_ipc
+  )
+  list(APPEND installable_targets bitcoin-node)
+endif()
 
 
 add_library(bitcoin_cli STATIC EXCLUDE_FROM_ALL "")
