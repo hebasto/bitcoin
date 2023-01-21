@@ -12,7 +12,7 @@ export CI_IMAGE_NAME_TAG=ubuntu:20.04
 export PACKAGES="cmake python3 llvm clang g++-multilib"
 export DEP_OPTS="DEBUG=1 MULTIPROCESS=1"
 export GOAL="install"
-export BITCOIN_CONFIG="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER='clang;-m32' -DCMAKE_CXX_COMPILER='clang++;-m32'"
+export BITCOIN_CONFIG="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER='clang;-m32' -DCMAKE_CXX_COMPILER='clang++;-m32' -DCMAKE_EXE_LINKER_FLAGS='--rtlib=compiler-rt -lgcc_s'"
 
 export RUN_UNIT_TESTS=false
 export RUN_UNIT_TESTS_SEQUENTIAL=true
