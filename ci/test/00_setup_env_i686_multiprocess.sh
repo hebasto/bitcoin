@@ -15,6 +15,7 @@ export GOAL="install"
 export BITCOIN_CONFIG="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER='clang -m32' -DCMAKE_CXX_COMPILER='clang++ -m32'"
 
 export RUN_UNIT_TESTS=false
+export RUN_UNIT_TESTS_SEQUENTIAL=true
 export RUN_FUNCTIONAL_TESTS=false
 
 # export TEST_RUNNER_ENV="BITCOIND=bitcoin-node"
