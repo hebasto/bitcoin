@@ -431,9 +431,12 @@ BOOST_AUTO_TEST_CASE(test_LocaleIndependentAtoi)
 
 BOOST_AUTO_TEST_CASE(test_ParseInt64)
 {
+    std::cerr << __FILE__ << " ----------------------- " << __LINE__ << "\n";
     int64_t n;
     // Valid values
     BOOST_CHECK(ParseInt64("1234", nullptr));
+    std::cerr << __FILE__ << " ----------------------- " << __LINE__ << "\n";
+
     BOOST_CHECK(ParseInt64("0", &n) && n == 0LL);
     BOOST_CHECK(ParseInt64("1234", &n) && n == 1234LL);
     BOOST_CHECK(ParseInt64("01234", &n) && n == 1234LL); // no octal
@@ -455,6 +458,8 @@ BOOST_AUTO_TEST_CASE(test_ParseInt64)
     BOOST_CHECK(!ParseInt64("9223372036854775808", nullptr));
     BOOST_CHECK(!ParseInt64("-32482348723847471234", nullptr));
     BOOST_CHECK(!ParseInt64("32482348723847471234", nullptr));
+
+    std::cerr << __FILE__ << " ----------------------- " << __LINE__ << "\n";
 }
 
 BOOST_AUTO_TEST_CASE(test_ParseUInt8)

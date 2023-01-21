@@ -14,6 +14,7 @@
 #include <ostream>
 #include <string>
 #include <vector>
+#include <iostream>
 
 static const std::string CHARS_ALPHA_NUM = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
@@ -232,13 +233,19 @@ namespace {
 template <typename T>
 bool ParseIntegral(std::string_view str, T* out)
 {
+    std::cerr << __FILE__ << " ----------------------- " << __LINE__ << "\n";
+
     static_assert(std::is_integral<T>::value);
+    std::cerr << __FILE__ << " ----------------------- " << __LINE__ << "\n";
+
     // Replicate the exact behavior of strtol/strtoll/strtoul/strtoull when
     // handling leading +/- for backwards compatibility.
     if (str.length() >= 2 && str[0] == '+' && str[1] == '-') {
         return false;
     }
+    std::cerr << __FILE__ << " ----------------------- " << __LINE__ << "\n";
     const std::optional<T> opt_int = ToIntegral<T>((!str.empty() && str[0] == '+') ? str.substr(1) : str);
+    std::cerr << __FILE__ << " ----------------------- " << __LINE__ << "\n";
     if (!opt_int) {
         return false;
     }
@@ -256,6 +263,7 @@ bool ParseInt32(std::string_view str, int32_t* out)
 
 bool ParseInt64(std::string_view str, int64_t* out)
 {
+    std::cerr << __FILE__ << " ----------------------- " << __LINE__ << "\n";
     return ParseIntegral<int64_t>(str, out);
 }
 
