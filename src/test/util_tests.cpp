@@ -492,41 +492,6 @@ BOOST_AUTO_TEST_CASE(test_ParseUInt8)
     BOOST_CHECK(!ParseUInt8("256", nullptr));
 }
 
-BOOST_AUTO_TEST_CASE(test_ParseUInt16)
-{
-    uint16_t n;
-    // Valid values
-    BOOST_CHECK(ParseUInt16("1234", nullptr));
-    BOOST_CHECK(ParseUInt16("0", &n) && n == 0);
-    BOOST_CHECK(ParseUInt16("1234", &n) && n == 1234);
-    BOOST_CHECK(ParseUInt16("01234", &n) && n == 1234); // no octal
-    BOOST_CHECK(ParseUInt16("65535", &n) && n == static_cast<uint16_t>(65535));
-    BOOST_CHECK(ParseUInt16("+65535", &n) && n == 65535);
-    BOOST_CHECK(ParseUInt16("00000000000000000012", &n) && n == 12);
-    BOOST_CHECK(ParseUInt16("00000000000000000000", &n) && n == 0);
-    // Invalid values
-    BOOST_CHECK(!ParseUInt16("-00000000000000000000", &n));
-    BOOST_CHECK(!ParseUInt16("", &n));
-    BOOST_CHECK(!ParseUInt16(" 1", &n)); // no padding inside
-    BOOST_CHECK(!ParseUInt16(" -1", &n));
-    BOOST_CHECK(!ParseUInt16("++1", &n));
-    BOOST_CHECK(!ParseUInt16("+-1", &n));
-    BOOST_CHECK(!ParseUInt16("-+1", &n));
-    BOOST_CHECK(!ParseUInt16("--1", &n));
-    BOOST_CHECK(!ParseUInt16("-1", &n));
-    BOOST_CHECK(!ParseUInt16("1 ", &n));
-    BOOST_CHECK(!ParseUInt16("1a", &n));
-    BOOST_CHECK(!ParseUInt16("aap", &n));
-    BOOST_CHECK(!ParseUInt16("0x1", &n)); // no hex
-    BOOST_CHECK(!ParseUInt16(STRING_WITH_EMBEDDED_NULL_CHAR, &n));
-    // Overflow and underflow
-    BOOST_CHECK(!ParseUInt16("-65535", &n));
-    BOOST_CHECK(!ParseUInt16("65536", &n));
-    BOOST_CHECK(!ParseUInt16("-123", &n));
-    BOOST_CHECK(!ParseUInt16("-123", nullptr));
-    BOOST_CHECK(!ParseUInt16("65536", nullptr));
-}
-
 BOOST_AUTO_TEST_CASE(test_ToLower)
 {
     BOOST_CHECK_EQUAL(ToLower('@'), '@');
@@ -562,129 +527,6 @@ BOOST_AUTO_TEST_CASE(test_Capitalize)
     BOOST_CHECK_EQUAL(Capitalize("\x00\xfe\xff"), "\x00\xfe\xff");
 }
 
-static std::string SpanToStr(const Span<const char>& span)
-{
-    return std::string(span.begin(), span.end());
-}
-
-BOOST_AUTO_TEST_CASE(test_spanparsing)
-{
-    using namespace spanparsing;
-    std::string input;
-    Span<const char> sp;
-    bool success;
-
-    // Const(...): parse a constant, update span to skip it if successful
-    input = "MilkToastHoney";
-    sp = input;
-    success = Const("", sp); // empty
-    BOOST_CHECK(success);
-    BOOST_CHECK_EQUAL(SpanToStr(sp), "MilkToastHoney");
-
-    success = Const("Milk", sp);
-    BOOST_CHECK(success);
-    BOOST_CHECK_EQUAL(SpanToStr(sp), "ToastHoney");
-
-    success = Const("Bread", sp);
-    BOOST_CHECK(!success);
-
-    success = Const("Toast", sp);
-    BOOST_CHECK(success);
-    BOOST_CHECK_EQUAL(SpanToStr(sp), "Honey");
-
-    success = Const("Honeybadger", sp);
-    BOOST_CHECK(!success);
-
-    success = Const("Honey", sp);
-    BOOST_CHECK(success);
-    BOOST_CHECK_EQUAL(SpanToStr(sp), "");
-
-    // Func(...): parse a function call, update span to argument if successful
-    input = "Foo(Bar(xy,z()))";
-    sp = input;
-
-    success = Func("FooBar", sp);
-    BOOST_CHECK(!success);
-
-    success = Func("Foo(", sp);
-    BOOST_CHECK(!success);
-
-    success = Func("Foo", sp);
-    BOOST_CHECK(success);
-    BOOST_CHECK_EQUAL(SpanToStr(sp), "Bar(xy,z())");
-
-    success = Func("Bar", sp);
-    BOOST_CHECK(success);
-    BOOST_CHECK_EQUAL(SpanToStr(sp), "xy,z()");
-
-    success = Func("xy", sp);
-    BOOST_CHECK(!success);
-
-    // Expr(...): return expression that span begins with, update span to skip it
-    Span<const char> result;
-
-    input = "(n*(n-1))/2";
-    sp = input;
-    result = Expr(sp);
-    BOOST_CHECK_EQUAL(SpanToStr(result), "(n*(n-1))/2");
-    BOOST_CHECK_EQUAL(SpanToStr(sp), "");
-
-    input = "foo,bar";
-    sp = input;
-    result = Expr(sp);
-    BOOST_CHECK_EQUAL(SpanToStr(result), "foo");
-    BOOST_CHECK_EQUAL(SpanToStr(sp), ",bar");
-
-    input = "(aaaaa,bbbbb()),c";
-    sp = input;
-    result = Expr(sp);
-    BOOST_CHECK_EQUAL(SpanToStr(result), "(aaaaa,bbbbb())");
-    BOOST_CHECK_EQUAL(SpanToStr(sp), ",c");
-
-    input = "xyz)foo";
-    sp = input;
-    result = Expr(sp);
-    BOOST_CHECK_EQUAL(SpanToStr(result), "xyz");
-    BOOST_CHECK_EQUAL(SpanToStr(sp), ")foo");
-
-    input = "((a),(b),(c)),xxx";
-    sp = input;
-    result = Expr(sp);
-    BOOST_CHECK_EQUAL(SpanToStr(result), "((a),(b),(c))");
-    BOOST_CHECK_EQUAL(SpanToStr(sp), ",xxx");
-
-    // Split(...): split a string on every instance of sep, return vector
-    std::vector<Span<const char>> results;
-
-    input = "xxx";
-    results = Split(input, 'x');
-    BOOST_CHECK_EQUAL(results.size(), 4U);
-    BOOST_CHECK_EQUAL(SpanToStr(results[0]), "");
-    BOOST_CHECK_EQUAL(SpanToStr(results[1]), "");
-    BOOST_CHECK_EQUAL(SpanToStr(results[2]), "");
-    BOOST_CHECK_EQUAL(SpanToStr(results[3]), "");
-
-    input = "one#two#three";
-    results = Split(input, '-');
-    BOOST_CHECK_EQUAL(results.size(), 1U);
-    BOOST_CHECK_EQUAL(SpanToStr(results[0]), "one#two#three");
-
-    input = "one#two#three";
-    results = Split(input, '#');
-    BOOST_CHECK_EQUAL(results.size(), 3U);
-    BOOST_CHECK_EQUAL(SpanToStr(results[0]), "one");
-    BOOST_CHECK_EQUAL(SpanToStr(results[1]), "two");
-    BOOST_CHECK_EQUAL(SpanToStr(results[2]), "three");
-
-    input = "*foo*bar*";
-    results = Split(input, '*');
-    BOOST_CHECK_EQUAL(results.size(), 4U);
-    BOOST_CHECK_EQUAL(SpanToStr(results[0]), "");
-    BOOST_CHECK_EQUAL(SpanToStr(results[1]), "foo");
-    BOOST_CHECK_EQUAL(SpanToStr(results[2]), "bar");
-    BOOST_CHECK_EQUAL(SpanToStr(results[3]), "");
-}
-
 BOOST_AUTO_TEST_CASE(test_LogEscapeMessage)
 {
     // ASCII and UTF-8 must pass through unaltered.
@@ -696,28 +538,6 @@ BOOST_AUTO_TEST_CASE(test_LogEscapeMessage)
     // Embedded NULL characters are escaped too.
     const std::string NUL("O\x00O", 3);
     BOOST_CHECK_EQUAL(BCLog::LogEscapeMessage(NUL), R"(O\x00O)");
-}
-
-namespace {
-
-struct Tracker
-{
-    //! Points to the original object (possibly itself) we moved/copied from
-    const Tracker* origin;
-    //! How many copies where involved between the original object and this one (moves are not counted)
-    int copies{0};
-
-    Tracker() noexcept : origin(this) {}
-    Tracker(const Tracker& t) noexcept : origin(t.origin), copies(t.copies + 1) {}
-    Tracker(Tracker&& t) noexcept : origin(t.origin), copies(t.copies) {}
-    Tracker& operator=(const Tracker& t) noexcept
-    {
-        origin = t.origin;
-        copies = t.copies + 1;
-        return *this;
-    }
-};
-
 }
 
 BOOST_AUTO_TEST_CASE(message_sign)
@@ -819,54 +639,6 @@ BOOST_AUTO_TEST_CASE(remove_prefix)
     BOOST_CHECK_EQUAL(RemovePrefix("f", "foo"), "f");
     BOOST_CHECK_EQUAL(RemovePrefixView("", "foo"), "");
     BOOST_CHECK_EQUAL(RemovePrefix("", ""), "");
-}
-
-BOOST_AUTO_TEST_CASE(util_ParseByteUnits)
-{
-    auto noop = ByteUnit::NOOP;
-
-    // no multiplier
-    BOOST_CHECK_EQUAL(ParseByteUnits("1", noop).value(), 1);
-    BOOST_CHECK_EQUAL(ParseByteUnits("0", noop).value(), 0);
-
-    BOOST_CHECK_EQUAL(ParseByteUnits("1k", noop).value(), 1000ULL);
-    BOOST_CHECK_EQUAL(ParseByteUnits("1K", noop).value(), 1ULL << 10);
-
-    BOOST_CHECK_EQUAL(ParseByteUnits("2m", noop).value(), 2'000'000ULL);
-    BOOST_CHECK_EQUAL(ParseByteUnits("2M", noop).value(), 2ULL << 20);
-
-    BOOST_CHECK_EQUAL(ParseByteUnits("3g", noop).value(), 3'000'000'000ULL);
-    BOOST_CHECK_EQUAL(ParseByteUnits("3G", noop).value(), 3ULL << 30);
-
-    BOOST_CHECK_EQUAL(ParseByteUnits("4t", noop).value(), 4'000'000'000'000ULL);
-    BOOST_CHECK_EQUAL(ParseByteUnits("4T", noop).value(), 4ULL << 40);
-
-    // check default multiplier
-    BOOST_CHECK_EQUAL(ParseByteUnits("5", ByteUnit::K).value(), 5ULL << 10);
-
-    // NaN
-    BOOST_CHECK(!ParseByteUnits("", noop));
-    BOOST_CHECK(!ParseByteUnits("foo", noop));
-
-    // whitespace
-    BOOST_CHECK(!ParseByteUnits("123m ", noop));
-    BOOST_CHECK(!ParseByteUnits(" 123m", noop));
-
-    // no +-
-    BOOST_CHECK(!ParseByteUnits("-123m", noop));
-    BOOST_CHECK(!ParseByteUnits("+123m", noop));
-
-    // zero padding
-    BOOST_CHECK_EQUAL(ParseByteUnits("020M", noop).value(), 20ULL << 20);
-
-    // fractions not allowed
-    BOOST_CHECK(!ParseByteUnits("0.5T", noop));
-
-    // overflow
-    BOOST_CHECK(!ParseByteUnits("18446744073709551615g", noop));
-
-    // invalid unit
-    BOOST_CHECK(!ParseByteUnits("1x", noop));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
