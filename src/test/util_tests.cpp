@@ -133,79 +133,6 @@ static const unsigned char ParseHex_expected[65] = {
     0xde, 0x5c, 0x38, 0x4d, 0xf7, 0xba, 0x0b, 0x8d, 0x57, 0x8a, 0x4c, 0x70, 0x2b, 0x6b, 0xf1, 0x1d,
     0x5f
 };
-BOOST_AUTO_TEST_CASE(parse_hex)
-{
-    std::vector<unsigned char> result;
-    std::vector<unsigned char> expected(ParseHex_expected, ParseHex_expected + sizeof(ParseHex_expected));
-    // Basic test vector
-    result = ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f");
-    BOOST_CHECK_EQUAL_COLLECTIONS(result.begin(), result.end(), expected.begin(), expected.end());
-
-    // Spaces between bytes must be supported
-    result = ParseHex("12 34 56 78");
-    BOOST_CHECK(result.size() == 4 && result[0] == 0x12 && result[1] == 0x34 && result[2] == 0x56 && result[3] == 0x78);
-
-    // Leading space must be supported (used in BerkeleyEnvironment::Salvage)
-    result = ParseHex(" 89 34 56 78");
-    BOOST_CHECK(result.size() == 4 && result[0] == 0x89 && result[1] == 0x34 && result[2] == 0x56 && result[3] == 0x78);
-
-    // Embedded null is treated as end
-    const std::string with_embedded_null{" 11 "s
-                                         " \0 "
-                                         " 22 "s};
-    BOOST_CHECK_EQUAL(with_embedded_null.size(), 11);
-    result = ParseHex(with_embedded_null);
-    BOOST_CHECK(result.size() == 1 && result[0] == 0x11);
-
-    // Stop parsing at invalid value
-    result = ParseHex("1234 invalid 1234");
-    BOOST_CHECK(result.size() == 2 && result[0] == 0x12 && result[1] == 0x34);
-}
-
-BOOST_AUTO_TEST_CASE(util_HexStr)
-{
-    BOOST_CHECK_EQUAL(
-        HexStr(ParseHex_expected),
-        "04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f");
-
-    BOOST_CHECK_EQUAL(
-        HexStr(Span{ParseHex_expected}.last(0)),
-        "");
-
-    BOOST_CHECK_EQUAL(
-        HexStr(Span{ParseHex_expected}.first(0)),
-        "");
-
-    {
-        const std::vector<char> in_s{ParseHex_expected, ParseHex_expected + 5};
-        const Span<const uint8_t> in_u{MakeUCharSpan(in_s)};
-        const Span<const std::byte> in_b{MakeByteSpan(in_s)};
-        const std::string out_exp{"04678afdb0"};
-
-        BOOST_CHECK_EQUAL(HexStr(in_u), out_exp);
-        BOOST_CHECK_EQUAL(HexStr(in_s), out_exp);
-        BOOST_CHECK_EQUAL(HexStr(in_b), out_exp);
-    }
-
-    {
-        auto input = std::string();
-        for (size_t i=0; i<256; ++i) {
-            input.push_back(static_cast<char>(i));
-        }
-
-        auto hex = HexStr(input);
-        BOOST_TEST_REQUIRE(hex.size() == 512);
-        static constexpr auto hexmap = std::string_view("0123456789abcdef");
-        for (size_t i = 0; i < 256; ++i) {
-            auto upper = hexmap.find(hex[i * 2]);
-            auto lower = hexmap.find(hex[i * 2 + 1]);
-            BOOST_TEST_REQUIRE(upper != std::string_view::npos);
-            BOOST_TEST_REQUIRE(lower != std::string_view::npos);
-            BOOST_TEST_REQUIRE(i == upper*16 + lower);
-        }
-    }
-}
-
 BOOST_AUTO_TEST_CASE(span_write_bytes)
 {
     std::array mut_arr{uint8_t{0xaa}, uint8_t{0xbb}};
@@ -245,31 +172,10 @@ BOOST_AUTO_TEST_CASE(util_ReplaceAll)
     test_replaceall("'", "foo", "A test \"%s\" string foo%sfoo.");
 }
 
-BOOST_AUTO_TEST_CASE(util_TrimString)
-{
-    BOOST_CHECK_EQUAL(TrimString(" foo bar "), "foo bar");
-    BOOST_CHECK_EQUAL(TrimStringView("\t \n  \n \f\n\r\t\v\tfoo \n \f\n\r\t\v\tbar\t  \n \f\n\r\t\v\t\n "), "foo \n \f\n\r\t\v\tbar");
-    BOOST_CHECK_EQUAL(TrimString("\t \n foo \n\tbar\t \n "), "foo \n\tbar");
-    BOOST_CHECK_EQUAL(TrimStringView("\t \n foo \n\tbar\t \n ", "fobar"), "\t \n foo \n\tbar\t \n ");
-    BOOST_CHECK_EQUAL(TrimString("foo bar"), "foo bar");
-    BOOST_CHECK_EQUAL(TrimStringView("foo bar", "fobar"), " ");
-    BOOST_CHECK_EQUAL(TrimString(std::string("\0 foo \0 ", 8)), std::string("\0 foo \0", 7));
-    BOOST_CHECK_EQUAL(TrimStringView(std::string(" foo ", 5)), std::string("foo", 3));
-    BOOST_CHECK_EQUAL(TrimString(std::string("\t\t\0\0\n\n", 6)), std::string("\0\0", 2));
-    BOOST_CHECK_EQUAL(TrimStringView(std::string("\x05\x04\x03\x02\x01\x00", 6)), std::string("\x05\x04\x03\x02\x01\x00", 6));
-    BOOST_CHECK_EQUAL(TrimString(std::string("\x05\x04\x03\x02\x01\x00", 6), std::string("\x05\x04\x03\x02\x01", 5)), std::string("\0", 1));
-    BOOST_CHECK_EQUAL(TrimStringView(std::string("\x05\x04\x03\x02\x01\x00", 6), std::string("\x05\x04\x03\x02\x01\x00", 6)), "");
-}
-
 BOOST_AUTO_TEST_CASE(util_FormatISO8601DateTime)
 {
     BOOST_CHECK_EQUAL(FormatISO8601DateTime(1317425777), "2011-09-30T23:36:17Z");
     BOOST_CHECK_EQUAL(FormatISO8601DateTime(0), "1970-01-01T00:00:00Z");
-}
-
-BOOST_AUTO_TEST_CASE(util_FormatISO8601Date)
-{
-    BOOST_CHECK_EQUAL(FormatISO8601Date(1317425777), "2011-09-30");
 }
 
 BOOST_AUTO_TEST_CASE(util_FormatMoney)
@@ -305,115 +211,6 @@ BOOST_AUTO_TEST_CASE(util_FormatMoney)
     BOOST_CHECK_EQUAL(FormatMoney(std::numeric_limits<CAmount>::min() + 2), "-92233720368.54775806");
     BOOST_CHECK_EQUAL(FormatMoney(std::numeric_limits<CAmount>::min() + 1), "-92233720368.54775807");
     BOOST_CHECK_EQUAL(FormatMoney(std::numeric_limits<CAmount>::min()), "-92233720368.54775808");
-}
-
-BOOST_AUTO_TEST_CASE(util_ParseMoney)
-{
-    BOOST_CHECK_EQUAL(ParseMoney("0.0").value(), 0);
-    BOOST_CHECK_EQUAL(ParseMoney(".").value(), 0);
-    BOOST_CHECK_EQUAL(ParseMoney("0.").value(), 0);
-    BOOST_CHECK_EQUAL(ParseMoney(".0").value(), 0);
-    BOOST_CHECK_EQUAL(ParseMoney(".6789").value(), 6789'0000);
-    BOOST_CHECK_EQUAL(ParseMoney("12345.").value(), COIN * 12345);
-
-    BOOST_CHECK_EQUAL(ParseMoney("12345.6789").value(), (COIN/10000)*123456789);
-
-    BOOST_CHECK_EQUAL(ParseMoney("10000000.00").value(), COIN*10000000);
-    BOOST_CHECK_EQUAL(ParseMoney("1000000.00").value(), COIN*1000000);
-    BOOST_CHECK_EQUAL(ParseMoney("100000.00").value(), COIN*100000);
-    BOOST_CHECK_EQUAL(ParseMoney("10000.00").value(), COIN*10000);
-    BOOST_CHECK_EQUAL(ParseMoney("1000.00").value(), COIN*1000);
-    BOOST_CHECK_EQUAL(ParseMoney("100.00").value(), COIN*100);
-    BOOST_CHECK_EQUAL(ParseMoney("10.00").value(), COIN*10);
-    BOOST_CHECK_EQUAL(ParseMoney("1.00").value(), COIN);
-    BOOST_CHECK_EQUAL(ParseMoney("1").value(), COIN);
-    BOOST_CHECK_EQUAL(ParseMoney("   1").value(), COIN);
-    BOOST_CHECK_EQUAL(ParseMoney("1   ").value(), COIN);
-    BOOST_CHECK_EQUAL(ParseMoney("  1 ").value(), COIN);
-    BOOST_CHECK_EQUAL(ParseMoney("0.1").value(), COIN/10);
-    BOOST_CHECK_EQUAL(ParseMoney("0.01").value(), COIN/100);
-    BOOST_CHECK_EQUAL(ParseMoney("0.001").value(), COIN/1000);
-    BOOST_CHECK_EQUAL(ParseMoney("0.0001").value(), COIN/10000);
-    BOOST_CHECK_EQUAL(ParseMoney("0.00001").value(), COIN/100000);
-    BOOST_CHECK_EQUAL(ParseMoney("0.000001").value(), COIN/1000000);
-    BOOST_CHECK_EQUAL(ParseMoney("0.0000001").value(), COIN/10000000);
-    BOOST_CHECK_EQUAL(ParseMoney("0.00000001").value(), COIN/100000000);
-    BOOST_CHECK_EQUAL(ParseMoney(" 0.00000001 ").value(), COIN/100000000);
-    BOOST_CHECK_EQUAL(ParseMoney("0.00000001 ").value(), COIN/100000000);
-    BOOST_CHECK_EQUAL(ParseMoney(" 0.00000001").value(), COIN/100000000);
-
-    // Parsing amount that cannot be represented should fail
-    BOOST_CHECK(!ParseMoney("100000000.00"));
-    BOOST_CHECK(!ParseMoney("0.000000001"));
-
-    // Parsing empty string should fail
-    BOOST_CHECK(!ParseMoney(""));
-    BOOST_CHECK(!ParseMoney(" "));
-    BOOST_CHECK(!ParseMoney("  "));
-
-    // Parsing two numbers should fail
-    BOOST_CHECK(!ParseMoney(".."));
-    BOOST_CHECK(!ParseMoney("0..0"));
-    BOOST_CHECK(!ParseMoney("1 2"));
-    BOOST_CHECK(!ParseMoney(" 1 2 "));
-    BOOST_CHECK(!ParseMoney(" 1.2 3 "));
-    BOOST_CHECK(!ParseMoney(" 1 2.3 "));
-
-    // Embedded whitespace should fail
-    BOOST_CHECK(!ParseMoney(" -1 .2  "));
-    BOOST_CHECK(!ParseMoney("  1 .2  "));
-    BOOST_CHECK(!ParseMoney(" +1 .2  "));
-
-    // Attempted 63 bit overflow should fail
-    BOOST_CHECK(!ParseMoney("92233720368.54775808"));
-
-    // Parsing negative amounts must fail
-    BOOST_CHECK(!ParseMoney("-1"));
-
-    // Parsing strings with embedded NUL characters should fail
-    BOOST_CHECK(!ParseMoney("\0-1"s));
-    BOOST_CHECK(!ParseMoney(STRING_WITH_EMBEDDED_NULL_CHAR));
-    BOOST_CHECK(!ParseMoney("1\0"s));
-}
-
-BOOST_AUTO_TEST_CASE(util_IsHex)
-{
-    BOOST_CHECK(IsHex("00"));
-    BOOST_CHECK(IsHex("00112233445566778899aabbccddeeffAABBCCDDEEFF"));
-    BOOST_CHECK(IsHex("ff"));
-    BOOST_CHECK(IsHex("FF"));
-
-    BOOST_CHECK(!IsHex(""));
-    BOOST_CHECK(!IsHex("0"));
-    BOOST_CHECK(!IsHex("a"));
-    BOOST_CHECK(!IsHex("eleven"));
-    BOOST_CHECK(!IsHex("00xx00"));
-    BOOST_CHECK(!IsHex("0x0000"));
-}
-
-BOOST_AUTO_TEST_CASE(util_IsHexNumber)
-{
-    BOOST_CHECK(IsHexNumber("0x0"));
-    BOOST_CHECK(IsHexNumber("0"));
-    BOOST_CHECK(IsHexNumber("0x10"));
-    BOOST_CHECK(IsHexNumber("10"));
-    BOOST_CHECK(IsHexNumber("0xff"));
-    BOOST_CHECK(IsHexNumber("ff"));
-    BOOST_CHECK(IsHexNumber("0xFfa"));
-    BOOST_CHECK(IsHexNumber("Ffa"));
-    BOOST_CHECK(IsHexNumber("0x00112233445566778899aabbccddeeffAABBCCDDEEFF"));
-    BOOST_CHECK(IsHexNumber("00112233445566778899aabbccddeeffAABBCCDDEEFF"));
-
-    BOOST_CHECK(!IsHexNumber(""));   // empty string not allowed
-    BOOST_CHECK(!IsHexNumber("0x")); // empty string after prefix not allowed
-    BOOST_CHECK(!IsHexNumber("0x0 ")); // no spaces at end,
-    BOOST_CHECK(!IsHexNumber(" 0x0")); // or beginning,
-    BOOST_CHECK(!IsHexNumber("0x 0")); // or middle,
-    BOOST_CHECK(!IsHexNumber(" "));    // etc.
-    BOOST_CHECK(!IsHexNumber("0x0ga")); // invalid character
-    BOOST_CHECK(!IsHexNumber("x0"));    // broken prefix
-    BOOST_CHECK(!IsHexNumber("0x0x00")); // two prefixes not allowed
-
 }
 
 BOOST_AUTO_TEST_CASE(util_seed_insecure_rand)
@@ -478,14 +275,6 @@ BOOST_AUTO_TEST_CASE(strprintf_numbers)
 }
 #undef B
 #undef E
-
-/* Check for mingw/wine issue #3494
- * Remove this test before time.ctime(0xffffffff) == 'Sun Feb  7 07:28:15 2106'
- */
-BOOST_AUTO_TEST_CASE(gettime)
-{
-    BOOST_CHECK((GetTime() & ~0xFFFFFFFFLL) == 0);
-}
 
 BOOST_AUTO_TEST_CASE(util_time_GetTime)
 {
@@ -577,40 +366,6 @@ BOOST_AUTO_TEST_CASE(util_overflow)
 {
     TestAddMatrixOverflow<unsigned>();
     TestAddMatrix<signed>();
-}
-
-BOOST_AUTO_TEST_CASE(test_ParseInt32)
-{
-    int32_t n;
-    // Valid values
-    BOOST_CHECK(ParseInt32("1234", nullptr));
-    BOOST_CHECK(ParseInt32("0", &n) && n == 0);
-    BOOST_CHECK(ParseInt32("1234", &n) && n == 1234);
-    BOOST_CHECK(ParseInt32("01234", &n) && n == 1234); // no octal
-    BOOST_CHECK(ParseInt32("2147483647", &n) && n == 2147483647);
-    BOOST_CHECK(ParseInt32("-2147483648", &n) && n == (-2147483647 - 1)); // (-2147483647 - 1) equals INT_MIN
-    BOOST_CHECK(ParseInt32("-1234", &n) && n == -1234);
-    BOOST_CHECK(ParseInt32("00000000000000001234", &n) && n == 1234);
-    BOOST_CHECK(ParseInt32("-00000000000000001234", &n) && n == -1234);
-    BOOST_CHECK(ParseInt32("00000000000000000000", &n) && n == 0);
-    BOOST_CHECK(ParseInt32("-00000000000000000000", &n) && n == 0);
-    // Invalid values
-    BOOST_CHECK(!ParseInt32("", &n));
-    BOOST_CHECK(!ParseInt32(" 1", &n)); // no padding inside
-    BOOST_CHECK(!ParseInt32("1 ", &n));
-    BOOST_CHECK(!ParseInt32("++1", &n));
-    BOOST_CHECK(!ParseInt32("+-1", &n));
-    BOOST_CHECK(!ParseInt32("-+1", &n));
-    BOOST_CHECK(!ParseInt32("--1", &n));
-    BOOST_CHECK(!ParseInt32("1a", &n));
-    BOOST_CHECK(!ParseInt32("aap", &n));
-    BOOST_CHECK(!ParseInt32("0x1", &n)); // no hex
-    BOOST_CHECK(!ParseInt32(STRING_WITH_EMBEDDED_NULL_CHAR, &n));
-    // Overflow and underflow
-    BOOST_CHECK(!ParseInt32("-2147483649", nullptr));
-    BOOST_CHECK(!ParseInt32("2147483648", nullptr));
-    BOOST_CHECK(!ParseInt32("-32482348723847471234", nullptr));
-    BOOST_CHECK(!ParseInt32("32482348723847471234", nullptr));
 }
 
 template <typename T>
@@ -992,18 +747,6 @@ BOOST_AUTO_TEST_CASE(test_FormatParagraph)
     BOOST_CHECK_EQUAL(FormatParagraph("Testing that normal newlines do not get indented.\nLike here.", 79), "Testing that normal newlines do not get indented.\nLike here.");
 }
 
-BOOST_AUTO_TEST_CASE(test_FormatSubVersion)
-{
-    std::vector<std::string> comments;
-    comments.push_back(std::string("comment1"));
-    std::vector<std::string> comments2;
-    comments2.push_back(std::string("comment1"));
-    comments2.push_back(SanitizeString(std::string("Comment2; .,_?@-; !\"#$%&'()*+/<=>[]\\^`{|}~"), SAFE_CHARS_UA_COMMENT)); // Semicolon is discouraged but not forbidden by BIP-0014
-    BOOST_CHECK_EQUAL(FormatSubVersion("Test", 99900, std::vector<std::string>()),std::string("/Test:9.99.0/"));
-    BOOST_CHECK_EQUAL(FormatSubVersion("Test", 99900, comments),std::string("/Test:9.99.0(comment1)/"));
-    BOOST_CHECK_EQUAL(FormatSubVersion("Test", 99900, comments2),std::string("/Test:9.99.0(comment1; Comment2; .,_?@-; )/"));
-}
-
 BOOST_AUTO_TEST_CASE(test_ParseFixedPoint)
 {
     int64_t amount = 0;
@@ -1076,148 +819,6 @@ BOOST_AUTO_TEST_CASE(test_ParseFixedPoint)
     BOOST_CHECK(!ParseFixedPoint("31.0011", 3, &amount));
     BOOST_CHECK(!ParseFixedPoint("31.99999999", 3, &amount));
     BOOST_CHECK(!ParseFixedPoint("31.999999999999999999999", 3, &amount));
-}
-
-static void TestOtherThread(fs::path dirname, fs::path lockname, bool *result)
-{
-    *result = LockDirectory(dirname, lockname);
-}
-
-#ifndef WIN32 // Cannot do this test on WIN32 due to lack of fork()
-static constexpr char LockCommand = 'L';
-static constexpr char UnlockCommand = 'U';
-static constexpr char ExitCommand = 'X';
-
-[[noreturn]] static void TestOtherProcess(fs::path dirname, fs::path lockname, int fd)
-{
-    char ch;
-    while (true) {
-        int rv = read(fd, &ch, 1); // Wait for command
-        assert(rv == 1);
-        switch(ch) {
-        case LockCommand:
-            ch = LockDirectory(dirname, lockname);
-            rv = write(fd, &ch, 1);
-            assert(rv == 1);
-            break;
-        case UnlockCommand:
-            ReleaseDirectoryLocks();
-            ch = true; // Always succeeds
-            rv = write(fd, &ch, 1);
-            assert(rv == 1);
-            break;
-        case ExitCommand:
-            close(fd);
-            exit(0);
-        default:
-            assert(0);
-        }
-    }
-}
-#endif
-
-BOOST_AUTO_TEST_CASE(test_LockDirectory)
-{
-    fs::path dirname = m_args.GetDataDirBase() / "lock_dir";
-    const fs::path lockname = ".lock";
-#ifndef WIN32
-    // Revert SIGCHLD to default, otherwise boost.test will catch and fail on
-    // it: there is BOOST_TEST_IGNORE_SIGCHLD but that only works when defined
-    // at build-time of the boost library
-    void (*old_handler)(int) = signal(SIGCHLD, SIG_DFL);
-
-    // Fork another process for testing before creating the lock, so that we
-    // won't fork while holding the lock (which might be undefined, and is not
-    // relevant as test case as that is avoided with -daemonize).
-    int fd[2];
-    BOOST_CHECK_EQUAL(socketpair(AF_UNIX, SOCK_STREAM, 0, fd), 0);
-    pid_t pid = fork();
-    if (!pid) {
-        BOOST_CHECK_EQUAL(close(fd[1]), 0); // Child: close parent end
-        TestOtherProcess(dirname, lockname, fd[0]);
-    }
-    BOOST_CHECK_EQUAL(close(fd[0]), 0); // Parent: close child end
-#endif
-    // Lock on non-existent directory should fail
-    BOOST_CHECK_EQUAL(LockDirectory(dirname, lockname), false);
-
-    fs::create_directories(dirname);
-
-    // Probing lock on new directory should succeed
-    BOOST_CHECK_EQUAL(LockDirectory(dirname, lockname, true), true);
-
-    // Persistent lock on new directory should succeed
-    BOOST_CHECK_EQUAL(LockDirectory(dirname, lockname), true);
-
-    // Another lock on the directory from the same thread should succeed
-    BOOST_CHECK_EQUAL(LockDirectory(dirname, lockname), true);
-
-    // Another lock on the directory from a different thread within the same process should succeed
-    bool threadresult;
-    std::thread thr(TestOtherThread, dirname, lockname, &threadresult);
-    thr.join();
-    BOOST_CHECK_EQUAL(threadresult, true);
-#ifndef WIN32
-    // Try to acquire lock in child process while we're holding it, this should fail.
-    char ch;
-    BOOST_CHECK_EQUAL(write(fd[1], &LockCommand, 1), 1);
-    BOOST_CHECK_EQUAL(read(fd[1], &ch, 1), 1);
-    BOOST_CHECK_EQUAL((bool)ch, false);
-
-    // Give up our lock
-    ReleaseDirectoryLocks();
-    // Probing lock from our side now should succeed, but not hold on to the lock.
-    BOOST_CHECK_EQUAL(LockDirectory(dirname, lockname, true), true);
-
-    // Try to acquire the lock in the child process, this should be successful.
-    BOOST_CHECK_EQUAL(write(fd[1], &LockCommand, 1), 1);
-    BOOST_CHECK_EQUAL(read(fd[1], &ch, 1), 1);
-    BOOST_CHECK_EQUAL((bool)ch, true);
-
-    // When we try to probe the lock now, it should fail.
-    BOOST_CHECK_EQUAL(LockDirectory(dirname, lockname, true), false);
-
-    // Unlock the lock in the child process
-    BOOST_CHECK_EQUAL(write(fd[1], &UnlockCommand, 1), 1);
-    BOOST_CHECK_EQUAL(read(fd[1], &ch, 1), 1);
-    BOOST_CHECK_EQUAL((bool)ch, true);
-
-    // When we try to probe the lock now, it should succeed.
-    BOOST_CHECK_EQUAL(LockDirectory(dirname, lockname, true), true);
-
-    // Re-lock the lock in the child process, then wait for it to exit, check
-    // successful return. After that, we check that exiting the process
-    // has released the lock as we would expect by probing it.
-    int processstatus;
-    BOOST_CHECK_EQUAL(write(fd[1], &LockCommand, 1), 1);
-    BOOST_CHECK_EQUAL(write(fd[1], &ExitCommand, 1), 1);
-    BOOST_CHECK_EQUAL(waitpid(pid, &processstatus, 0), pid);
-    BOOST_CHECK_EQUAL(processstatus, 0);
-    BOOST_CHECK_EQUAL(LockDirectory(dirname, lockname, true), true);
-
-    // Restore SIGCHLD
-    signal(SIGCHLD, old_handler);
-    BOOST_CHECK_EQUAL(close(fd[1]), 0); // Close our side of the socketpair
-#endif
-    // Clean up
-    ReleaseDirectoryLocks();
-    fs::remove_all(dirname);
-}
-
-BOOST_AUTO_TEST_CASE(test_DirIsWritable)
-{
-    // Should be able to write to the data dir.
-    fs::path tmpdirname = m_args.GetDataDirBase();
-    BOOST_CHECK_EQUAL(DirIsWritable(tmpdirname), true);
-
-    // Should not be able to write to a non-existent dir.
-    tmpdirname = GetUniquePath(tmpdirname);
-    BOOST_CHECK_EQUAL(DirIsWritable(tmpdirname), false);
-
-    fs::create_directory(tmpdirname);
-    // Should be able to write to it now.
-    BOOST_CHECK_EQUAL(DirIsWritable(tmpdirname), true);
-    fs::remove(tmpdirname);
 }
 
 BOOST_AUTO_TEST_CASE(test_ToLower)
@@ -1475,83 +1076,6 @@ struct Tracker
 
 }
 
-BOOST_AUTO_TEST_CASE(test_tracked_vector)
-{
-    Tracker t1;
-    Tracker t2;
-    Tracker t3;
-
-    BOOST_CHECK(t1.origin == &t1);
-    BOOST_CHECK(t2.origin == &t2);
-    BOOST_CHECK(t3.origin == &t3);
-
-    auto v1 = Vector(t1);
-    BOOST_CHECK_EQUAL(v1.size(), 1U);
-    BOOST_CHECK(v1[0].origin == &t1);
-    BOOST_CHECK_EQUAL(v1[0].copies, 1);
-
-    auto v2 = Vector(std::move(t2));
-    BOOST_CHECK_EQUAL(v2.size(), 1U);
-    BOOST_CHECK(v2[0].origin == &t2); // NOLINT(*-use-after-move)
-    BOOST_CHECK_EQUAL(v2[0].copies, 0);
-
-    auto v3 = Vector(t1, std::move(t2));
-    BOOST_CHECK_EQUAL(v3.size(), 2U);
-    BOOST_CHECK(v3[0].origin == &t1);
-    BOOST_CHECK(v3[1].origin == &t2); // NOLINT(*-use-after-move)
-    BOOST_CHECK_EQUAL(v3[0].copies, 1);
-    BOOST_CHECK_EQUAL(v3[1].copies, 0);
-
-    auto v4 = Vector(std::move(v3[0]), v3[1], std::move(t3));
-    BOOST_CHECK_EQUAL(v4.size(), 3U);
-    BOOST_CHECK(v4[0].origin == &t1);
-    BOOST_CHECK(v4[1].origin == &t2);
-    BOOST_CHECK(v4[2].origin == &t3); // NOLINT(*-use-after-move)
-    BOOST_CHECK_EQUAL(v4[0].copies, 1);
-    BOOST_CHECK_EQUAL(v4[1].copies, 1);
-    BOOST_CHECK_EQUAL(v4[2].copies, 0);
-
-    auto v5 = Cat(v1, v4);
-    BOOST_CHECK_EQUAL(v5.size(), 4U);
-    BOOST_CHECK(v5[0].origin == &t1);
-    BOOST_CHECK(v5[1].origin == &t1);
-    BOOST_CHECK(v5[2].origin == &t2);
-    BOOST_CHECK(v5[3].origin == &t3);
-    BOOST_CHECK_EQUAL(v5[0].copies, 2);
-    BOOST_CHECK_EQUAL(v5[1].copies, 2);
-    BOOST_CHECK_EQUAL(v5[2].copies, 2);
-    BOOST_CHECK_EQUAL(v5[3].copies, 1);
-
-    auto v6 = Cat(std::move(v1), v3);
-    BOOST_CHECK_EQUAL(v6.size(), 3U);
-    BOOST_CHECK(v6[0].origin == &t1);
-    BOOST_CHECK(v6[1].origin == &t1);
-    BOOST_CHECK(v6[2].origin == &t2);
-    BOOST_CHECK_EQUAL(v6[0].copies, 1);
-    BOOST_CHECK_EQUAL(v6[1].copies, 2);
-    BOOST_CHECK_EQUAL(v6[2].copies, 1);
-
-    auto v7 = Cat(v2, std::move(v4));
-    BOOST_CHECK_EQUAL(v7.size(), 4U);
-    BOOST_CHECK(v7[0].origin == &t2);
-    BOOST_CHECK(v7[1].origin == &t1);
-    BOOST_CHECK(v7[2].origin == &t2);
-    BOOST_CHECK(v7[3].origin == &t3);
-    BOOST_CHECK_EQUAL(v7[0].copies, 1);
-    BOOST_CHECK_EQUAL(v7[1].copies, 1);
-    BOOST_CHECK_EQUAL(v7[2].copies, 1);
-    BOOST_CHECK_EQUAL(v7[3].copies, 0);
-
-    auto v8 = Cat(std::move(v2), std::move(v3));
-    BOOST_CHECK_EQUAL(v8.size(), 3U);
-    BOOST_CHECK(v8[0].origin == &t2);
-    BOOST_CHECK(v8[1].origin == &t1);
-    BOOST_CHECK(v8[2].origin == &t2);
-    BOOST_CHECK_EQUAL(v8[0].copies, 0);
-    BOOST_CHECK_EQUAL(v8[1].copies, 1);
-    BOOST_CHECK_EQUAL(v8[2].copies, 0);
-}
-
 BOOST_AUTO_TEST_CASE(message_sign)
 {
     const std::array<unsigned char, 32> privkey_bytes = {
@@ -1716,39 +1240,6 @@ BOOST_AUTO_TEST_CASE(util_ParseByteUnits)
 
     // invalid unit
     BOOST_CHECK(!ParseByteUnits("1x", noop));
-}
-
-BOOST_AUTO_TEST_CASE(util_ReadBinaryFile)
-{
-    fs::path tmpfolder = m_args.GetDataDirBase();
-    fs::path tmpfile = tmpfolder / "read_binary.dat";
-    std::string expected_text;
-    for (int i = 0; i < 30; i++) {
-        expected_text += "0123456789";
-    }
-    {
-        std::ofstream file{tmpfile};
-        file << expected_text;
-    }
-    {
-        // read all contents in file
-        auto [valid, text] = ReadBinaryFile(tmpfile);
-        BOOST_CHECK(valid);
-        BOOST_CHECK_EQUAL(text, expected_text);
-    }
-    {
-        // read half contents in file
-        auto [valid, text] = ReadBinaryFile(tmpfile, expected_text.size() / 2);
-        BOOST_CHECK(valid);
-        BOOST_CHECK_EQUAL(text, expected_text.substr(0, expected_text.size() / 2));
-    }
-    {
-        // read from non-existent file
-        fs::path invalid_file = tmpfolder / "invalid_binary.dat";
-        auto [valid, text] = ReadBinaryFile(invalid_file);
-        BOOST_CHECK(!valid);
-        BOOST_CHECK(text.empty());
-    }
 }
 
 BOOST_AUTO_TEST_CASE(util_WriteBinaryFile)
