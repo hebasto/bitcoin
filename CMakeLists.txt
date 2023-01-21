@@ -118,6 +118,7 @@ tristate_option(WITH_SECCOMP
   AUTO
 )
 tristate_option(WITH_EXTERNAL_SIGNER "Enable external signer support." "if Boost.Process is found." AUTO)
+tristate_option(MULTIPROCESS "Build with libmultiprocess library." "if libmultiprocess is found." AUTO)
 
 option(BUILD_TESTS "Build test_bitcoin executable." ON)
 option(BUILD_BENCH "Build bench_bitcoin executable." ON)
@@ -631,6 +632,7 @@ if(NOT WITH_GUI STREQUAL "no")
   message("  QR code (GUI) ....................... ${WITH_QRENCODE}")
 endif()
 message("  external signer ..................... ${WITH_EXTERNAL_SIGNER}")
+message("  multiprocess ........................ ${MULTIPROCESS}")
 message("  NAT-PMP ............................. ${WITH_NATPMP}")
 message("  UPnP ................................ ${WITH_MINIUPNPC}")
 message("  ZeroMQ .............................. ${WITH_ZMQ}")
