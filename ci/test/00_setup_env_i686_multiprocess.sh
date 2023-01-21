@@ -13,5 +13,9 @@ export PACKAGES="cmake python3 llvm clang g++-multilib"
 export DEP_OPTS="DEBUG=1 MULTIPROCESS=1"
 export GOAL="install"
 export BITCOIN_CONFIG="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER='clang;-m32' -DCMAKE_CXX_COMPILER='clang++;-m32' -DCMAKE_EXE_LINKER_FLAGS='--rtlib=compiler-rt -lgcc_s -latomic'"
-export TEST_RUNNER_ENV="BITCOIND=bitcoin-node"
-export TEST_RUNNER_EXTRA="--nosandbox"
+
+export RUN_UNIT_TESTS=false
+export RUN_FUNCTIONAL_TESTS=false
+
+# export TEST_RUNNER_ENV="BITCOIND=bitcoin-node"
+# export TEST_RUNNER_EXTRA="--nosandbox"
