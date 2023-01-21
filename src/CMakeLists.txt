@@ -314,6 +314,7 @@ if(MULTIPROCESS)
     PRIVATE
       bitcoin_node
       bitcoin_ipc
+      PkgConfig::libmultiprocess
   )
   list(APPEND installable_targets bitcoin-node)
 endif()

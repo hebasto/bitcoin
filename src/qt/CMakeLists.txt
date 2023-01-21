@@ -222,6 +222,7 @@ if(MULTIPROCESS)
       bitcoinqt
       bitcoin_node
       bitcoin_ipc
+      PkgConfig::libmultiprocess
   )
   list(APPEND installable_targets bitcoin-gui)
 endif()
