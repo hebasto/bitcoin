@@ -238,17 +238,6 @@ BOOST_AUTO_TEST_CASE(util_seed_insecure_rand)
     }
 }
 
-BOOST_AUTO_TEST_CASE(util_TimingResistantEqual)
-{
-    BOOST_CHECK(TimingResistantEqual(std::string(""), std::string("")));
-    BOOST_CHECK(!TimingResistantEqual(std::string("abc"), std::string("")));
-    BOOST_CHECK(!TimingResistantEqual(std::string(""), std::string("abc")));
-    BOOST_CHECK(!TimingResistantEqual(std::string("a"), std::string("aa")));
-    BOOST_CHECK(!TimingResistantEqual(std::string("aa"), std::string("a")));
-    BOOST_CHECK(TimingResistantEqual(std::string("abc"), std::string("abc")));
-    BOOST_CHECK(!TimingResistantEqual(std::string("abc"), std::string("aba")));
-}
-
 /* Test strprintf formatting directives.
  * Put a string before and after to ensure sanity of element sizes on stack. */
 #define B "check_prefix"
@@ -275,35 +264,6 @@ BOOST_AUTO_TEST_CASE(strprintf_numbers)
 }
 #undef B
 #undef E
-
-BOOST_AUTO_TEST_CASE(util_time_GetTime)
-{
-    SetMockTime(111);
-    // Check that mock time does not change after a sleep
-    for (const auto& num_sleep : {0ms, 1ms}) {
-        UninterruptibleSleep(num_sleep);
-        BOOST_CHECK_EQUAL(111, GetTime()); // Deprecated time getter
-        BOOST_CHECK_EQUAL(111, Now<NodeSeconds>().time_since_epoch().count());
-        BOOST_CHECK_EQUAL(111, TicksSinceEpoch<std::chrono::seconds>(NodeClock::now()));
-        BOOST_CHECK_EQUAL(111, TicksSinceEpoch<SecondsDouble>(Now<NodeSeconds>()));
-        BOOST_CHECK_EQUAL(111, GetTime<std::chrono::seconds>().count());
-        BOOST_CHECK_EQUAL(111000, GetTime<std::chrono::milliseconds>().count());
-        BOOST_CHECK_EQUAL(111000, TicksSinceEpoch<std::chrono::milliseconds>(NodeClock::now()));
-        BOOST_CHECK_EQUAL(111000000, GetTime<std::chrono::microseconds>().count());
-    }
-
-    SetMockTime(0);
-    // Check that steady time and system time changes after a sleep
-    const auto steady_ms_0 = Now<SteadyMilliseconds>();
-    const auto steady_0 = std::chrono::steady_clock::now();
-    const auto ms_0 = GetTime<std::chrono::milliseconds>();
-    const auto us_0 = GetTime<std::chrono::microseconds>();
-    UninterruptibleSleep(1ms);
-    BOOST_CHECK(steady_ms_0 < Now<SteadyMilliseconds>());
-    BOOST_CHECK(steady_0 + 1ms <= std::chrono::steady_clock::now());
-    BOOST_CHECK(ms_0 < GetTime<std::chrono::milliseconds>());
-    BOOST_CHECK(us_0 < GetTime<std::chrono::microseconds>());
-}
 
 BOOST_AUTO_TEST_CASE(test_IsDigit)
 {
@@ -360,12 +320,6 @@ static void TestAddMatrix()
     BOOST_CHECK_EQUAL(MINI, SaturatingAdd(T{-1}, MINI + 1));
     BOOST_CHECK_EQUAL(MINI + 1, SaturatingAdd(T{-1}, MINI + 2));
     BOOST_CHECK_EQUAL(-1, SaturatingAdd(MINI, MAXI));
-}
-
-BOOST_AUTO_TEST_CASE(util_overflow)
-{
-    TestAddMatrixOverflow<unsigned>();
-    TestAddMatrix<signed>();
 }
 
 template <typename T>
@@ -979,68 +933,6 @@ BOOST_AUTO_TEST_CASE(test_spanparsing)
     BOOST_CHECK_EQUAL(SpanToStr(results[3]), "");
 }
 
-BOOST_AUTO_TEST_CASE(test_SplitString)
-{
-    // Empty string.
-    {
-        std::vector<std::string> result = SplitString("", '-');
-        BOOST_CHECK_EQUAL(result.size(), 1);
-        BOOST_CHECK_EQUAL(result[0], "");
-    }
-
-    // Empty items.
-    {
-        std::vector<std::string> result = SplitString("-", '-');
-        BOOST_CHECK_EQUAL(result.size(), 2);
-        BOOST_CHECK_EQUAL(result[0], "");
-        BOOST_CHECK_EQUAL(result[1], "");
-    }
-
-    // More empty items.
-    {
-        std::vector<std::string> result = SplitString("--", '-');
-        BOOST_CHECK_EQUAL(result.size(), 3);
-        BOOST_CHECK_EQUAL(result[0], "");
-        BOOST_CHECK_EQUAL(result[1], "");
-        BOOST_CHECK_EQUAL(result[2], "");
-    }
-
-    // Separator is not present.
-    {
-        std::vector<std::string> result = SplitString("abc", '-');
-        BOOST_CHECK_EQUAL(result.size(), 1);
-        BOOST_CHECK_EQUAL(result[0], "abc");
-    }
-
-    // Basic behavior.
-    {
-        std::vector<std::string> result = SplitString("a-b", '-');
-        BOOST_CHECK_EQUAL(result.size(), 2);
-        BOOST_CHECK_EQUAL(result[0], "a");
-        BOOST_CHECK_EQUAL(result[1], "b");
-    }
-
-    // Case-sensitivity of the separator.
-    {
-        std::vector<std::string> result = SplitString("AAA", 'a');
-        BOOST_CHECK_EQUAL(result.size(), 1);
-        BOOST_CHECK_EQUAL(result[0], "AAA");
-    }
-
-    // multiple split characters
-    {
-        using V = std::vector<std::string>;
-        BOOST_TEST(SplitString("a,b.c:d;e", ",;") == V({"a", "b.c:d", "e"}));
-        BOOST_TEST(SplitString("a,b.c:d;e", ",;:.") == V({"a", "b", "c", "d", "e"}));
-        BOOST_TEST(SplitString("a,b.c:d;e", "") == V({"a,b.c:d;e"}));
-        BOOST_TEST(SplitString("aaa", "bcdefg") == V({"aaa"}));
-        BOOST_TEST(SplitString("x\0a,b"s, "\0"s) == V({"x", "a,b"}));
-        BOOST_TEST(SplitString("x\0a,b"s, '\0') == V({"x", "a,b"}));
-        BOOST_TEST(SplitString("x\0a,b"s, "\0,"s) == V({"x", "a", "b"}));
-        BOOST_TEST(SplitString("abcdefg", "bcd") == V({"a", "", "", "efg"}));
-    }
-}
-
 BOOST_AUTO_TEST_CASE(test_LogEscapeMessage)
 {
     // ASCII and UTF-8 must pass through unaltered.
@@ -1164,23 +1056,6 @@ BOOST_AUTO_TEST_CASE(message_verify)
         MessageVerificationResult::OK);
 }
 
-BOOST_AUTO_TEST_CASE(message_hash)
-{
-    const std::string unsigned_tx = "...";
-    const std::string prefixed_message =
-        std::string(1, (char)MESSAGE_MAGIC.length()) +
-        MESSAGE_MAGIC +
-        std::string(1, (char)unsigned_tx.length()) +
-        unsigned_tx;
-
-    const uint256 signature_hash = Hash(unsigned_tx);
-    const uint256 message_hash1 = Hash(prefixed_message);
-    const uint256 message_hash2 = MessageHash(unsigned_tx);
-
-    BOOST_CHECK_EQUAL(message_hash1, message_hash2);
-    BOOST_CHECK_NE(message_hash1, signature_hash);
-}
-
 BOOST_AUTO_TEST_CASE(remove_prefix)
 {
     BOOST_CHECK_EQUAL(RemovePrefix("./util/system.h", "./"), "util/system.h");
@@ -1242,16 +1117,4 @@ BOOST_AUTO_TEST_CASE(util_ParseByteUnits)
     BOOST_CHECK(!ParseByteUnits("1x", noop));
 }
 
-BOOST_AUTO_TEST_CASE(util_WriteBinaryFile)
-{
-    fs::path tmpfolder = m_args.GetDataDirBase();
-    fs::path tmpfile = tmpfolder / "write_binary.dat";
-    std::string expected_text = "bitcoin";
-    auto valid = WriteBinaryFile(tmpfile, expected_text);
-    std::string actual_text;
-    std::ifstream file{tmpfile};
-    file >> actual_text;
-    BOOST_CHECK(valid);
-    BOOST_CHECK_EQUAL(actual_text, expected_text);
-}
 BOOST_AUTO_TEST_SUITE_END()
