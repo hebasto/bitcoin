@@ -443,10 +443,14 @@ BOOST_AUTO_TEST_CASE(test_ParseInt64)
     BOOST_CHECK(ParseInt64("2147483647", &n) && n == 2147483647LL);
     BOOST_CHECK(ParseInt64("-2147483648", &n) && n == -2147483648LL);
     BOOST_CHECK(ParseInt64("9223372036854775807", &n) && n == int64_t{9223372036854775807});
+    std::cerr << __FILE__ << " ----------------------- " << __LINE__ << "\n";
     BOOST_CHECK(ParseInt64("-9223372036854775808", &n) && n == int64_t{-9223372036854775807-1});
+    std::cerr << __FILE__ << " ----------------------- " << __LINE__ << "\n";
     BOOST_CHECK(ParseInt64("-1234", &n) && n == -1234LL);
+    std::cerr << __FILE__ << " ----------------------- " << __LINE__ << "\n";
     // Invalid values
     BOOST_CHECK(!ParseInt64("", &n));
+    std::cerr << __FILE__ << " ----------------------- " << __LINE__ << "\n";
     BOOST_CHECK(!ParseInt64(" 1", &n)); // no padding inside
     BOOST_CHECK(!ParseInt64("1 ", &n));
     BOOST_CHECK(!ParseInt64("1a", &n));
