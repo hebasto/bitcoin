@@ -11,7 +11,7 @@ export CI_IMAGE_NAME_TAG=debian:buster
 # Use minimum supported python3.7 and clang-8, see doc/dependencies.md
 export PACKAGES="-t buster-backports python3-zmq clang-8 llvm-8 libc++abi-8-dev libc++-8-dev"
 export APPEND_APT_SOURCES_LIST="deb http://deb.debian.org/debian buster-backports main"
-export DEP_OPTS="NO_WALLET=1 CC=clang-8 CXX='clang++-8 -stdlib=libc++'"
+export DEP_OPTS="NO_WALLET=1 NO_QT=1 CC=clang-8 CXX='clang++-8 -stdlib=libc++'"
 export GOAL="install"
 export NO_WERROR=1
-export BITCOIN_CONFIG="--enable-reduce-exports CC=clang-8 CXX='clang++-8 -stdlib=libc++' --enable-experimental-util-chainstate --with-experimental-kernel-lib --enable-shared"
+export BITCOIN_CONFIG="-DREDUCE_EXPORTS=ON -DBUILD_UTIL_CHAINSTATE=ON -DBUILD_BITCOINKERNEL_LIB=ON"
