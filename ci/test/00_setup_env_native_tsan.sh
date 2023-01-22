@@ -11,4 +11,4 @@ export CI_IMAGE_NAME_TAG=ubuntu:22.04
 export PACKAGES="clang-13 llvm-13 libc++abi-13-dev libc++-13-dev python3-zmq"
 export DEP_OPTS="CC=clang-13 CXX='clang++-13 -stdlib=libc++'"
 export GOAL="install"
-export BITCOIN_CONFIG="--enable-zmq CPPFLAGS='-DARENA_DEBUG -DDEBUG_LOCKORDER -DDEBUG_LOCKCONTENTION' CXXFLAGS='-g' --with-sanitizers=thread"
+export BITCOIN_CONFIG="-DWITH_ZMQ=ON -DCMAKE_CXX_FLAGS='-DARENA_DEBUG -DDEBUG_LOCKORDER -DDEBUG_LOCKCONTENTION -g' -DSANITIZERS=thread"
