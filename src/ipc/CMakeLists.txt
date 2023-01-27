@@ -37,5 +37,5 @@ target_include_directories(bitcoin_ipc
 
 target_link_libraries(bitcoin_ipc
   PRIVATE
-    PkgConfig::libmultiprocess
+    libmultiprocess::multiprocess
 )
