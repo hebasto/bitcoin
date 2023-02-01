@@ -278,6 +278,9 @@ target_link_libraries(bitcoin_node
     Boost::boost
     $<$<NOT:$<PLATFORM_ID:Windows>>:PkgConfig::libevent_pthreads>
 )
+if(TARGET NATPMP::NATPMP)
+  target_link_libraries(bitcoin_node PRIVATE NATPMP::NATPMP)
+endif()
 
 
 # Bitcoin Core bitcoind

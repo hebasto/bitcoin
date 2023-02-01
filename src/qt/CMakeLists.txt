@@ -79,6 +79,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   target_link_libraries(bitcoinqt PRIVATE "-framework AppKit")
   target_compile_options(bitcoinqt PRIVATE "-Wno-error=deprecated-declarations")
 endif()
+if(TARGET NATPMP::NATPMP)
+  target_link_libraries(bitcoinqt PRIVATE NATPMP::NATPMP)
+endif()
 
 if(ENABLE_WALLET)
   target_sources(bitcoinqt
