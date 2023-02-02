@@ -1501,7 +1501,6 @@ if test "$use_external_signer" != "no"; then
       TEMP_CXXFLAGS="$CXXFLAGS"
       dnl Boost 1.78 requires the following workaround.
       dnl See: https://github.com/boostorg/process/issues/235
-      BOOST_CPPFLAGS="$BOOST_CPPFLAGS -DBOOST_PROCESS_USE_STD_FS"
       CXXFLAGS="$CXXFLAGS -Wno-error=narrowing"
       TEMP_CPPFLAGS="$CPPFLAGS"
       CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
