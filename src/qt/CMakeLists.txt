@@ -193,7 +193,7 @@ if(CMAKE_CROSSCOMPILING AND ${qt_package}_DIR STREQUAL "${QT_CROSS_LIBS_PATH}/cm
         "-framework QuartzCore"
         "-framework Security"
     )
-  elseif(CMAKE_SYSTEM_NAME STREQUAL Android AND TARGET Qt5::QAndroidPlatformIntegrationPlugin)
+  elseif(CMAKE_SYSTEM_NAME STREQUAL Android AND TARGET Qt5::QAndroidIntegrationPlugin)
     target_compile_definitions(bitcoinqt PRIVATE QT_QPA_PLATFORM_ANDROID)
   endif()
 endif()
