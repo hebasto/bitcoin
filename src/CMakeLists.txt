@@ -95,6 +95,9 @@ target_sources(bitcoin_consensus
     uint256.cpp
     util/strencodings.cpp
 )
+set_property(SOURCE script/interpreter.cpp APPEND PROPERTY
+  COMPILE_OPTIONS $<$<BOOL:${MINGW}>:-Wno-maybe-uninitialized>
+)
 target_include_directories(bitcoin_consensus
   PRIVATE
     secp256k1/include
