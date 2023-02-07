@@ -19,5 +19,7 @@ execute_process(
 
 add_custom_target(apk_package
   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:bitcoin-qt> libs/${CMAKE_ANDROID_ARCH_ABI}/libbitcoin-qt_${CMAKE_ANDROID_ARCH_ABI}.so
+  COMMAND gradle wrapper --gradle-version=6.6.1
+  COMMAND ./gradlew build
   VERBATIM
 )
