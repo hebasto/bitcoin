@@ -17,3 +17,7 @@ execute_process(
   COMMAND tar xf ${qt_source_archive} -C ${CMAKE_CURRENT_BINARY_DIR}/src/ ${qt_source_directory}/src/android/java/src --strip-components=5
 )
 
+add_custom_target(apk_package
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:bitcoin-qt> libs/${CMAKE_ANDROID_ARCH_ABI}/libbitcoin-qt_${CMAKE_ANDROID_ARCH_ABI}.so
+  VERBATIM
+)
