@@ -109,6 +109,7 @@ else()
   endif()
   set(CMAKE_CXX_FLAGS_DEBUG "${debug_cpp_flags} ${debug_cxx_flags}")
 endif()
+set(CMAKE_OBJCXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 
 # Redefine "Release" configuration flags.
 if(MSVC)
@@ -124,6 +125,7 @@ else()
   try_append_cxxflag(release_cxx_flags "-g")
   set(CMAKE_CXX_FLAGS_RELEASE "${release_cxx_flags}")
 endif()
+set(CMAKE_OBJCXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 
 set(default_build_type "Release")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -256,7 +258,9 @@ include(cmake/subtree-secp256k1.cmake)
 include(CheckStdFilesystem)
 check_std_filesystem()
 
-if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX OR BUILD_BITCOINKERNEL_LIB OR BUILD_WALLET_TOOL)
+include(cmake/optional_qt.cmake)
+
+if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX OR BUILD_BITCOINKERNEL_LIB OR BUILD_WALLET_TOOL OR WITH_GUI)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
   find_package(Threads REQUIRED)
 
@@ -278,14 +282,14 @@ if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TX OR BUILD_BITCOINKERNEL_LIB OR BUILD_WAL
 endif()
 
 find_package(PkgConfig)
-if(BUILD_DAEMON OR BUILD_CLI)
+if(BUILD_DAEMON OR BUILD_CLI OR WITH_GUI)
   pkg_check_modules(libevent REQUIRED libevent>=2.1.8 IMPORTED_TARGET)
   set_property(TARGET PkgConfig::libevent APPEND PROPERTY
     INTERFACE_LINK_LIBRARIES $<$<PLATFORM_ID:Windows>:iphlpapi;ws2_32>
   )
 endif()
 
-if(NOT WIN32 AND BUILD_DAEMON)
+if(NOT WIN32 AND (BUILD_DAEMON OR WITH_GUI))
   pkg_check_modules(libevent_pthreads REQUIRED libevent_pthreads>=2.1.8 IMPORTED_TARGET)
 endif()
 
@@ -315,6 +319,8 @@ message("  libbitcoinkernel (experimental) ..... ${BUILD_BITCOINKERNEL_LIB}")
 message("Wallet support:")
 message("  SQLite, descriptor wallets .......... ${WITH_SQLITE}")
 message("  Berkeley DB, legacy wallets ......... ${WITH_BDB}")
+message("Optional packages:")
+message("  GUI ................................. ${WITH_GUI}")
 message("")
 get_directory_property(definitions COMPILE_DEFINITIONS)
 string(REPLACE ";" " " definitions "${definitions}")

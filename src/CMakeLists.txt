@@ -385,3 +385,8 @@ if(BUILD_UTIL_CHAINSTATE)
     target_link_libraries(bitcoin-chainstate PRIVATE std_filesystem)
   endif()
 endif()
+
+
+if(NOT WITH_GUI STREQUAL "no")
+  add_subdirectory(qt)
+endif()
