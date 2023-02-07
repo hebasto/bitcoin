@@ -239,6 +239,10 @@ if(MULTIPROCESS)
   list(APPEND installable_targets bitcoin-gui)
 endif()
 
+if(ANDROID)
+  add_subdirectory(android)
+endif()
+
 install(TARGETS ${installable_targets}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   COMPONENT GUI
