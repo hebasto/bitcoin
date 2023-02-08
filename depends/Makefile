@@ -261,6 +261,9 @@ $(host_prefix)/share/config.site : config.site.in $(host_prefix)/.stamp_$(final_
 $(host_prefix)/share/toolchain.cmake : toolchain.cmake.in $(host_prefix)/.stamp_$(final_build_id)
 	@mkdir -p $(@D)
 	sed -e 's|@CMAKE_SYSTEM_NAME@|$($(host_os)_cmake_system)|' \
+            -e 's|@ANDROID_ABI@|$(android_abi)|' \
+            -e 's|@ANDROID_PLATFORM@|$(ANDROID_API_LEVEL)|' \
+            -e 's|@ANDROID_NDK@|$(ANDROID_NDK)|' \
             -e 's|@CMAKE_SYSTEM_PROCESSOR@|$(host_arch)|' \
             -e 's|@CMAKE_C_COMPILER@|$(host_CC)|' \
             -e 's|@CMAKE_CXX_COMPILER@|$(host_CXX)|' \
