@@ -16,7 +16,9 @@ fi
 
 PRINT_CCACHE_STATISTICS="ccache --version | head -n 1 && ccache --show-stats -v"
 CI_EXEC "${PRINT_CCACHE_STATISTICS}"
+CI_EXEC "which ccache"
 CI_EXEC "ccache --zero-stats --max-size=$CCACHE_SIZE"
+CI_EXEC "${PRINT_CCACHE_STATISTICS}"
 
 if [ -n "$ANDROID_TOOLS_URL" ]; then
   CI_EXEC make distclean || true
