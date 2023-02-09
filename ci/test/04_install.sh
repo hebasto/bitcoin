@@ -45,6 +45,10 @@ if [ -z "$DANGER_RUN_CI_ON_HOST" ]; then
     systemctl restart docker
   fi
 
+  echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+  echo $CCACHE_DIR
+  echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+
   # shellcheck disable=SC2086
   CI_CONTAINER_ID=$(docker run $CI_CONTAINER_CAP --rm --interactive --detach --tty \
                   --mount type=bind,src=$BASE_ROOT_DIR,dst=/ro_base,readonly \
