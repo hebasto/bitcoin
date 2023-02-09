@@ -6,7 +6,6 @@ env:  # Global defaults
   CI_FAILFAST_TEST_LEAVE_DANGLING: "1"  # Cirrus CI does not care about dangling process and setting this variable avoids killing the CI script itself on error
   CCACHE_SIZE: "200M"
   CCACHE_DIR: "/tmp/ccache_dir"
-  CCACHE_NOHASHDIR: "1"  # Debug info might contain a stale path if the build dir changes, but this is fine
 
 cirrus_ephemeral_worker_template_env: &CIRRUS_EPHEMERAL_WORKER_TEMPLATE_ENV
   DANGER_RUN_CI_ON_HOST: "1"  # Containers will be discarded after the run, so there is no risk that the ci scripts modify the system
