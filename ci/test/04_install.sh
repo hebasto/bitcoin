@@ -72,6 +72,10 @@ if [ -z "$DANGER_RUN_CI_ON_HOST" ]; then
   export CI_EXEC_CMD_PREFIX="docker exec -u $LOCAL_UID $CI_CONTAINER_ID"
 else
   echo "Running on host system without docker wrapper"
+  echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+  echo "CCACHE_DIR is $CCACHE_DIR"
+  echo "CCACHE_NOHASHDIR is $CCACHE_NOHASHDIR"
+  echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
   "${BASE_ROOT_DIR}/ci/test/01_base_install.sh"
 fi
 
