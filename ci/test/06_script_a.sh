@@ -14,14 +14,15 @@ if [ -z "$NO_WERROR" ]; then
   BITCOIN_CONFIG_ALL="${BITCOIN_CONFIG_ALL} --enable-werror"
 fi
 
+PRINT_CCACHE_STATISTICS="ccache --version | head -n 1 && ccache --show-stats -v"
+CI_EXEC "${PRINT_CCACHE_STATISTICS}"
 CI_EXEC "ccache --zero-stats --max-size=$CCACHE_SIZE"
-PRINT_CCACHE_STATISTICS="ccache --version | head -n 1 && ccache --show-stats"
 
 if [ -n "$ANDROID_TOOLS_URL" ]; then
   CI_EXEC make distclean || true
   CI_EXEC ./autogen.sh
   CI_EXEC ./configure "$BITCOIN_CONFIG_ALL" "$BITCOIN_CONFIG" || ( (CI_EXEC cat config.log) && false)
-  CI_EXEC "make $MAKEJOBS && cd src/qt && ANDROID_HOME=${ANDROID_HOME} ANDROID_NDK_HOME=${ANDROID_NDK_HOME} make apk"
+  CI_EXEC "make $MAKEJOBS"
   CI_EXEC "${PRINT_CCACHE_STATISTICS}"
   exit 0
 fi
