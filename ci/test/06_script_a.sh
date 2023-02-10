@@ -23,6 +23,7 @@ if [ -n "$ANDROID_TOOLS_URL" ]; then
   CI_EXEC ./configure "$BITCOIN_CONFIG_ALL" "$BITCOIN_CONFIG" || ( (CI_EXEC cat config.log) && false)
   CI_EXEC "make $MAKEJOBS && cd src/qt && ANDROID_HOME=${ANDROID_HOME} ANDROID_NDK_HOME=${ANDROID_NDK_HOME} make apk"
   CI_EXEC "${PRINT_CCACHE_STATISTICS}"
+  CI_EXEC ls -l /tmp/cirrus-ci-build/depends/SDKs/android/ndk/23.2.8568313/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android28-clang++
   exit 0
 fi
 
