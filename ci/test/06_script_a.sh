@@ -23,8 +23,21 @@ if [ -n "$ANDROID_TOOLS_URL" ]; then
   CI_EXEC ./configure "$BITCOIN_CONFIG_ALL" "$BITCOIN_CONFIG" || ( (CI_EXEC cat config.log) && false)
   CI_EXEC "make $MAKEJOBS"
   CI_EXEC "${PRINT_CCACHE_STATISTICS}"
-  CI_EXEC ls -l /tmp/cirrus-ci-build/depends/SDKs/android/ndk/23.2.8568313/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android28-clang++
-  CI_EXEC ls -l src/qt
+  CI_EXEC echo =============== libbitcoinqt_a-bitcoinunits.o.ccache-input-c ==============
+  CI_EXEC cat libbitcoinqt_a-bitcoinunits.o.ccache-input-c
+  CI_EXEC echo ===========================================================================
+  CI_EXEC echo =============== libbitcoinqt_a-bitcoinunits.o.ccache-input-d ==============
+  CI_EXEC cat libbitcoinqt_a-bitcoinunits.o.ccache-input-d
+  CI_EXEC echo ===========================================================================
+  CI_EXEC echo =============== libbitcoinqt_a-bitcoinunits.o.ccache-input-p ==============
+  CI_EXEC cat libbitcoinqt_a-bitcoinunits.o.ccache-input-p
+  CI_EXEC echo ===========================================================================
+  CI_EXEC echo =============== libbitcoinqt_a-bitcoinunits.o.ccache-input-text ===========
+  CI_EXEC cat libbitcoinqt_a-bitcoinunits.o.ccache-input-text
+  CI_EXEC echo ===========================================================================
+  CI_EXEC echo =============== libbitcoinqt_a-bitcoinunits.o.ccache-log ==================
+  CI_EXEC cat libbitcoinqt_a-bitcoinunits.o.ccache-log
+  CI_EXEC echo ===========================================================================
   exit 0
 fi
 
