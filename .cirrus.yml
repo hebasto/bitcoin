@@ -37,7 +37,7 @@ main_template: &MAIN_TEMPLATE
   timeout_in: 120m  # https://cirrus-ci.org/faq/#instance-timed-out
   ccache_cache:
     folder: $CCACHE_DIR
-    fingerprint_script: echo $CIRRUS_TASK_NAME
+    fingerprint_script: echo $CIRRUS_TASK_NAME $HOST
     reupload_on_changes: true
   ci_script:
     - ./ci/test_run_all.sh
