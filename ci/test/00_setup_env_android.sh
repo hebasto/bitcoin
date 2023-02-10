@@ -25,3 +25,4 @@ export DEP_OPTS="ANDROID_SDK=${ANDROID_HOME} ANDROID_NDK=${ANDROID_NDK_HOME} AND
 export BITCOIN_CONFIG="--disable-tests --enable-gui-tests --disable-bench --disable-fuzz-binary --without-utils --without-libs --without-daemon"
 
 export CCACHE_DEBUG=1
+export CCACHE_COMPILERCHECK=content
