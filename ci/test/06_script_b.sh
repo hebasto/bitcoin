@@ -96,3 +96,5 @@ if [ -z "$DANGER_RUN_CI_ON_HOST" ]; then
   echo "Stop and remove CI container by ID"
   docker container kill "${CI_CONTAINER_ID}"
 fi
+
+CI_EXEC ls -l src
