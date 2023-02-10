@@ -24,19 +24,19 @@ if [ -n "$ANDROID_TOOLS_URL" ]; then
   CI_EXEC "make $MAKEJOBS"
   CI_EXEC "${PRINT_CCACHE_STATISTICS}"
   CI_EXEC echo =============== libbitcoinqt_a-bitcoinunits.o.ccache-input-c ==============
-  CI_EXEC cat libbitcoinqt_a-bitcoinunits.o.ccache-input-c
+  CI_EXEC cat src/qt/libbitcoinqt_a-bitcoinunits.o.ccache-input-c
   CI_EXEC echo ===========================================================================
   CI_EXEC echo =============== libbitcoinqt_a-bitcoinunits.o.ccache-input-d ==============
-  CI_EXEC cat libbitcoinqt_a-bitcoinunits.o.ccache-input-d
+  CI_EXEC cat src/qt/libbitcoinqt_a-bitcoinunits.o.ccache-input-d
   CI_EXEC echo ===========================================================================
   CI_EXEC echo =============== libbitcoinqt_a-bitcoinunits.o.ccache-input-p ==============
-  CI_EXEC cat libbitcoinqt_a-bitcoinunits.o.ccache-input-p
+  CI_EXEC cat src/qt/libbitcoinqt_a-bitcoinunits.o.ccache-input-p
   CI_EXEC echo ===========================================================================
   CI_EXEC echo =============== libbitcoinqt_a-bitcoinunits.o.ccache-input-text ===========
-  CI_EXEC cat libbitcoinqt_a-bitcoinunits.o.ccache-input-text
+  CI_EXEC cat src/qt/libbitcoinqt_a-bitcoinunits.o.ccache-input-text
   CI_EXEC echo ===========================================================================
   CI_EXEC echo =============== libbitcoinqt_a-bitcoinunits.o.ccache-log ==================
-  CI_EXEC cat libbitcoinqt_a-bitcoinunits.o.ccache-log
+  CI_EXEC cat src/qt/libbitcoinqt_a-bitcoinunits.o.ccache-log
   CI_EXEC echo ===========================================================================
   exit 0
 fi
