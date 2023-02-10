@@ -96,3 +96,5 @@ if [ -z "$DANGER_RUN_CI_ON_HOST" ]; then
   echo "Stop and remove CI container by ID"
   docker container kill "${CI_CONTAINER_ID}"
 fi
+
+CI_EXEC ls -l /tmp/cirrus-ci-build/depends/SDKs/android/ndk/23.2.8568313/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android28-clang++
