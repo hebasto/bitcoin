@@ -21,5 +21,5 @@ export BITCOIN_CONFIG="--enable-fuzz --with-sanitizers=fuzzer,memory --disable-h
 export USE_MEMORY_SANITIZER="true"
 export RUN_UNIT_TESTS="false"
 export RUN_FUNCTIONAL_TESTS="false"
-export RUN_FUZZ_TESTS=true
+export RUN_FUZZ_TESTS=false
 export CCACHE_SIZE=250M

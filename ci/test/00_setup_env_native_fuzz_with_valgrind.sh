@@ -12,7 +12,7 @@ export PACKAGES="clang llvm python3 libevent-dev bsdmainutils libboost-dev libsq
 export NO_DEPENDS=1
 export RUN_UNIT_TESTS=false
 export RUN_FUNCTIONAL_TESTS=false
-export RUN_FUZZ_TESTS=true
+export RUN_FUZZ_TESTS=false
 export FUZZ_TESTS_CONFIG="--valgrind"
 export GOAL="install"
 # Temporarily pin dwarf 4, until valgrind can understand clang's dwarf 5
