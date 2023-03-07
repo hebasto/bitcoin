@@ -2,6 +2,21 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+set(SECP256K1_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+set(SECP256K1_ENABLE_MODULE_ECDH OFF CACHE BOOL "" FORCE)
+set(SECP256K1_ENABLE_MODULE_RECOVERY ON CACHE BOOL "" FORCE)
+set(SECP256K1_BUILD_BENCHMARK OFF CACHE BOOL "" FORCE)
+mark_as_advanced(
+  SECP256K1_BUILD_SHARED
+  SECP256K1_ENABLE_MODULE_ECDH
+  SECP256K1_ENABLE_MODULE_RECOVERY
+  SECP256K1_BUILD_BENCHMARK
+)
+add_subdirectory(secp256k1 EXCLUDE_FROM_ALL)
+target_include_directories(secp256k1_static INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/secp256k1/include>
+)
+
 configure_file(${CMAKE_SOURCE_DIR}/cmake/bitcoin-config.h.in config/bitcoin-config.h @ONLY)
 add_compile_definitions(HAVE_CONFIG_H)
 include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
@@ -27,7 +42,7 @@ add_library(bitcoin_consensus OBJECT EXCLUDE_FROM_ALL
   uint256.cpp
   util/strencodings.cpp
 )
-target_link_libraries(bitcoin_consensus PRIVATE secp256k1)
+target_link_libraries(bitcoin_consensus PRIVATE secp256k1_static)
 
 
 # Home for common functionality shared by different executables and libraries.
@@ -80,7 +95,7 @@ target_link_libraries(bitcoin_common
     bitcoin_consensus
     bitcoin_util
     univalue
-    secp256k1
+    secp256k1_static
     Boost::headers
     $<TARGET_NAME_IF_EXISTS:libevent::libevent>
 )
