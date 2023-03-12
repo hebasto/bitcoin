@@ -18,6 +18,11 @@
     <ClCompile Include="..\..\src\wallet\test\*_tests.cpp" />
     <ClCompile Include="..\..\src\wallet\test\util.cpp" />
   </ItemGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\libminisketch\libminisketch.vcxproj">
       <Project>{542007e3-be0d-4b0d-a6b0-aa8813e2558d}</Project>
