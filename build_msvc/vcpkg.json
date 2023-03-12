@@ -4,7 +4,6 @@
   "dependencies": [
     "berkeleydb",
     "boost-multi-index",
-    "boost-process",
     "boost-signals2",
     "boost-test",
     "sqlite3",
