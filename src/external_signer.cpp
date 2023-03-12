@@ -19,13 +19,13 @@ ExternalSigner::ExternalSigner(const std::string& command, const std::string cha
 
 std::string ExternalSigner::NetworkArg() const
 {
-    return " --chain " + m_chain;
+    return "--chain=" + m_chain;
 }
 
 bool ExternalSigner::Enumerate(const std::string& command, std::vector<ExternalSigner>& signers, const std::string chain)
 {
     // Call <command> enumerate
-    const UniValue result = RunCommandParseJSON(command + " enumerate");
+    const UniValue result = RunCommandParseJSON({command, "enumerate"});
     if (!result.isArray()) {
         throw std::runtime_error(strprintf("'%s' received invalid response, expected array of signers", command));
     }
@@ -62,12 +62,12 @@ bool ExternalSigner::Enumerate(const std::string& command, std::vector<ExternalS
 
 UniValue ExternalSigner::DisplayAddress(const std::string& descriptor) const
 {
-    return RunCommandParseJSON(m_command + " --fingerprint \"" + m_fingerprint + "\"" + NetworkArg() + " displayaddress --desc \"" + descriptor + "\"");
+    return RunCommandParseJSON({m_command, "--fingerprint", m_fingerprint, NetworkArg(), "displayaddress", "--desc", descriptor});
 }
 
 UniValue ExternalSigner::GetDescriptors(const int account)
 {
-    return RunCommandParseJSON(m_command + " --fingerprint \"" + m_fingerprint + "\"" + NetworkArg() + " getdescriptors --account " + strprintf("%d", account));
+    return RunCommandParseJSON({m_command, "--fingerprint", m_fingerprint, NetworkArg(), "getdescriptors", "--account", strprintf("%d", account)});
 }
 
 bool ExternalSigner::SignTransaction(PartiallySignedTransaction& psbtx, std::string& error)
@@ -93,7 +93,7 @@ bool ExternalSigner::SignTransaction(PartiallySignedTransaction& psbtx, std::str
         return false;
     }
 
-    const std::string command = m_command + " --stdin --fingerprint \"" + m_fingerprint + "\"" + NetworkArg();
+    const std::vector<std::string> command = {m_command, "--stdin", "--fingerprint", m_fingerprint, NetworkArg()};
     const std::string stdinStr = "signtx \"" + EncodeBase64(ssTx.str()) + "\"";
 
     const UniValue signer_result = RunCommandParseJSON(command, stdinStr);
