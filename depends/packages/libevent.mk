@@ -1,8 +1,8 @@
 package=libevent
-$(package)_version=2.1.12-stable
-$(package)_download_path=https://github.com/libevent/libevent/releases/download/release-$($(package)_version)/
-$(package)_file_name=$(package)-$($(package)_version).tar.gz
-$(package)_sha256_hash=92e6de1be9ec176428fd2367677e61ceffc2ee1cb119035037a27d346b0403bb
+$(package)_version=c6e8f17541b99e8c3a089a1c6f70119d6f95db9d
+$(package)_download_path=https://github.com/libevent/libevent/archive
+$(package)_file_name=$($(package)_version).tar.gz
+$(package)_sha256_hash=bf71f60b46aa2facfde16a4413af01e2f2ece119428e1edb29633acafdf01379
 
 # When building for Windows, we set _WIN32_WINNT to target the same Windows
 # version as we do in configure. Due to quirks in libevents build system, this
@@ -18,11 +18,8 @@ define $(package)_set_vars
   endif
 endef
 
-define $(package)_preprocess_cmds
-  cp -f $(BASEDIR)/config.guess $(BASEDIR)/config.sub build-aux
-endef
-
 define $(package)_config_cmds
+  ./autogen.sh && \
   $($(package)_autoconf)
 endef
 
