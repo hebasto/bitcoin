@@ -45,6 +45,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(configure_warnings)
 
+include(cmake/introspection.cmake)
+
 add_subdirectory(src)
 
 message("\n")
