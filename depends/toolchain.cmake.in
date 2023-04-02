@@ -77,6 +77,7 @@ set(CMAKE_INSTALL_NAME_TOOL "@INSTALL_NAME_TOOL@")
 set(OTOOL "@OTOOL@")
 
 set(CMAKE_PREFIX_PATH "@depends_prefix@")
+set(QT_CROSS_LIBS_PATH "${CMAKE_PREFIX_PATH}/lib")
 set(PKG_CONFIG_PATH "@depends_prefix@/lib/pkgconfig")
 if("@allow_host_packages@" STREQUAL "1")
   set(DEPENDS_ALLOW_HOST_PACKAGES TRUE)

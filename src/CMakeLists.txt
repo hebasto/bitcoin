@@ -302,6 +302,11 @@ if(BUILD_UTIL)
 endif()
 
 
+if(WITH_GUI)
+  add_subdirectory(qt)
+endif()
+
+
 add_subdirectory(test/util)
 if(BUILD_BENCH)
   add_subdirectory(bench)
