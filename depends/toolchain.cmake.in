@@ -83,6 +83,7 @@ set(CMAKE_INSTALL_NAME_TOOL "@INSTALL_NAME_TOOL@")
 set(OTOOL "@OTOOL@")
 
 set(CMAKE_PREFIX_PATH "@depends_prefix@")
+set(QT_CROSS_LIBS_PATH "${CMAKE_PREFIX_PATH}/lib")
 set(PKG_CONFIG_PATH "@depends_prefix@/lib/pkgconfig")
 if("@allow_host_packages@" STREQUAL "1")
   set(DEPENDS_ALLOW_HOST_PACKAGES TRUE)
@@ -97,7 +98,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND NOT CMAKE_HOST_APPLE AND NOT "@OSX_SD
 endif()
 
 if(NOT WITH_GUI AND "@no_qt@" STREQUAL "1")
-  set(WITH_GUI "no" CACHE STRING "")
+  set(WITH_GUI OFF CACHE STRING "")
 endif()
 
 if(NOT WITH_QRENCODE AND "@no_qr@" STREQUAL "1")

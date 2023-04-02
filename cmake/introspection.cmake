@@ -247,6 +247,6 @@ check_cxx_source_compiles("
   " HAVE_DLLEXPORT_ATTRIBUTE
 )
 
-if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+if(CMAKE_HOST_APPLE)
   find_program(BREW_COMMAND brew)
 endif()

@@ -242,6 +242,8 @@ else()
   unset(debug_flags)
 endif()
 
+include(cmake/optional_qt.cmake)
+
 include(cmake/optional.cmake)
 
 # Don't allow extended (non-ASCII) symbols in identifiers. This is easier for code review.
@@ -338,6 +340,7 @@ message("Wallet support:")
 message("  SQLite, descriptor wallets .......... ${WITH_SQLITE}")
 message("  Berkeley DB, legacy wallets ......... ${WITH_BDB}")
 message("Optional packages:")
+message("  GUI ................................. ${WITH_GUI}")
 message("  NAT-PMP ............................. ${WITH_NATPMP}")
 message("  UPnP ................................ ${WITH_MINIUPNPC}")
 message("  ZeroMQ .............................. ${WITH_ZMQ}")
