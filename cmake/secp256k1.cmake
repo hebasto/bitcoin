@@ -10,17 +10,19 @@ enable_language(C)
 set(CMAKE_C_STANDARD 90)
 set(CMAKE_C_EXTENSIONS OFF)
 
-include(CheckCSourceCompiles)
-check_c_source_compiles("
-  #include <stdint.h>
+if(ASM)
+  include(CheckCSourceCompiles)
+  check_c_source_compiles("
+    #include <stdint.h>
 
-  int main()
-  {
-    uint64_t a = 11, tmp;
-    __asm__ __volatile__(\"movq $0x100000000,%1; mulq %%rsi\" : \"+a\"(a) : \"S\"(tmp) : \"cc\", \"%rdx\");
-  }
-  " HAVE_64BIT_ASM
-)
+    int main()
+    {
+      uint64_t a = 11, tmp;
+      __asm__ __volatile__(\"movq $0x100000000,%1; mulq %%rsi\" : \"+a\"(a) : \"S\"(tmp) : \"cc\", \"%rdx\");
+    }
+    " HAVE_64BIT_ASM
+  )
+endif()
 
 add_library(secp256k1 STATIC EXCLUDE_FROM_ALL
   ${PROJECT_SOURCE_DIR}/src/secp256k1/src/secp256k1.c
