@@ -5,11 +5,9 @@ task:
     image: cirrusci/windowsservercore:visualstudio2022
   env:
     x64_NATIVE_TOOLS: '"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"'
-    PATH: 'C:\jom;C:\Python39;C:\Python39\Scripts;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin;%PATH%'
     CI_VCPKG_TAG: '2023.01.09'
     VCPKG_DOWNLOADS: 'C:\Users\ContainerAdministrator\AppData\Local\vcpkg\downloads'
     VCPKG_DEFAULT_BINARY_CACHE: 'C:\Users\ContainerAdministrator\AppData\Local\vcpkg\archives'
-    CCACHE_DIR: 'C:\Users\ContainerAdministrator\AppData\Local\ccache'
     WRAPPED_CL: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\ci\test\wrapped-cl.bat'
     IgnoreWarnIntDirInTempDetected: 'true'
   choco_script:
@@ -21,3 +19,6 @@ task:
     - '%x64_NATIVE_TOOLS%'
     - cmake --version
     - cmake -S . -B build
+  build_script:
+    - '%x64_NATIVE_TOOLS%'
+    - cmake --build build --config Release
