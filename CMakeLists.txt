@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 3.13...3.24)
 
 project(ccache-msvc LANGUAGES CXX)
 
+find_program(ccache_shim ccache)
+cmake_path(GET ccache_shim PARENT_PATH chocolatey_dir)
+cmake_path(APPEND chocolatey_dir "../lib/ccache/tools/ccache-4.7.4-windows-x86_64/ccache.exe" OUTPUT_VARIABLE ccache_exe)
+message("ccache_exe is ${ccache_exe}")
+
 add_executable(main main.cpp)
 
 message("Supported configurations .............. ${CMAKE_CONFIGURATION_TYPES}")
