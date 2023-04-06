@@ -11,7 +11,7 @@ task:
     WRAPPED_CL: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\ci\test\wrapped-cl.bat'
     IgnoreWarnIntDirInTempDetected: 'true'
   choco_script:
-    - choco install --yes --no-progress ccache --version=4.7.4
+    - choco install --yes --no-progress ccache --version=4.7.5
   ccache_script:
     - ccache --version
     - ccache --version --shimgen-log
