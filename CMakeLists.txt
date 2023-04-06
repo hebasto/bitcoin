@@ -21,6 +21,9 @@ set(CMAKE_VS_GLOBALS
   "DebugInformationFormat=OldStyle"
 )
 
+string(REGEX REPLACE "/Zi[ \t\r\n]*" "/Z7 " CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+string(REGEX REPLACE "/Zi[ \t\r\n]*" "/Z7 " CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+
 add_executable(main main.cpp)
 
 message("Supported configurations .............. ${CMAKE_CONFIGURATION_TYPES}")
