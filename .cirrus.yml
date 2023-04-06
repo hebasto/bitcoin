@@ -19,6 +19,9 @@ task:
     - '%x64_NATIVE_TOOLS%'
     - cmake --version
     - cmake -S . -B build
-  build_script:
+  build_release_script:
     - '%x64_NATIVE_TOOLS%'
     - cmake --build build --config Release
+  build_debug_script:
+    - '%x64_NATIVE_TOOLS%'
+    - cmake --build build --config Debug

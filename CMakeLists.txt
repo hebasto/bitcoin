@@ -7,7 +7,27 @@ cmake_path(GET ccache_shim PARENT_PATH chocolatey_dir)
 cmake_path(APPEND chocolatey_dir "../lib/ccache/tools/ccache-4.7.4-windows-x86_64/ccache.exe" OUTPUT_VARIABLE ccache_exe)
 message("ccache_exe is ${ccache_exe}")
 
+
+file(COPY_FILE
+  ${ccache_exe} ${CMAKE_BINARY_DIR}/cl.exe
+  ONLY_IF_DIFFERENT
+)
+
+set(CMAKE_VS_GLOBALS
+  "CLToolExe=cl.exe"
+  "CLToolPath=${CMAKE_BINARY_DIR}"
+  "TrackFileAccess=false"
+  "UseMultiToolTask=true"
+  "DebugInformationFormat=OldStyle"
+)
+
 add_executable(main main.cpp)
+add_custom_command(TARGET main
+  PRE_BUILD COMMAND ${ccache_exe} -z
+)
+add_custom_command(TARGET main
+  POST_BUILD COMMAND ${ccache_exe} -s
+)
 
 message("Supported configurations .............. ${CMAKE_CONFIGURATION_TYPES}")
 message("Debug configuration:")
