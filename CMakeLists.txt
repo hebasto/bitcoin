@@ -22,12 +22,6 @@ set(CMAKE_VS_GLOBALS
 )
 
 add_executable(main main.cpp)
-add_custom_command(TARGET main
-  PRE_BUILD COMMAND ${ccache_exe} -z
-)
-add_custom_command(TARGET main
-  POST_BUILD COMMAND ${ccache_exe} -s
-)
 
 message("Supported configurations .............. ${CMAKE_CONFIGURATION_TYPES}")
 message("Debug configuration:")

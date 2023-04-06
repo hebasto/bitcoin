@@ -21,7 +21,15 @@ task:
     - cmake -S . -B build
   build_release_script:
     - '%x64_NATIVE_TOOLS%'
+    - ccache --zero-stats
     - cmake --build build --config Release
+    - ccache --show-stats
+    - cmake --build build --config Release --clean-first
+    - ccache --show-stats
   build_debug_script:
     - '%x64_NATIVE_TOOLS%'
+    - ccache --zero-stats
     - cmake --build build --config Debug
+    - ccache --show-stats
+    - cmake --build build --config Debug --clean-first
+    - ccache --show-stats
