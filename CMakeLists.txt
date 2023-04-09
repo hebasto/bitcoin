@@ -138,6 +138,11 @@ else()
   endif()
 endif()
 
+
+string(REGEX REPLACE "/Zi[ \t\r\n]*" "/Z7 " CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
+string(REGEX REPLACE "/Zi[ \t\r\n]*" "/Z7 " CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+
+
 add_subdirectory(src)
 
 message("\n")
