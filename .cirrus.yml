@@ -115,7 +115,7 @@ task:
     - cd vcpkg
     - git -c advice.detachedHead=false checkout %CI_VCPKG_TAG%
     - .\bootstrap-vcpkg -disableMetrics
-    - echo set(VCPKG_BUILD_TYPE release) >> triplets\x64-windows-static.cmake
+    - echo set(VCPKG_BUILD_TYPE debug) >> triplets\x64-windows-static.cmake
     - .\vcpkg integrate install
     - .\vcpkg version
   vcpkg_tools_cache:
