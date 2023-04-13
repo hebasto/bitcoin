@@ -470,6 +470,19 @@ if test "$CXXFLAGS_overridden" = "no"; then
   if test "$suppress_external_warnings" != "yes" ; then
     AX_CHECK_COMPILE_FLAG([-Wdeprecated-copy], [NOWARN_CXXFLAGS="$NOWARN_CXXFLAGS -Wno-deprecated-copy"], [], [$CXXFLAG_WERROR])
   fi
+
+  AX_CHECK_COMPILE_FLAG([-Wgnu-zero-variadic-macro-arguments],
+    [
+      TEMP_CXXFLAGS="$CXXFLAGS"
+      CXXFLAGS="-Wgnu-zero-variadic-macro-arguments $CXXFLAG_WERROR $CXXFLAGS"
+      AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+          #define VARIADIC_MACRO(a, ...) f(__VA_ARGS__)
+          void f() {}
+          int main() { VARIADIC_MACRO(42); }
+        ]])], [],
+        [NOWARN_CXXFLAGS="$NOWARN_CXXFLAGS -Wno-gnu-zero-variadic-macro-arguments"])
+      CXXFLAGS="$TEMP_CXXFLAGS"
+    ], [], [$CXXFLAG_WERROR])
 fi
 
 dnl Don't allow extended (non-ASCII) symbols in identifiers. This is easier for code review.
