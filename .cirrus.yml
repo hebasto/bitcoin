@@ -26,12 +26,12 @@ global_task_template: &GLOBAL_TASK_TEMPLATE
     folder: "/tmp/cirrus-ci-build/depends/sdk-sources"
   depends_releases_cache:
     folder: "/tmp/cirrus-ci-build/releases"
-  merge_base_script:
-    - bash -c "$PACKAGE_MANAGER_INSTALL git"
-    - git fetch $CIRRUS_REPO_CLONE_URL $CIRRUS_BASE_BRANCH
-    - git config --global user.email "ci@ci.ci"
-    - git config --global user.name "ci"
-    - git merge FETCH_HEAD  # Merge base to detect silent merge conflicts
+  # merge_base_script:
+  #   - bash -c "$PACKAGE_MANAGER_INSTALL git"
+  #   - git fetch $CIRRUS_REPO_CLONE_URL $CIRRUS_BASE_BRANCH
+  #   - git config --global user.email "ci@ci.ci"
+  #   - git config --global user.name "ci"
+  #   - git merge FETCH_HEAD  # Merge base to detect silent merge conflicts
   ci_script:
     - ./ci/test_run_all.sh
 
