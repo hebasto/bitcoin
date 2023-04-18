@@ -27,8 +27,6 @@ race:bitcoin-qt
 # deadlock (TODO fix)
 deadlock:CConnman::ForNode
 deadlock:CConnman::GetNodeStats
-deadlock:CChainState::ConnectTip
-deadlock:UpdateTip
 deadlock:wallet_tests::CreateWalletFromFile
 
 # WalletBatch (unidentified deadlock)
