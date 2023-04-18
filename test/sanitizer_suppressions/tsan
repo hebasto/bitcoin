@@ -12,9 +12,6 @@ race:DatabaseBatch
 race:zmq::*
 race:bitcoin-qt
 
-# deadlock (TODO fix)
-deadlock:CChainState::ConnectTip
-
 # Intentional deadlock in tests
 deadlock:sync_tests::potential_deadlock_detected
 
