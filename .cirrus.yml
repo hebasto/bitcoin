@@ -37,10 +37,10 @@ compute_credits_template: &CREDITS_TEMPLATE
   use_compute_credits: $CIRRUS_REPO_FULL_NAME == 'bitcoin/bitcoin' && $CIRRUS_PR != ""
 
 task:
-  name: '[depends, sanitizers: thread (TSan), no gui] [focal]'
+  name: '[depends, sanitizers: thread (TSan), no gui] [jammy]'
   << : *GLOBAL_TASK_TEMPLATE
   container:
-    image: ubuntu:focal
+    image: ubuntu:jammy
     cpu: 4  # Double CPU and increase Memory to avoid timeout
     memory: 16G
   env:
