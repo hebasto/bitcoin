@@ -95,6 +95,9 @@ fi
 
 DOCKER_EXEC mkdir -p "${BASE_SCRATCH_DIR}/sanitizer-output/"
 
+DOCKER_EXEC "update-alternatives --install /usr/bin/clang++ clang++ \$(which clang++-12) 100"
+DOCKER_EXEC "update-alternatives --install /usr/bin/clang clang \$(which clang-12) 100"
+
 if [[ ${USE_MEMORY_SANITIZER} == "true" ]]; then
   DOCKER_EXEC "update-alternatives --install /usr/bin/clang++ clang++ \$(which clang++-9) 100"
   DOCKER_EXEC "update-alternatives --install /usr/bin/clang clang \$(which clang-9) 100"
