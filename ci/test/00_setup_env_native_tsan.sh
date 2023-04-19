@@ -7,8 +7,9 @@
 export LC_ALL=C.UTF-8
 
 export CONTAINER_NAME=ci_native_tsan
-export DOCKER_NAME_TAG=ubuntu:hirsute
+export DOCKER_NAME_TAG=ubuntu:22.04
 export PACKAGES="clang llvm libc++abi-dev libc++-dev python3-zmq"
-export DEP_OPTS="CC=clang CXX='clang++ -stdlib=libc++'"
+export DEP_OPTS="NO_QT=1 CC=clang CXX='clang++ -stdlib=libc++'"
 export GOAL="install"
-export BITCOIN_CONFIG="--enable-zmq --with-gui=no CPPFLAGS='-DARENA_DEBUG -DDEBUG_LOCKORDER' CXXFLAGS='-g' --with-sanitizers=thread CC=clang CXX='clang++ -stdlib=libc++'"
+export BITCOIN_CONFIG="--disable-fuzz-binary --disable-tests --disable-bench --enable-zmq CPPFLAGS='-DARENA_DEBUG -DDEBUG_LOCKORDER' CXXFLAGS='-g' --with-sanitizers=thread"
+export RUN_UNIT_TESTS=false
