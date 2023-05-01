@@ -180,7 +180,7 @@ task:
     - cmake --build build --config Release -- -property:UseMultiToolTask=true;CL_MPcount=7
     - ccache --show-stats
   check_script:
-    - echo %CTEST_PARALLEL_LEVEL%
+    - '%x64_NATIVE_TOOLS%'
     - cmake --build build --config Release --target check
   functional_tests_script:
     # Increase the dynamic port range to the maximum allowed value to mitigate "OSError: [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permitted".
