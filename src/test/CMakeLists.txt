@@ -211,7 +211,7 @@ add_all_test_targets()
 # https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/EmulateMakeCheck
 set(run_bench_bitcoin "")
 if(BUILD_BENCH)
-  set(run_bench_bitcoin COMMAND $<TARGET_FILE:bench_bitcoin> --sanity-check)
+  set(run_bench_bitcoin COMMAND bench_bitcoin --sanity-check)
 endif()
 
 set(run_util_test_runner "")
@@ -229,10 +229,6 @@ add_custom_target(check
   VERBATIM
 )
 add_dependencies(check test_bitcoin)
-
-if(BUILD_BENCH)
-  add_dependencies(check bench_bitcoin)
-endif()
 
 if(BUILD_TX AND BUILD_UTIL)
   add_dependencies(check bitcoin-tx bitcoin-util)
