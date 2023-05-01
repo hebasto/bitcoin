@@ -27,6 +27,7 @@ fi
 echo "Fallback to default values in env (if not yet set)"
 # The number of parallel jobs to pass down to make and test_runner.py
 export MAKEJOBS=${MAKEJOBS:--j4}
+export CTEST_PARALLEL_LEVEL=${CTEST_PARALLEL_LEVEL:-4}
 # What host to compile for. See also ./depends/README.md
 # Tests that need cross-compilation export the appropriate HOST.
 # Tests that run natively guess the host

@@ -2,6 +2,7 @@ env:  # Global defaults
   CIRRUS_CLONE_DEPTH: 1
   PACKAGE_MANAGER_INSTALL: "apt-get update && apt-get install -y"
   MAKEJOBS: "-j10"
+  CTEST_PARALLEL_LEVEL: 10
   TEST_RUNNER_PORT_MIN: "14000"  # Must be larger than 12321, which is used for the http cache. See https://cirrus-ci.org/guide/writing-tasks/#http-cache
   CI_FAILFAST_TEST_LEAVE_DANGLING: "1"  # Cirrus CI does not care about dangling process and setting this variable avoids killing the CI script itself on error
   CCACHE_SIZE: "200M"
@@ -179,10 +180,8 @@ task:
     - cmake --build build --config Release -- -property:UseMultiToolTask=true;CL_MPcount=7
     - ccache --show-stats
   check_script:
-    - build\src\test\Release\test_bitcoin.exe -l test_suite
-    - build\src\bench\Release\bench_bitcoin.exe --sanity-check
-    - python build\test\util\test_runner.py
-    - python build\test\util\rpcauth-test.py
+    - '%x64_NATIVE_TOOLS%'
+    - cmake --build build --config Release --target check
   functional_tests_script:
     # Increase the dynamic port range to the maximum allowed value to mitigate "OSError: [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permitted".
     # See: https://learn.microsoft.com/en-us/biztalk/technical-guides/settings-that-can-be-modified-to-improve-network-performance
@@ -214,6 +213,7 @@ task:
   << : *CREDITS_TEMPLATE
   env:
     << : *CIRRUS_EPHEMERAL_WORKER_TEMPLATE_ENV
+    CTEST_PARALLEL_LEVEL: 4    # Avoid excessive memory use.
 
 task:
   name: '32-bit + dash [gui] [CentOS 8]'

@@ -343,11 +343,32 @@ endif()
 
 
 add_subdirectory(test/util)
-if(BUILD_TESTS)
-  add_subdirectory(test)
-endif()
 if(BUILD_BENCH)
   add_subdirectory(bench)
+endif()
+
+if(BUILD_TESTS)
+  add_subdirectory(test)
+
+  # https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/EmulateMakeCheck
+  if(TARGET bench_bitcoin)
+    set(run_bench_bitcoin COMMAND $<TARGET_FILE:bench_bitcoin> --sanity-check)
+  endif()
+
+  set(run_util_test_runner "")
+  if(TARGET bitcoin-util AND TARGET bitcoin-tx)
+    set(run_util_test_runner COMMAND echo "Running test/util/test_runner.py..." COMMAND ${CMAKE_COMMAND} -E env BITCOINUTIL=$<TARGET_FILE:bitcoin-util> BITCOINTX=$<TARGET_FILE:bitcoin-tx> ${PYTHON_EXECUTABLE} ${CMAKE_BINARY_DIR}/test/util/test_runner.py)
+  endif()
+
+  add_custom_target(check
+    ${run_bench_bitcoin}
+    ${run_util_test_runner}
+    COMMAND echo "Running test/util/rpcauth-test.py..."
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_BINARY_DIR}/test/util/rpcauth-test.py
+    COMMAND ${CMAKE_COMMAND} -E chdir test ${CMAKE_CTEST_COMMAND} -C "$<CONFIG>"
+    VERBATIM
+  )
+  add_dependencies(check test_bitcoin)
 endif()
 
 if(BUILD_FUZZ_BINARY)
