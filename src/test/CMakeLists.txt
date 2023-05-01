@@ -216,7 +216,7 @@ endif()
 
 set(run_util_test_runner "")
 if(BUILD_TX AND BUILD_UTIL)
-  set(run_util_test_runner COMMAND echo "Running test/util/test_runner.py..." COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_BINARY_DIR}/test/util/test_runner.py)
+  set(run_util_test_runner COMMAND echo "Running test/util/test_runner.py..." COMMAND ${CMAKE_COMMAND} -E env BITCOINUTIL="$<TARGET_FILE:bitcoin-util>" BITCOINTX="$<TARGET_FILE:bitcoin-tx>" ${PYTHON_EXECUTABLE} ${CMAKE_BINARY_DIR}/test/util/test_runner.py)
 endif()
 
 set(CTEST_CONFIGURATION_TYPE "$<$<CONFIG:Release>:Release>$<$<CONFIG:Debug>:Debug>")
@@ -229,7 +229,3 @@ add_custom_target(check
   VERBATIM
 )
 add_dependencies(check test_bitcoin)
-
-if(BUILD_TX AND BUILD_UTIL)
-  add_dependencies(check bitcoin-tx bitcoin-util)
-endif()
