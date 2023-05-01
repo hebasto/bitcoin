@@ -207,24 +207,3 @@ endfunction()
 include(CTest)
 enable_testing()
 add_all_test_targets()
-
-# https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/EmulateMakeCheck
-set(run_bench_bitcoin "")
-if(BUILD_BENCH)
-  set(run_bench_bitcoin COMMAND bench_bitcoin --sanity-check)
-endif()
-
-set(run_util_test_runner "")
-if(BUILD_TX AND BUILD_UTIL)
-  set(run_util_test_runner COMMAND echo "Running test/util/test_runner.py..." COMMAND ${CMAKE_COMMAND} -E env BITCOINUTIL="$<TARGET_FILE:bitcoin-util>" BITCOINTX="$<TARGET_FILE:bitcoin-tx>" ${PYTHON_EXECUTABLE} ${CMAKE_BINARY_DIR}/test/util/test_runner.py)
-endif()
-
-add_custom_target(check
-  ${run_bench_bitcoin}
-  ${run_util_test_runner}
-  COMMAND echo "Running test/util/rpcauth-test.py..."
-  COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_BINARY_DIR}/test/util/rpcauth-test.py
-  COMMAND ${CMAKE_CTEST_COMMAND} -C "$<CONFIG>"
-  VERBATIM
-)
-add_dependencies(check test_bitcoin)
