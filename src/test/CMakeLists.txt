@@ -209,17 +209,6 @@ enable_testing()
 add_all_test_targets()
 
 # https://gitlab.kitware.com/cmake/community/-/wikis/doc/tutorials/EmulateMakeCheck
-set(ctest_command_jobs_arg "")
-if(DEFINED ENV{TESTJOBS})
-  set(ctest_command_jobs_arg "$ENV{TESTJOBS}")
-else()
-  include(ProcessorCount)
-  ProcessorCount(nproc)
-  if(NOT nproc EQUAL 0)
-    set(ctest_command_jobs_arg "-j ${nproc}")
-  endif()
-endif()
-
 set(run_bench_bitcoin "")
 if(BUILD_BENCH)
   set(run_bench_bitcoin COMMAND $<TARGET_FILE:bench_bitcoin> --sanity-check)
@@ -236,7 +225,7 @@ add_custom_target(check
   ${run_util_test_runner}
   COMMAND echo "Running test/util/rpcauth-test.py..."
   COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_BINARY_DIR}/test/util/rpcauth-test.py
-  COMMAND ${CMAKE_CTEST_COMMAND} -C ${CTEST_CONFIGURATION_TYPE} ${ctest_command_jobs_arg}
+  COMMAND ${CMAKE_CTEST_COMMAND} -C ${CTEST_CONFIGURATION_TYPE}
   VERBATIM
 )
 add_dependencies(check test_bitcoin)
