@@ -76,8 +76,10 @@ def bctest(testDir, testObj, buildenv):
     execprog = os.path.join(buildenv["BUILDDIR"], "src", testObj["exec"] + buildenv["EXEEXT"])
     if testObj["exec"] == "./bitcoin-util":
         execprog = os.getenv("BITCOINUTIL", default=execprog)
+        logging.error("............................ BITCOINUTIL=" + execprog)
     elif testObj["exec"] == "./bitcoin-tx":
         execprog = os.getenv("BITCOINTX", default=execprog)
+        logging.error("............................ BITCOINTX=" + execprog)
 
     execargs = testObj['args']
     execrun = [execprog] + execargs
