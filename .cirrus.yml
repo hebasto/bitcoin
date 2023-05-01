@@ -180,10 +180,8 @@ task:
     - cmake --build build --config Release -- -property:UseMultiToolTask=true;CL_MPcount=7
     - ccache --show-stats
   check_script:
-    - build\src\test\Release\test_bitcoin.exe -l test_suite
-    - build\src\bench\Release\bench_bitcoin.exe --sanity-check
-    - python build\test\util\test_runner.py
-    - python build\test\util\rpcauth-test.py
+    - echo %CTEST_PARALLEL_LEVEL%
+    - cmake --build build --config Release --target check
   functional_tests_script:
     # Increase the dynamic port range to the maximum allowed value to mitigate "OSError: [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permitted".
     # See: https://learn.microsoft.com/en-us/biztalk/technical-guides/settings-that-can-be-modified-to-improve-network-performance
