@@ -252,9 +252,15 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
             "src",
             "bitcoin-util" + config["environment"]["EXEEXT"],
         )
+        fname_bitcoinwallet = os.path.join(
+            config["environment"]["BUILDDIR"],
+            "src",
+            "bitcoin-wallet" + config["environment"]["EXEEXT"],
+        )
         self.options.bitcoind = os.getenv("BITCOIND", default=fname_bitcoind)
         self.options.bitcoincli = os.getenv("BITCOINCLI", default=fname_bitcoincli)
         self.options.bitcoinutil = os.getenv("BITCOINUTIL", default=fname_bitcoinutil)
+        self.options.bitcoinwallet = os.getenv("BITCOINWALLET", default=fname_bitcoinwallet)
 
         os.environ['PATH'] = os.pathsep.join([
             os.path.join(config['environment']['BUILDDIR'], 'src'),
