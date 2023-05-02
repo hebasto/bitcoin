@@ -86,6 +86,7 @@ task:
     BITCOIND: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\build\src\Release\bitcoind.exe'
     BITCOINCLI: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\build\src\Release\bitcoin-cli.exe'
     BITCOINUTIL: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\build\src\Release\bitcoin-util.exe'
+    BITCOINTX: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\build\src\Release\bitcoin-tx.exe'
     BITCOINWALLET: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\build\src\Release\bitcoin-wallet.exe'
     IgnoreWarnIntDirInTempDetected: 'true'
   merge_script:
@@ -151,8 +152,10 @@ task:
     - cmake --build build --config Release -- -property:UseMultiToolTask=true;CL_MPcount=7
     - ccache --show-stats
   check_script:
-    - '%x64_NATIVE_TOOLS%'
-    - cmake --build build --config Release --target check -- -property:UseMultiToolTask=true;CL_MPcount=7
+    - build\src\test\Release\test_bitcoin.exe -l test_suite
+    - build\src\bench\Release\bench_bitcoin.exe --sanity-check
+    - python build\test\util\test_runner.py
+    - python build\test\util\rpcauth-test.py
   functional_tests_script:
     # Increase the dynamic port range to the maximum allowed value to mitigate "OSError: [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permitted".
     # See: https://learn.microsoft.com/en-us/biztalk/technical-guides/settings-that-can-be-modified-to-improve-network-performance
