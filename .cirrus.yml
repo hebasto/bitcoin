@@ -86,6 +86,7 @@ task:
     BITCOIND: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\build\src\Release\bitcoind.exe'
     BITCOINCLI: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\build\src\Release\bitcoin-cli.exe'
     BITCOINUTIL: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\build\src\Release\bitcoin-util.exe'
+    BITCOINWALLET: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\build\src\Release\bitcoin-wallet.exe'
     IgnoreWarnIntDirInTempDetected: 'true'
   merge_script:
     - PowerShell -NoLogo -Command if ($env:CIRRUS_PR -ne $null) { git fetch $env:CIRRUS_REPO_CLONE_URL pull/$env:CIRRUS_PR/merge; git reset --hard FETCH_HEAD; }
