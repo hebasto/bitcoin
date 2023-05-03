@@ -524,6 +524,10 @@ def run_tests(*, test_list, src_dir, build_dir, tmpdir, jobs=1, enable_coverage=
 
     # Test Framework Tests
     print("Running Unit Tests for Test Framework Modules")
+
+    tests_dir = os.path.join(src_dir, 'test', 'functional')
+    sys.path.append(tests_dir)
+
     test_framework_tests = unittest.TestSuite()
     for module in TEST_FRAMEWORK_MODULES:
         test_framework_tests.addTest(unittest.TestLoader().loadTestsFromName("test_framework.{}".format(module)))
@@ -531,8 +535,6 @@ def run_tests(*, test_list, src_dir, build_dir, tmpdir, jobs=1, enable_coverage=
     if not result.wasSuccessful():
         logging.debug("Early exiting after failure in TestFramework unit tests")
         sys.exit(False)
-
-    tests_dir = os.path.join(src_dir, 'test', 'functional')
 
     flags = ['--cachedir={}'.format(cache_dir)] + args
 
