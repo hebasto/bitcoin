@@ -532,7 +532,7 @@ def run_tests(*, test_list, src_dir, build_dir, tmpdir, jobs=1, enable_coverage=
         logging.debug("Early exiting after failure in TestFramework unit tests")
         sys.exit(False)
 
-    tests_dir = src_dir + '/test/functional/'
+    tests_dir = os.path.join(src_dir, 'test', 'functional')
 
     flags = ['--cachedir={}'.format(cache_dir)] + args
 
@@ -546,7 +546,7 @@ def run_tests(*, test_list, src_dir, build_dir, tmpdir, jobs=1, enable_coverage=
     if len(test_list) > 1 and jobs > 1:
         # Populate cache
         try:
-            subprocess.check_output([sys.executable, tests_dir + 'create_cache.py'] + flags + ["--tmpdir=%s/cache" % tmpdir])
+            subprocess.check_output([sys.executable, os.path.join(tests_dir, 'create_cache.py')] + flags + ["--tmpdir=%s/cache" % tmpdir])
         except subprocess.CalledProcessError as e:
             sys.stdout.buffer.write(e.output)
             raise
@@ -676,7 +676,7 @@ class TestHandler:
             tmpdir_arg = ["--tmpdir={}".format(testdir)]
             self.jobs.append((test,
                               time.time(),
-                              subprocess.Popen([sys.executable, self.tests_dir + test_argv[0]] + test_argv[1:] + self.flags + portseed_arg + tmpdir_arg,
+                              subprocess.Popen([sys.executable, os.path.join(self.tests_dir, test_argv[0])] + test_argv[1:] + self.flags + portseed_arg + tmpdir_arg,
                                                text=True,
                                                stdout=log_stdout,
                                                stderr=log_stderr),
