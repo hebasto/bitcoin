@@ -53,3 +53,11 @@ if(TARGET test_bitcoin)
 
   add_all_test_targets()
 endif()
+
+if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
+  # Emulate GNU Autotools 'make check -jN'.
+  add_custom_target(check
+    COMMAND @$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan \"Running tests...\"
+    COMMAND ${CMAKE_CTEST_COMMAND} --force-new-ctest-process -$(MAKEFLAGS)
+  )
+endif()
