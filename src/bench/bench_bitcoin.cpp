@@ -7,6 +7,7 @@
 #include <clientversion.h>
 #include <common/args.h>
 #include <crypto/sha256.h>
+#include <tinyformat.h>
 #include <util/fs.h>
 #include <util/strencodings.h>
 
@@ -14,6 +15,7 @@
 #include <cstdint>
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <vector>
 
 static const char* DEFAULT_BENCH_FILTER = ".*";
@@ -61,7 +63,6 @@ int main(int argc, char** argv)
 {
     ArgsManager argsman;
     SetupBenchArgs(argsman);
-    SHA256AutoDetect();
     std::string error;
     if (!argsman.ParseParameters(argc, argv, error)) {
         tfm::format(std::cerr, "Error parsing command line arguments: %s\n", error);
@@ -117,6 +118,9 @@ int main(int argc, char** argv)
 
         return EXIT_SUCCESS;
     }
+
+    std::string sha256_algo = SHA256AutoDetect();
+    tfm::format(std::cout, "Using the '%s' SHA256 implementation\n", sha256_algo);
 
     try {
         benchmark::Args args;
