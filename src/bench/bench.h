@@ -72,6 +72,7 @@ class BenchRunner
     // maps from "name" to Properties instance
     typedef std::map<std::string, Properties> BenchmarkMap;
     static BenchmarkMap& benchmarks();
+    static void RunOne(const Args& args, const std::string& name, const Properties& properties, std::vector<ankerl::nanobench::Result>& benchmarkResults);
 
 public:
     BenchRunner(std::string name, BenchFunction func, PriorityLevel level);
