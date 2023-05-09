@@ -152,13 +152,13 @@ static void MuHashPrecompute(benchmark::Bench& bench)
 
 BENCHMARK(BenchRIPEMD160, benchmark::PriorityLevel::HIGH);
 BENCHMARK(SHA1, benchmark::PriorityLevel::HIGH);
-BENCHMARK(SHA256, benchmark::PriorityLevel::HIGH);
+BENCHMARK_SHA256(SHA256, benchmark::PriorityLevel::HIGH);
 BENCHMARK(SHA512, benchmark::PriorityLevel::HIGH);
 BENCHMARK(SHA3_256_1M, benchmark::PriorityLevel::HIGH);
 
-BENCHMARK(SHA256_32b, benchmark::PriorityLevel::HIGH);
+BENCHMARK_SHA256(SHA256_32b, benchmark::PriorityLevel::HIGH);
 BENCHMARK(SipHash_32b, benchmark::PriorityLevel::HIGH);
-BENCHMARK(SHA256D64_1024, benchmark::PriorityLevel::HIGH);
+BENCHMARK_SHA256(SHA256D64_1024, benchmark::PriorityLevel::HIGH);
 BENCHMARK(FastRandom_32bit, benchmark::PriorityLevel::HIGH);
 BENCHMARK(FastRandom_1bit, benchmark::PriorityLevel::HIGH);
 

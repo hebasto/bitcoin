@@ -72,9 +72,9 @@ BenchRunner::BenchmarkMap& BenchRunner::benchmarks()
     return benchmarks_map;
 }
 
-BenchRunner::BenchRunner(std::string name, BenchFunction func, PriorityLevel level)
+BenchRunner::BenchRunner(std::string name, BenchFunction func, PriorityLevel level, bool iterate_sha256_implementations)
 {
-    benchmarks().emplace(name, Properties{func, level});
+    benchmarks().emplace(name, Properties{func, level, iterate_sha256_implementations});
 }
 
 void BenchRunner::RunOne(const Args& args, const std::string& name, const Properties& properties, std::vector<ankerl::nanobench::Result>& benchmarkResults)
@@ -130,7 +130,25 @@ void BenchRunner::RunAll(const Args& args)
             continue;
         }
 
-        RunOne(args, name, properties, benchmarkResults);
+        if (properties.iterate_sha256_implementations) {
+            const std::vector<sha256_implementation::UseImplementation> implementations = {
+                sha256_implementation::STANDARD,
+                sha256_implementation::USE_SSE4,
+                sha256_implementation::USE_AVX2,
+                sha256_implementation::USE_SHANI,
+                sha256_implementation::USE_ALL,
+            };
+            std::set<std::string> tried_implementations;
+            for (const auto& impl : implementations) {
+                const std::string sha256_algo = SHA256AutoDetect(impl);
+                if (auto [iter, inserted] = tried_implementations.emplace(sha256_algo); inserted) {
+                    RunOne(args, strprintf("%s using the '%s' SHA256 implementation", name, sha256_algo), properties, benchmarkResults);
+                }
+            }
+            SHA256AutoDetect();
+        } else {
+            RunOne(args, name, properties, benchmarkResults);
+        }
     }
 
     GenerateTemplateResults(benchmarkResults, args.output_csv, "# Benchmark, evals, iterations, total, min, max, median\n"
