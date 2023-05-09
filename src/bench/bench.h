@@ -62,10 +62,15 @@ struct Args {
     uint8_t priority;
 };
 
+struct Properties {
+    BenchFunction func;
+    PriorityLevel priority_level;
+};
+
 class BenchRunner
 {
-    // maps from "name" -> (function, priority_level)
-    typedef std::map<std::string, std::pair<BenchFunction, PriorityLevel>> BenchmarkMap;
+    // maps from "name" to Properties instance
+    typedef std::map<std::string, Properties> BenchmarkMap;
     static BenchmarkMap& benchmarks();
 
 public:
