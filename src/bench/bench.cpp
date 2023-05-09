@@ -74,7 +74,7 @@ BenchRunner::BenchmarkMap& BenchRunner::benchmarks()
 
 BenchRunner::BenchRunner(std::string name, BenchFunction func, PriorityLevel level)
 {
-    benchmarks().insert(std::make_pair(name, std::make_pair(func, level)));
+    benchmarks().emplace(name, Properties{func, level});
 }
 
 void BenchRunner::RunAll(const Args& args)
@@ -87,10 +87,8 @@ void BenchRunner::RunAll(const Args& args)
     }
 
     std::vector<ankerl::nanobench::Result> benchmarkResults;
-    for (const auto& [name, bench_func] : benchmarks()) {
-        const auto& [func, priority_level] = bench_func;
-
-        if (!(priority_level & args.priority)) {
+    for (const auto& [name, properties] : benchmarks()) {
+        if (!(properties.priority_level & args.priority)) {
             continue;
         }
 
@@ -116,11 +114,11 @@ void BenchRunner::RunAll(const Args& args)
         }
 
         if (args.asymptote.empty()) {
-            func(bench);
+            properties.func(bench);
         } else {
             for (auto n : args.asymptote) {
                 bench.complexityN(n);
-                func(bench);
+                properties.func(bench);
             }
             std::cout << bench.complexityBigO() << std::endl;
         }
