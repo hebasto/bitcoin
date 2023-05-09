@@ -77,6 +77,35 @@ BenchRunner::BenchRunner(std::string name, BenchFunction func, PriorityLevel lev
     benchmarks().emplace(name, Properties{func, level});
 }
 
+void BenchRunner::RunOne(const Args& args, const std::string& name, const Properties& properties, std::vector<ankerl::nanobench::Result>& benchmarkResults)
+{
+    Bench bench;
+    if (args.sanity_check) {
+        bench.epochs(1).epochIterations(1);
+        bench.output(nullptr);
+    }
+    bench.name(name);
+    if (args.min_time > 0ms) {
+        // convert to nanos before dividing to reduce rounding errors
+        std::chrono::nanoseconds min_time_ns = args.min_time;
+        bench.minEpochTime(min_time_ns / bench.epochs());
+    }
+
+    if (args.asymptote.empty()) {
+        properties.func(bench);
+    } else {
+        for (auto n : args.asymptote) {
+            bench.complexityN(n);
+            properties.func(bench);
+        }
+        std::cout << bench.complexityBigO() << std::endl;
+    }
+
+    if (!bench.results().empty()) {
+        benchmarkResults.push_back(bench.results().back());
+    }
+}
+
 void BenchRunner::RunAll(const Args& args)
 {
     std::regex reFilter(args.regex_filter);
@@ -101,31 +130,7 @@ void BenchRunner::RunAll(const Args& args)
             continue;
         }
 
-        Bench bench;
-        if (args.sanity_check) {
-            bench.epochs(1).epochIterations(1);
-            bench.output(nullptr);
-        }
-        bench.name(name);
-        if (args.min_time > 0ms) {
-            // convert to nanos before dividing to reduce rounding errors
-            std::chrono::nanoseconds min_time_ns = args.min_time;
-            bench.minEpochTime(min_time_ns / bench.epochs());
-        }
-
-        if (args.asymptote.empty()) {
-            properties.func(bench);
-        } else {
-            for (auto n : args.asymptote) {
-                bench.complexityN(n);
-                properties.func(bench);
-            }
-            std::cout << bench.complexityBigO() << std::endl;
-        }
-
-        if (!bench.results().empty()) {
-            benchmarkResults.push_back(bench.results().back());
-        }
+        RunOne(args, name, properties, benchmarkResults);
     }
 
     GenerateTemplateResults(benchmarkResults, args.output_csv, "# Benchmark, evals, iterations, total, min, max, median\n"
