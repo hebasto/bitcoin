@@ -65,6 +65,7 @@ struct Args {
 struct Properties {
     BenchFunction func;
     PriorityLevel priority_level;
+    bool iterate_sha256_implementations;
 };
 
 class BenchRunner
@@ -75,14 +76,18 @@ class BenchRunner
     static void RunOne(const Args& args, const std::string& name, const Properties& properties, std::vector<ankerl::nanobench::Result>& benchmarkResults);
 
 public:
-    BenchRunner(std::string name, BenchFunction func, PriorityLevel level);
+    BenchRunner(std::string name, BenchFunction func, PriorityLevel level, bool iterate_sha256_implementations);
 
     static void RunAll(const Args& args);
 };
 } // namespace benchmark
 
-// BENCHMARK(foo) expands to:  benchmark::BenchRunner bench_11foo("foo", foo, priority_level);
+// BENCHMARK(foo) expands to:  benchmark::BenchRunner bench_11foo("foo", foo, priority_level, false);
 #define BENCHMARK(n, priority_level) \
-    benchmark::BenchRunner PASTE2(bench_, PASTE2(__LINE__, n))(STRINGIZE(n), n, priority_level);
+    benchmark::BenchRunner PASTE2(bench_, PASTE2(__LINE__, n))(STRINGIZE(n), n, priority_level, false);
+
+// BENCHMARK_SHA256(foo) expands to:  benchmark::BenchRunner bench_11foo("foo", foo, priority_level, true);
+#define BENCHMARK_SHA256(n, priority_level) \
+    benchmark::BenchRunner PASTE2(bench_, PASTE2(__LINE__, n))(STRINGIZE(n), n, priority_level, true);
 
 #endif // BITCOIN_BENCH_BENCH_H
