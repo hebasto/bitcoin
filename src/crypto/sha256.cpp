@@ -646,7 +646,11 @@ std::string SHA256AutoDetect(sha256_implementation::UseImplementation use_implem
 #endif
 #if defined(ENABLE_SSE41) && !defined(BUILD_BITCOIN_INTERNAL)
         TransformD64_4way = sha256d64_sse41::Transform_4way;
+#if defined(_MSC_VER)
+        ret = "sse41(4way)";
+#else
         ret += ",sse41(4way)";
+#endif
 #endif
     }
 
