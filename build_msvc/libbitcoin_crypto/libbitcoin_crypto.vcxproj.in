@@ -18,6 +18,7 @@
   <Import Project="..\common.vcxproj" />
   <ItemDefinitionGroup>
     <ClCompile>
+      <AdditionalOptions>/arch:AVX2 %(AdditionalOptions)</AdditionalOptions>
       <PreprocessorDefinitions>ENABLE_AVX2;ENABLE_SSE41;ENABLE_X86_SHANI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
