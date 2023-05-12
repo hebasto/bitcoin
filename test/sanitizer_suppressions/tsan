@@ -27,7 +27,6 @@ deadlock:src/qt/test/*
 race:validation_chainstatemanager_tests
 
 # External libraries
-deadlock:libdb
 race:libzmq
 
 # Intermittent issues
