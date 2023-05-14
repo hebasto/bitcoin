@@ -165,6 +165,8 @@ protected:
      * If the provided BlockValidationState IsValid, the provided block
      * is guaranteed to be the current best block at the time the
      * callback was generated (not necessarily now)
+     *
+     * Called on a background thread.
      */
     virtual void BlockChecked(const CBlock&, const BlockValidationState&) {}
     /**
