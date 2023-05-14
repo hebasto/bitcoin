@@ -164,7 +164,7 @@ check_cxx_source_compiles("
 
 # Check for posix_fallocate().
 check_cxx_source_compiles("
-  // same as in src/util/system.cpp
+  // same as in src/fs_helpers/system.cpp
   #ifdef __linux__
   #ifdef _POSIX_C_SOURCE
   #undef _POSIX_C_SOURCE
