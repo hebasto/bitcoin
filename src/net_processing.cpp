@@ -298,7 +298,7 @@ struct Peer {
         std::atomic<std::chrono::seconds> m_last_mempool_req{0s};
         /** The next time after which we will send an `inv` message containing
          *  transaction announcements to this peer. */
-        std::chrono::microseconds m_next_inv_send_time GUARDED_BY(m_tx_inventory_mutex){0};
+        std::atomic<std::chrono::microseconds> m_next_inv_send_time{0us};
 
         /** Minimum fee rate with which to filter transaction announcements to this node. See BIP133. */
         std::atomic<CAmount> m_fee_filter_received{0};
@@ -2047,7 +2047,7 @@ void PeerManagerImpl::RelayTransaction(const uint256& txid, const uint256& wtxid
         // otherwise at risk of leaking to a spy, if the spy is able to
         // distinguish transactions received during the handshake from the rest
         // in the announcement.
-        if (tx_relay->m_next_inv_send_time == 0s) continue;
+        if (tx_relay->m_next_inv_send_time.load() == 0s) continue;
 
         const uint256& hash{peer.m_wtxid_relay ? wtxid : txid};
         if (!tx_relay->m_tx_inventory_known_filter.contains(hash)) {
@@ -3440,7 +3440,7 @@ void PeerManagerImpl::ProcessMessage(CNode& pfrom, const std::string& msg_type, 
             Assume(WITH_LOCK(
                 tx_relay->m_tx_inventory_mutex,
                 return tx_relay->m_tx_inventory_to_send.empty() &&
-                       tx_relay->m_next_inv_send_time == 0s));
+                       tx_relay->m_next_inv_send_time.load() == 0s));
         }
 
         pfrom.fSuccessfullyConnected = true;
@@ -5598,7 +5598,7 @@ bool PeerManagerImpl::SendMessages(CNode* pto)
                 LOCK(tx_relay->m_tx_inventory_mutex);
                 // Check whether periodic sends should happen
                 bool fSendTrickle = pto->HasPermission(NetPermissionFlags::NoBan);
-                if (tx_relay->m_next_inv_send_time < current_time) {
+                if (tx_relay->m_next_inv_send_time.load() < current_time) {
                     fSendTrickle = true;
                     if (pto->IsInboundConn()) {
                         tx_relay->m_next_inv_send_time = NextInvToInbounds(current_time, INBOUND_INVENTORY_BROADCAST_INTERVAL);
