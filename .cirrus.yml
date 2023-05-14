@@ -57,7 +57,7 @@ task:
   name: '[depends, sanitizers: thread (TSan), no gui] [hirsute]'
   << : *GLOBAL_TASK_TEMPLATE
   container:
-    image: ubuntu:hirsute
+    image: ubuntu:22.04
     cpu: 6  # Increase CPU and Memory to avoid timeout
     memory: 24G
   env:
