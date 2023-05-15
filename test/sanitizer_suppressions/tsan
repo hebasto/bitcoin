@@ -25,6 +25,8 @@ deadlock:src/qt/test/*
 
 # External libraries
 deadlock:libdb
+# https://github.com/bitcoin/bitcoin/issues/20618
+race:CZMQAbstractPublishNotifier::SendZmqMessage
 
 # Intermittent issues
 # -------------------
