@@ -104,6 +104,11 @@ static bool IsZMQAddressIPV6(const std::string &zmq_address)
     return false;
 }
 
+static void* GetSocket(CZMQAbstractPublishNotifier* notifier)
+{
+    return notifier->GetSocket();
+}
+
 CZMQAbstractPublishNotifier::~CZMQAbstractPublishNotifier()
 {
     assert(!psocket);
@@ -111,11 +116,13 @@ CZMQAbstractPublishNotifier::~CZMQAbstractPublishNotifier()
 
 void* CZMQAbstractPublishNotifier::GetSocket()
 {
+    LOCK(m_socket_mutex);
     return psocket;
 }
 
 bool CZMQAbstractPublishNotifier::Initialize(void *pcontext)
 {
+    LOCK(m_socket_mutex);
     assert(!psocket);
 
     // check if address is being used by other publish notifier
@@ -174,7 +181,7 @@ bool CZMQAbstractPublishNotifier::Initialize(void *pcontext)
         LogPrint(BCLog::ZMQ, "Reusing socket for address %s\n", address);
         LogPrint(BCLog::ZMQ, "Outbound message high water mark for %s at %s is %d\n", type, address, outbound_message_high_water_mark);
 
-        psocket = i->second->psocket;
+        psocket = ::GetSocket(i->second);
         mapPublishNotifiers.insert(std::make_pair(address, this));
 
         return true;
@@ -183,6 +190,7 @@ bool CZMQAbstractPublishNotifier::Initialize(void *pcontext)
 
 void CZMQAbstractPublishNotifier::Shutdown()
 {
+    LOCK(m_socket_mutex);
     // Early return if Initialize was not called
     if (!psocket) return;
 
@@ -214,6 +222,7 @@ void CZMQAbstractPublishNotifier::Shutdown()
 
 bool CZMQAbstractPublishNotifier::SendZmqMessage(const char *command, const void* data, size_t size)
 {
+    LOCK(m_socket_mutex);
     assert(psocket);
 
     /* send three parts, command & data & a LE 4byte sequence number */
