@@ -9,7 +9,6 @@ race:WalletBatch::WriteHDChain
 race:BerkeleyBatch
 race:BerkeleyDatabase
 race:DatabaseBatch
-race:zmq::*
 race:bitcoin-qt
 
 # deadlock (TODO fix)
@@ -27,16 +26,12 @@ deadlock:src/qt/test/*
 # External libraries
 # https://github.com/bitcoin/bitcoin/pull/27658#issuecomment-1547639621
 deadlock:libdb
-race:libzmq
 
 # Intermittent issues
 # -------------------
 #
 # Suppressions that follow might only happen intermittently, thus they are not
 # reproducible. Make sure to include a link to a full trace.
-
-# https://github.com/bitcoin/bitcoin/issues/20618
-race:CZMQAbstractPublishNotifier::SendZmqMessage
 
 # https://github.com/bitcoin/bitcoin/pull/27498#issuecomment-1517410478
 race:epoll_ctl
