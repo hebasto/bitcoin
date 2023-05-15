@@ -5,6 +5,7 @@
 #ifndef BITCOIN_ZMQ_ZMQPUBLISHNOTIFIER_H
 #define BITCOIN_ZMQ_ZMQPUBLISHNOTIFIER_H
 
+#include <sync.h>
 #include <zmq/zmqabstractnotifier.h>
 
 #include <cstddef>
@@ -18,13 +19,14 @@ class CTransaction;
 class CZMQAbstractPublishNotifier : public CZMQAbstractNotifier
 {
 private:
-    void* psocket{nullptr};
+    Mutex m_socket_mutex;
+    void* psocket GUARDED_BY(m_socket_mutex){nullptr};
 
     uint32_t nSequence {0U}; //!< upcounting per message sequence number
 
 public:
     ~CZMQAbstractPublishNotifier();
-    void* GetSocket();
+    void* GetSocket() EXCLUSIVE_LOCKS_REQUIRED(!m_socket_mutex);
 
     /* send zmq multipart message
        parts:
@@ -32,10 +34,10 @@ public:
           * data
           * message sequence number
     */
-    bool SendZmqMessage(const char *command, const void* data, size_t size);
+    bool SendZmqMessage(const char *command, const void* data, size_t size) EXCLUSIVE_LOCKS_REQUIRED(!m_socket_mutex);
 
-    bool Initialize(void *pcontext) override;
-    void Shutdown() override;
+    bool Initialize(void *pcontext) override EXCLUSIVE_LOCKS_REQUIRED(!m_socket_mutex);
+    void Shutdown() override EXCLUSIVE_LOCKS_REQUIRED(!m_socket_mutex);
 };
 
 class CZMQPublishHashBlockNotifier : public CZMQAbstractPublishNotifier
