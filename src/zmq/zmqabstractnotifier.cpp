@@ -10,7 +10,6 @@ const int CZMQAbstractNotifier::DEFAULT_ZMQ_SNDHWM;
 
 CZMQAbstractNotifier::~CZMQAbstractNotifier()
 {
-    assert(!psocket);
 }
 
 bool CZMQAbstractNotifier::NotifyBlock(const CBlockIndex * /*CBlockIndex*/)
