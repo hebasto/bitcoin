@@ -58,7 +58,6 @@ public:
     virtual bool NotifyTransaction(const CTransaction &transaction);
 
 protected:
-    void* psocket{nullptr};
     std::string type;
     std::string address;
     int outbound_message_high_water_mark; // aka SNDHWM

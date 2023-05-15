@@ -18,9 +18,13 @@ class CTransaction;
 class CZMQAbstractPublishNotifier : public CZMQAbstractNotifier
 {
 private:
+    void* psocket{nullptr};
+
     uint32_t nSequence {0U}; //!< upcounting per message sequence number
 
 public:
+    ~CZMQAbstractPublishNotifier();
+    void* GetSocket();
 
     /* send zmq multipart message
        parts:

@@ -104,6 +104,16 @@ static bool IsZMQAddressIPV6(const std::string &zmq_address)
     return false;
 }
 
+CZMQAbstractPublishNotifier::~CZMQAbstractPublishNotifier()
+{
+    assert(!psocket);
+}
+
+void* CZMQAbstractPublishNotifier::GetSocket()
+{
+    return psocket;
+}
+
 bool CZMQAbstractPublishNotifier::Initialize(void *pcontext)
 {
     assert(!psocket);
