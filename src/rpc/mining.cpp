@@ -991,6 +991,7 @@ static RPCHelpMan submitblock()
     auto sc = std::make_shared<submitblock_StateCatcher>(block.GetHash());
     RegisterSharedValidationInterface(sc);
     bool accepted = chainman.ProcessNewBlock(blockptr, /*force_processing=*/true, /*min_pow_checked=*/true, /*new_block=*/&new_block);
+    SyncWithValidationInterfaceQueue();
     UnregisterSharedValidationInterface(sc);
     if (!new_block && accepted) {
         return "duplicate";
