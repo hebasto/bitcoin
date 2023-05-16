@@ -251,9 +251,11 @@ void CMainSignals::ChainStateFlushed(const CBlockLocator &locator) {
 }
 
 void CMainSignals::BlockChecked(const CBlock& block, const BlockValidationState& state) {
-    LOG_EVENT("%s: block hash=%s state=%s", __func__,
-              block.GetHash().ToString(), state.ToString());
-    m_internals->Iterate([&](CValidationInterface& callbacks) { callbacks.BlockChecked(block, state); });
+    auto event = [block, state, this] {
+        m_internals->Iterate([&](CValidationInterface& callbacks) { callbacks.BlockChecked(block, state); });
+    };
+    ENQUEUE_AND_LOG_EVENT(event, "%s: block hash=%s state=%s", __func__,
+                          block.GetHash().ToString(), state.ToString());
 }
 
 void CMainSignals::NewPoWValidBlock(const CBlockIndex *pindex, const std::shared_ptr<const CBlock> &block) {
