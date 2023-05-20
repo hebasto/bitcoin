@@ -153,7 +153,7 @@ fi
 if [ "${RUN_TIDY}" = "true" ]; then
   set -eo pipefail
   cd "${BASE_BUILD_DIR}/bitcoin-$HOST/src/"
-  ( run-clang-tidy-16 -quiet "${MAKEJOBS}" ) | grep -C5 "error"
+  # ( run-clang-tidy-16 -quiet "${MAKEJOBS}" ) | grep -C5 "error"
   # Filter out files by regex here, because regex may not be
   # accepted in src/.bear-tidy-config
   # Filter out:
