@@ -171,7 +171,6 @@ if(ENABLE_WALLET)
   target_link_libraries(test_bitcoin bitcoin_wallet)
   if(USE_BDB)
     target_sources(test_bitcoin PRIVATE ../wallet/test/db_tests.cpp)
-    target_link_libraries(test_bitcoin BerkeleyDB::BerkeleyDB)
   endif()
 endif()
 
