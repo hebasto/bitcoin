@@ -4,4 +4,10 @@
 
   # Boost.Signals2
   { include: [ "<boost/signals2/variadic_signal.hpp>", public, "<boost/signals2/signal.hpp>", public ] },
+
+  # Boost.Test
+  { include: [ "<boost/test/tools/old/interface.hpp>", public, "<boost/test/unit_test.hpp>", public ] },
+  { include: [ "<boost/test/unit_test_suite.hpp>", public, "<boost/test/unit_test.hpp>", public ] },
+  { include: [ "<boost/test/utils/basic_cstring/basic_cstring.hpp>", public, "<boost/test/unit_test.hpp>", public ] },
+  { include: [ "<boost/test/utils/lazy_ostream.hpp>", public, "<boost/test/unit_test.hpp>", public ] },
 ]
