@@ -10,4 +10,6 @@
   { include: [ "<boost/test/unit_test_suite.hpp>", public, "<boost/test/unit_test.hpp>", public ] },
   { include: [ "<boost/test/utils/basic_cstring/basic_cstring.hpp>", public, "<boost/test/unit_test.hpp>", public ] },
   { include: [ "<boost/test/utils/lazy_ostream.hpp>", public, "<boost/test/unit_test.hpp>", public ] },
+
+  { include: [ "@<boost/preprocessor/.*>", public, "<boost/test/unit_test.hpp>", public ] },
 ]
