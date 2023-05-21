@@ -12,6 +12,7 @@
 
 #include <boost/multi_index_container.hpp>
 #include <boost/multi_index/ordered_index.hpp>
+#include <boost/tuple/tuple.hpp>
 
 #include <chrono>
 #include <unordered_map>
