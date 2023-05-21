@@ -29,6 +29,9 @@
 #include <wallet/test/util.h>
 #include <wallet/wallet.h>
 
+#include <boost/signals2/connection.hpp>
+#include <boost/signals2/signal.hpp>
+
 #include <chrono>
 #include <memory>
 

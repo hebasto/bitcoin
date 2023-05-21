@@ -29,6 +29,8 @@
 #include <wallet/spend.h>
 #include <wallet/wallet.h>
 
+#include <boost/signals2/signal.hpp>
+
 #include <memory>
 #include <string>
 #include <utility>

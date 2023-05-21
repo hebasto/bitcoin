@@ -1,4 +1,7 @@
 # Fixups / upstreamed changes
 [
   { include: [ "<bits/chrono.h>", private, "<chrono>", public ] },
+
+  # Boost.Signals2
+  { include: [ "<boost/signals2/variadic_signal.hpp>", public, "<boost/signals2/signal.hpp>", public ] },
 ]

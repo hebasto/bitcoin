@@ -7,6 +7,7 @@
 #include <util/string.h>
 #include <util/translation.h>
 
+#include <boost/signals2/connection.hpp>
 #include <boost/signals2/optional_last_value.hpp>
 #include <boost/signals2/signal.hpp>
 

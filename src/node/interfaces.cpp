@@ -58,7 +58,7 @@
 #include <optional>
 #include <utility>
 
-#include <boost/signals2/signal.hpp>
+#include <boost/signals2/connection.hpp>
 
 using interfaces::BlockTip;
 using interfaces::Chain;
