@@ -93,7 +93,9 @@ if(WITH_USDT)
 
     int main()
     {
-      DTRACE_PROBE(\"context\", \"event\");
+      DTRACE_PROBE(context, event);
+      int a, b, c, d, e, f, g;
+      DTRACE_PROBE7(context, event, a, b, c, d, e, f, g);
     }
     " HAVE_USDT_H
   )
