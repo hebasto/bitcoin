@@ -283,6 +283,11 @@ if(BUILD_UTIL)
 endif()
 
 
+if(BUILD_BITCOINCONSENSUS_LIB)
+  add_subdirectory(script)
+endif()
+
+
 add_subdirectory(test/util)
 if(BUILD_BENCH)
   add_subdirectory(bench)
