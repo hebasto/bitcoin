@@ -30,7 +30,7 @@ export MAKEJOBS=${MAKEJOBS:--j4}
 # What host to compile for. See also ./depends/README.md
 # Tests that need cross-compilation export the appropriate HOST.
 # Tests that run natively guess the host
-export HOST=${HOST:-$("$BASE_ROOT_DIR/depends/config.guess")}
+### export HOST=${HOST:-$("$BASE_ROOT_DIR/depends/config.guess")}
 # Whether to prefer BusyBox over GNU utilities
 export USE_BUSY_BOX=${USE_BUSY_BOX:-false}
 
