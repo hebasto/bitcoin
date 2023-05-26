@@ -8,6 +8,11 @@ export LC_ALL=C.UTF-8
 
 set -ex
 
+# What host to compile for. See also ./depends/README.md
+# Tests that need cross-compilation export the appropriate HOST.
+# Tests that run natively guess the host
+export HOST=${HOST:-$("$BASE_ROOT_DIR/depends/config.guess")}
+
 if [ "$CI_OS_NAME" == "macos" ]; then
   top -l 1 -s 0 | awk ' /PhysMem/ {print}'
   echo "Number of CPUs: $(sysctl -n hw.logicalcpu)"
