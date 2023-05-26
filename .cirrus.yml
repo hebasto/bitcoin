@@ -54,7 +54,6 @@ container_depends_template: &CONTAINER_DEPENDS_TEMPLATE
 
 global_task_template: &GLOBAL_TASK_TEMPLATE
   << : *CONTAINER_DEPENDS_TEMPLATE
-  << : *MAIN_TEMPLATE
 
 compute_credits_template: &CREDITS_TEMPLATE
   # https://cirrus-ci.org/pricing/#compute-credits
