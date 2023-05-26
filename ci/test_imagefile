@@ -4,9 +4,13 @@ FROM ${CI_IMAGE_NAME_TAG}
 ARG FILE_ENV
 ENV FILE_ENV=${FILE_ENV}
 
+ENV CI_IMAGE_NAME_TAG=${CI_IMAGE_NAME_TAG}
+
 RUN echo CI_IMAGE_NAME_TAG=${CI_IMAGE_NAME_TAG}
 RUN echo FILE_ENV=${FILE_ENV}
 RUN echo $0
+# /bin/sh
+RUN ls -l $0
 
 # RUN pwd
 # /
@@ -38,6 +42,8 @@ RUN echo $0
 # drwxr-xr-x  14 root root 4096 Apr 20 13:41 usr
 # drwxr-xr-x  11 root root 4096 Apr 20 13:44 var
 
+RUN ls /tmp
+
 RUN cat /etc/debian_version
 # bookworm/sid
 
@@ -49,4 +55,5 @@ RUN cat /etc/debian_version
 
 # RUN ["which", "git"]
 
+RUN apt-get update
 RUN apt-get install --no-install-recommends --no-upgrade --yes git
