@@ -4,6 +4,10 @@ FROM ${CI_IMAGE_NAME_TAG}
 ARG FILE_ENV
 ENV FILE_ENV=${FILE_ENV}
 
+RUN echo CI_IMAGE_NAME_TAG=${CI_IMAGE_NAME_TAG}
+RUN echo FILE_ENV=${FILE_ENV}
+RUN echo $0
+
 # RUN pwd
 # /
 
@@ -35,10 +39,14 @@ ENV FILE_ENV=${FILE_ENV}
 # drwxr-xr-x  11 root root 4096 Apr 20 13:44 var
 
 RUN cat /etc/debian_version
+# bookworm/sid
 
 # RUN which git
 # The command '/bin/sh -c which git' returned a non-zero code: 1
 
-RUN command -v git
+# RUN command -v git
+# The command '/bin/sh -c command -v git' returned a non-zero code: 127
 
-RUN ["which", "git"]
+# RUN ["which", "git"]
+
+RUN apt-get install --no-install-recommends --no-upgrade --yes git
