@@ -4,9 +4,41 @@ FROM ${CI_IMAGE_NAME_TAG}
 ARG FILE_ENV
 ENV FILE_ENV=${FILE_ENV}
 
-RUN pwd
+# RUN pwd
+# /
 
-RUN ls -la /
-RUN ls -la /etc
+# RUN ls -la /
+# total 56
+# drwxr-xr-x   1 root root 4096 May 26 14:11 .
+# drwxr-xr-x   1 root root 4096 May 26 14:11 ..
+# -rwxr-xr-x   1 root root    0 May 26 14:11 .dockerenv
+# lrwxrwxrwx   1 root root    7 Apr 20 13:41 bin -> usr/bin
+# drwxr-xr-x   2 root root 4096 Apr 14 15:57 boot
+# drwxr-xr-x   5 root root  340 May 26 14:11 dev
+# drwxr-xr-x   1 root root 4096 May 26 14:11 etc
+# drwxr-xr-x   3 root root 4096 Apr 20 13:44 home
+# lrwxrwxrwx   1 root root    7 Apr 20 13:41 lib -> usr/lib
+# lrwxrwxrwx   1 root root    9 Apr 20 13:41 lib32 -> usr/lib32
+# lrwxrwxrwx   1 root root    9 Apr 20 13:41 lib64 -> usr/lib64
+# lrwxrwxrwx   1 root root   10 Apr 20 13:41 libx32 -> usr/libx32
+# drwxr-xr-x   2 root root 4096 Apr 20 13:41 media
+# drwxr-xr-x   2 root root 4096 Apr 20 13:41 mnt
+# drwxr-xr-x   2 root root 4096 Apr 20 13:41 opt
+# dr-xr-xr-x 212 root root    0 May 26 14:11 proc
+# drwx------   2 root root 4096 Apr 20 13:44 root
+# drwxr-xr-x   5 root root 4096 Apr 20 13:44 run
+# lrwxrwxrwx   1 root root    8 Apr 20 13:41 sbin -> usr/sbin
+# drwxr-xr-x   2 root root 4096 Apr 20 13:41 srv
+# dr-xr-xr-x  13 root root    0 May 26 14:11 sys
+# drwxrwxrwt   2 root root 4096 Apr 20 13:44 tmp
+# drwxr-xr-x  14 root root 4096 Apr 20 13:41 usr
+# drwxr-xr-x  11 root root 4096 Apr 20 13:44 var
 
-RUN which git
+RUN cat /etc/debian_version
+
+# RUN which git
+# The command '/bin/sh -c which git' returned a non-zero code: 1
+
+RUN command -v git
+
+RUN ["which", "git"]
