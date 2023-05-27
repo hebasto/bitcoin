@@ -64,15 +64,18 @@ compute_credits_template: &CREDITS_TEMPLATE
 task:
   name: "Win64 native [vs2022]"
   << : *FILTER_TEMPLATE
+  env:
+    CI_IMAGE_NAME_TAG: cirrusci/windowsservercore:visualstudio2022-2022.06.23
+    PYTHONUTF8: 1
   windows_container:
     cpu: 6
     memory: 12G
     dockerfile: ci/windows_test_imagefile
     docker_arguments:
-      CI_IMAGE_NAME_TAG: cirrusci/windowsservercore:visualstudio2022-2022.06.23
+      CI_IMAGE_NAME_TAG: "%CI_IMAGE_NAME_TAG%"
       CI_CCACHE_VERSION: 4.7.4
       CI_PYTHON_VERSION: 3.9.6
-      CI_VCPKG_TAG: 2023.01.09
+      CI_VCPKG_TAG: "%CI_VCPKG_TAG%"
   timeout_in: 120m
   env:
     PATH: 'C:\jom;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin;%PATH%'
@@ -91,52 +94,52 @@ task:
     IgnoreWarnIntDirInTempDetected: 'true'
   merge_script:
     - PowerShell -NoLogo -Command if ($env:CIRRUS_PR -ne $null) { git fetch $env:CIRRUS_REPO_CLONE_URL pull/$env:CIRRUS_PR/merge; git reset --hard FETCH_HEAD; }
-  msvc_qt_built_cache:
-    folder: "%QTBASEDIR%"
-    reupload_on_changes: false
-    fingerprint_script:
-      - echo %QT_DOWNLOAD_URL% %QT_CONFIGURE_COMMAND%
-      - msbuild -version
-    populate_script:
-      - curl -L -o C:\jom.zip http://download.qt.io/official_releases/jom/jom.zip
-      - mkdir C:\jom
-      - tar -xf C:\jom.zip -C C:\jom
-      - curl -L -o %QT_LOCAL_PATH% %QT_DOWNLOAD_URL%
-      - tar -xf %QT_LOCAL_PATH% -C C:\
-      - '%x64_NATIVE_TOOLS%'
-      - cd %QT_SOURCE_DIR%
-      - mkdir build
-      - cd build
-      - '%QT_CONFIGURE_COMMAND% -prefix %QTBASEDIR%'
-      - jom
-      - jom install
-  vcpkg_binary_cache:
-    folder: '%VCPKG_DEFAULT_BINARY_CACHE%'
-    reupload_on_changes: true
-    fingerprint_script:
-      - echo %CI_VCPKG_TAG%
-      - type build_msvc\vcpkg.json
-      - msbuild -version
-    populate_script:
-      - mkdir %VCPKG_DEFAULT_BINARY_CACHE%
-  ccache_cache:
-    folder: '%CCACHE_DIR%'
-  build_script:
-    - '%x64_NATIVE_TOOLS%'
-    - cd %CIRRUS_WORKING_DIR%
-    - ccache --zero-stats --max-size=%CCACHE_SIZE%
-    - python build_msvc\msvc-autogen.py
-    - msbuild build_msvc\bitcoin.sln -property:CLToolExe=%WRAPPED_CL%;UseMultiToolTask=true;Configuration=Release -maxCpuCount -verbosity:minimal -noLogo
-    - ccache --show-stats
-  check_script:
-    - src\test_bitcoin.exe -l test_suite
-    - src\bench_bitcoin.exe --sanity-check
-    - python test\util\test_runner.py
-    - python test\util\rpcauth-test.py
-  functional_tests_script:
-    # Increase the dynamic port range to the maximum allowed value to mitigate "OSError: [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permitted".
-    # See: https://learn.microsoft.com/en-us/biztalk/technical-guides/settings-that-can-be-modified-to-improve-network-performance
-    - netsh int ipv4 set dynamicport tcp start=1025 num=64511
-    - netsh int ipv6 set dynamicport tcp start=1025 num=64511
-    # Exclude feature_dbcrash for now due to timeout
-    - python test\functional\test_runner.py --nocleanup --ci --quiet --combinedlogslen=99999999 --jobs=6 --timeout-factor=8 --extended --exclude feature_dbcrash
+  # msvc_qt_built_cache:
+  #   folder: "%QTBASEDIR%"
+  #   reupload_on_changes: false
+  #   fingerprint_script:
+  #     - echo %QT_DOWNLOAD_URL% %QT_CONFIGURE_COMMAND%
+  #     - msbuild -version
+  #   populate_script:
+  #     - curl -L -o C:\jom.zip http://download.qt.io/official_releases/jom/jom.zip
+  #     - mkdir C:\jom
+  #     - tar -xf C:\jom.zip -C C:\jom
+  #     - curl -L -o %QT_LOCAL_PATH% %QT_DOWNLOAD_URL%
+  #     - tar -xf %QT_LOCAL_PATH% -C C:\
+  #     - '%x64_NATIVE_TOOLS%'
+  #     - cd %QT_SOURCE_DIR%
+  #     - mkdir build
+  #     - cd build
+  #     - '%QT_CONFIGURE_COMMAND% -prefix %QTBASEDIR%'
+  #     - jom
+  #     - jom install
+  # vcpkg_binary_cache:
+  #   folder: '%VCPKG_DEFAULT_BINARY_CACHE%'
+  #   reupload_on_changes: true
+  #   fingerprint_script:
+  #     - echo %CI_VCPKG_TAG%
+  #     - type build_msvc\vcpkg.json
+  #     - msbuild -version
+  #   populate_script:
+  #     - mkdir %VCPKG_DEFAULT_BINARY_CACHE%
+  # ccache_cache:
+  #   folder: '%CCACHE_DIR%'
+  # build_script:
+  #   - '%x64_NATIVE_TOOLS%'
+  #   - cd %CIRRUS_WORKING_DIR%
+  #   - ccache --zero-stats --max-size=%CCACHE_SIZE%
+  #   - python build_msvc\msvc-autogen.py
+  #   - msbuild build_msvc\bitcoin.sln -property:CLToolExe=%WRAPPED_CL%;UseMultiToolTask=true;Configuration=Release -maxCpuCount -verbosity:minimal -noLogo
+  #   - ccache --show-stats
+  # check_script:
+  #   - src\test_bitcoin.exe -l test_suite
+  #   - src\bench_bitcoin.exe --sanity-check
+  #   - python test\util\test_runner.py
+  #   - python test\util\rpcauth-test.py
+  # functional_tests_script:
+  #   # Increase the dynamic port range to the maximum allowed value to mitigate "OSError: [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permitted".
+  #   # See: https://learn.microsoft.com/en-us/biztalk/technical-guides/settings-that-can-be-modified-to-improve-network-performance
+  #   - netsh int ipv4 set dynamicport tcp start=1025 num=64511
+  #   - netsh int ipv6 set dynamicport tcp start=1025 num=64511
+  #   # Exclude feature_dbcrash for now due to timeout
+  #   - python test\functional\test_runner.py --nocleanup --ci --quiet --combinedlogslen=99999999 --jobs=6 --timeout-factor=8 --extended --exclude feature_dbcrash

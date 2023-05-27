@@ -22,5 +22,3 @@ RUN .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
 RUN echo set(VCPKG_BUILD_TYPE release) >> vcpkg\triplets\x64-windows-static.cmake
 
 RUN .\vcpkg\vcpkg integrate install
-
-RUN dir C:\vcpkg
