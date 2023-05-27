@@ -24,3 +24,9 @@ RUN echo set(VCPKG_BUILD_TYPE release) >> vcpkg\triplets\x64-windows-static.cmak
 RUN .\vcpkg\vcpkg integrate install
 
 RUN .\vcpkg\vcpkg install 7zip
+
+RUN powershell -NoLogo -NoProfile -Command \
+    Get-Command -Name "cmake"
+
+RUN powershell -NoLogo -NoProfile -Command \
+    $PSVersionTable.PSVersion
