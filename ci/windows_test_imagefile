@@ -2,14 +2,21 @@ ARG CI_IMAGE_NAME_TAG
 FROM ${CI_IMAGE_NAME_TAG}
 
 ARG CI_CCACHE_VERSION
+ENV CI_CCACHE_VERSION=${CI_CCACHE_VERSION}
 RUN powershell -NoLogo -NoProfile -Command \
-    choco install --yes --no-progress ccache --version=${CI_CCACHE_VERSION}
+    choco install --yes --no-progress ccache --version=$Env:CI_CCACHE_VERSION
 
-RUN powershell -NoLogo -NoProfile -Command \
-    choco install --yes --no-progress python3 --version=3.9.6
+RUN choco install --yes --no-progress python3 --version=3.9.6
 
 RUN powershell -NoLogo -NoProfile -Command \
     pip install zmq
+
+RUN powershell -NoLogo -NoProfile -Command \
+    Write-Host (Split-Path -Leaf $PWD)
+
+RUN git clone --quiet https://github.com/microsoft/vcpkg.git
+
+RUN cd vcpkg
 
 RUN powershell -NoLogo -NoProfile -Command \
     Write-Host (Split-Path -Leaf $PWD)
