@@ -1,19 +1,24 @@
 ARG CI_IMAGE_NAME_TAG
 FROM ${CI_IMAGE_NAME_TAG}
 
+ARG CI_CCACHE_VERSION
 RUN powershell -NoLogo -NoProfile -Command \
     choco feature disable -n=usePackageExitCodes ; \
-    choco install --yes --no-progress ccache --version=4.7.4
+    choco install --yes --no-progress ccache --version=$env:CI_CCACHE_VERSION
 
-RUN powershell -NoLogo -NoProfile -Command \
-    Get-Command -Name "ccache"
+# RUN powershell -NoLogo -NoProfile -Command \
+      Get-Command -Name "ccache"
 
 RUN powershell -NoLogo -NoProfile -Command \
     choco feature disable -n=usePackageExitCodes ; \
     choco install --yes --no-progress python3 --version=3.9.6
 
 RUN powershell -NoLogo -NoProfile -Command \
-    Get-Command -Name "python"
+    [Environment]::SetEnvironmentVariable("PYTHONUTF8", "1", "Machine")
+
+
+# RUN powershell -NoLogo -NoProfile -Command \
+#     Get-Command -Name "python"
 
 # RUN powershell -NoLogo -NoProfile -Command \
 #     $env:PATH
@@ -27,5 +32,8 @@ RUN powershell -NoLogo -NoProfile -Command \
 RUN powershell -NoLogo -NoProfile -Command \
     pip install zmq
 
+# RUN powershell -NoLogo -NoProfile -Command \
+#     Get-Command -Name "git"
+
 RUN powershell -NoLogo -NoProfile -Command \
-    Get-Command -Name "git"
+    Write-Host (Split-Path -Leaf $PWD)
