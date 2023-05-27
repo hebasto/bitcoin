@@ -70,13 +70,14 @@ task:
     dockerfile: ci/windows_test_imagefile
     docker_arguments:
       CI_IMAGE_NAME_TAG: cirrusci/windowsservercore:visualstudio2022-2022.06.23
+      CI_CCACHE_VERSION: 4.7.4
   timeout_in: 120m
   env:
     PATH: 'C:\jom;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin;%PATH%'
+    PYTHONUTF8: 1
     CI_VCPKG_TAG: '2023.01.09'
     VCPKG_DOWNLOADS: 'C:\Users\ContainerAdministrator\AppData\Local\vcpkg\downloads'
     VCPKG_DEFAULT_BINARY_CACHE: 'C:\Users\ContainerAdministrator\AppData\Local\vcpkg\archives'
-    CI_CCACHE_VERSION: '4.7.4'
     CCACHE_DIR: 'C:\Users\ContainerAdministrator\AppData\Local\ccache'
     WRAPPED_CL: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\ci\test\wrapped-cl.bat'
     QT_DOWNLOAD_URL: 'https://download.qt.io/official_releases/qt/5.15/5.15.5/single/qt-everywhere-opensource-src-5.15.5.zip'
