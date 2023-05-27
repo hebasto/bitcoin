@@ -79,7 +79,6 @@ task:
     PATH: 'C:\jom;%PATH%'
     PYTHONUTF8: 1
     CI_VCPKG_TAG: '2023.01.09'
-    VCPKG_DOWNLOADS: 'C:\Users\ContainerAdministrator\AppData\Local\vcpkg\downloads'
     VCPKG_DEFAULT_BINARY_CACHE: 'C:\Users\ContainerAdministrator\AppData\Local\vcpkg\archives'
     CCACHE_DIR: 'C:\Users\ContainerAdministrator\AppData\Local\ccache'
     WRAPPED_CL: 'C:\Users\ContainerAdministrator\AppData\Local\Temp\cirrus-ci-build\ci\test\wrapped-cl.bat'
