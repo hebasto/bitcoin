@@ -1,19 +1,31 @@
-# https://github.com/cirruslabs/docker-images-windows/blob/master/contrib/visualstudio2022/Dockerfile
-FROM cirrusci/windowsservercore:visualstudio2022-2022.06.23
+ARG CI_IMAGE_NAME_TAG
+FROM ${CI_IMAGE_NAME_TAG}
 
 RUN powershell -NoLogo -NoProfile -Command \
     choco feature disable -n=usePackageExitCodes ; \
     choco install --yes --no-progress ccache --version=4.7.4
 
 RUN powershell -NoLogo -NoProfile -Command \
+    Get-Command -Name "ccache"
+
+RUN powershell -NoLogo -NoProfile -Command \
     choco feature disable -n=usePackageExitCodes ; \
     choco install --yes --no-progress python3 --version=3.9.6
 
 RUN powershell -NoLogo -NoProfile -Command \
-    $env:PATH
+    Get-Command -Name "python"
+
+# RUN powershell -NoLogo -NoProfile -Command \
+#     $env:PATH
+
+# RUN powershell -NoLogo -NoProfile -Command \
+#     refreshenv
+
+# RUN powershell -NoLogo -NoProfile -Command \
+#     $env:PATH
 
 RUN powershell -NoLogo -NoProfile -Command \
-    refreshenv
+    pip install zmq
 
 RUN powershell -NoLogo -NoProfile -Command \
-    $env:PATH
+    Get-Command -Name "git"

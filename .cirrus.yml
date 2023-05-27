@@ -68,6 +68,8 @@ task:
     cpu: 6
     memory: 12G
     dockerfile: ci/windows_test_imagefile
+    docker_arguments:
+      CI_IMAGE_NAME_TAG: cirrusci/windowsservercore:visualstudio2022-2022.06.23
   timeout_in: 120m
   env:
     PATH: 'C:\jom;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin;%PATH%'
@@ -122,8 +124,6 @@ task:
       - mkdir %VCPKG_DEFAULT_BINARY_CACHE%
   ccache_cache:
     folder: '%CCACHE_DIR%'
-  install_tools_script:
-    - pip install zmq
   install_vcpkg_script:
     - cd ..
     - git clone --quiet https://github.com/microsoft/vcpkg.git
