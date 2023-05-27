@@ -69,13 +69,14 @@ task:
     memory: 12G
     dockerfile: ci/windows_test_imagefile
     docker_arguments:
-      CI_IMAGE_NAME_TAG: cirrusci/windowsservercore:visualstudio2022-2022.06.23
+      CI_IMAGE_NAME_TAG: "%CI_IMAGE_NAME_TAG%"
       CI_CCACHE_VERSION: 4.7.4
       CI_PYTHON_VERSION: 3.9.6
-      CI_VCPKG_TAG: 2023.01.09
+      CI_VCPKG_TAG: "%CI_VCPKG_TAG%"
   timeout_in: 120m
   env:
-    PATH: 'C:\jom;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin;%PATH%'
+    CI_IMAGE_NAME_TAG: 'cirrusci/windowsservercore:visualstudio2022-2022.06.23'
+    PATH: 'C:\jom;%PATH%'
     PYTHONUTF8: 1
     CI_VCPKG_TAG: '2023.01.09'
     VCPKG_DOWNLOADS: 'C:\Users\ContainerAdministrator\AppData\Local\vcpkg\downloads'
@@ -95,8 +96,7 @@ task:
     folder: "%QTBASEDIR%"
     reupload_on_changes: false
     fingerprint_script:
-      - echo %QT_DOWNLOAD_URL% %QT_CONFIGURE_COMMAND%
-      - msbuild -version
+      - echo %CI_IMAGE_NAME_TAG% %QT_DOWNLOAD_URL% %QT_CONFIGURE_COMMAND%
     populate_script:
       - curl -L -o C:\jom.zip http://download.qt.io/official_releases/jom/jom.zip
       - mkdir C:\jom
@@ -114,9 +114,8 @@ task:
     folder: '%VCPKG_DEFAULT_BINARY_CACHE%'
     reupload_on_changes: true
     fingerprint_script:
-      - echo %CI_VCPKG_TAG%
+      - echo %CI_IMAGE_NAME_TAG% %CI_VCPKG_TAG%
       - type build_msvc\vcpkg.json
-      - msbuild -version
     populate_script:
       - mkdir %VCPKG_DEFAULT_BINARY_CACHE%
   ccache_cache:
