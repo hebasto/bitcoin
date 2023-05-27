@@ -3,8 +3,17 @@ FROM cirrusci/windowsservercore:visualstudio2022-2022.06.23
 
 RUN powershell -NoLogo -NoProfile -Command \
     choco feature disable -n=usePackageExitCodes ; \
-    choco install --yes --no-progress ccache --version=4.7.4 ; \
+    choco install --yes --no-progress ccache --version=4.7.4
 
 RUN powershell -NoLogo -NoProfile -Command \
     choco feature disable -n=usePackageExitCodes ; \
-    choco install --yes --no-progress python3 --version=3.9.6 ; \
+    choco install --yes --no-progress python3 --version=3.9.6
+
+RUN powershell -NoLogo -NoProfile -Command \
+    $env:PATH
+
+RUN powershell -NoLogo -NoProfile -Command \
+    refreshenv
+
+RUN powershell -NoLogo -NoProfile -Command \
+    $env:PATH

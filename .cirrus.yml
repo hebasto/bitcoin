@@ -70,7 +70,7 @@ task:
     dockerfile: ci/windows_test_imagefile
   timeout_in: 120m
   env:
-    PATH: 'C:\jom;C:\Python39;C:\Python39\Scripts;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin;%PATH%'
+    PATH: 'C:\jom;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin;%PATH%'
     PYTHONUTF8: 1
     CI_VCPKG_TAG: '2023.01.09'
     VCPKG_DOWNLOADS: 'C:\Users\ContainerAdministrator\AppData\Local\vcpkg\downloads'
@@ -123,11 +123,7 @@ task:
   ccache_cache:
     folder: '%CCACHE_DIR%'
   install_tools_script:
-    - choco install --yes --no-progress ccache --version=4.7.4
-    - choco install --yes --no-progress python3 --version=3.9.6
     - pip install zmq
-    - ccache --version
-    - python -VV
   install_vcpkg_script:
     - cd ..
     - git clone --quiet https://github.com/microsoft/vcpkg.git
