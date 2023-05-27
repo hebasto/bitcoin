@@ -71,6 +71,8 @@ task:
     docker_arguments:
       CI_IMAGE_NAME_TAG: cirrusci/windowsservercore:visualstudio2022-2022.06.23
       CI_CCACHE_VERSION: 4.7.4
+      CI_PYTHON_VERSION: 3.9.6
+      CI_VCPKG_TAG: 2023.01.09
   timeout_in: 120m
   env:
     PATH: 'C:\jom;C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin;%PATH%'
@@ -108,12 +110,6 @@ task:
       - '%QT_CONFIGURE_COMMAND% -prefix %QTBASEDIR%'
       - jom
       - jom install
-  vcpkg_tools_cache:
-    folder: '%VCPKG_DOWNLOADS%\tools'
-    reupload_on_changes: false
-    fingerprint_script:
-      - echo %CI_VCPKG_TAG%
-      - msbuild -version
   vcpkg_binary_cache:
     folder: '%VCPKG_DEFAULT_BINARY_CACHE%'
     reupload_on_changes: true
@@ -125,22 +121,13 @@ task:
       - mkdir %VCPKG_DEFAULT_BINARY_CACHE%
   ccache_cache:
     folder: '%CCACHE_DIR%'
-  install_vcpkg_script:
-    - cd ..
-    - git clone --quiet https://github.com/microsoft/vcpkg.git
-    - cd vcpkg
-    - git -c advice.detachedHead=false checkout %CI_VCPKG_TAG%
-    - .\bootstrap-vcpkg -disableMetrics
-    - echo set(VCPKG_BUILD_TYPE release) >> triplets\x64-windows-static.cmake
-    - .\vcpkg integrate install
-    - .\vcpkg version
-  # build_script:
-  #   - '%x64_NATIVE_TOOLS%'
-  #   - cd %CIRRUS_WORKING_DIR%
-  #   - ccache --zero-stats --max-size=%CCACHE_SIZE%
-  #   - python build_msvc\msvc-autogen.py
-  #   - msbuild build_msvc\bitcoin.sln -property:CLToolExe=%WRAPPED_CL%;UseMultiToolTask=true;Configuration=Release -maxCpuCount -verbosity:minimal -noLogo
-  #   - ccache --show-stats
+  build_script:
+    - '%x64_NATIVE_TOOLS%'
+    - cd %CIRRUS_WORKING_DIR%
+    - ccache --zero-stats --max-size=%CCACHE_SIZE%
+    - python build_msvc\msvc-autogen.py
+    - msbuild build_msvc\bitcoin.sln -property:CLToolExe=%WRAPPED_CL%;UseMultiToolTask=true;Configuration=Release -maxCpuCount -verbosity:minimal -noLogo
+    - ccache --show-stats
   # check_script:
   #   - src\test_bitcoin.exe -l test_suite
   #   - src\bench_bitcoin.exe --sanity-check
