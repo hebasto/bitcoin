@@ -116,8 +116,6 @@ task:
     fingerprint_script:
       - echo %CI_IMAGE_NAME_TAG% %CI_VCPKG_TAG%
       - type build_msvc\vcpkg.json
-    populate_script:
-      - mkdir %VCPKG_DEFAULT_BINARY_CACHE%
   ccache_cache:
     folder: '%CCACHE_DIR%'
   build_script:
