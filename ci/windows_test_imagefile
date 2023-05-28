@@ -23,4 +23,4 @@ RUN echo set(VCPKG_BUILD_TYPE release) >> vcpkg\triplets\x64-windows-static.cmak
 
 RUN .\vcpkg\vcpkg integrate install
 
-RUN .\vcpkg\vcpkg install --triplet=x64-windows-static vcpkg-cmake
+RUN .\vcpkg\vcpkg install --triplet=x64-windows vcpkg-cmake vcpkg-cmake-config vcpkg-cmake-get-vars
