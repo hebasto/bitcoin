@@ -24,3 +24,30 @@ RUN echo set(VCPKG_BUILD_TYPE release) >> vcpkg\triplets\x64-windows-static.cmak
 RUN .\vcpkg\vcpkg integrate install
 
 RUN .\vcpkg\vcpkg install --triplet=x64-windows-static vcpkg-cmake
+
+ARG CI_QT_VERSION
+ENV CI_QT_VERSION=${CI_QT_VERSION}
+ENV QT_LOCAL_PATH="C:\qt-everywhere-opensource-src-%CI_QT_VERSION%.zip"
+ENV QT_DOWNLOAD_URL="https://download.qt.io/official_releases/qt/5.15/%CI_QT_VERSION%/single/qt-everywhere-opensource-src-%CI_QT_VERSION%.zip"
+RUN curl -L -o %QT_LOCAL_PATH% %QT_DOWNLOAD_URL%
+
+RUN tar -xf %QT_LOCAL_PATH% -C "C:\"
+
+ENV QT_BUILD_DIR="C:\qt-everywhere-src-%CI_QT_VERSION%\build"
+RUN mkdir %QT_BUILD_DIR%
+
+ARG CI_QT_CONFIGURE_COMMAND
+ENV CI_QT_CONFIGURE_COMMAND=${CI_QT_CONFIGURE_COMMAND}
+RUN "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat" && \
+    cd %QT_BUILD_DIR% && \
+    %CI_QT_CONFIGURE_COMMAND% -prefix C:\Qt_static
+
+RUN curl -L -o C:\jom.zip http://download.qt.io/official_releases/jom/jom.zip
+
+RUN mkdir C:\jom
+
+RUN tar -xf C:\jom.zip -C C:\jom
+
+RUN cd %QT_BUILD_DIR% C:\jom\jom
+
+RUN cd %QT_BUILD_DIR% C:\jom\jom install
