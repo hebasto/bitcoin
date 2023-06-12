@@ -207,7 +207,9 @@ ChainstateLoadResult LoadChainstate(ChainstateManager& chainman, const CacheSize
     } else if (snapshot_completion == SnapshotCompletionResult::SUCCESS) {
         LogPrintf("[snapshot] cleaning up unneeded background chainstate, then reinitializing\n");
         if (!chainman.ValidatedSnapshotCleanup()) {
-            AbortNode("Background chainstate cleanup failed unexpectedly.");
+            const auto error = Untranslated("Background chainstate cleanup failed unexpectedly.");
+            AbortNode(error.original);
+            return {ChainstateLoadStatus::FAILURE, error};
         }
 
         // Because ValidatedSnapshotCleanup() has torn down chainstates with
