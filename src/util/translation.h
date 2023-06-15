@@ -63,8 +63,8 @@ inline T const& TranslateArg(const T& arg, bool translated)
 template <typename... Args>
 bilingual_str format(const bilingual_str& fmt, const Args&... args)
 {
-    return bilingual_str{format(fmt.original, TranslateArg(args, false)...),
-                         format(fmt.translated, TranslateArg(args, true)...)};
+    return bilingual_str{tinyformat::format(fmt.original, TranslateArg(args, false)...),
+                         tinyformat::format(fmt.translated, TranslateArg(args, true)...)};
 }
 } // namespace tinyformat
 
