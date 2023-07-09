@@ -44,7 +44,11 @@ if(NOT USE_SQLITE AND NOT USE_BDB)
 endif()
 if(USE_SQLITE)
   target_sources(bitcoin_wallet PRIVATE sqlite.cpp)
-  target_link_libraries(bitcoin_wallet PRIVATE PkgConfig::sqlite)
+  target_link_libraries(bitcoin_wallet
+    PRIVATE
+      $<TARGET_NAME_IF_EXISTS:unofficial::sqlite3::sqlite3>
+      $<TARGET_NAME_IF_EXISTS:PkgConfig::sqlite3>
+  )
 endif()
 if(USE_BDB)
   target_sources(bitcoin_wallet PRIVATE bdb.cpp salvage.cpp)
