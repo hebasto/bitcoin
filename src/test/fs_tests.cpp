@@ -152,7 +152,6 @@ BOOST_AUTO_TEST_CASE(rename)
     fs::remove(path2);
 }
 
-#ifndef __MINGW64__ // no symlinks on mingw
 BOOST_AUTO_TEST_CASE(create_directories)
 {
     // Test fs::create_directories workaround.
@@ -165,15 +164,32 @@ BOOST_AUTO_TEST_CASE(create_directories)
     BOOST_CHECK(!fs::create_directories(dir));
 
     const fs::path symlink{GetUniquePath(tmpfolder)};
-    fs::create_directory_symlink(dir, symlink);
-    BOOST_CHECK(fs::exists(symlink));
-    BOOST_CHECK(fs::is_symlink(symlink));
-    BOOST_CHECK(fs::is_directory(symlink));
-    BOOST_CHECK(!fs::create_directories(symlink));
+    try {
+        fs::create_directory_symlink(dir, symlink);
+        BOOST_CHECK(fs::exists(symlink));
+        BOOST_CHECK(fs::is_symlink(symlink));
+        BOOST_CHECK(fs::is_directory(symlink));
+        BOOST_CHECK(!fs::create_directories(symlink));
+        fs::remove(symlink);
+    } catch (const fs::filesystem_error& e) {
+#ifdef WIN32
+        // https://www.winehq.org/pipermail/wine-devel/2008-September/069387.html
+        auto hntdll = GetModuleHandleA("ntdll.dll");
+        assert(hntdll);
+        const bool wine_runtime = GetProcAddress(hntdll, "wine_get_version");
+        if (wine_runtime) {
+            BOOST_CHECK_EQUAL(e.code().value(), 129);
+            BOOST_CHECK(std::string(e.what()).find("filesystem error: cannot create directory symlink: Unknown error") != std::string::npos);
+        } else {
+            BOOST_CHECK_EQUAL(e.code().value(), 1314);
+            BOOST_CHECK(std::string(e.what()).find("A required privilege is not held by the client.") != std::string::npos);
+        }
+#else
+        throw;
+#endif
+    }
 
-    fs::remove(symlink);
     fs::remove(dir);
 }
-#endif // __MINGW64__
 
 BOOST_AUTO_TEST_SUITE_END()
