@@ -20,9 +20,6 @@ function(add_boost_if_needed)
   set(Boost_NO_BOOST_CMAKE ON)
   find_package(Boost 1.64.0 REQUIRED)
   set_target_properties(Boost::boost PROPERTIES IMPORTED_GLOBAL TRUE)
-  target_compile_definitions(Boost::boost INTERFACE
-    $<$<OR:$<BOOL:${FUZZ}>,$<CONFIG:Debug>>:BOOST_MULTI_INDEX_ENABLE_SAFE_MODE>
-  )
   if(CMAKE_VERSION VERSION_LESS 3.15)
     add_library(Boost::headers ALIAS Boost::boost)
   endif()
