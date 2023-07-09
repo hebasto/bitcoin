@@ -49,7 +49,7 @@ add_executable(test_bitcoin
   checkqueue_tests.cpp
   coins_tests.cpp
   coinstatsindex_tests.cpp
-  compilerbug_tests.cpp
+  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:compilerbug_tests.cpp>
   compress_tests.cpp
   crypto_tests.cpp
   cuckoocache_tests.cpp
