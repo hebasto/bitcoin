@@ -94,3 +94,43 @@ if(WITH_ZMQ)
     message(FATAL_ERROR "libzmq requested, but not found.")
   endif()
 endif()
+
+if(WITH_USDT)
+  find_path(SystemTap_INCLUDE_DIR
+    NAMES sys/sdt.h
+  )
+  mark_as_advanced(SystemTap_INCLUDE_DIR)
+
+  if(SystemTap_INCLUDE_DIR)
+    include(CMakePushCheckState)
+    cmake_push_check_state(RESET)
+
+    include(CheckCXXSourceCompiles)
+    set(CMAKE_REQUIRED_INCLUDES ${SystemTap_INCLUDE_DIR})
+    check_cxx_source_compiles("
+      #include <sys/sdt.h>
+
+      int main()
+      {
+        DTRACE_PROBE(context, event);
+        int a, b, c, d, e, f, g;
+        DTRACE_PROBE7(context, event, a, b, c, d, e, f, g);
+      }
+      " HAVE_USDT_H
+    )
+
+    cmake_pop_check_state()
+  endif()
+
+  if(HAVE_USDT_H)
+    target_include_directories(core INTERFACE
+      ${SystemTap_INCLUDE_DIR}
+    )
+    set(ENABLE_TRACING TRUE)
+    set(WITH_USDT ON)
+  elseif(WITH_USDT STREQUAL "AUTO")
+    set(WITH_USDT OFF)
+  else()
+    message(FATAL_ERROR "sys/sdt.h requested, but not found.")
+  endif()
+endif()
