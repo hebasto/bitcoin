@@ -157,6 +157,12 @@ if(WIN32)
   endif()
 endif()
 
+# Use 64-bit off_t on 32-bit Linux.
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+  # Ensure 64-bit offsets are used for filesystem accesses for 32-bit compilation.
+  add_compile_definitions(_FILE_OFFSET_BITS=64)
+endif()
+
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   add_compile_definitions(MAC_OSX)
   # These flags are specific to ld64, and may cause issues with other linkers.
