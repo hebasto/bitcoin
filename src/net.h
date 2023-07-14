@@ -454,7 +454,7 @@ public:
                 return false;
         } // no default case, so the compiler can warn about missing cases
 
-        assert(false);
+        UNREACHABLE();
     }
 
     bool IsFullOutboundConn() const {
@@ -493,7 +493,7 @@ public:
                 return true;
         } // no default case, so the compiler can warn about missing cases
 
-        assert(false);
+        UNREACHABLE();
     }
 
     /**
