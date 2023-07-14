@@ -217,7 +217,7 @@ std::string BCLog::Logger::LogLevelToStr(BCLog::Level level) const
         return "error";
     case BCLog::Level::None:
         return "";
-    }
+    } // no default case, so the compiler can warn about missing cases
     UNREACHABLE();
 }
 
@@ -289,7 +289,7 @@ std::string LogCategoryToStr(BCLog::LogFlags category)
         return "scan";
     case BCLog::LogFlags::ALL:
         return "all";
-    }
+    } // no default case, so the compiler can warn about missing cases
     UNREACHABLE();
 }
 

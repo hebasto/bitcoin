@@ -244,7 +244,7 @@ Type ComputeType(Fragment fragment, Type x, Type y, Type z, const std::vector<Ty
                    "s"_mst.If(num_s >= n_subs - k + 1) |  // s= >=(n-k+1) s
                    acc_tl; // timelock info
             }
-    }
+    } // no default case, so the compiler can warn about missing cases
     UNREACHABLE();
 }
 
@@ -276,7 +276,7 @@ size_t ComputeScriptLen(Fragment fragment, Type sub0typ, size_t subsize, uint32_
         case Fragment::ANDOR: return subsize + 3;
         case Fragment::WRAP_J: return subsize + 4;
         case Fragment::THRESH: return subsize + n_subs + BuildScript(k).size();
-    }
+    } // no default case, so the compiler can warn about missing cases
     UNREACHABLE();
 }
 

@@ -89,7 +89,6 @@ std::string SigningResultString(const SigningResult res)
             return "Private key not available";
         case SigningResult::SIGNING_FAILED:
             return "Sign failed";
-        // no default case, so the compiler can warn about missing cases
-    }
+    } // no default case, so the compiler can warn about missing cases
     UNREACHABLE();
 }
