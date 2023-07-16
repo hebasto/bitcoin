@@ -42,19 +42,8 @@ function(try_append_cxxflag flags_var flag)
     set(source "int main() { return 0; }")
   endif()
 
-  # Normalize locale during test compilation.
-  set(locale_vars LC_ALL LC_MESSAGES LANG)
-  foreach(v IN LISTS locale_vars)
-    set(locale_vars_saved_${v} "$ENV{${v}}")
-    set(ENV{${v}} C)
-  endforeach()
-
   include(CheckCXXSourceCompiles)
   check_cxx_source_compiles("${source}" ${result})
-
-  foreach(v IN LISTS locale_vars)
-    set(ENV{${v}} ${locale_vars_saved_${v}})
-  endforeach()
 
   if(${result})
     if(DEFINED TRY_APPEND_CXXFLAG_CHECK_PASSED_FLAG)
