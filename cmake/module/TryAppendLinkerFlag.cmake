@@ -11,10 +11,21 @@ function(try_append_linker_flag flags_var flag)
   set(result "LINKER_SUPPORTS${result}")
   unset(${result})
   set(CMAKE_TRY_COMPILE_TARGET_TYPE EXECUTABLE)
+
   if(CMAKE_VERSION VERSION_LESS 3.14)
-    set(CMAKE_REQUIRED_LIBRARIES "${flag}")
+    set(linker_flags_var CMAKE_REQUIRED_LIBRARIES)
   else()
-    set(CMAKE_REQUIRED_LINK_OPTIONS "${flag}")
+    set(linker_flags_var CMAKE_REQUIRED_LINK_OPTIONS)
+  endif()
+
+  set(${linker_flags_var} ${flag})
+
+  if(MSVC)
+    set(${linker_flags_var} ${flag} /WX)
+  elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(${linker_flags_var} ${flag} -Wl,-fatal_warnings)
+  else()
+    set(${linker_flags_var} ${flag} -Wl,--fatal-warnings)
   endif()
 
   if(TRY_APPEND_LINKER_FLAG_SOURCE)
@@ -24,21 +35,8 @@ function(try_append_linker_flag flags_var flag)
     set(source "int main() { return 0; }")
   endif()
 
-  # Normalize locale during test compilation.
-  set(locale_vars LC_ALL LC_MESSAGES LANG)
-  foreach(v IN LISTS locale_vars)
-    set(locale_vars_saved_${v} "$ENV{${v}}")
-    set(ENV{${v}} C)
-  endforeach()
-
-  include(CMakeCheckCompilerFlagCommonPatterns)
-  check_compiler_flag_common_patterns(common_patterns)
   include(CheckCXXSourceCompiles)
-  check_cxx_source_compiles("${source}" ${result} ${common_patterns})
-
-  foreach(v IN LISTS locale_vars)
-    set(ENV{${v}} ${locale_vars_saved_${v}})
-  endforeach()
+  check_cxx_source_compiles("${source}" ${result})
 
   if(${result})
     if(DEFINED TRY_APPEND_LINKER_FLAG_CHECK_PASSED_FLAG)
