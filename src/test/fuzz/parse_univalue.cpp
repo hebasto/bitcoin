@@ -58,12 +58,6 @@ FUZZ_TARGET(parse_univalue, .init = initialize_parse_univalue)
     } catch (const UniValue&) {
     }
     try {
-        (void)ParseHexUV(univalue, "A");
-        (void)ParseHexUV(univalue, random_string);
-    } catch (const UniValue&) {
-    } catch (const std::runtime_error&) {
-    }
-    try {
         (void)ParseHexV(univalue, "A");
     } catch (const UniValue&) {
     } catch (const std::runtime_error&) {

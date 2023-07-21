@@ -29,6 +29,11 @@ FUZZ_TARGET(hex)
     (void)IsHexNumber(random_hex_string);
     uint256 result;
     (void)ParseHashStr(random_hex_string, result);
+    try {
+        (void)ParseHexUV(random_hex_string, "A");
+        (void)ParseHexUV(random_hex_string, random_hex_string);
+    } catch (const std::runtime_error&) {
+    }
     (void)uint256S(random_hex_string);
     try {
         (void)HexToPubKey(random_hex_string);
