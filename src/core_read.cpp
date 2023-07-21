@@ -242,7 +242,7 @@ bool ParseHashStr(const std::string& strHex, uint256& result)
     return true;
 }
 
-std::vector<unsigned char> ParseHexUV(const std::string& strHex, const std::string& strName)
+std::vector<unsigned char> ParseHexStr(const std::string& strHex, const std::string& strName)
 {
     if (!IsHex(strHex))
         throw std::runtime_error(strName + " must be hexadecimal string (not '" + strHex + "')");

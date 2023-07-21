@@ -620,7 +620,7 @@ static void MutateTxSign(CMutableTransaction& tx, const std::string& flagStr)
                 throw std::runtime_error("vout cannot be negative");
 
             COutPoint out(txid, nOut);
-            std::vector<unsigned char> pkData(ParseHexUV(prevOut["scriptPubKey"].get_str(), "scriptPubKey"));
+            std::vector<unsigned char> pkData(ParseHexStr(prevOut["scriptPubKey"].get_str(), "scriptPubKey"));
             CScript scriptPubKey(pkData.begin(), pkData.end());
 
             {
@@ -647,7 +647,7 @@ static void MutateTxSign(CMutableTransaction& tx, const std::string& flagStr)
                 prevOut.exists("redeemScript")) {
                 UniValue v = prevOut["redeemScript"];
                 const std::string& script_hex{v.isStr() ? v.getValStr() : ""};
-                std::vector<unsigned char> rsData(ParseHexUV(script_hex, "redeemScript"));
+                std::vector<unsigned char> rsData(ParseHexStr(script_hex, "redeemScript"));
                 CScript redeemScript(rsData.begin(), rsData.end());
                 tempKeystore.AddCScript(redeemScript);
             }
