@@ -562,6 +562,14 @@ static CAmount AmountFromValue(const UniValue& value)
     return amount;
 }
 
+static std::vector<unsigned char> ParseHexStr(const std::string& hex, const std::string& name)
+{
+    if (!IsHex(hex)) {
+        throw std::runtime_error(name + " must be hexadecimal string (not '" + hex + "')");
+    }
+    return ParseHex(hex);
+}
+
 static void MutateTxSign(CMutableTransaction& tx, const std::string& flagStr)
 {
     int nHashType = SIGHASH_ALL;
@@ -620,7 +628,7 @@ static void MutateTxSign(CMutableTransaction& tx, const std::string& flagStr)
                 throw std::runtime_error("vout cannot be negative");
 
             COutPoint out(txid, nOut);
-            std::vector<unsigned char> pkData(ParseHexUV(prevOut["scriptPubKey"], "scriptPubKey"));
+            std::vector<unsigned char> pkData(ParseHexStr(prevOut["scriptPubKey"].get_str(), "scriptPubKey"));
             CScript scriptPubKey(pkData.begin(), pkData.end());
 
             {
@@ -646,7 +654,8 @@ static void MutateTxSign(CMutableTransaction& tx, const std::string& flagStr)
             if ((scriptPubKey.IsPayToScriptHash() || scriptPubKey.IsPayToWitnessScriptHash()) &&
                 prevOut.exists("redeemScript")) {
                 UniValue v = prevOut["redeemScript"];
-                std::vector<unsigned char> rsData(ParseHexUV(v, "redeemScript"));
+                const std::string& script_hex{v.isStr() ? v.getValStr() : ""};
+                std::vector<unsigned char> rsData(ParseHexStr(script_hex, "redeemScript"));
                 CScript redeemScript(rsData.begin(), rsData.end());
                 tempKeystore.AddCScript(redeemScript);
             }

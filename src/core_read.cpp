@@ -242,16 +242,6 @@ bool ParseHashStr(const std::string& strHex, uint256& result)
     return true;
 }
 
-std::vector<unsigned char> ParseHexUV(const UniValue& v, const std::string& strName)
-{
-    std::string strHex;
-    if (v.isStr())
-        strHex = v.getValStr();
-    if (!IsHex(strHex))
-        throw std::runtime_error(strName + " must be hexadecimal string (not '" + strHex + "')");
-    return ParseHex(strHex);
-}
-
 int ParseSighashString(const UniValue& sighash)
 {
     int hash_type = SIGHASH_DEFAULT;
