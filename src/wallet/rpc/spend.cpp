@@ -11,6 +11,7 @@
 #include <util/fees.h>
 #include <util/rbf.h>
 #include <util/translation.h>
+#include <util/univalue_helpers.h>
 #include <util/vector.h>
 #include <wallet/coincontrol.h>
 #include <wallet/feebumper.h>
@@ -943,7 +944,7 @@ RPCHelpMan signrawtransactionwithwallet()
     // Parse the prevtxs array
     ParsePrevouts(request.params[1], nullptr, coins);
 
-    int nHashType = ParseSighashString(request.params[2]);
+    int nHashType = ParseSighashString(util::UniValueToString(request.params[2]));
 
     // Script verification errors
     std::map<int, bilingual_str> input_errors;
@@ -1587,7 +1588,7 @@ RPCHelpMan walletprocesspsbt()
     }
 
     // Get the sighash type
-    int nHashType = ParseSighashString(request.params[2]);
+    int nHashType = ParseSighashString(util::UniValueToString(request.params[2]));
 
     // Fill transaction with our data and also sign
     bool sign = request.params[1].isNull() ? true : request.params[1].get_bool();

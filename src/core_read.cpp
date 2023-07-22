@@ -10,11 +10,11 @@
 #include <script/sign.h>
 #include <serialize.h>
 #include <streams.h>
-#include <univalue.h>
 #include <util/strencodings.h>
 #include <version.h>
 
 #include <algorithm>
+#include <optional>
 #include <string>
 
 namespace {
@@ -242,10 +242,10 @@ bool ParseHashStr(const std::string& strHex, uint256& result)
     return true;
 }
 
-int ParseSighashString(const UniValue& sighash)
+int ParseSighashString(const std::optional<std::string>& sighash)
 {
     int hash_type = SIGHASH_DEFAULT;
-    if (!sighash.isNull()) {
+    if (sighash.has_value()) {
         static std::map<std::string, int> map_sighash_values = {
             {std::string("DEFAULT"), int(SIGHASH_DEFAULT)},
             {std::string("ALL"), int(SIGHASH_ALL)},
@@ -255,7 +255,7 @@ int ParseSighashString(const UniValue& sighash)
             {std::string("SINGLE"), int(SIGHASH_SINGLE)},
             {std::string("SINGLE|ANYONECANPAY"), int(SIGHASH_SINGLE|SIGHASH_ANYONECANPAY)},
         };
-        const std::string& strHashType = sighash.get_str();
+        const std::string& strHashType = sighash.value();
         const auto& it = map_sighash_values.find(strHashType);
         if (it != map_sighash_values.end()) {
             hash_type = it->second;

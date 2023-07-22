@@ -37,6 +37,7 @@
 #include <util/check.h>
 #include <util/strencodings.h>
 #include <util/string.h>
+#include <util/univalue_helpers.h>
 #include <util/vector.h>
 #include <validation.h>
 #include <validationinterface.h>
@@ -1964,7 +1965,7 @@ RPCHelpMan descriptorprocesspsbt()
         EvalDescriptorStringOrObject(descs[i], provider, /*expand_priv=*/true);
     }
 
-    int sighash_type = ParseSighashString(request.params[2]);
+    int sighash_type = ParseSighashString(util::UniValueToString(request.params[2]));
     bool bip32derivs = request.params[3].isNull() ? true : request.params[3].get_bool();
     bool finalize = request.params[4].isNull() ? true : request.params[4].get_bool();
 

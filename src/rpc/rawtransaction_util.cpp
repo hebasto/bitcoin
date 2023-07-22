@@ -20,6 +20,7 @@
 #include <util/rbf.h>
 #include <util/strencodings.h>
 #include <util/translation.h>
+#include <util/univalue_helpers.h>
 
 void AddInputs(CMutableTransaction& rawTx, const UniValue& inputs_in, std::optional<bool> rbf)
 {
@@ -289,7 +290,7 @@ void ParsePrevouts(const UniValue& prevTxsUnival, FillableSigningProvider* keyst
 
 void SignTransaction(CMutableTransaction& mtx, const SigningProvider* keystore, const std::map<COutPoint, Coin>& coins, const UniValue& hashType, UniValue& result)
 {
-    int nHashType = ParseSighashString(hashType);
+    int nHashType = ParseSighashString(util::UniValueToString(hashType));
 
     // Script verification errors
     std::map<int, bilingual_str> input_errors;

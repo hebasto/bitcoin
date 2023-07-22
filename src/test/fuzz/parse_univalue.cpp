@@ -3,11 +3,11 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <chainparams.h>
-#include <core_io.h>
 #include <rpc/client.h>
 #include <rpc/util.h>
 #include <test/fuzz/fuzz.h>
 #include <util/chaintype.h>
+#include <util/univalue_helpers.h>
 
 #include <limits>
 #include <string>
@@ -68,7 +68,7 @@ FUZZ_TARGET(parse_univalue, .init = initialize_parse_univalue)
     } catch (const std::runtime_error&) {
     }
     try {
-        (void)ParseSighashString(univalue);
+        (void)util::UniValueToString(univalue);
     } catch (const std::runtime_error&) {
     }
     try {

@@ -7,6 +7,7 @@
 
 #include <consensus/amount.h>
 
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -45,7 +46,7 @@ bool DecodeHexBlockHeader(CBlockHeader&, const std::string& hex_header);
  * @see ParseHashV for an RPC-oriented version of this
  */
 bool ParseHashStr(const std::string& strHex, uint256& result);
-int ParseSighashString(const UniValue& sighash);
+int ParseSighashString(const std::optional<std::string>& sighash);
 
 // core_write.cpp
 UniValue ValueFromAmount(const CAmount amount);
