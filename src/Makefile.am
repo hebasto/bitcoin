@@ -324,6 +324,7 @@ BITCOIN_CORE_H = \
   util/trace.h \
   util/translation.h \
   util/types.h \
+  util/univalue_helpers.h \
   util/ui_change_type.h \
   util/vector.h \
   validation.h \
@@ -746,6 +747,7 @@ libbitcoin_util_a_SOURCES = \
   util/string.cpp \
   util/time.cpp \
   util/tokenpipe.cpp \
+  util/univalue_helpers.cpp \
   $(BITCOIN_CORE_H)
 #
 
