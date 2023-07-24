@@ -24,7 +24,7 @@ jobs:
     steps:
       - run: Write-Host 'Hello, Windows'
       - run: Get-Command msbuild
-      - run: Get-Command cl
+      # - run: Get-Command cl
       - run: Get-ChildItem -Path 'C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools'
       - run: Get-ChildItem -Path 'C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Tools\MSVC'
       - run: Get-ChildItem -Path 'C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Tools\MSVC'
