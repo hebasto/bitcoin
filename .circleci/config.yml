@@ -33,6 +33,12 @@ jobs:
       - run: Get-ChildItem -Path C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Tools\MSVC
       - run: Get-ChildItem -Path C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Tools\MSVC\14.36.32532\bin\HostX64\x64
       - run: Write-Host "$($env:PATH)"
+      - run:
+          shell: 'cmd.exe'
+          command: |
+            C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat
+            echo %PATH%
+            cl.exe /?
       - prepare_ccache_exe
 
 workflows:
