@@ -22,14 +22,17 @@ jobs:
     environment:
       - CCACHE_URI: "https://github.com/ccache/ccache/releases/download/v4.8.2/ccache-4.8.2-windows-x86_64.zip"
     steps:
-      - run: Write-Host 'Hello, Windows'
+      - run:
+          name: "Cute Name :)"
+          command: Write-Host 'Hello, Windows'
       - run: Get-Command msbuild
       # - run: Get-Command cl
       - run: Get-ChildItem -Path C:\"Program Files (x86)"
       - run: Get-ChildItem -Path C:\"Program Files (x86)"\"Microsoft Visual Studio"
       - run: Get-ChildItem -Path C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools
       - run: Get-ChildItem -Path C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Tools\MSVC
-      # - run: Get-ChildItem -Path C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Tools\MSVC
+      - run: Get-ChildItem -Path C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Tools\MSVC\14.36.32532\bin\HostX64\x64
+      - run: Write-Host "$($env:PATH)"
       - prepare_ccache_exe
 
 workflows:
