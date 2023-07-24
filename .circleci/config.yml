@@ -2,25 +2,23 @@ version: 2.1
 orbs:
   win: circleci/windows@5.0
 
-# commands:
-#   prepare_ccache_exe:
-
-
+commands:
+  prepare_ccache_exe:
+    description: "Download ccache archive"
+    steps:
+      - run: Invoke-WebRequest -Uri "$($env:HEBA_FILE)" -OutFile "ccache.zip"
+      - run: Expand-Archive -Path "ccache.zip" -DestinationPath "C:\ccache"
+      - run: Get-ChildItem -Path "C:\ccache"
 
 jobs:
   build:
     executor: win/server-2022
     environment:
-      - HEBA_FILE: https://github.com/ccache/ccache/releases/download/v4.8.2/ccache-4.8.2-windows-x86_64.zip
+      - HEBA_FILE: "https://github.com/ccache/ccache/releases/download/v4.8.2/ccache-4.8.2-windows-x86_64.zip"
     steps:
       - run: Write-Host 'Hello, Windows'
       - run: Get-Command msbuild
-      - run:
-          command: |
-            Write-Host "File: $($env:HEBA_FILE)"
-            Write-Host "Current directory: $($PWD.Path)"
-            Invoke-WebRequest -Uri "https://github.com/ccache/ccache/releases/download/v4.8.2/ccache-4.8.2-windows-x86_64.zip" -OutFile "ccache.zip"
-
+      - prepare_ccache_exe
 
 workflows:
   my-workflow:
