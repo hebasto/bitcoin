@@ -1,4 +1,28 @@
 version: 2.1
+
+# jobs:
+#   build: # name of your job
+#     resource_class: 'windows.medium'
+#     machine:
+#       image: 'windows-server-2022-gui:current'
+#       shell: 'cmd.exe'
+#     steps:
+#       # Commands are run in a Windows virtual machine environment
+#         - checkout
+#         - run: Write-Host 'Hello, Windows'
+
+
+
+
+
+
+
+
+
+
+
+
+# version: 2.1
 orbs:
   win: circleci/windows@5.0
   shell: 'cmd.exe'
@@ -19,8 +43,10 @@ commands:
 
 jobs:
   build:
-    executor: win/server-2022
-    # shell: 'cmd.exe'
+    executor:
+      name: win/server-2022
+      size: medium  # default
+      shell: 'cmd.exe'
     environment:
       - CCACHE_URI: "https://github.com/ccache/ccache/releases/download/v4.8.2/ccache-4.8.2-windows-x86_64.zip"
     steps:
