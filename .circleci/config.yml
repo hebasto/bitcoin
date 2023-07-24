@@ -25,7 +25,7 @@ version: 2.1
 # version: 2.1
 orbs:
   win: circleci/windows@5.0
-  shell: 'cmd.exe'
+  # shell: 'cmd.exe'
 
 commands:
   prepare_ccache_exe:
