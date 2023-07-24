@@ -1,0 +1,39 @@
+version: 2.1
+
+orbs:
+  win: circleci/windows@5.0
+
+jobs:
+  build:
+    executor:
+      name: win/server-2022
+      size: medium  # default, 4 CPU / 15 GB RAM.
+    environment:
+      - CCACHE_URI: 'https://github.com/ccache/ccache/releases/download/v4.8.2/ccache-4.8.2-windows-x86_64.zip'
+      - CCACHE_EXE: 'C:\ccache-4.8.2-windows-x86_64\ccache.exe'
+      - x64_NATIVE_TOOLS: 'C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat'
+    steps:
+      - run:
+          name: "Install Ccache"
+          command: |
+            Invoke-WebRequest -Uri "$env:CCACHE_URI" -OutFile "ccache.zip"
+            Expand-Archive -Path "ccache.zip" -DestinationPath "C:\"
+            New-Item -ItemType Directory -Path "C:\ccache"
+            Copy-Item -Path "$env:CCACHE_EXE" -Destination "C:\ccache\cl.exe"
+      - run:
+          name: "Check Ccache Masquerade"
+          shell: 'cmd.exe'
+          command: >
+            %x64_NATIVE_TOOLS% &&
+            C:\ccache\cl.exe /?
+      - run:
+          name: "Developer Environment"
+          shell: 'cmd.exe'
+          command: >
+            %x64_NATIVE_TOOLS% &&
+            cl.exe /?
+
+workflows:
+  my-workflow:
+    jobs:
+      - build
