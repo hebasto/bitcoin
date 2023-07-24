@@ -12,6 +12,7 @@ commands:
       - run: New-Item -ItemType Directory -Path "C:\ccache"
       - run: Copy-Item -Path "C:\ccache-4.8.2-windows-x86_64\ccache.exe" -Destination "C:\ccache\cl.exe"
       - run: '"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"'
+      # - run: C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat
       - run: C:\ccache\cl.exe /?
       # ccache: error: Could not find compiler "cl.exe" in PATH
 
@@ -23,6 +24,10 @@ jobs:
     steps:
       - run: Write-Host 'Hello, Windows'
       - run: Get-Command msbuild
+      - run: Get-Command cl
+      - run: Get-ChildItem -Path 'C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools'
+      - run: Get-ChildItem -Path 'C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Tools\MSVC'
+      - run: Get-ChildItem -Path 'C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Tools\MSVC'
       - prepare_ccache_exe
 
 workflows:
