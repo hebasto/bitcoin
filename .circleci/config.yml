@@ -9,9 +9,8 @@ jobs:
       name: win/server-2022
       size: medium  # default, 4 CPU / 15 GB RAM.
     environment:
-      - CCACHE_VERSION: 4.8.2
-      - CCACHE_FILENAME: 'ccache-%CCACHE_VERSION%-windows-x86_64'
       - CCACHE_URI: 'https://github.com/ccache/ccache/releases/download/v4.8.2/ccache-4.8.2-windows-x86_64.zip'
+      - CCACHE_PATH: 'C:\ccache-4.8.2-windows-x86_64\ccache.exe'
       - x64_NATIVE_TOOLS: 'C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat'
     steps:
       - run:
