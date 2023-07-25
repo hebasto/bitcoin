@@ -10,7 +10,9 @@ jobs:
       size: medium  # default, 4 CPU / 15 GB RAM.
     environment:
       - CCACHE_VERSION: 4.8.2
-      - CCACHE_FILENAME: 'ccache-%CCACHE_VERSION%-windows-x86_64'
+      - CCACHE_FILENAME: "ccache-%CCACHE_VERSION%-windows-x86_64"
+      - CCACHE_PATH: "ccache-${CCACHE_VERSION}-windows-x86_64"
+      - CCACHE_PS: "ccache-$env:CCACHE_VERSION-windows-x86_64"
       - CCACHE_URI: 'https://github.com/ccache/ccache/releases/download/v4.8.2/ccache-4.8.2-windows-x86_64.zip'
       - x64_NATIVE_TOOLS: 'C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat'
     steps:
@@ -28,6 +30,8 @@ jobs:
             %x64_NATIVE_TOOLS% &&
             C:\ccache\cl.exe /? &&
             echo %CCACHE_FILENAME%
+            echo %CCACHE_PATH%
+            echo %CCACHE_PS%
       - run:
           name: "Developer Environment"
           shell: 'cmd.exe'
