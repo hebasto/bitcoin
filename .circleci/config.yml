@@ -8,7 +8,7 @@ jobs:
     executor:
       name: win/server-2022
       size: medium  # default, 4 CPU / 15 GB RAM.
-      shell: 'C:/Program\ Files\ (x86)/Microsoft\ Visual\ Studio/2022/BuildTools/VC/Auxiliary/Build/vcvars64.bat'
+      shell: 'C:/Program\\ Files\\ (x86)/Microsoft\\ Visual\\ Studio/2022/BuildTools/VC/Auxiliary/Build/vcvars64.bat'
     environment:
       - CCACHE_URI: "https://github.com/ccache/ccache/releases/download/v4.8.2/ccache-4.8.2-windows-x86_64.zip"
     steps:
