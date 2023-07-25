@@ -13,8 +13,14 @@ jobs:
       - CCACHE_URI: "https://github.com/ccache/ccache/releases/download/v4.8.2/ccache-4.8.2-windows-x86_64.zip"
     steps:
       - run:
+          name: "PowerShell Version"
+          command: $PSVersionTable.PSVersion
+      - run:
           name: "Developer Environment"
-          command: C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat && echo "Hello" && cl.exe /?
+          command: |
+            C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat
+            echo "Hello"
+            cl.exe /?
 
 workflows:
   my-workflow:
