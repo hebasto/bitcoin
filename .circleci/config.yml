@@ -25,7 +25,8 @@ jobs:
           shell: 'cmd.exe'
           command: >
             %x64_NATIVE_TOOLS% &&
-            C:\ccache\cl.exe /?
+            C:\ccache\cl.exe /? &&
+            echo %CCACHE_FILENAME%
       - run:
           name: "Developer Environment"
           shell: 'cmd.exe'
