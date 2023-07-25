@@ -14,7 +14,7 @@ jobs:
     steps:
       - run:
           name: "Developer Environment"
-          command: C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat && echo "Hello" && echo %PATH% && cl.exe /?
+          command: C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat && echo %PATH% && cl.exe /?
 
 workflows:
   my-workflow:
