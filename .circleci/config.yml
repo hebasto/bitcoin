@@ -12,6 +12,20 @@ jobs:
       - CCACHE_URI: "https://github.com/ccache/ccache/releases/download/v4.8.2/ccache-4.8.2-windows-x86_64.zip"
     steps:
       - run:
+          name: "Install Ccache"
+          command: |
+            Invoke-WebRequest -Uri "$($env:CCACHE_URI)" -OutFile "ccache.zip"
+            Expand-Archive -Path "ccache.zip" -DestinationPath "C:\"
+            C:\ccache-4.8.2-windows-x86_64\ccache.exe --version
+            New-Item -ItemType Directory -Path "C:\ccache"
+            Copy-Item -Path "C:\ccache-4.8.2-windows-x86_64\ccache.exe" -Destination "C:\ccache\cl.exe"
+      - run:
+          name: "Check Ccache Masquerade"
+          shell: 'cmd.exe'
+          command: >
+            C:\"Program Files (x86)"\"Microsoft Visual Studio"\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat &&
+            C:\ccache\cl.exe /?
+      - run:
           name: "Developer Environment"
           shell: 'cmd.exe'
           command: >
