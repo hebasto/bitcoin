@@ -20,21 +20,25 @@ jobs:
 
     env:
       MAKEJOBS: '-j4'
-      CI_CCACHE_PATH: '${{ vars.RUNNER_TEMP }}/ccache_dir'
+      # CI_CCACHE_PATH: '${{ vars.RUNNER_TEMP }}/ccache_dir'
       CI_USE_APT_INSTALL: 'no'
       PACKAGE_MANAGER_INSTALL: 'echo'  # Nothing to do
       FILE_ENV: './ci/test/00_setup_env_mac_native.sh'
-      CCACHE_DIR: '${{ vars.RUNNER_TEMP }}/ccache_dir'
+      # CCACHE_DIR: '${{ vars.RUNNER_TEMP }}/ccache_dir'
 
     steps:
+      - run: echo "CCACHE_DIR=$RUNNER_TEMP/ccache_dir" >> "$GITHUB_ENV"
+
+
       # - run: echo $RUNNER_TEMP
-      # - run: echo $CCACHE_DIR
+      - run: echo $CCACHE_DIR
+      - run: echo '${{ env.CCACHE_DIR }}'
       # - run: echo '${{ vars.RUNNER_TEMP }}'
 
-      - run: echo '${{ env.CI_CCACHE_PATH }}'
-      - run: echo '${{ github.workspace }}'
+      # - run: echo '${{ env.CI_CCACHE_PATH }}'
+      # - run: echo '${{ github.workspace }}'
 
-      - run: cat '${{ github.env }}'
+      # - run: cat '${{ github.env }}'
 
 
       # - name: Checkout
