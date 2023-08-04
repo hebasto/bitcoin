@@ -23,7 +23,7 @@ jobs:
       CI_USE_APT_INSTALL: 'no'
       PACKAGE_MANAGER_INSTALL: 'echo'  # Nothing to do
       FILE_ENV: './ci/test/00_setup_env_mac_native.sh'
-      CCACHE_DIR: ${{ env.RUNNER_TEMP }}/ccache_dir
+      CCACHE_DIR: '${{ env.RUNNER_TEMP }}/ccache_dir'
 
     steps:
       - run: echo $RUNNER_TEMP
