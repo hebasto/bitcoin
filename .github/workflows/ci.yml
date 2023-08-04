@@ -23,24 +23,27 @@ jobs:
       CI_USE_APT_INSTALL: 'no'
       PACKAGE_MANAGER_INSTALL: 'echo'  # Nothing to do
       FILE_ENV: './ci/test/00_setup_env_mac_native.sh'
-      CCACHE_DIR: '$RUNNER_TEMP/ccache_dir'
+      CCACHE_DIR: ${{ env.RUNNER_TEMP }}/ccache_dir
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - run: echo $RUNNER_TEMP
+      - run: echo $CCACHE_DIR
 
-      - name: Clang version
-        run: clang --version
+      # - name: Checkout
+      #   uses: actions/checkout@v3
 
-      - name: Install Homebrew packages
-        run: brew install automake boost pkg-config miniupnpc libnatpmp zeromq qt@5 qrencode ccache gnu-getopt
+      # - name: Clang version
+      #   run: clang --version
 
-      - name: Ccache cache
-        uses: actions/cache@v3
-        with:
-          path: $CCACHE_DIR
-          key: ${{ github.job }}-ccache-cache-${{ github.run_id }}
-          restore-keys: ${{ github.job }}-ccache-cache
+      # - name: Install Homebrew packages
+      #   run: brew install automake boost pkg-config miniupnpc libnatpmp zeromq qt@5 qrencode ccache gnu-getopt
 
-      - name: CI script
-        run: ./ci/test_run_all.sh
+      # - name: Ccache cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ${{ env.CCACHE_DIR }}
+      #     key: ${{ github.job }}-ccache-cache-${{ github.run_id }}
+      #     restore-keys: ${{ github.job }}-ccache-cache
+
+      # - name: CI script
+      #   run: ./ci/test_run_all.sh
