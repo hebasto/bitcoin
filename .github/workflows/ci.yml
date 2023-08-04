@@ -1,0 +1,45 @@
+# Copyright (c) 2023 The Bitcoin Core developers
+# Distributed under the MIT software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+name: bitcoin-core-ci
+run-name: Bitcoin Core CI
+# See: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#onpushpull_requestpull_request_targetpathspaths-ignore.
+on: [pull_request, push]
+
+env:
+  DANGER_RUN_CI_ON_HOST: 1
+  TEST_RUNNER_TIMEOUT_FACTOR: 40
+
+jobs:
+  macos-native-x86_64:
+    name: macOS 13 native, x86_64 [no depends, sqlite only, gui]
+    # Use latest image, but hardcode version to avoid silent upgrades (and breaks).
+    # See: https://github.com/actions/runner-images#available-images.
+    runs-on: macos-13
+
+    env:
+      MAKEJOBS: '-j4'
+      CI_USE_APT_INSTALL: 'no'
+      PACKAGE_MANAGER_INSTALL: 'echo'  # Nothing to do
+      FILE_ENV: './ci/test/00_setup_env_mac_native.sh'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Clang version
+        run: clang --version
+
+      - name: Install Homebrew packages
+        run: brew install automake boost pkg-config miniupnpc libnatpmp zeromq qt@5 qrencode ccache gnu-getopt
+
+      - name: Ccache cache
+        uses: actions/cache@v3
+        with:
+          path: /Users/runner/work/bitcoin/bitcoin/ci/scratch/.ccache
+          key: ${{ github.job }}-ccache-cache-${{ github.run_id }}
+          restore-keys: ${{ github.job }}-ccache-cache
+
+      - name: CI script
+        run: ./ci/test_run_all.sh
