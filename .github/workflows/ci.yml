@@ -56,4 +56,6 @@ jobs:
           restore-keys: ${{ github.job }}-ccache-cache
 
       - name: CI script
+        env:
+          BASE_ROOT_DIR: ${{ github.workspace }}
         run: ./ci/test_run_all.sh
