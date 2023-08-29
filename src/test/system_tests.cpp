@@ -49,11 +49,7 @@ BOOST_AUTO_TEST_CASE(run_command)
     }
     {
         // An invalid command is handled by Boost
-#ifdef WIN32
-        const int expected_error{wine_runtime ? 6 : 2};
-#else
         const int expected_error{2};
-#endif
         BOOST_CHECK_EXCEPTION(RunCommandParseJSON("invalid_command"), boost::process::process_error, [&](const boost::process::process_error& e) {
             BOOST_CHECK(std::string(e.what()).find("RunCommandParseJSON error:") == std::string::npos);
             BOOST_CHECK_EQUAL(e.code().value(), expected_error);
