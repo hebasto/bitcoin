@@ -8,6 +8,7 @@
 #include <chainparams.h>
 #include <chainparamsbase.h>
 #include <common/args.h>
+#include <common/readwritefile.h>
 #include <compat/compat.h>
 #include <crypto/hmac_sha256.h>
 #include <logging.h>
@@ -18,7 +19,6 @@
 #include <tinyformat.h>
 #include <util/check.h>
 #include <util/fs.h>
-#include <util/readwritefile.h>
 #include <util/strencodings.h>
 #include <util/string.h>
 #include <util/thread.h>

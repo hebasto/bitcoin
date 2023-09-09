@@ -2,6 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <common/bip32.h>
 #include <hash.h>
 #include <key_io.h>
 #include <logging.h>
@@ -10,7 +11,6 @@
 #include <script/script.h>
 #include <script/sign.h>
 #include <script/solver.h>
-#include <util/bip32.h>
 #include <util/strencodings.h>
 #include <util/string.h>
 #include <util/time.h>

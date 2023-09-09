@@ -4,6 +4,9 @@
 
 #include <chainparams.h>
 #include <common/args.h>
+#include <common/readwritefile.h>
+#include <common/sock.h>
+#include <common/spanparsing.h>
 #include <compat/compat.h>
 #include <compat/endian.h>
 #include <crypto/sha256.h>
@@ -15,9 +18,6 @@
 #include <sync.h>
 #include <tinyformat.h>
 #include <util/fs.h>
-#include <util/readwritefile.h>
-#include <util/sock.h>
-#include <util/spanparsing.h>
 #include <util/strencodings.h>
 #include <util/threadinterrupt.h>
 

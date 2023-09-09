@@ -2,12 +2,12 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <common/bip32.h>
 #include <core_io.h>
 #include <key_io.h>
 #include <rpc/util.h>
 #include <script/script.h>
 #include <script/solver.h>
-#include <util/bip32.h>
 #include <util/translation.h>
 #include <wallet/receive.h>
 #include <wallet/rpc/util.h>

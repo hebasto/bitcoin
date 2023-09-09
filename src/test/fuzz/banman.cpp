@@ -4,6 +4,7 @@
 
 #include <banman.h>
 #include <common/args.h>
+#include <common/readwritefile.h>
 #include <netaddress.h>
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
@@ -11,7 +12,6 @@
 #include <test/fuzz/util/net.h>
 #include <test/util/setup_common.h>
 #include <util/fs.h>
-#include <util/readwritefile.h>
 
 #include <cassert>
 #include <cstdint>

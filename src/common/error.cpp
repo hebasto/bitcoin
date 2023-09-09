@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <util/error.h>
+#include <common/error.h>
 
 #include <tinyformat.h>
 #include <util/translation.h>

@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_UTIL_BYTEVECTORHASH_H
-#define BITCOIN_UTIL_BYTEVECTORHASH_H
+#ifndef BITCOIN_COMMON_BYTEVECTORHASH_H
+#define BITCOIN_COMMON_BYTEVECTORHASH_H
 
 #include <cstdint>
 #include <cstddef>
@@ -24,4 +24,4 @@ public:
     size_t operator()(const std::vector<unsigned char>& input) const;
 };
 
-#endif // BITCOIN_UTIL_BYTEVECTORHASH_H
+#endif // BITCOIN_COMMON_BYTEVECTORHASH_H

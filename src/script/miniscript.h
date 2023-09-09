@@ -16,12 +16,12 @@
 #include <assert.h>
 #include <cstdlib>
 
+#include <common/spanparsing.h>
 #include <policy/policy.h>
 #include <primitives/transaction.h>
 #include <script/script.h>
 #include <span.h>
 #include <util/check.h>
-#include <util/spanparsing.h>
 #include <util/strencodings.h>
 #include <util/string.h>
 #include <util/vector.h>

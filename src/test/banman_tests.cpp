@@ -4,11 +4,11 @@
 
 #include <banman.h>
 #include <chainparams.h>
+#include <common/readwritefile.h>
 #include <netbase.h>
 #include <streams.h>
 #include <test/util/logging.h>
 #include <test/util/setup_common.h>
-#include <util/readwritefile.h>
 
 
 #include <boost/test/unit_test.hpp>
