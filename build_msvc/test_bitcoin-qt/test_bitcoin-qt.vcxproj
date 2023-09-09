@@ -50,6 +50,9 @@
     <ProjectReference Include="..\libbitcoin_node\libbitcoin_node.vcxproj">
       <Project>{460fee33-1fe1-483f-b3bf-931ff8e969a5}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\libbitcoin_kernel\libbitcoin_kernel.vcxproj">
+      <Project>{a938586f-1016-4c60-9b82-56123264ee14}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\libbitcoin_util\libbitcoin_util.vcxproj">
       <Project>{b53a5535-ee9d-4c6f-9a26-f79ee3bc3754}</Project>
     </ProjectReference>

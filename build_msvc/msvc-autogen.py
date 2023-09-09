@@ -16,6 +16,7 @@ libs = [
     'libbitcoin_common',
     'libbitcoin_crypto',
     'libbitcoin_node',
+    'libbitcoin_kernel',
     'libbitcoin_util',
     'libbitcoin_wallet_tool',
     'libbitcoin_wallet',
