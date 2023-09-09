@@ -14,6 +14,7 @@ libbitcoin_cli/libbitcoin_cli.vcxproj
 libbitcoin_common/libbitcoin_common.vcxproj
 libbitcoin_crypto/libbitcoin_crypto.vcxproj
 libbitcoin_node/libbitcoin_node.vcxproj
+libbitcoin_kernel/libbitcoin_kernel.vcxproj
 libbitcoin_util/libbitcoin_util.vcxproj
 libbitcoin_wallet_tool/libbitcoin_wallet_tool.vcxproj
 libbitcoin_wallet/libbitcoin_wallet.vcxproj
