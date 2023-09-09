@@ -14,8 +14,8 @@
 #include <uint256.h>
 
 #include <common/args.h>
+#include <common/bip32.h>
 #include <span.h>
-#include <util/bip32.h>
 #include <util/check.h>
 #include <util/spanparsing.h>
 #include <util/strencodings.h>

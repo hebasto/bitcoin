@@ -7,6 +7,7 @@
 #include <addrman_impl.h>
 #include <chainparams.h>
 #include <common/args.h>
+#include <common/asmap.h>
 #include <merkleblock.h>
 #include <random.h>
 #include <test/fuzz/FuzzedDataProvider.h>
@@ -15,7 +16,6 @@
 #include <test/fuzz/util/net.h>
 #include <test/util/setup_common.h>
 #include <time.h>
-#include <util/asmap.h>
 #include <util/chaintype.h>
 
 #include <cassert>

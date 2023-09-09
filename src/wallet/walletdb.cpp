@@ -5,13 +5,13 @@
 
 #include <wallet/walletdb.h>
 
+#include <common/bip32.h>
 #include <common/system.h>
 #include <key_io.h>
 #include <protocol.h>
 #include <script/script.h>
 #include <serialize.h>
 #include <sync.h>
-#include <util/bip32.h>
 #include <util/check.h>
 #include <util/fs.h>
 #include <util/time.h>

@@ -9,6 +9,7 @@
 #include <bip324.h>
 #include <chainparams.h>
 #include <common/bloom.h>
+#include <common/sock.h>
 #include <compat/compat.h>
 #include <consensus/amount.h>
 #include <crypto/siphash.h>
@@ -29,7 +30,6 @@
 #include <sync.h>
 #include <uint256.h>
 #include <util/check.h>
-#include <util/sock.h>
 #include <util/threadinterrupt.h>
 
 #include <atomic>

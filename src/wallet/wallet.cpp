@@ -13,6 +13,8 @@
 #include <chain.h>
 #include <coins.h>
 #include <common/args.h>
+#include <common/error.h>
+#include <common/message.h>
 #include <common/settings.h>
 #include <common/system.h>
 #include <consensus/amount.h>
@@ -51,10 +53,8 @@
 #include <uint256.h>
 #include <univalue.h>
 #include <util/check.h>
-#include <util/error.h>
 #include <util/fs.h>
 #include <util/fs_helpers.h>
-#include <util/message.h>
 #include <util/moneystr.h>
 #include <util/result.h>
 #include <util/string.h>

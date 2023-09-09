@@ -6,6 +6,7 @@
 #include <base58.h>
 #include <chain.h>
 #include <coins.h>
+#include <common/bip32.h>
 #include <consensus/amount.h>
 #include <consensus/validation.h>
 #include <core_io.h>
@@ -33,7 +34,6 @@
 #include <script/solver.h>
 #include <uint256.h>
 #include <undo.h>
-#include <util/bip32.h>
 #include <util/check.h>
 #include <util/strencodings.h>
 #include <util/string.h>

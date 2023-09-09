@@ -5,6 +5,7 @@
 #ifndef BITCOIN_TEST_UTIL_NET_H
 #define BITCOIN_TEST_UTIL_NET_H
 
+#include <common/sock.h>
 #include <compat/compat.h>
 #include <net.h>
 #include <net_permissions.h>
@@ -13,7 +14,6 @@
 #include <node/connection_types.h>
 #include <node/eviction.h>
 #include <sync.h>
-#include <util/sock.h>
 
 #include <algorithm>
 #include <array>

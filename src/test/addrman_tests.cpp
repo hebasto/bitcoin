@@ -7,12 +7,12 @@
 #include <addrman_impl.h>
 #include <chainparams.h>
 #include <clientversion.h>
+#include <common/asmap.h>
 #include <hash.h>
 #include <netbase.h>
 #include <random.h>
 #include <test/data/asmap.raw.h>
 #include <test/util/setup_common.h>
-#include <util/asmap.h>
 #include <util/string.h>
 
 #include <boost/test/unit_test.hpp>

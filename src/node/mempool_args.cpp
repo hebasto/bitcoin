@@ -8,13 +8,13 @@
 #include <kernel/mempool_options.h>
 
 #include <common/args.h>
+#include <common/error.h>
 #include <consensus/amount.h>
 #include <kernel/chainparams.h>
 #include <logging.h>
 #include <policy/feerate.h>
 #include <policy/policy.h>
 #include <tinyformat.h>
-#include <util/error.h>
 #include <util/moneystr.h>
 #include <util/translation.h>
 

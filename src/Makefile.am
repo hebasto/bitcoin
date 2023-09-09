@@ -136,9 +136,15 @@ BITCOIN_CORE_H = \
   clientversion.h \
   coins.h \
   common/args.h \
+  common/asmap.h \
+  common/bip32.h \
   common/bloom.h \
+  common/error.h \
+  common/fees.h \
   common/init.h \
+  common/message.h \
   common/run_command.h \
+  common/sock.h \
   common/url.h \
   compat/assumptions.h \
   compat/byteswap.h \
@@ -290,18 +296,14 @@ BITCOIN_CORE_H = \
   txrequest.h \
   undo.h \
   util/any.h \
-  util/asmap.h \
   util/batchpriority.h \
-  util/bip32.h \
   util/bitdeque.h \
   util/bytevectorhash.h \
   util/chaintype.h \
   util/check.h \
   util/epochguard.h \
-  util/error.h \
   util/exception.h \
   util/fastrange.h \
-  util/fees.h \
   util/fs.h \
   util/fs_helpers.h \
   util/getuniquepath.h \
@@ -310,16 +312,14 @@ BITCOIN_CORE_H = \
   util/hasher.h \
   util/insert.h \
   util/macros.h \
-  util/message.h \
   util/moneystr.h \
   util/overflow.h \
   util/overloaded.h \
-  util/rbf.h \
   util/readwritefile.h \
+  util/rbf.h \
   util/result.h \
   util/serfloat.h \
   util/signalinterrupt.h \
-  util/sock.h \
   util/spanparsing.h \
   util/string.h \
   util/syserror.h \
@@ -670,14 +670,21 @@ libbitcoin_common_a_SOURCES = \
   base58.cpp \
   bech32.cpp \
   chainparams.cpp \
+  chainparamsbase.cpp \
   coins.cpp \
   common/args.cpp \
+  common/asmap.cpp \
+  common/bip32.cpp \
   common/bloom.cpp \
   common/config.cpp \
+  common/error.cpp \
+  common/fees.cpp \
   common/init.cpp \
   common/interfaces.cpp \
+  common/message.cpp \
   common/run_command.cpp \
   common/settings.cpp \
+  common/sock.cpp \
   common/system.cpp \
   compressor.cpp \
   core_read.cpp \
@@ -721,42 +728,35 @@ endif
 libbitcoin_util_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_util_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_util_a_SOURCES = \
-  support/lockedpool.cpp \
-  chainparamsbase.cpp \
   clientversion.cpp \
   logging.cpp \
   random.cpp \
   randomenv.cpp \
   streams.cpp \
   support/cleanse.cpp \
+  support/lockedpool.cpp \
   sync.cpp \
-  util/asmap.cpp \
   util/batchpriority.cpp \
-  util/bip32.cpp \
   util/bytevectorhash.cpp \
   util/chaintype.cpp \
   util/check.cpp \
-  util/error.cpp \
   util/exception.cpp \
-  util/fees.cpp \
   util/fs.cpp \
   util/fs_helpers.cpp \
   util/getuniquepath.cpp \
   util/hasher.cpp \
-  util/sock.cpp \
-  util/syserror.cpp \
-  util/message.cpp \
   util/moneystr.cpp \
   util/rbf.cpp \
   util/readwritefile.cpp \
-  util/signalinterrupt.cpp \
-  util/thread.cpp \
-  util/threadinterrupt.cpp \
-  util/threadnames.cpp \
   util/serfloat.cpp \
+  util/signalinterrupt.cpp \
   util/spanparsing.cpp \
   util/strencodings.cpp \
   util/string.cpp \
+  util/syserror.cpp \
+  util/thread.cpp \
+  util/threadinterrupt.cpp \
+  util/threadnames.cpp \
   util/time.cpp \
   util/tokenpipe.cpp \
   $(BITCOIN_CORE_H)

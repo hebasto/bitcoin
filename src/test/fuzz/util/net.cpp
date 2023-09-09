@@ -4,6 +4,7 @@
 
 #include <test/fuzz/util/net.h>
 
+#include <common/sock.h>
 #include <compat/compat.h>
 #include <netaddress.h>
 #include <node/protocol_version.h>
@@ -11,7 +12,6 @@
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/util.h>
 #include <test/util/net.h>
-#include <util/sock.h>
 #include <util/time.h>
 
 #include <array>

@@ -21,6 +21,7 @@
 #include <chainparamsbase.h>
 #include <clientversion.h>
 #include <common/args.h>
+#include <common/asmap.h>
 #include <common/system.h>
 #include <consensus/amount.h>
 #include <deploymentstatus.h>
@@ -72,7 +73,6 @@
 #include <torcontrol.h>
 #include <txdb.h>
 #include <txmempool.h>
-#include <util/asmap.h>
 #include <util/chaintype.h>
 #include <util/check.h>
 #include <util/fs.h>

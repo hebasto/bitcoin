@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <chainparams.h>
+#include <common/asmap.h>
 #include <net.h>
 #include <net_permissions.h>
 #include <netaddress.h>
@@ -14,7 +15,6 @@
 #include <test/fuzz/util/net.h>
 #include <test/util/net.h>
 #include <test/util/setup_common.h>
-#include <util/asmap.h>
 #include <util/chaintype.h>
 
 #include <cstdint>
