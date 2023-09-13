@@ -101,6 +101,26 @@ target_link_libraries(bitcoin_common
 )
 
 
+if(ENABLE_WALLET)
+  add_subdirectory(wallet)
+
+  if(BUILD_WALLET_TOOL)
+    add_executable(bitcoin-wallet
+      bitcoin-wallet.cpp
+      init/bitcoin-wallet.cpp
+      wallet/wallettool.cpp
+    )
+    target_link_libraries(bitcoin-wallet
+      core
+      bitcoin_wallet
+      bitcoin_common
+      bitcoin_util
+      Boost::headers
+    )
+  endif()
+endif()
+
+
 # P2P and RPC server functionality used by `bitcoind` and `bitcoin-qt` executables.
 add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL
   addrdb.cpp
@@ -192,9 +212,13 @@ add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL
   validation.cpp
   validationinterface.cpp
   versionbits.cpp
-
-  dummywallet.cpp
 )
+if(ENABLE_WALLET)
+  target_sources(bitcoin_node PRIVATE wallet/init.cpp)
+  target_link_libraries(bitcoin_node PRIVATE bitcoin_wallet)
+else()
+  target_sources(bitcoin_node PRIVATE dummywallet.cpp)
+endif()
 target_link_libraries(bitcoin_node
   PRIVATE
     core
