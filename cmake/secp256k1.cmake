@@ -39,6 +39,8 @@ target_compile_definitions(secp256k1
     ENABLE_MODULE_EXTRAKEYS
     ENABLE_MODULE_ELLSWIFT
     $<$<BOOL:${HAVE_64BIT_ASM}>:USE_ASM_X86_64=1>
+  INTERFACE
+    $<$<PLATFORM_ID:Windows>:SECP256K1_STATIC>
 )
 
 target_include_directories(secp256k1
