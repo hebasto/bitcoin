@@ -57,6 +57,68 @@ else()
 endif()
 unset(check_pie_output)
 
+# The core interface library aims to encapsulate all common build flags.
+# It is intended to be a usage requirement for all other targets.
+add_library(core INTERFACE)
+
+if(WIN32)
+  #[=[
+  This build system supports two ways to build binaries for Windows.
+
+  1. Building on Windows using MSVC.
+  Implementation notes:
+  - /DWIN32 and /D_WINDOWS definitions are included into the CMAKE_CXX_FLAGS_INIT
+    and CMAKE_CXX_FLAGS_INIT variables by default.
+  - A run-time library is selected using the CMAKE_MSVC_RUNTIME_LIBRARY variable.
+  - MSVC-specific options, for example, /Zc:__cplusplus, are additionally required.
+
+  2. Cross-compiling using MinGW.
+  Implementation notes:
+  - WIN32 and _WINDOWS definitions must be provided explicitly.
+  - A run-time library must be specified explicitly using _MT definition.
+  ]=]
+
+  target_compile_definitions(core INTERFACE
+    _WIN32_WINNT=0x0601
+    _WIN32_IE=0x0501
+    WIN32_LEAN_AND_MEAN
+    NOMINMAX
+  )
+
+  if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    target_compile_options(core INTERFACE
+      /utf-8
+      /Zc:__cplusplus
+    )
+    # Improve parallelism in MSBuild.
+    # See: https://devblogs.microsoft.com/cppblog/improved-parallelism-in-msbuild/.
+    list(APPEND CMAKE_VS_GLOBALS "UseMultiToolTask=true")
+  endif()
+
+  if(MINGW)
+    target_compile_definitions(core INTERFACE
+      WIN32
+      _WINDOWS
+      _MT
+    )
+  endif()
+endif()
+
+# Use 64-bit off_t on 32-bit Linux.
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+  # Ensure 64-bit offsets are used for filesystem accesses for 32-bit compilation.
+  target_compile_definitions(core INTERFACE
+    _FILE_OFFSET_BITS=64
+  )
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  target_compile_definitions(core INTERFACE
+    MAC_OSX
+  )
+endif()
+
 include(CheckSourceCompilesAndLinks)
 include(cmake/introspection.cmake)
 
@@ -75,11 +137,20 @@ message("C compiler ............................ ${CMAKE_C_COMPILER}")
 message("CFLAGS ................................ ${CMAKE_C_FLAGS}")
 message("C++ compiler .......................... ${CMAKE_CXX_COMPILER}")
 message("CXXFLAGS .............................. ${CMAKE_CXX_FLAGS}")
-get_directory_property(common_compile_options COMPILE_OPTIONS)
-string(REPLACE ";" " " common_compile_options "${common_compile_options}")
+get_target_property(common_compile_options core INTERFACE_COMPILE_OPTIONS)
+if(common_compile_options)
+  list(JOIN common_compile_options " " common_compile_options)
+else()
+  set(common_compile_options)
+endif()
+string(GENEX_STRIP "${common_compile_options}" common_compile_options)
 message("Common compile options ................ ${common_compile_options}")
-get_directory_property(common_link_options LINK_OPTIONS)
-string(REPLACE ";" " " common_link_options "${common_link_options}")
+get_target_property(common_link_options core INTERFACE_LINK_OPTIONS)
+if(common_link_options)
+  list(JOIN common_link_options " " common_link_options)
+else()
+  set(common_link_options)
+endif()
 message("Common link options ................... ${common_link_options}")
 message("Linker flags for executables .......... ${CMAKE_EXE_LINKER_FLAGS}")
 message("Linker flags for shared libraries ..... ${CMAKE_SHARED_LINKER_FLAGS}")
