@@ -75,44 +75,6 @@ static void FillAddrMan(AddrMan& addrman)
 
 /* Benchmarks */
 
-static void AddrManAdd(benchmark::Bench& bench)
-{
-    CreateAddresses();
-
-    bench.run([&] {
-        AddrMan addrman{EMPTY_NETGROUPMAN, /*deterministic=*/false, ADDRMAN_CONSISTENCY_CHECK_RATIO};
-        AddAddressesToAddrMan(addrman);
-    });
-}
-
-static void AddrManSelect(benchmark::Bench& bench)
-{
-    AddrMan addrman{EMPTY_NETGROUPMAN, /*deterministic=*/false, ADDRMAN_CONSISTENCY_CHECK_RATIO};
-
-    FillAddrMan(addrman);
-
-    bench.run([&] {
-        const auto& address = addrman.Select();
-        assert(address.first.GetPort() > 0);
-    });
-}
-
-// The worst case performance of the Select() function is when there is only
-// one address on the table, because it linearly searches every position of
-// several buckets before identifying the correct bucket
-static void AddrManSelectFromAlmostEmpty(benchmark::Bench& bench)
-{
-    AddrMan addrman{EMPTY_NETGROUPMAN, /*deterministic=*/false, ADDRMAN_CONSISTENCY_CHECK_RATIO};
-
-    // Add one address to the new table
-    CService addr = Lookup("250.3.1.1", 8333, false).value();
-    addrman.Add({CAddress(addr, NODE_NONE)}, addr);
-
-    bench.run([&] {
-        (void)addrman.Select();
-    });
-}
-
 static void AddrManSelectByNetwork(benchmark::Bench& bench)
 {
     AddrMan addrman{EMPTY_NETGROUPMAN, /*deterministic=*/false, ADDRMAN_CONSISTENCY_CHECK_RATIO};
@@ -132,47 +94,4 @@ static void AddrManSelectByNetwork(benchmark::Bench& bench)
     });
 }
 
-static void AddrManGetAddr(benchmark::Bench& bench)
-{
-    AddrMan addrman{EMPTY_NETGROUPMAN, /*deterministic=*/false, ADDRMAN_CONSISTENCY_CHECK_RATIO};
-
-    FillAddrMan(addrman);
-
-    bench.run([&] {
-        const auto& addresses = addrman.GetAddr(/*max_addresses=*/2500, /*max_pct=*/23, /*network=*/std::nullopt);
-        assert(addresses.size() > 0);
-    });
-}
-
-static void AddrManAddThenGood(benchmark::Bench& bench)
-{
-    auto markSomeAsGood = [](AddrMan& addrman) {
-        for (size_t source_i = 0; source_i < NUM_SOURCES; ++source_i) {
-            for (size_t addr_i = 0; addr_i < NUM_ADDRESSES_PER_SOURCE; ++addr_i) {
-                addrman.Good(g_addresses[source_i][addr_i]);
-            }
-        }
-    };
-
-    CreateAddresses();
-
-    bench.run([&] {
-        // To make the benchmark independent of the number of evaluations, we always prepare a new addrman.
-        // This is necessary because AddrMan::Good() method modifies the object, affecting the timing of subsequent calls
-        // to the same method and we want to do the same amount of work in every loop iteration.
-        //
-        // This has some overhead (exactly the result of AddrManAdd benchmark), but that overhead is constant so improvements in
-        // AddrMan::Good() will still be noticeable.
-        AddrMan addrman{EMPTY_NETGROUPMAN, /*deterministic=*/false, ADDRMAN_CONSISTENCY_CHECK_RATIO};
-        AddAddressesToAddrMan(addrman);
-
-        markSomeAsGood(addrman);
-    });
-}
-
-BENCHMARK(AddrManAdd, benchmark::PriorityLevel::HIGH);
-BENCHMARK(AddrManSelect, benchmark::PriorityLevel::HIGH);
-BENCHMARK(AddrManSelectFromAlmostEmpty, benchmark::PriorityLevel::HIGH);
 BENCHMARK(AddrManSelectByNetwork, benchmark::PriorityLevel::HIGH);
-BENCHMARK(AddrManGetAddr, benchmark::PriorityLevel::HIGH);
-BENCHMARK(AddrManAddThenGood, benchmark::PriorityLevel::HIGH);
