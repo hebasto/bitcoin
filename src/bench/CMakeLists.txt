@@ -13,8 +13,4 @@ add_executable(bench_bitcoin
 target_link_libraries(bench_bitcoin
   core
   test_util
-  leveldb
-  univalue
-  Boost::headers
-  libevent::libevent
 )
