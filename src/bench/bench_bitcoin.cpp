@@ -9,12 +9,15 @@
 #include <crypto/sha256.h>
 #include <util/fs.h>
 #include <util/strencodings.h>
+#include <util/translation.h>
 
 #include <chrono>
 #include <cstdint>
 #include <iostream>
 #include <sstream>
 #include <vector>
+
+const std::function<std::string(const char*)> G_TRANSLATION_FUN = nullptr;
 
 static const char* DEFAULT_BENCH_FILTER = ".*";
 static constexpr int64_t DEFAULT_MIN_TIME_MS{10};

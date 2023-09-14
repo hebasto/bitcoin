@@ -75,7 +75,9 @@ using node::LoadChainstate;
 using node::RegenerateCommitments;
 using node::VerifyLoadedChainstate;
 
-const std::function<std::string(const char*)> G_TRANSLATION_FUN = nullptr;
+// Commenting out the following line breaks tests, so DO NOT build them.
+// const std::function<std::string(const char*)> G_TRANSLATION_FUN = nullptr;
+
 UrlDecodeFn* const URL_DECODE = nullptr;
 
 /** Random context to get unique temp data dirs. Separate from g_insecure_rand_ctx, which can be seeded from a const env var */
