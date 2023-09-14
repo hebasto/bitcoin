@@ -97,7 +97,6 @@ target_link_libraries(bitcoin_common
     univalue
     secp256k1
     Boost::headers
-    $<TARGET_NAME_IF_EXISTS:libevent::libevent>
 )
 
 
@@ -228,7 +227,6 @@ target_link_libraries(bitcoin_node
     minisketch
     univalue
     Boost::headers
-    libevent::libevent
     $<TARGET_NAME_IF_EXISTS:PkgConfig::libevent_pthreads>
     $<TARGET_NAME_IF_EXISTS:NATPMP::NATPMP>
     $<TARGET_NAME_IF_EXISTS:MiniUPnPc::MiniUPnPc>
@@ -246,6 +244,7 @@ if(BUILD_DAEMON)
     PRIVATE
       core
       bitcoin_node
+      libevent::libevent
   )
 endif()
 

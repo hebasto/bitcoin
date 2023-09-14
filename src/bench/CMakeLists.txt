@@ -54,6 +54,7 @@ target_link_libraries(bench_bitcoin
   leveldb
   univalue
   Boost::headers
+  libevent::libevent
 )
 
 if(ENABLE_WALLET)
