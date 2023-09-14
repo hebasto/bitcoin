@@ -2,8 +2,9 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <addrman.h>
 #include <bench/bench.h>
+
+#include <addrman.h>
 #include <netbase.h>
 #include <netgroup.h>
 #include <random.h>
