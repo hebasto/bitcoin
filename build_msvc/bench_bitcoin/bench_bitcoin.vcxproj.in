@@ -46,6 +46,16 @@
       <Project>{1e065f03-3566-47d0-8fa9-daa72b084e7d}</Project>
     </ProjectReference>
   </ItemGroup>
+  <Target Name="RawBenchHeaderGen" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>There was an error executing the raw bench header generation task.</ErrorText>
+    </PropertyGroup>
+    <ItemGroup>
+      <RawBenchFile Include="..\..\src\bench\data\*.raw" />
+    </ItemGroup>
+    <HeaderFromHexdump RawFilePath="%(RawBenchFile.FullPath)" HeaderFilePath="%(RawBenchFile.FullPath).h" SourceHeader="static unsigned const char %(RawBenchFile.Filename)_raw[] = {" SourceFooter="};" />
+  </Target>
+  <Import Label="hexdumpTarget" Project="..\msbuild\tasks\hexdump.targets" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Import Project="..\common.vcxproj" />
