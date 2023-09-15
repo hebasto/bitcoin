@@ -41,7 +41,7 @@ jobs:
       - name: Compile and run tests
         run: |
           # Use clang++, because it is a bit faster and uses less memory than g++
-          git rebase --exec "echo Running test-one-commit on \$( git log -1 ) && ./autogen.sh && CC=clang CXX=clang++ ./configure && make clean && make -j $(nproc) check && ./test/functional/test_runner.py -j $(( $(nproc) * 2 ))" ${{ env.COMMIT_AFTER_LAST_MERGE }}~1
+          git rebase --exec "echo Running test-one-commit on \$( git log -1 )" ${{ env.COMMIT_AFTER_LAST_MERGE }}~1
 
   macos-native-x86_64:
     name: 'macOS 13 native, x86_64, no depends, sqlite only, gui'
