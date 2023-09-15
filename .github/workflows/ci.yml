@@ -31,12 +31,26 @@ jobs:
     env:
       MAX_COUNT: 6
     steps:
+      - run: |
+          echo ============================================================
+          echo ${{ github.event.pull_request.commits }}
+          echo ============================================================
+          echo "FETCH_DEPTH=$((${{ github.event.pull_request.commits }} + 2))" >> "$GITHUB_ENV"
+          echo ============================================================
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 8  # Two more than --max-count
+          fetch-depth: ${{ env.FETCH_DEPTH }}
       - run: |
-          echo "COMMIT_AFTER_LAST_MERGE=$(git log $(git log --merges -1 --format='%H')..HEAD --format='%H' --max-count=${{ env.MAX_COUNT }} | tail -1)" >> "$GITHUB_ENV"
+          echo ============================================================
+          git log --merges -1 --format='%H'
+          echo ============================================================
+          git log $(git log --merges -1 --format='%H')..HEAD --format='%H' --max-count=${{ env.MAX_COUNT }}
+          echo ============================================================
+          git log $(git log --merges -1 --format='%H')..HEAD --format='%H' --max-count=${{ env.MAX_COUNT }} | tail -1
+          echo ============================================================
+          echo "COMMIT_AFTER_LAST_MERGE=$(git log $(git log --merges -1 --format=%H)..HEAD --format=%H --max-count=${{ env.MAX_COUNT }} | tail -1)" >> "$GITHUB_ENV"
+          echo ============================================================
       - run: sudo apt install clang ccache build-essential libtool autotools-dev automake pkg-config bsdmainutils python3-zmq libevent-dev libboost-dev libsqlite3-dev libdb++-dev systemtap-sdt-dev libminiupnpc-dev libnatpmp-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools qtwayland5 libqrencode-dev -y
       - name: Compile and run tests
         run: |
