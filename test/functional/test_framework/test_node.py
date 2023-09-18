@@ -273,6 +273,15 @@ class TestNode():
                 self.rpc_connected = True
                 self.url = self.rpc.rpc_url
                 return
+            except ValueError as e:  # cookie file not found and no rpcuser or rpcpassword; bitcoind is still starting
+                if "No RPC credentials" not in str(e):
+                    raise
+            except ConnectionRefusedError:
+                pass
+            except JSONRPCException as e:  # Initialization phase
+                # -28 RPC in warmup, "Loading wallet…"
+                if e.error['code'] != -28:
+                    raise  # unknown JSON RPC exception
             except Exception as e:
                 raise
             # except JSONRPCException as e:  # Initialization phase
