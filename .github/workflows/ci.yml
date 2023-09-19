@@ -218,3 +218,7 @@ jobs:
 
       - name: Run functional tests
         run: py -3 test\functional\test_runner.py --jobs $env:NUMBER_OF_PROCESSORS --ci --quiet --tmpdirprefix=$env:RUNNER_TEMP --combinedlogslen=99999999 --timeout-factor=$env:TEST_RUNNER_TIMEOUT_FACTOR
+
+      - if: ${{ always() }}
+        shell: bash
+        run: cat ~/TestNode-start-output
