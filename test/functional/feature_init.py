@@ -54,8 +54,7 @@ class InitStressTest(BitcoinTestFramework):
 
         def check_clean_start():
             """Ensure that node restarts successfully after various interrupts."""
-            node.start()
-            node.wait_for_rpc_connection()
+            self.start_node(0)
             assert_equal(200, node.getblockcount())
 
         lines_to_terminate_after = [

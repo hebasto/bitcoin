@@ -19,8 +19,7 @@ class FilelockTest(BitcoinTestFramework):
 
     def setup_network(self):
         self.add_nodes(self.num_nodes, extra_args=None)
-        self.nodes[0].start()
-        self.nodes[0].wait_for_rpc_connection()
+        self.start_node(0)
 
     def run_test(self):
         datadir = self.nodes[0].chain_path
