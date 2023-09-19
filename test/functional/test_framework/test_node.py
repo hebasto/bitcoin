@@ -220,6 +220,11 @@ class TestNode():
         if env is not None:
             subp_env.update(env)
 
+        file_path = os.path.join(os.path.expanduser("~"), "TestNode-start-output")
+        with open(file_path, mode='at') as file:
+            file.write(" ".join(self.args))
+            file.write(os.linesep)
+
         self.process = subprocess.Popen(self.args + extra_args, env=subp_env, stdout=stdout, stderr=stderr, cwd=cwd, **kwargs)
 
         self.running = True
