@@ -226,6 +226,7 @@ class TestNode():
             file.write(os.linesep)
 
         self.process = subprocess.Popen(self.args + extra_args, env=subp_env, stdout=stdout, stderr=stderr, cwd=cwd, **kwargs)
+        self.wait_for_pid(self.process)
 
         self.running = True
         self.log.debug("bitcoind started, waiting for RPC to come up")
