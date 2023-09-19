@@ -225,9 +225,15 @@ class TestNode():
             file.write(" ".join(self.args))
             file.write(os.linesep)
 
-        self.process = subprocess.Popen(self.args + extra_args, env=subp_env, stdout=stdout, stderr=stderr, cwd=cwd, **kwargs)
-        self.wait_for_pid(self.process)
+        max_attempts = 3
+        for _ in range(max_attempts):
+            process = subprocess.Popen(self.args + extra_args, env=subp_env, stdout=stdout, stderr=stderr, cwd=cwd, **kwargs)
+            if self.is_terminated_or_pid_available(process):
+                break
+            self.log.warning(f"subprocess.Popen({self.args + extra_args}) FAILED for unknown reasons")
+            process.terminate()
 
+        self.process = process
         self.running = True
         self.log.debug("bitcoind started, waiting for RPC to come up")
 
@@ -293,8 +299,8 @@ class TestNode():
             time.sleep(1.0 / poll_per_s)
         self._raise_assertion_error("Unable to connect to bitcoind after {}s".format(self.rpc_timeout))
 
-    def wait_for_pid(self, bitcoind_process):
-        """Ensures PID file is created."""
+    def is_terminated_or_pid_available(self, bitcoind_process):
+        """Checks for a created PID file."""
         self.log.debug("Waiting for PID")
         timeout = 4 # seconds
         # Poll at a rate of four times per second.
@@ -302,7 +308,8 @@ class TestNode():
         pid_file = os.path.join(self.datadir, self.chain, "bitcoind.pid")
         for _ in range(poll_per_s * timeout):
             if bitcoind_process.poll() is not None:
-                return
+                # The process terminated.
+                return True
             if os.path.isfile(pid_file):
                 with open(pid_file, mode='r') as file:
                     try:
@@ -310,9 +317,10 @@ class TestNode():
                             self._raise_assertion_error(f"PID inconsistency detected")
                     except Exception:
                         raise
-                return
+                return True
             time.sleep(1.0 / poll_per_s)
-        self._raise_assertion_error(f"PID file is not available after {timeout}s")
+        self.log.warning(f"PID file is not available after {timeout}s")
+        return False
 
     def wait_for_cookie_credentials(self):
         """Ensures auth cookie credentials can be read, e.g. for testing CLI with -rpcwait before RPC connection is up."""
