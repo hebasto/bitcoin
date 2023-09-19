@@ -292,6 +292,27 @@ class TestNode():
             time.sleep(1.0 / poll_per_s)
         self._raise_assertion_error("Unable to connect to bitcoind after {}s".format(self.rpc_timeout))
 
+    def wait_for_pid(self, bitcoind_process):
+        """Ensures PID file is created."""
+        self.log.debug("Waiting for PID")
+        timeout = 4 # seconds
+        # Poll at a rate of four times per second.
+        poll_per_s = 4
+        pid_file = os.path.join(self.datadir, self.chain, "bitcoind.pid")
+        for _ in range(poll_per_s * timeout):
+            if bitcoind_process.poll() is not None:
+                return
+            if os.path.isfile(pid_file):
+                with open(pid_file, mode='r') as file:
+                    try:
+                        if bitcoind_process.pid != int(file.read().strip()):
+                            self._raise_assertion_error(f"PID inconsistency detected")
+                    except Exception:
+                        raise
+                return
+            time.sleep(1.0 / poll_per_s)
+        self._raise_assertion_error(f"PID file is not available after {timeout}s")
+
     def wait_for_cookie_credentials(self):
         """Ensures auth cookie credentials can be read, e.g. for testing CLI with -rpcwait before RPC connection is up."""
         self.log.debug("Waiting for cookie credentials")
