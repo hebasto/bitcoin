@@ -318,9 +318,15 @@ class TestNode():
                 with open(pid_file, mode='r') as file:
                     try:
                         pid = int(file.read().strip())
+                    except FileNotFoundError:
+                        # The next loop should find the process terminated.
+                        pid = None
+                    except PermissionError:
+                        # The next loop should avoid this state.
+                        pid = None
                     except Exception:
                         raise
-                if pid != bitcoind_process.pid:
+                if pid is not None and pid != bitcoind_process.pid:
                     self._raise_assertion_error(f"PID inconsistency detected: expected {bitcoind_process.pid}, read from file {pid}")
                 return True
             time.sleep(1.0 / poll_per_s)
