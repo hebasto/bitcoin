@@ -25,6 +25,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <deque>
+#include <iostream>
 #include <memory>
 #include <optional>
 #include <string>
@@ -33,6 +34,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <uwebsockets/App.h>
 #include <event2/buffer.h>
 #include <event2/bufferevent.h>
 #include <event2/http.h>
@@ -442,6 +444,20 @@ void StartHTTPServer()
     for (int i = 0; i < rpcThreads; i++) {
         g_thread_http_workers.emplace_back(HTTPWorkQueueRun, g_work_queue.get(), i);
     }
+}
+
+void StartWebSocketsServer()
+{
+    uWS::App().get("/hello", [](auto *res, auto *req) {
+        res->end("Hello, World!");
+    }).listen(3000, [](auto *token) {
+        if (token) {
+            std::cout << "Server started on port 3000" << std::endl;
+        } else {
+            std::cout << "Failed to start server" << std::endl;
+            exit(1);
+        }
+    }).run();
 }
 
 void InterruptHTTPServer()

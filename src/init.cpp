@@ -107,6 +107,7 @@
 #include <sys/stat.h>
 #endif
 
+#include <uwebsockets/App.h>
 #include <boost/signals2/signal.hpp>
 
 #if ENABLE_ZMQ
@@ -678,6 +679,18 @@ static bool AppInitServers(NodeContext& node)
         return false;
     if (args.GetBoolArg("-rest", DEFAULT_REST_ENABLE)) StartREST(&node);
     StartHTTPServer();
+
+    uWS::App().get("/hello", [](auto *res, auto *req) {
+        res->end("Hello, World!");
+    }).listen(3000, [](auto *token) {
+        if (token) {
+            std::cout << "Server started on port 3000" << std::endl;
+        } else {
+            std::cout << "Failed to start server" << std::endl;
+            exit(1);
+        }
+    }).run();
+
     return true;
 }
 
