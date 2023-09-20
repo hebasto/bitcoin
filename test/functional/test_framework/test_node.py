@@ -230,13 +230,15 @@ class TestNode():
             process.kill()
             process = None
 
-        if process is not None:
-            self.process = process
-            self.running = True
-            self.log.debug("bitcoind started, waiting for RPC to come up")
+        if process is None:
+            self._raise_assertion_error(f"subprocess.Popen({self.args + extra_args}) FAILED after {max_attempts} attempts")
 
-            if self.start_perf:
-                self._start_perf()
+        self.process = process
+        self.running = True
+        self.log.debug("bitcoind started, waiting for RPC to come up")
+
+        if self.start_perf:
+            self._start_perf()
 
     def wait_for_rpc_connection(self):
         """Sets up an RPC connection to the bitcoind process. Returns False if unable to connect."""
