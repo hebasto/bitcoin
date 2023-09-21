@@ -30,6 +30,7 @@ class ReplaceByFeeTest(BitcoinTestFramework):
         self.extra_args = [
             [
                 "-mempoolfullrbf=0",
+                "-limitclustercount=200",
                 "-limitancestorcount=50",
                 "-limitancestorsize=101",
                 "-limitdescendantcount=200",
