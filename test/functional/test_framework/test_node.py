@@ -381,6 +381,8 @@ class TestNode():
         if return_code is None:
             return False
 
+        self.process.kill()
+
         # process has stopped. Assert that it didn't return an error code.
         assert return_code == expected_ret_code, self._node_msg(
             f"Node returned unexpected exit code ({return_code}) vs ({expected_ret_code}) when stopping")
