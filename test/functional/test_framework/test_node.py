@@ -399,15 +399,12 @@ class TestNode():
         self.rpc = None
         self.log.debug("Node stopped")
 
-        sys.stderr.write("\n============================================================================\n")
         try:
             handle_exe = os.path.join("C:\\", "Users", "hebasto", "Downloads", "Handle", "handle64.exe")
             output = subprocess.run([handle_exe, '-nobanner', str(self.debug_log_path)], text=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE).stdout
-            sys.stderr.write(output)
+            self.log.info(output)
         except subprocess.CalledProcessError as e:
-            sys.stderr.write(output)
-            sys.stderr.write(f"Error: {e}")
-        sys.stderr.write("\n============================================================================\n")
+            self.log.info(f"Error: {e}")
 
         return True
 
