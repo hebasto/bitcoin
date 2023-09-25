@@ -398,6 +398,17 @@ class TestNode():
         self.rpc_connected = False
         self.rpc = None
         self.log.debug("Node stopped")
+
+        sys.stderr.write("\n============================================================================\n")
+        try:
+            handle_exe = os.path.join("C:\\", "Users", "hebasto", "Downloads", "Handle", "handle64.exe")
+            output = subprocess.run([handle_exe, '-nobanner', str(self.debug_log_path)], text=True, stderr=subprocess.STDOUT, stdout=subprocess.PIPE).stdout
+            sys.stderr.write(output)
+        except subprocess.CalledProcessError as e:
+            sys.stderr.write(output)
+            sys.stderr.write(f"Error: {e}")
+        sys.stderr.write("\n============================================================================\n")
+
         return True
 
     def wait_until_stopped(self, *, timeout=BITCOIND_PROC_WAIT_TIMEOUT, expect_error=False, **kwargs):
