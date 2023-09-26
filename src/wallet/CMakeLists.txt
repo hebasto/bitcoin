@@ -53,5 +53,8 @@ if(USE_SQLITE)
 endif()
 if(USE_BDB)
   target_sources(bitcoin_wallet PRIVATE bdb.cpp salvage.cpp)
-  target_link_libraries(bitcoin_wallet PUBLIC BerkeleyDB::BerkeleyDB)
+  target_link_libraries(bitcoin_wallet
+    PRIVATE
+      BerkeleyDB::BerkeleyDB
+  )
 endif()

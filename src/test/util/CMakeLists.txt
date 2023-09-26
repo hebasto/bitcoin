@@ -21,9 +21,8 @@ add_library(test_util STATIC EXCLUDE_FROM_ALL
 target_link_libraries(test_util
   PRIVATE
     core
-    bitcoin_common
     bitcoin_node
-    leveldb
+    bitcoin_common
     univalue
     Boost::headers
 )

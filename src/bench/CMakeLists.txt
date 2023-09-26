@@ -6,12 +6,13 @@ include(GenerateHeaders)
 generate_header_from_raw(data/block413567.raw)
 
 add_executable(bench_bitcoin
+  # $<TARGET_OBJECTS:bitcoin_consensus>
   bench_bitcoin.cpp
   bench.cpp
   data.cpp
   nanobench.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/data/block413567.raw.h
-# Benchmarks:
+  # Benchmarks:
   addrman.cpp
   base58.cpp
   bech32.cpp
@@ -21,6 +22,7 @@ add_executable(bench_bitcoin
   chacha20.cpp
   checkblock.cpp
   checkqueue.cpp
+  $<$<BOOL:${ENABLE_WALLET}>:coin_selection.cpp>
   crypto_hash.cpp
   descriptors.cpp
   duplicate_inputs.cpp
@@ -45,24 +47,23 @@ add_executable(bench_bitcoin
   strencodings.cpp
   util_time.cpp
   verify_script.cpp
+  $<$<BOOL:${ENABLE_WALLET}>:wallet_balance.cpp>
+  $<$<BOOL:${ENABLE_WALLET}>:wallet_create_tx.cpp>
+  $<$<BOOL:${ENABLE_WALLET}>:wallet_loading.cpp>
   xor.cpp
 )
 
 target_link_libraries(bench_bitcoin
   core
   test_util
-  leveldb
+  bitcoin_node
+  $<TARGET_NAME_IF_EXISTS:bitcoin_wallet>
+  bitcoin_common
+  bitcoin_consensus
+  bitcoin_util
+  bitcoin_crypto
+  $<TARGET_NAME_IF_EXISTS:bitcoin_zmq>
   univalue
+  leveldb
   Boost::headers
 )
-
-if(ENABLE_WALLET)
-  target_sources(bench_bitcoin
-    PRIVATE
-      coin_selection.cpp
-      wallet_balance.cpp
-      wallet_create_tx.cpp
-      wallet_loading.cpp
-  )
-  target_link_libraries(bench_bitcoin bitcoin_wallet)
-endif()
