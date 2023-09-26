@@ -83,6 +83,9 @@ set(configure_warnings)
 # The core interface library aims to encapsulate all common build flags.
 # It is intended to be a usage requirement for all other targets.
 add_library(core INTERFACE)
+target_include_directories(core INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src/univalue/include>
+)
 
 include(TryAppendCXXFlags)
 include(TryAppendLinkerFlag)

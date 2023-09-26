@@ -9,9 +9,4 @@ add_library(univalue STATIC EXCLUDE_FROM_ALL
   lib/univalue_write.cpp
 )
 
-target_include_directories(univalue
-  PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-)
-
 target_link_libraries(univalue PRIVATE core)

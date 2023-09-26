@@ -94,7 +94,6 @@ target_link_libraries(bitcoin_common
     core
     bitcoin_consensus
     bitcoin_util
-    univalue
     secp256k1
     Boost::headers
     $<TARGET_NAME_IF_EXISTS:libevent::libevent>
@@ -115,6 +114,7 @@ if(ENABLE_WALLET)
       bitcoin_wallet
       bitcoin_common
       bitcoin_util
+      univalue
       Boost::headers
     )
   endif()
@@ -223,16 +223,14 @@ target_link_libraries(bitcoin_node
   PRIVATE
     core
     bitcoin_common
-    bitcoin_util
     leveldb
     minisketch
-    univalue
     Boost::headers
     libevent::libevent
     $<TARGET_NAME_IF_EXISTS:PkgConfig::libevent_pthreads>
     $<TARGET_NAME_IF_EXISTS:NATPMP::NATPMP>
     $<TARGET_NAME_IF_EXISTS:MiniUPnPc::MiniUPnPc>
-    $<TARGET_NAME_IF_EXISTS:bitcoin_zmq>
+    # $<TARGET_NAME_IF_EXISTS:bitcoin_zmq>
 )
 
 
@@ -245,6 +243,7 @@ if(BUILD_DAEMON)
   target_link_libraries(bitcoind
     core
     bitcoin_node
+    univalue
   )
 endif()
 
@@ -254,9 +253,8 @@ add_library(bitcoin_cli STATIC EXCLUDE_FROM_ALL
   rpc/client.cpp
 )
 target_link_libraries(bitcoin_cli
-  PUBLIC
+  PRIVATE
     core
-    univalue
 )
 
 
@@ -268,6 +266,7 @@ if(BUILD_CLI)
     bitcoin_cli
     bitcoin_common
     bitcoin_util
+    univalue
     libevent::libevent
   )
 endif()
@@ -290,6 +289,7 @@ if(BUILD_UTIL)
     core
     bitcoin_common
     bitcoin_util
+    univalue
   )
 endif()
 
