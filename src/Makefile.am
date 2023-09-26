@@ -799,7 +799,7 @@ bitcoind_SOURCES = $(bitcoin_daemon_sources) init/bitcoind.cpp
 bitcoind_CPPFLAGS = $(bitcoin_bin_cppflags)
 bitcoind_CXXFLAGS = $(bitcoin_bin_cxxflags)
 bitcoind_LDFLAGS = $(bitcoin_bin_ldflags)
-bitcoind_LDADD = $(LIBBITCOIN_NODE) $(bitcoin_bin_ldadd) -l:uSockets.a -lz
+bitcoind_LDADD = $(LIBBITCOIN_NODE) $(bitcoin_bin_ldadd) -luSockets -lz
 
 bitcoin_node_SOURCES = $(bitcoin_daemon_sources) init/bitcoin-node.cpp
 bitcoin_node_CPPFLAGS = $(bitcoin_bin_cppflags)

@@ -12,5 +12,5 @@ endef
 define $(package)_stage_cmds
   mkdir -p $($(package)_staging_prefix_dir)/include/ && \
   cp src/libusockets.h $($(package)_staging_prefix_dir)/include/ && \
-  install uSockets.a $($(package)_staging_prefix_dir)/lib
+  cp uSockets.a $($(package)_staging_prefix_dir)/lib/libuSockets.a
 endef
