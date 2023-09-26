@@ -92,8 +92,9 @@ target_compile_definitions(bitcoin_common
 target_link_libraries(bitcoin_common
   PRIVATE
     core
-    # bitcoin_consensus
-    # bitcoin_util
+    bitcoin_consensus
+    bitcoin_util
+    bitcoin_crypto
     univalue
     secp256k1
     Boost::headers
@@ -116,7 +117,6 @@ if(ENABLE_WALLET)
       bitcoin_consensus
       bitcoin_common
       bitcoin_util
-      bitcoin_crypto
       Boost::headers
     )
   endif()
