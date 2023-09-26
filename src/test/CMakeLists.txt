@@ -16,7 +16,6 @@ generate_header_from_raw(data/asmap.raw)
 
 add_executable(test_bitcoin
   main.cpp
-  $<TARGET_OBJECTS:bitcoin_consensus>
   ${CMAKE_CURRENT_BINARY_DIR}/data/asmap.raw.h
   ${CMAKE_CURRENT_BINARY_DIR}/data/base58_encode_decode.json.h
   ${CMAKE_CURRENT_BINARY_DIR}/data/bip341_wallet_vectors.json.h
@@ -27,7 +26,7 @@ add_executable(test_bitcoin
   ${CMAKE_CURRENT_BINARY_DIR}/data/sighash.json.h
   ${CMAKE_CURRENT_BINARY_DIR}/data/tx_invalid.json.h
   ${CMAKE_CURRENT_BINARY_DIR}/data/tx_valid.json.h
-# Tests:
+  # Tests:
   addrman_tests.cpp
   allocator_tests.cpp
   amount_tests.cpp
@@ -134,26 +133,12 @@ add_executable(test_bitcoin
   xoroshiro128plusplus_tests.cpp
 )
 
-target_link_libraries(test_bitcoin
-  core
-  test_util
-  bitcoin_cli
-  bitcoin_node
-  bitcoin_common
-  bitcoin_util
-  minisketch
-  leveldb
-  univalue
-  Boost::headers
-  libevent::libevent
-)
-
 if(ENABLE_WALLET)
   target_sources(test_bitcoin
     PRIVATE
       ../wallet/test/init_test_fixture.cpp
       ../wallet/test/wallet_test_fixture.cpp
-
+      # Tests:
       ../wallet/test/coinselector_tests.cpp
       ../wallet/test/feebumper_tests.cpp
       ../wallet/test/group_outputs_tests.cpp
@@ -169,8 +154,24 @@ if(ENABLE_WALLET)
       ../wallet/test/walletdb_tests.cpp
       ../wallet/test/walletload_tests.cpp
   )
-  target_link_libraries(test_bitcoin bitcoin_wallet)
   if(USE_BDB)
     target_sources(test_bitcoin PRIVATE ../wallet/test/db_tests.cpp)
   endif()
 endif()
+
+target_link_libraries(test_bitcoin
+  core
+  test_util
+  bitcoin_node
+  $<$<BOOL:${ENABLE_WALLET}>:bitcoin_wallet>
+  bitcoin_consensus
+  bitcoin_common
+  bitcoin_cli
+  bitcoin_util
+  bitcoin_crypto
+  minisketch
+  leveldb
+  univalue
+  Boost::headers
+  libevent::libevent
+)

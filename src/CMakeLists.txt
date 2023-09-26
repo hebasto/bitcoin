@@ -92,12 +92,12 @@ target_compile_definitions(bitcoin_common
 target_link_libraries(bitcoin_common
   PRIVATE
     core
-    bitcoin_consensus
-    bitcoin_util
+    # bitcoin_consensus
+    # bitcoin_util
     univalue
     secp256k1
     Boost::headers
-    $<TARGET_NAME_IF_EXISTS:libevent::libevent>
+    # $<TARGET_NAME_IF_EXISTS:libevent::libevent>
 )
 
 
@@ -215,24 +215,24 @@ add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL
 )
 if(ENABLE_WALLET)
   target_sources(bitcoin_node PRIVATE wallet/init.cpp)
-  target_link_libraries(bitcoin_node PRIVATE bitcoin_wallet)
+  # target_link_libraries(bitcoin_node PRIVATE bitcoin_wallet)
 else()
   target_sources(bitcoin_node PRIVATE dummywallet.cpp)
 endif()
 target_link_libraries(bitcoin_node
   PRIVATE
     core
-    bitcoin_common
-    bitcoin_util
+    # bitcoin_common
+    # bitcoin_util
     leveldb
     minisketch
     univalue
     Boost::headers
-    libevent::libevent
+    # libevent::libevent
     $<TARGET_NAME_IF_EXISTS:PkgConfig::libevent_pthreads>
-    $<TARGET_NAME_IF_EXISTS:NATPMP::NATPMP>
-    $<TARGET_NAME_IF_EXISTS:MiniUPnPc::MiniUPnPc>
-    $<TARGET_NAME_IF_EXISTS:bitcoin_zmq>
+    # $<TARGET_NAME_IF_EXISTS:NATPMP::NATPMP>
+    # $<TARGET_NAME_IF_EXISTS:MiniUPnPc::MiniUPnPc>
+    # $<TARGET_NAME_IF_EXISTS:bitcoin_zmq>
 )
 
 

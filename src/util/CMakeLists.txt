@@ -52,8 +52,8 @@ target_compile_definitions(bitcoin_util
 target_link_libraries(bitcoin_util
   PRIVATE
     core
-    bitcoin_crypto
-    univalue
+    # bitcoin_crypto
+    # univalue
     Threads::Threads
     $<$<BOOL:${MINGW}>:ws2_32>
 )
