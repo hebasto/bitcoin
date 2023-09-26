@@ -114,9 +114,9 @@ if(ENABLE_WALLET)
     target_link_libraries(bitcoin-wallet
       core
       bitcoin_wallet
-      bitcoin_consensus
-      bitcoin_common
-      bitcoin_util
+      # bitcoin_consensus
+      # bitcoin_common
+      # bitcoin_util
       Boost::headers
     )
   endif()
