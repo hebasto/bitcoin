@@ -19,6 +19,12 @@ function(add_threads_if_needed)
   find_package(Threads REQUIRED)
   set_target_properties(Threads::Threads PROPERTIES IMPORTED_GLOBAL TRUE)
 
+  if(CMAKE_THREAD_LIBS_INIT)
+    message(STATUS "  The thread library to use: ${CMAKE_THREAD_LIBS_INIT}")
+  else()
+    message(STATUS "  The thread functions are provided by the system libraries")
+  endif()
+
   set(thread_local)
   if(MINGW)
     #[=[
