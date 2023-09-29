@@ -2,30 +2,41 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-if(CMAKE_HOST_APPLE)
+if(BREW_COMMAND)
+  #[=[
+  The Homebrew package manager installs the berkeley-db* packages as
+  "keg-only", which means they are not symlinked into the default prefix.
+  To find such a package, the find_path() and find_library() commands
+  need additional path hints that are computed by Homebrew itself.
+  ]=]
   execute_process(
-    COMMAND brew --prefix berkeley-db@4
+    COMMAND ${BREW_COMMAND} --prefix berkeley-db@4
     OUTPUT_VARIABLE bdb4_brew_prefix
     ERROR_QUIET
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
+  execute_process(
+    COMMAND ${BREW_COMMAND} --prefix berkeley-db@5
+    OUTPUT_VARIABLE bdb5_brew_prefix
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  execute_process(
+    COMMAND ${BREW_COMMAND} --prefix berkeley-db
+    OUTPUT_VARIABLE bdb_brew_prefix
+    ERROR_QUIET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  set(BerkeleyDB_homebrew_include_hints ${bdb4_brew_prefix}/include ${bdb5_brew_prefix}/include ${bdb_brew_prefix}/include)
+  set(BerkeleyDB_homebrew_lib_hints ${bdb4_brew_prefix}/lib ${bdb5_brew_prefix}/lib ${bdb_brew_prefix}/lib)
 endif()
 
 find_path(BerkeleyDB_INCLUDE_DIR
   NAMES db.h
-  HINTS ${bdb4_brew_prefix}/include
-  PATH_SUFFIXES 4.8 48 4 db4 5 5.3 db5
+  HINTS ${BerkeleyDB_homebrew_include_hints}
+  PATH_SUFFIXES 4.8 48 4 db4 5.3 5 db5
 )
-
-if(BerkeleyDB_INCLUDE_DIR)
-  file(
-    STRINGS "${BerkeleyDB_INCLUDE_DIR}/db.h" version_strings
-    REGEX ".*DB_VERSION_(MAJOR|MINOR)[ \t]+[0-9]+.*"
-  )
-  string(REGEX REPLACE ".*DB_VERSION_MAJOR[ \t]+([0-9]+).*" "\\1" BerkeleyDB_VERSION_MAJOR "${version_strings}")
-  string(REGEX REPLACE ".*DB_VERSION_MINOR[ \t]+([0-9]+).*" "\\1" BerkeleyDB_VERSION_MINOR "${version_strings}")
-  set(BerkeleyDB_VERSION ${BerkeleyDB_VERSION_MAJOR}.${BerkeleyDB_VERSION_MINOR})
-endif()
+unset(BerkeleyDB_homebrew_include_hints)
 
 if(MSVC)
   cmake_path(GET BerkeleyDB_INCLUDE_DIR PARENT_PATH BerkeleyDB_IMPORTED_PATH)
@@ -42,10 +53,21 @@ if(MSVC)
   endif()
 else()
   find_library(BerkeleyDB_LIBRARY
-    NAMES db_cxx-4.8 libdb48 db4_cxx db_cxx db_cxx-5
-    HINTS ${bdb4_brew_prefix}/lib
+    NAMES db_cxx-4.8 db4_cxx db48 db_cxx-5.3 db_cxx-5 db_cxx
+    HINTS ${BerkeleyDB_homebrew_lib_hints}
   )
+  unset(BerkeleyDB_homebrew_lib_hints)
   set(BerkeleyDB_required BerkeleyDB_LIBRARY)
+endif()
+
+if(BerkeleyDB_INCLUDE_DIR AND BerkeleyDB_required)
+  file(
+    STRINGS "${BerkeleyDB_INCLUDE_DIR}/db.h" version_strings
+    REGEX ".*DB_VERSION_(MAJOR|MINOR)[ \t]+[0-9]+.*"
+  )
+  string(REGEX REPLACE ".*DB_VERSION_MAJOR[ \t]+([0-9]+).*" "\\1" BerkeleyDB_VERSION_MAJOR "${version_strings}")
+  string(REGEX REPLACE ".*DB_VERSION_MINOR[ \t]+([0-9]+).*" "\\1" BerkeleyDB_VERSION_MINOR "${version_strings}")
+  set(BerkeleyDB_VERSION ${BerkeleyDB_VERSION_MAJOR}.${BerkeleyDB_VERSION_MINOR})
 endif()
 
 include(FindPackageHandleStandardArgs)

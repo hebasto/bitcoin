@@ -140,7 +140,7 @@ if(ENABLE_WALLET)
   endif()
 
   if(WITH_BDB)
-    find_package(BerkeleyDB 4.8 MODULE)
+    find_package(BerkeleyDB 4.8)
     if(BerkeleyDB_FOUND)
       set(WITH_BDB ON)
       set(USE_BDB ON)
