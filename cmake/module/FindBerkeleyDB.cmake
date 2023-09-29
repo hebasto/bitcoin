@@ -42,12 +42,6 @@ The following cache variables may also be set:
 ``BerkeleyDB_LIBRARY``
   The path to the Berkeley DB library.
 
-``BerkeleyDB_LIBRARY_RELEASE``
-  The path to the Berkeley DB library Release configuration.
-
-``BerkeleyDB_LIBRARY_DEBUG``
-  The path to the Berkeley DB library Debug configuration.
-
 #]=======================================================================]
 
 if(BREW_COMMAND)
@@ -82,26 +76,43 @@ find_path(BerkeleyDB_INCLUDE_DIR
 )
 unset(_BerkeleyDB_homebrew_include_hints)
 
-if(MSVC)
-  cmake_path(GET BerkeleyDB_INCLUDE_DIR PARENT_PATH BerkeleyDB_IMPORTED_PATH)
-  find_library(BerkeleyDB_LIBRARY_DEBUG
-    NAMES libdb48 PATHS ${BerkeleyDB_IMPORTED_PATH}/debug/lib
-    NO_DEFAULT_PATH
-  )
+if(MSVC AND NOT BerkeleyDB_LIBRARY)
+  #[[
+  The vcpkg package manager installs the berkeleydb package with the same name
+  of release and debug libraries. Therefore, the default search paths set by
+  vcpkg's toolchain file cannot be used to search libraries as the debug one
+  will always be found.
+
+  We assume that the installation directory has the following structure:
+    ../debug/lib
+    ../include
+    ../lib
+  #]]
+  cmake_path(GET BerkeleyDB_INCLUDE_DIR PARENT_PATH _BerkeleyDB_installed_path)
+
   find_library(BerkeleyDB_LIBRARY_RELEASE
-    NAMES libdb48 PATHS ${BerkeleyDB_IMPORTED_PATH}/lib
-    NO_DEFAULT_PATH
+    NAMES libdb48
+    HINTS ${_BerkeleyDB_installed_path}/lib
+    NO_CMAKE_PATH
   )
-  if(BerkeleyDB_LIBRARY_DEBUG OR BerkeleyDB_LIBRARY_RELEASE)
-    set(BerkeleyDB_required BerkeleyDB_IMPORTED_PATH)
-  endif()
+  mark_as_advanced(BerkeleyDB_LIBRARY_RELEASE)
+
+  find_library(BerkeleyDB_LIBRARY_DEBUG
+    NAMES libdb48
+    HINTS ${_BerkeleyDB_installed_path}/debug/lib
+    NO_CMAKE_PATH
+  )
+  mark_as_advanced(BerkeleyDB_LIBRARY_DEBUG)
+  unset(_BerkeleyDB_installed_path)
+
+  include(SelectLibraryConfigurations)
+  select_library_configurations(BerkeleyDB)
 else()
   find_library(BerkeleyDB_LIBRARY
     NAMES db_cxx-4.8 db4_cxx db48 db_cxx-5.3 db_cxx-5 db_cxx
     HINTS ${_BerkeleyDB_homebrew_lib_hints}
   )
   unset(_BerkeleyDB_homebrew_lib_hints)
-  set(BerkeleyDB_required BerkeleyDB_LIBRARY)
 endif()
 
 if(BerkeleyDB_INCLUDE_DIR)
@@ -120,7 +131,7 @@ endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(BerkeleyDB
-  REQUIRED_VARS ${BerkeleyDB_required} BerkeleyDB_INCLUDE_DIR
+  REQUIRED_VARS BerkeleyDB_LIBRARY BerkeleyDB_INCLUDE_DIR
   VERSION_VAR _BerkeleyDB_full_version
 )
 unset(_BerkeleyDB_full_version)
@@ -153,6 +164,4 @@ endif()
 mark_as_advanced(
   BerkeleyDB_INCLUDE_DIR
   BerkeleyDB_LIBRARY
-  BerkeleyDB_LIBRARY_DEBUG
-  BerkeleyDB_LIBRARY_RELEASE
 )
