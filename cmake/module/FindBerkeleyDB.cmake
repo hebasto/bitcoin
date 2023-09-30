@@ -77,33 +77,39 @@ find_path(BerkeleyDB_INCLUDE_DIR
 unset(_BerkeleyDB_homebrew_include_hints)
 
 if(MSVC AND NOT BerkeleyDB_LIBRARY)
-  #[[
-  The vcpkg package manager installs the berkeleydb package with the same name
-  of release and debug libraries. Therefore, the default search paths set by
-  vcpkg's toolchain file cannot be used to search libraries as the debug one
-  will always be found.
+  if(VCPKG_TARGET_TRIPLET)
+    #[[
+    The vcpkg package manager installs the berkeleydb package with the same name
+    of release and debug libraries. Therefore, the default search paths set by
+    vcpkg's toolchain file cannot be used to search libraries as the debug one
+    will always be found.
+    #]]
+    set(CMAKE_FIND_USE_CMAKE_PATH FALSE)
 
-  We assume that the installation directory has the following structure:
-    ../debug/lib
-    ../include
-    ../lib
-  #]]
-  cmake_path(GET BerkeleyDB_INCLUDE_DIR PARENT_PATH _BerkeleyDB_installed_path)
+    #[[
+    We assume that the installation directory has the following structure:
+      ../debug/lib
+      ../include
+      ../lib
+    #]]
+    cmake_path(GET BerkeleyDB_INCLUDE_DIR PARENT_PATH _BerkeleyDB_installed_path)
+  endif()
 
   find_library(BerkeleyDB_LIBRARY_RELEASE
     NAMES libdb48
-    HINTS ${_BerkeleyDB_installed_path}/lib
-    NO_CMAKE_PATH
+    HINTS ${_BerkeleyDB_installed_path}
+    PATH_SUFFIXES lib
   )
   mark_as_advanced(BerkeleyDB_LIBRARY_RELEASE)
 
   find_library(BerkeleyDB_LIBRARY_DEBUG
     NAMES libdb48
-    HINTS ${_BerkeleyDB_installed_path}/debug/lib
-    NO_CMAKE_PATH
+    HINTS ${_BerkeleyDB_installed_path}
+    PATH_SUFFIXES debug/lib
   )
   mark_as_advanced(BerkeleyDB_LIBRARY_DEBUG)
   unset(_BerkeleyDB_installed_path)
+  unset(CMAKE_FIND_USE_CMAKE_PATH)
 
   include(SelectLibraryConfigurations)
   select_library_configurations(BerkeleyDB)
@@ -142,16 +148,16 @@ if(BerkeleyDB_FOUND AND NOT TARGET BerkeleyDB::BerkeleyDB)
     INTERFACE_INCLUDE_DIRECTORIES "${BerkeleyDB_INCLUDE_DIR}"
   )
   if(MSVC)
-    if(BerkeleyDB_LIBRARY_DEBUG)
-      set_property(TARGET BerkeleyDB::BerkeleyDB APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
-      set_target_properties(BerkeleyDB::BerkeleyDB PROPERTIES
-        IMPORTED_LOCATION_DEBUG "${BerkeleyDB_LIBRARY_DEBUG}"
-      )
-    endif()
     if(BerkeleyDB_LIBRARY_RELEASE)
       set_property(TARGET BerkeleyDB::BerkeleyDB APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
       set_target_properties(BerkeleyDB::BerkeleyDB PROPERTIES
         IMPORTED_LOCATION_RELEASE "${BerkeleyDB_LIBRARY_RELEASE}"
+      )
+    endif()
+    if(BerkeleyDB_LIBRARY_DEBUG)
+      set_property(TARGET BerkeleyDB::BerkeleyDB APPEND PROPERTY IMPORTED_CONFIGURATIONS DEBUG)
+      set_target_properties(BerkeleyDB::BerkeleyDB PROPERTIES
+        IMPORTED_LOCATION_DEBUG "${BerkeleyDB_LIBRARY_DEBUG}"
       )
     endif()
   else()
