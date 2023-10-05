@@ -12,6 +12,7 @@ import http.client
 import json
 import logging
 import os
+import platform
 import re
 import subprocess
 import tempfile
@@ -220,7 +221,13 @@ class TestNode():
         if env is not None:
             subp_env.update(env)
 
-        self.process = subprocess.Popen(self.args + extra_args, env=subp_env, stdout=stdout, stderr=stderr, cwd=cwd, **kwargs)
+        if platform.system() == "Windows":
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.ABOVE_NORMAL_PRIORITY_CLASS
+        else:
+            startupinfo = None
+
+        self.process = subprocess.Popen(self.args + extra_args, env=subp_env, stdout=stdout, stderr=stderr, cwd=cwd, startupinfo=startupinfo, **kwargs)
 
         self.running = True
         self.log.debug("bitcoind started, waiting for RPC to come up")
