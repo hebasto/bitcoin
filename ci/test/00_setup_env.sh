@@ -71,3 +71,6 @@ export CI_BASE_PACKAGES=${CI_BASE_PACKAGES:-build-essential libtool autotools-de
 export GOAL=${GOAL:-install}
 export DIR_QA_ASSETS=${DIR_QA_ASSETS:-${BASE_SCRATCH_DIR}/qa-assets}
 export CI_RETRY_EXE=${CI_RETRY_EXE:-"retry --"}
+if [ "$CI_OS_NAME" == "macos" ]; then
+  export CI_RETRY_EXE="IN_GETOPT_BIN="$(brew --prefix gnu-getopt)/bin/getopt" ${CI_RETRY_EXE}"
+fi
