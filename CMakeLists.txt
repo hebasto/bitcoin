@@ -91,6 +91,8 @@ unset(check_pie_output)
 # It is intended to be a usage requirement for all other targets.
 add_library(core INTERFACE)
 
+include(TryAppendLinkerFlag)
+
 if(WIN32)
   #[=[
   This build system supports two ways to build binaries for Windows.
@@ -132,6 +134,10 @@ if(WIN32)
       _WINDOWS
       _MT
     )
+    try_append_linker_flag("-static" TARGET core)
+    # We require Windows 7 (NT 6.1) or later.
+    try_append_linker_flag("-Wl,--major-subsystem-version,6" TARGET core)
+    try_append_linker_flag("-Wl,--minor-subsystem-version,1" TARGET core)
   endif()
 endif()
 
@@ -147,6 +153,12 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   target_compile_definitions(core INTERFACE
     MAC_OSX
   )
+  # These flags are specific to ld64, and may cause issues with other linkers.
+  # For example: GNU ld will interpret -dead_strip as -de and then try and use
+  # "ad_strip" as the symbol for the entry point.
+  try_append_linker_flag("-Wl,-dead_strip" TARGET core)
+  try_append_linker_flag("-Wl,-dead_strip_dylibs" TARGET core)
+  try_append_linker_flag("-Wl,-headerpad_max_install_names" TARGET core)
 endif()
 
 if(CMAKE_CROSSCOMPILING)
