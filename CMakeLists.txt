@@ -64,6 +64,8 @@ tristate_option(WITH_USDT
   AUTO
 )
 
+option(BUILD_BENCH "Build bench_bitcoin executable." ON)
+
 if(CXX20)
   set(CMAKE_CXX_STANDARD 20)
 else()
@@ -195,6 +197,8 @@ message("  NAT-PMP ............................. ${WITH_NATPMP}")
 message("  UPnP ................................ ${WITH_MINIUPNPC}")
 message("  ZeroMQ .............................. ${WITH_ZMQ}")
 message("  USDT tracing ........................ ${WITH_USDT}")
+message("Tests:")
+message("  bench_bitcoin ....................... ${BUILD_BENCH}")
 message("")
 if(CMAKE_CROSSCOMPILING)
   set(cross_status "TRUE, for ${CMAKE_SYSTEM_NAME}, ${CMAKE_SYSTEM_PROCESSOR}")
