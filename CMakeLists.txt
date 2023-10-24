@@ -178,8 +178,13 @@ include(cmake/secp256k1.cmake)
 
 include(cmake/optional.cmake)
 
+find_package(Python3 3.9 COMPONENTS Interpreter)
+set(PYTHON_COMMAND ${Python3_EXECUTABLE})
+
 add_subdirectory(src)
 add_subdirectory(test)
+
+include(cmake/tests.cmake)
 
 message("\n")
 message("Configure summary")
