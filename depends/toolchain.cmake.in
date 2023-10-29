@@ -87,6 +87,10 @@ else()
 endif()
 set(QT_TRANSLATIONS_DIR "@depends_prefix@/translations")
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND NOT CMAKE_HOST_APPLE)
+  set(CMAKE_FRAMEWORK_PATH "@OSX_SDK@/System/Library/Frameworks")
+endif()
+
 if(NOT WITH_GUI AND "@no_qt@" STREQUAL "1")
   set(WITH_GUI "no" CACHE STRING "")
 endif()
