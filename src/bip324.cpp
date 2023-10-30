@@ -7,18 +7,18 @@
 #include <chainparams.h>
 #include <crypto/chacha20.h>
 #include <crypto/chacha20poly1305.h>
+#include <crypto/cleanse.h>
 #include <crypto/hkdf_sha256_32.h>
 #include <key.h>
 #include <pubkey.h>
 #include <random.h>
 #include <span.h>
-#include <support/cleanse.h>
 #include <uint256.h>
 
 #include <algorithm>
 #include <assert.h>
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 #include <iterator>
 #include <string>
 

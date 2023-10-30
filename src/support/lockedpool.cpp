@@ -3,11 +3,12 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <support/lockedpool.h>
-#include <support/cleanse.h>
 
 #if defined(HAVE_CONFIG_H)
 #include <config/bitcoin-config.h>
 #endif
+
+#include <crypto/cleanse.h>
 
 #ifdef WIN32
 #include <windows.h>

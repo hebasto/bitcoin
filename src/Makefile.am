@@ -283,7 +283,6 @@ BITCOIN_CORE_H = \
   support/allocators/pool.h \
   support/allocators/secure.h \
   support/allocators/zeroafterfree.h \
-  support/cleanse.h \
   support/events.h \
   support/lockedpool.h \
   sync.h \
@@ -560,6 +559,8 @@ crypto_libbitcoin_crypto_base_la_SOURCES = \
   crypto/chacha20.cpp \
   crypto/chacha20poly1305.h \
   crypto/chacha20poly1305.cpp \
+  crypto/cleanse.cpp \
+  crypto/cleanse.h \
   crypto/common.h \
   crypto/hkdf_sha256_32.cpp \
   crypto/hkdf_sha256_32.h \
@@ -733,7 +734,6 @@ libbitcoin_util_a_SOURCES = \
   random.cpp \
   randomenv.cpp \
   streams.cpp \
-  support/cleanse.cpp \
   support/lockedpool.cpp \
   sync.cpp \
   util/batchpriority.cpp \
@@ -972,7 +972,6 @@ libbitcoinkernel_la_SOURCES = \
   script/solver.cpp \
   signet.cpp \
   streams.cpp \
-  support/cleanse.cpp \
   support/lockedpool.cpp \
   sync.cpp \
   txdb.cpp \
@@ -1013,7 +1012,7 @@ if BUILD_BITCOIN_LIBS
 lib_LTLIBRARIES += $(LIBBITCOINCONSENSUS)
 
 include_HEADERS = script/bitcoinconsensus.h
-libbitcoinconsensus_la_SOURCES = support/cleanse.cpp $(crypto_libbitcoin_crypto_base_la_SOURCES) $(libbitcoin_consensus_a_SOURCES)
+libbitcoinconsensus_la_SOURCES = $(crypto_libbitcoin_crypto_base_la_SOURCES) $(libbitcoin_consensus_a_SOURCES)
 
 libbitcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
 libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1)

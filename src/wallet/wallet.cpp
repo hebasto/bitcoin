@@ -20,6 +20,7 @@
 #include <consensus/amount.h>
 #include <consensus/consensus.h>
 #include <consensus/validation.h>
+#include <crypto/cleanse.h>
 #include <external_signer.h>
 #include <interfaces/chain.h>
 #include <interfaces/handler.h>
@@ -47,7 +48,6 @@
 #include <streams.h>
 #include <support/allocators/secure.h>
 #include <support/allocators/zeroafterfree.h>
-#include <support/cleanse.h>
 #include <sync.h>
 #include <tinyformat.h>
 #include <uint256.h>

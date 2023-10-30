@@ -12,16 +12,16 @@
 #include <clientversion.h>
 #include <compat/compat.h>
 #include <compat/cpuid.h>
+#include <crypto/cleanse.h>
 #include <crypto/sha512.h>
-#include <support/cleanse.h>
 #include <util/time.h>
 
 #include <algorithm>
 #include <atomic>
-#include <cstdint>
-#include <cstring>
 #include <chrono>
 #include <climits>
+#include <cstdint>
+#include <cstring>
 #include <thread>
 #include <vector>
 
