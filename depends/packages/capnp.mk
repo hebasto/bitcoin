@@ -7,15 +7,14 @@ $(package)_sha256_hash=$(native_$(package)_sha256_hash)
 $(package)_dependencies=native_$(package)
 
 define $(package)_set_vars :=
-$(package)_config_opts := --with-external-capnp
-$(package)_config_opts += --without-openssl
-$(package)_config_opts += CAPNP="$$(native_capnp_prefixbin)/capnp"
-$(package)_config_opts += CAPNP_CXX="$$(native_capnp_prefixbin)/capnp-c++"
-$(package)_config_opts_android := --disable-shared
+$(package)_config_opts := -DEXTERNAL_CAPNP=ON
+$(package)_config_opts += -DCAPNP_EXECUTABLE="$$(native_capnp_prefixbin)/capnp"
+$(package)_config_opts += -DCAPNPC_CXX_EXECUTABLE="$$(native_capnp_prefixbin)/capnp-c++"
+$(package)_config_opts += -DWITH_OPENSSL=OFF
 endef
 
 define $(package)_config_cmds
-  $($(package)_autoconf)
+  $($(package)_cmake) .
 endef
 
 define $(package)_build_cmds
