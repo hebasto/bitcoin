@@ -1576,7 +1576,7 @@ public:
                 case Fragment::OR_I:
                     return subs[0] || subs[1];
                 case Fragment::THRESH:
-                    return static_cast<uint32_t>(std::count(subs.begin(), subs.end(), true)) >= node.k;
+                    return static_cast<uint32_t>(std::count_if(subs.begin(), subs.end(), [](int s) { return s; })) >= node.k;
                 default: // wrappers
                     assert(subs.size() == 1);
                     return subs[0];
