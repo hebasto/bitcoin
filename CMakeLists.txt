@@ -394,3 +394,13 @@ get_directory_property(global_link_options LINK_OPTIONS)
 if(global_link_options)
   message(AUTHOR_WARNING "The directory's LINK_OPTIONS property is not empty: ${global_link_options}")
 endif()
+
+# link_libraries(socket)
+
+# add_library(check_loose_linked_libraries INTERFACE)
+add_library(check_loose_linked_libraries OBJECT EXCLUDE_FROM_ALL src/arith_uint256.cpp )
+get_target_property(global_linked_libraries check_loose_linked_libraries INTERFACE_LINK_LIBRARIES)
+message(AUTHOR_WARNING "There are libraries linked with `link_lbraries` commands: ${global_linked_libraries}")
+get_target_property(global_linked_libraries check_loose_linked_libraries LINK_LIBRARIES)
+message(AUTHOR_WARNING "There are libraries linked with `link_lbraries` commands: ${global_linked_libraries}")
+
