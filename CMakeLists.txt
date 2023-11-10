@@ -24,6 +24,8 @@ project("Bitcoin Core"
   LANGUAGES CXX ASM
 )
 
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+
 set(PACKAGE_NAME ${PROJECT_NAME})
 set(CLIENT_VERSION_IS_RELEASE "false")
 set(COPYRIGHT_YEAR "2023")
@@ -394,3 +396,8 @@ get_directory_property(global_link_options LINK_OPTIONS)
 if(global_link_options)
   message(AUTHOR_WARNING "The directory's LINK_OPTIONS property is not empty: ${global_link_options}")
 endif()
+
+get_target_property(target_compile_options bitcoind COMPILE_OPTIONS)
+message(AUTHOR_WARNING "The target's COMPILE_OPTIONS property is not empty: ${target_compile_options}")
+get_directory_property(target_link_options bitcoind LINK_OPTIONS)
+message(AUTHOR_WARNING "The target's LINK_OPTIONS property is not empty: ${target_link_options}")
