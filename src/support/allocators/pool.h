@@ -8,6 +8,7 @@
 #include <array>
 #include <cassert>
 #include <cstddef>
+#include <iostream>
 #include <list>
 #include <memory>
 #include <new>
@@ -232,6 +233,7 @@ public:
         }
 
         // Can't use the pool => use operator new()
+        std::cerr << "================================================== bytes:" << bytes << " alignment:" << alignment << "\n";
         return ::operator new (bytes, std::align_val_t{alignment});
     }
 
