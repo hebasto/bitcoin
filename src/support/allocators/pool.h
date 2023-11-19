@@ -8,6 +8,7 @@
 #include <array>
 #include <cassert>
 #include <cstddef>
+#include <iostream>
 #include <list>
 #include <memory>
 #include <new>
@@ -229,6 +230,8 @@ public:
 
             // Make sure we use the right amount of bytes for that freelist (might be rounded up),
             return std::exchange(m_available_memory_it, m_available_memory_it + round_bytes);
+        } else {
+            std::cerr << "Allocate: " << bytes << " align(" << alignment <<"), MAX_BLOCK_SIZE_BYTES=" << MAX_BLOCK_SIZE_BYTES << ", ALIGN_BYTES=" << ALIGN_BYTES << "\n";
         }
 
         // Can't use the pool => use operator new()
