@@ -246,6 +246,13 @@ static bool AppInit(NodeContext& node, int argc, char* argv[])
 
 MAIN_FUNCTION
 {
+    std::cerr << "sizeof(std::pair) is " << sizeof(std::pair<const COutPoint, CCoinsCacheEntry>) << " bytes \n";
+    std::cerr << "alignof(std::pair) is " << alignof(std::pair<const COutPoint, CCoinsCacheEntry>) << " bytes \n";
+    std::cerr << "sizeof(std::unordered_map::node_type) is " << sizeof(std::unordered_map<COutPoint, CCoinsCacheEntry, SaltedOutpointHasher, std::equal_to<COutPoint>>::node_type) << " bytes \n";
+    std::cerr << "alignof(std::unordered_map::node_type) is " << alignof(std::unordered_map<COutPoint, CCoinsCacheEntry, SaltedOutpointHasher, std::equal_to<COutPoint>>::node_type) << " bytes \n";
+    std::cerr << "\n";
+    return 0;
+
 #ifdef WIN32
     util::WinCmdLineArgs winArgs;
     std::tie(argc, argv) = winArgs.get();
