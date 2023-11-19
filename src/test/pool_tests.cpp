@@ -156,14 +156,15 @@ BOOST_AUTO_TEST_CASE(random_allocations)
 
 BOOST_AUTO_TEST_CASE(memusage_test)
 {
-    auto std_map = std::unordered_map<int, int>{};
+    using T = std::array<std::byte, 100>;
+    auto std_map = std::unordered_map<int, T>{};
 
     using Map = std::unordered_map<int,
-                                   int,
+                                   T,
                                    std::hash<int>,
                                    std::equal_to<int>,
-                                   PoolAllocator<std::pair<const int, int>,
-                                                 sizeof(std::pair<const int, int>) + sizeof(void*) * 4,
+                                   PoolAllocator<std::pair<const int, T>,
+                                                 sizeof(std::pair<const int, T>) + sizeof(void*) * 4,
                                                  alignof(void*)>>;
     auto resource = Map::allocator_type::ResourceType(1024);
 
@@ -172,6 +173,9 @@ BOOST_AUTO_TEST_CASE(memusage_test)
     {
         auto resource_map = Map{0, std::hash<int>{}, std::equal_to<int>{}, &resource};
 
+        std::cerr << "memusage::DynamicUsage(resource_map)=" << memusage::DynamicUsage(resource_map) << "\n"; // 1120
+        std::cerr << "memusage::DynamicUsage(std_map)=" << memusage::DynamicUsage(std_map) << "\n";           //   32
+
         // can't have the same resource usage
         BOOST_TEST(memusage::DynamicUsage(std_map) != memusage::DynamicUsage(resource_map));
 
@@ -179,6 +183,9 @@ BOOST_AUTO_TEST_CASE(memusage_test)
             std_map[i];
             resource_map[i];
         }
+
+        std::cerr << "memusage::DynamicUsage(resource_map)=" << memusage::DynamicUsage(resource_map) << "\n"; // 253024
+        std::cerr << "memusage::DynamicUsage(std_map)=" << memusage::DynamicUsage(std_map) << "\n";           // 402208
 
         // Eventually the resource_map should have a much lower memory usage because it has less malloc overhead
         BOOST_TEST(memusage::DynamicUsage(resource_map) <= memusage::DynamicUsage(std_map) * 90 / 100);
