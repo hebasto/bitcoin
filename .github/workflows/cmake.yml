@@ -116,6 +116,7 @@ jobs:
 
     env:
       CCACHE_MAXSIZE: '120M'
+      CI_VCPKG_TAG: '2023.08.09'
       VCPKG_DEFAULT_TRIPLET: 'x64-windows-static'
 
     steps:
@@ -180,6 +181,7 @@ jobs:
       - name: Setup vcpkg
         run: |
           Set-Location "$env:VCPKG_INSTALLATION_ROOT"
+          git checkout "$env:CI_VCPKG_TAG"
           Add-Content -Path "triplets\x64-windows-static.cmake" -Value "set(VCPKG_BUILD_TYPE ${{ matrix.host.build_type }})"
           vcpkg --vcpkg-root "$env:VCPKG_INSTALLATION_ROOT" integrate install
           git rev-parse HEAD | Out-File -FilePath "$env:GITHUB_WORKSPACE\vcpkg_commit"
