@@ -192,7 +192,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build -A x64
+          cmake -B build -A x64 -DVCPKG_TARGET_TRIPLET="$env:VCPKG_DEFAULT_TRIPLET"
 
       # - name: Build
       #   run: |
