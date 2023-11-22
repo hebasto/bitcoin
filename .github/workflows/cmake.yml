@@ -159,3 +159,117 @@ jobs:
       - name: Check
         run: |
           ctest --test-dir build -j $(nproc)
+
+
+  win64-native:
+    name: ${{ matrix.host.name }}
+    runs-on: windows-2022
+
+    strategy:
+      fail-fast: false
+      matrix:
+        host:
+          - name: 'Win64 native, VS 2022, release & debug'
+            build_type: ''
+          - name: 'Win64 native, VS 2022, release-only'
+            build_type: 'release'
+          # Building boost-exception:x64-windows-static fails in debug-only configuration.
+          # - name: 'Win64 native, VS 2022, debug-only'
+          #   build_type: 'debug'
+
+    env:
+      CCACHE_MAXSIZE: '120M'
+      CI_VCPKG_TAG: '2023.08.09'
+      VCPKG_DEFAULT_TRIPLET: 'x64-windows-static'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # - name: Fix Visual Studio installation
+      #   # Avoid toolset ambiguity that MSVC can't handle.
+      #   run: |
+      #     Set-Location "C:\Program Files (x86)\Microsoft Visual Studio\Installer\"
+      #     $InstallPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise"
+      #     $componentsToRemove= @(
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.ARM.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.ARM"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.ARM64.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.ARM64"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.ATL.ARM.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.ATL.ARM"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.ATL.ARM64.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.ATL.ARM64"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.ATL.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.ATL"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.MFC.ARM.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.MFC.ARM"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.MFC.ARM64.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.MFC.ARM64"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.MFC.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.MFC"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.x86.x64.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.37.17.7.x86.x64"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.ARM"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.ARM.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.ARM64"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.ARM64.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.ATL"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.ATL.ARM"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.ATL.ARM.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.ATL.ARM64"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.ATL.ARM64.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.ATL.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.MFC"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.MFC.ARM"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.MFC.ARM.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.MFC.ARM64"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.MFC.ARM64.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.MFC.Spectre"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.x86.x64"
+      #       "Microsoft.VisualStudio.Component.VC.14.38.17.8.x86.x64.Spectre"
+      #     )
+      #     [string]$workloadArgs = $componentsToRemove | ForEach-Object {" --remove " +  $_}
+      #     $Arguments = ('/c', "vs_installer.exe", 'modify', '--installPath', "`"$InstallPath`"",$workloadArgs, '--quiet', '--norestart', '--nocache')
+      #     # should be run twice
+      #     $process = Start-Process -FilePath cmd.exe -ArgumentList $Arguments -Wait -PassThru -WindowStyle Hidden
+      #     $process = Start-Process -FilePath cmd.exe -ArgumentList $Arguments -Wait -PassThru -WindowStyle Hidden
+
+      - name: Configure Developer Command Prompt for Microsoft Visual C++
+        # Using microsoft/setup-msbuild is not enough.
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Setup vcpkg
+        run: |
+          Set-Location "$env:VCPKG_INSTALLATION_ROOT"
+          git -c advice.detachedHead=false checkout "$env:CI_VCPKG_TAG"
+          Add-Content -Path "triplets\x64-windows-static.cmake" -Value "set(VCPKG_BUILD_TYPE ${{ matrix.host.build_type }})"
+          vcpkg --vcpkg-root "$env:VCPKG_INSTALLATION_ROOT" integrate install
+          git rev-parse HEAD | Out-File -FilePath "$env:GITHUB_WORKSPACE\vcpkg_commit"
+          "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Install dependency packages
+        run: |
+          vcpkg install pkgconf berkeleydb boost-multi-index boost-signals2 boost-test libevent miniupnpc sqlite3 zeromq
+
+      - name: Generate build system
+        run: |
+          cmake -B build -A x64 -DVCPKG_TARGET_TRIPLET="$env:VCPKG_DEFAULT_TRIPLET" -DWITH_NATPMP=OFF
+
+      - name: Build RelWithDebInfo configuration
+        run: |
+          cmake --build build -j $env:NUMBER_OF_PROCESSORS -t bitcoind --config RelWithDebInfo
+
+      - name: Build Debug configuration
+        run: |
+          cmake --build build -j $env:NUMBER_OF_PROCESSORS -t bitcoind --config Debug
+
+      - name: Build Release configuration
+        run: |
+          cmake --build build -j $env:NUMBER_OF_PROCESSORS -t bitcoind --config Release
+
+      - name: Build MinSizeRel configuration
+        run: |
+          cmake --build build -j $env:NUMBER_OF_PROCESSORS -t bitcoind --config MinSizeRel
