@@ -239,6 +239,7 @@ jobs:
 
     env:
       CCACHE_MAXSIZE: '120M'
+      CI_VCPKG_TAG: '2023.06.20'
       VCPKG_DEFAULT_TRIPLET: 'x64-windows-static'
 
     steps:
@@ -251,8 +252,10 @@ jobs:
 
       - name: Setup vcpkg
         run: |
-          Add-Content -Path "$env:VCPKG_INSTALLATION_ROOT\triplets\x64-windows-static.cmake" -Value "set(VCPKG_BUILD_TYPE ${{ matrix.host.build_type }})"
-          Invoke-Expression "$env:VCPKG_INSTALLATION_ROOT\vcpkg --vcpkg-root $env:VCPKG_INSTALLATION_ROOT integrate install"
+          Set-Location "$env:VCPKG_INSTALLATION_ROOT"
+          git -c advice.detachedHead=false checkout "$env:CI_VCPKG_TAG"
+          Add-Content -Path "triplets\x64-windows-static.cmake" -Value "set(VCPKG_BUILD_TYPE ${{ matrix.host.build_type }})"
+          .\vcpkg.exe --vcpkg-root "$env:VCPKG_INSTALLATION_ROOT" integrate install
           "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Install dependency packages
