@@ -111,8 +111,9 @@ jobs:
             build_type: ''
           - name: 'Win64 native, VS 2022, release-only'
             build_type: 'release'
-          - name: 'Win64 native, VS 2022, debug-only'
-            build_type: 'debug'
+          # Building boost-exception:x64-windows-static fails in debug-only configuration.
+          # - name: 'Win64 native, VS 2022, debug-only'
+          #   build_type: 'debug'
 
     env:
       CCACHE_MAXSIZE: '120M'
