@@ -12,9 +12,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 # could be dropped as its only purpose was to separate a generated header
 # from source files.
 add_custom_target(generate_build_info
-  BYPRODUCTS ${PROJECT_BINARY_DIR}/src/obj/build.h
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/src/obj
-  COMMAND ${PROJECT_SOURCE_DIR}/share/genbuild.sh ${PROJECT_BINARY_DIR}/src/obj/build.h ${PROJECT_SOURCE_DIR}
+  BYPRODUCTS ${CMAKE_CURRENT_BINARY_DIR}/obj/build.h
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/obj
+  COMMAND ${PROJECT_SOURCE_DIR}/share/genbuild.sh ${CMAKE_CURRENT_BINARY_DIR}/obj/build.h ${PROJECT_SOURCE_DIR}
   COMMENT "Generating obj/build.h"
   VERBATIM
 )
