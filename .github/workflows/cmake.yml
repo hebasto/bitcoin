@@ -107,12 +107,12 @@ jobs:
       fail-fast: false
       matrix:
         host:
-          - name: 'Win64 native, VS 2022, release-only build'
-            build_type: 'release'
-          - name: 'Win64 native, VS 2022, debug-only build'
-            build_type: 'debug'
-          - name: 'Win64 native, VS 2022, release and debug builds'
+          - name: 'Win64 native, VS 2022, release & debug'
             build_type: ''
+          - name: 'Win64 native, VS 2022, release-only'
+            build_type: 'release'
+          - name: 'Win64 native, VS 2022, debug-only'
+            build_type: 'debug'
 
     env:
       CCACHE_MAXSIZE: '120M'
