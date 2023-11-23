@@ -252,7 +252,7 @@ jobs:
 
       - name: Install dependency packages
         run: |
-          vcpkg install pkgconf berkeleydb boost-multi-index boost-signals2 boost-test libevent miniupnpc sqlite3 zeromq
+          vcpkg install pkgconf berkeleydb boost-date-time boost-multi-index boost-signals2 boost-test libevent miniupnpc sqlite3 zeromq
 
       - name: Generate build system
         run: |
