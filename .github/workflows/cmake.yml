@@ -263,6 +263,7 @@ jobs:
           cmake --build build -j $env:NUMBER_OF_PROCESSORS -t bitcoind --config RelWithDebInfo
 
       - name: Build Debug configuration
+        if: ${{ matrix.host.build_type != 'release' }}
         run: |
           cmake --build build -j $env:NUMBER_OF_PROCESSORS -t bitcoind --config Debug
 
