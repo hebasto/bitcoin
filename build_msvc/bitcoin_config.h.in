@@ -44,6 +44,9 @@
 /* define if external signer support is enabled (requires Boost::Process) */
 #define ENABLE_EXTERNAL_SIGNER /**/
 
+/* define to avoid Boost::Process trying to use Boost Filesystem */
+#define BOOST_PROCESS_USE_STD_FS /**/
+
 /* Define to 1 if you have the declaration of `be16toh', and to 0 if you
    don't. */
 #define HAVE_DECL_BE16TOH 0
