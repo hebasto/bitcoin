@@ -240,6 +240,7 @@ jobs:
     env:
       CCACHE_MAXSIZE: '120M'
       VCPKG_DEFAULT_TRIPLET: 'x64-windows-static'
+      VCPKG_MANIFEST_MODE: 'OFF'
 
     steps:
       - name: Checkout
@@ -257,7 +258,7 @@ jobs:
 
       - name: Install dependency packages
         run: |
-          vcpkg install berkeleydb boost-date-time boost-multi-index boost-signals2 boost-test libevent miniupnpc sqlite3 zeromq
+          Invoke-Expression "$env:VCPKG_INSTALLATION_ROOT\vcpkg --vcpkg-root $env:VCPKG_INSTALLATION_ROOT install berkeleydb boost-date-time boost-multi-index boost-signals2 boost-test libevent miniupnpc sqlite3 zeromq"
 
       - name: Generate build system
         run: |
