@@ -51,14 +51,14 @@ static void WalletLoading(benchmark::Bench& bench, bool legacy_wallet)
     database = DuplicateMockDatabase(wallet->GetDatabase());
 
     // reload the wallet for the actual benchmark
-    TestUnloadWallet(std::move(wallet));
+    TestUnloadWallet(std::move(wallet), *test_setup->m_node.main_signals);
 
     bench.epochs(5).run([&] {
         wallet = TestLoadWallet(std::move(database), context, create_flags);
 
         // Cleanup
         database = DuplicateMockDatabase(wallet->GetDatabase());
-        TestUnloadWallet(std::move(wallet));
+        TestUnloadWallet(std::move(wallet), *test_setup->m_node.main_signals);
     });
 }
 

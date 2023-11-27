@@ -47,7 +47,7 @@ struct MinerTestingSetup : public TestingSetup {
         // pointer is not accessed, when the new one should be accessed
         // instead.
         m_node.mempool.reset();
-        m_node.mempool = std::make_unique<CTxMemPool>(MemPoolOptionsForTest(m_node));
+        m_node.mempool = std::make_unique<CTxMemPool>(MemPoolOptionsForTest(m_node), *m_node.main_signals);
         return *m_node.mempool;
     }
     BlockAssembler AssemblerForTest(CTxMemPool& tx_mempool);

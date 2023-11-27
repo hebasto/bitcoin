@@ -20,6 +20,7 @@ class BanMan;
 class BaseIndex;
 class CBlockPolicyEstimator;
 class CConnman;
+class CMainSignals;
 class CScheduler;
 class CTxMemPool;
 class ChainstateManager;
@@ -70,6 +71,7 @@ struct NodeContext {
     std::function<void()> rpc_interruption_point = [] {};
     std::unique_ptr<KernelNotifications> notifications;
     std::atomic<int> exit_status{EXIT_SUCCESS};
+    std::unique_ptr<CMainSignals> main_signals;
 
     //! Declare default constructor and destructor that are not inline, so code
     //! instantiating the NodeContext struct doesn't need to #include class

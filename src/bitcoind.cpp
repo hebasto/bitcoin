@@ -28,6 +28,7 @@
 #include <util/threadnames.h>
 #include <util/tokenpipe.h>
 #include <util/translation.h>
+#include <validationinterface.h>
 
 #include <any>
 #include <functional>
@@ -184,6 +185,7 @@ static bool AppInit(NodeContext& node)
             return false;
         }
 
+        node.main_signals = std::make_unique<CMainSignals>();
         node.kernel = std::make_unique<kernel::Context>();
         if (!AppInitSanityChecks(*node.kernel))
         {

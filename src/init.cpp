@@ -262,7 +262,7 @@ void Shutdown(NodeContext& node)
 
     // Because these depend on each-other, we make sure that neither can be
     // using the other before destroying them.
-    if (node.peerman) UnregisterValidationInterface(node.peerman.get());
+    if (node.peerman) node.main_signals->UnregisterValidationInterface(node.peerman.get());
     if (node.connman) node.connman->Stop();
 
     StopTorControl();
@@ -288,7 +288,9 @@ void Shutdown(NodeContext& node)
     // fee estimator from validation interface.
     if (node.fee_estimator) {
         node.fee_estimator->Flush();
-        UnregisterValidationInterface(node.fee_estimator.get());
+        if (node.main_signals) {
+            node.main_signals->UnregisterValidationInterface(node.fee_estimator.get());
+        }
     }
 
     // FlushStateToDisk generates a ChainStateFlushed callback, which we should avoid missing
@@ -303,7 +305,7 @@ void Shutdown(NodeContext& node)
 
     // After there are no more peers/RPC left to give us new data which may generate
     // CValidationInterface callbacks, flush them...
-    GetMainSignals().FlushBackgroundCallbacks();
+    if (node.main_signals) node.main_signals->FlushBackgroundCallbacks();
 
     // Stop and delete all indexes only after flushing background callbacks.
     if (g_txindex) {
@@ -338,17 +340,20 @@ void Shutdown(NodeContext& node)
 
 #if ENABLE_ZMQ
     if (g_zmq_notification_interface) {
-        UnregisterValidationInterface(g_zmq_notification_interface.get());
+        if (node.main_signals) node.main_signals->UnregisterValidationInterface(g_zmq_notification_interface.get());
         g_zmq_notification_interface.reset();
     }
 #endif
 
     node.chain_clients.clear();
-    UnregisterAllValidationInterfaces();
-    GetMainSignals().UnregisterBackgroundSignalScheduler();
+    if (node.main_signals) {
+        node.main_signals->UnregisterAllValidationInterfaces();
+        node.main_signals->UnregisterBackgroundSignalScheduler();
+    }
     node.mempool.reset();
     node.fee_estimator.reset();
     node.chainman.reset();
+    node.main_signals.reset();
     node.scheduler.reset();
     node.kernel.reset();
 
@@ -1137,7 +1142,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
         }
     }, std::chrono::minutes{5});
 
-    GetMainSignals().RegisterBackgroundSignalScheduler(*node.scheduler);
+    node.main_signals->RegisterBackgroundSignalScheduler(*node.scheduler);
 
     // Create client interfaces for wallets that are supposed to be loaded
     // according to -wallet and -disablewallet options. This only constructs
@@ -1243,7 +1248,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
         // Flush estimates to disk periodically
         CBlockPolicyEstimator* fee_estimator = node.fee_estimator.get();
         node.scheduler->scheduleEvery([fee_estimator] { fee_estimator->FlushFeeEstimates(); }, FEE_FLUSH_INTERVAL);
-        RegisterValidationInterface(fee_estimator);
+        node.main_signals->RegisterValidationInterface(fee_estimator);
     }
 
     // Check port numbers
@@ -1414,7 +1419,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
         });
 
     if (g_zmq_notification_interface) {
-        RegisterValidationInterface(g_zmq_notification_interface.get());
+        node.main_signals->RegisterValidationInterface(g_zmq_notification_interface.get());
     }
 #endif
 
@@ -1472,9 +1477,9 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
     LogPrintf("* Using %.1f MiB for in-memory UTXO set (plus up to %.1f MiB of unused mempool space)\n", cache_sizes.coins * (1.0 / 1024 / 1024), mempool_opts.max_size_bytes * (1.0 / 1024 / 1024));
 
     for (bool fLoaded = false; !fLoaded && !ShutdownRequested();) {
-        node.mempool = std::make_unique<CTxMemPool>(mempool_opts);
+        node.mempool = std::make_unique<CTxMemPool>(mempool_opts, *node.main_signals);
 
-        node.chainman = std::make_unique<ChainstateManager>(node.kernel->interrupt, chainman_opts, blockman_opts);
+        node.chainman = std::make_unique<ChainstateManager>(node.kernel->interrupt, chainman_opts, blockman_opts, *node.main_signals);
         ChainstateManager& chainman = *node.chainman;
 
         // This is defined and set here instead of inline in validation.h to avoid a hard
@@ -1485,7 +1490,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
 
             // Drain the validation interface queue to ensure that the old indexes
             // don't have any pending work.
-            SyncWithValidationInterfaceQueue();
+            node.main_signals->SyncWithValidationInterfaceQueue();
 
             for (auto* index : node.indexes) {
                 index->Interrupt();
@@ -1573,7 +1578,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
     node.peerman = PeerManager::make(*node.connman, *node.addrman,
                                      node.banman.get(), chainman,
                                      *node.mempool, peerman_opts);
-    RegisterValidationInterface(node.peerman.get());
+    node.main_signals->RegisterValidationInterface(node.peerman.get());
 
     // ********************************************************* Step 8: start indexers
 

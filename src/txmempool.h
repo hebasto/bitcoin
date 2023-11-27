@@ -40,6 +40,7 @@
 #include <vector>
 
 class CChain;
+class CMainSignals;
 
 /** Fake height value used in Coin to signify they are only in the memory pool (since 0.8) */
 static const uint32_t MEMPOOL_HEIGHT = 0x7FFFFFFF;
@@ -410,6 +411,7 @@ private:
      */
     std::set<uint256> m_unbroadcast_txids GUARDED_BY(cs);
 
+    CMainSignals& m_signals;
 
     /**
      * Helper function to calculate all in-mempool ancestors of staged_ancestors and apply ancestor
@@ -452,7 +454,7 @@ public:
      * accepting transactions becomes O(N^2) where N is the number of transactions
      * in the pool.
      */
-    explicit CTxMemPool(const Options& opts);
+    explicit CTxMemPool(const Options& opts, CMainSignals& signals);
 
     /**
      * If sanity-checking is turned on, check makes sure the pool is

@@ -46,7 +46,7 @@ void initialize_tx_pool()
             g_outpoints_coinbase_init_mature.push_back(prevout);
         }
     }
-    SyncWithValidationInterfaceQueue();
+    g_setup->m_node.main_signals->SyncWithValidationInterfaceQueue();
 }
 
 struct OutpointsUpdater final : public CValidationInterface {
@@ -125,7 +125,7 @@ CTxMemPool MakeMempool(FuzzedDataProvider& fuzzed_data_provider, const NodeConte
     mempool_opts.require_standard = fuzzed_data_provider.ConsumeBool();
 
     // ...and construct a CTxMemPool from it
-    return CTxMemPool{mempool_opts};
+    return CTxMemPool{mempool_opts, *node.main_signals};
 }
 
 FUZZ_TARGET(tx_package_eval, .init = initialize_tx_pool)
@@ -145,7 +145,7 @@ FUZZ_TARGET(tx_package_eval, .init = initialize_tx_pool)
     }
 
     auto outpoints_updater = std::make_shared<OutpointsUpdater>(mempool_outpoints);
-    RegisterSharedValidationInterface(outpoints_updater);
+    g_setup->m_node.main_signals->RegisterSharedValidationInterface(outpoints_updater);
 
     CTxMemPool tx_pool_{MakeMempool(fuzzed_data_provider, node)};
     MockedTxPool& tx_pool = *static_cast<MockedTxPool*>(&tx_pool_);
@@ -260,7 +260,7 @@ FUZZ_TARGET(tx_package_eval, .init = initialize_tx_pool)
         // Remember all added transactions
         std::set<CTransactionRef> added;
         auto txr = std::make_shared<TransactionsDelta>(added);
-        RegisterSharedValidationInterface(txr);
+        g_setup->m_node.main_signals->RegisterSharedValidationInterface(txr);
         const bool bypass_limits = fuzzed_data_provider.ConsumeBool();
 
         // When there are multiple transactions in the package, we call ProcessNewPackage(txs, test_accept=false)
@@ -274,8 +274,8 @@ FUZZ_TARGET(tx_package_eval, .init = initialize_tx_pool)
         const auto res = WITH_LOCK(::cs_main, return AcceptToMemoryPool(chainstate, txs.back(), GetTime(), bypass_limits, /*test_accept=*/!single_submit));
         const bool accepted = res.m_result_type == MempoolAcceptResult::ResultType::VALID;
 
-        SyncWithValidationInterfaceQueue();
-        UnregisterSharedValidationInterface(txr);
+        g_setup->m_node.main_signals->SyncWithValidationInterfaceQueue();
+        g_setup->m_node.main_signals->UnregisterSharedValidationInterface(txr);
 
         // There is only 1 transaction in the package. We did a test-package-accept and a ATMP
         if (single_submit) {
@@ -297,7 +297,7 @@ FUZZ_TARGET(tx_package_eval, .init = initialize_tx_pool)
         }
     }
 
-    UnregisterSharedValidationInterface(outpoints_updater);
+    g_setup->m_node.main_signals->UnregisterSharedValidationInterface(outpoints_updater);
 
     WITH_LOCK(::cs_main, tx_pool.check(chainstate.CoinsTip(), chainstate.m_chain.Height() + 1));
 }
