@@ -74,10 +74,12 @@ int main(int argc, char* argv[])
     // Start the lightweight task scheduler thread
     scheduler.m_service_thread = std::thread(util::TraceThread, "scheduler", [&] { scheduler.serviceQueue(); });
 
+    CMainSignals main_signals{};
+
     // Gather some entropy once per minute.
     scheduler.scheduleEvery(RandAddPeriodic, std::chrono::minutes{1});
 
-    GetMainSignals().RegisterBackgroundSignalScheduler(scheduler);
+    main_signals.RegisterBackgroundSignalScheduler(scheduler);
 
     class KernelNotifications : public kernel::Notifications
     {
@@ -125,7 +127,7 @@ int main(int argc, char* argv[])
         .blocks_dir = abs_datadir / "blocks",
         .notifications = chainman_opts.notifications,
     };
-    ChainstateManager chainman{kernel_context.interrupt, chainman_opts, blockman_opts};
+    ChainstateManager chainman{kernel_context.interrupt, chainman_opts, blockman_opts, main_signals};
 
     node::CacheSizes cache_sizes;
     cache_sizes.block_tree_db = 2 << 20;
@@ -236,9 +238,9 @@ int main(int argc, char* argv[])
 
         bool new_block;
         auto sc = std::make_shared<submitblock_StateCatcher>(block.GetHash());
-        RegisterSharedValidationInterface(sc);
+        main_signals.RegisterSharedValidationInterface(sc);
         bool accepted = chainman.ProcessNewBlock(blockptr, /*force_processing=*/true, /*min_pow_checked=*/true, /*new_block=*/&new_block);
-        UnregisterSharedValidationInterface(sc);
+        main_signals.UnregisterSharedValidationInterface(sc);
         if (!new_block && accepted) {
             std::cerr << "duplicate" << std::endl;
             break;
@@ -292,7 +294,7 @@ epilogue:
     if (chainman.m_thread_load.joinable()) chainman.m_thread_load.join();
     StopScriptCheckWorkerThreads();
 
-    GetMainSignals().FlushBackgroundCallbacks();
+    main_signals.FlushBackgroundCallbacks();
     {
         LOCK(cs_main);
         for (Chainstate* chainstate : chainman.GetAll()) {
@@ -302,5 +304,5 @@ epilogue:
             }
         }
     }
-    GetMainSignals().UnregisterBackgroundSignalScheduler();
+    main_signals.UnregisterBackgroundSignalScheduler();
 }

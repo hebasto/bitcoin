@@ -428,11 +428,12 @@ namespace {
 class MemPoolAccept
 {
 public:
-    explicit MemPoolAccept(CTxMemPool& mempool, Chainstate& active_chainstate) :
+    explicit MemPoolAccept(CTxMemPool& mempool, Chainstate& active_chainstate, CMainSignals& signals) :
         m_pool(mempool),
         m_view(&m_dummy),
         m_viewmempool(&active_chainstate.CoinsTip(), m_pool),
-        m_active_chainstate(active_chainstate)
+        m_active_chainstate(active_chainstate),
+        m_signals{signals}
     {
     }
 
@@ -685,6 +686,8 @@ private:
     CCoinsView m_dummy;
 
     Chainstate& m_active_chainstate;
+
+    CMainSignals& m_signals;
 
     /** Whether the transaction(s) would replace any mempool transactions. If so, RBF rules apply. */
     bool m_rbf{false};
@@ -1222,7 +1225,7 @@ bool MemPoolAccept::SubmitPackage(const ATMPArgs& args, std::vector<Workspace>& 
         results.emplace(ws.m_ptx->GetWitnessHash(),
                         MempoolAcceptResult::Success(std::move(ws.m_replaced_transactions), ws.m_vsize,
                                          ws.m_base_fees, effective_feerate, effective_feerate_wtxids));
-        GetMainSignals().TransactionAddedToMempool(ws.m_ptx, m_pool.GetAndIncrementSequence());
+        m_signals.TransactionAddedToMempool(ws.m_ptx, m_pool.GetAndIncrementSequence());
     }
     return all_submitted;
 }
@@ -1265,7 +1268,7 @@ MempoolAcceptResult MemPoolAccept::AcceptSingleTransaction(const CTransactionRef
         return MempoolAcceptResult::FeeFailure(ws.m_state, CFeeRate(ws.m_modified_fees, ws.m_vsize), {ws.m_ptx->GetWitnessHash()});
     }
 
-    GetMainSignals().TransactionAddedToMempool(ptx, m_pool.GetAndIncrementSequence());
+    m_signals.TransactionAddedToMempool(ptx, m_pool.GetAndIncrementSequence());
 
     return MempoolAcceptResult::Success(std::move(ws.m_replaced_transactions), ws.m_vsize, ws.m_base_fees,
                                         effective_feerate, single_wtxid);
@@ -1609,7 +1612,7 @@ MempoolAcceptResult AcceptToMemoryPool(Chainstate& active_chainstate, const CTra
 
     std::vector<COutPoint> coins_to_uncache;
     auto args = MemPoolAccept::ATMPArgs::SingleAccept(chainparams, accept_time, bypass_limits, coins_to_uncache, test_accept);
-    MempoolAcceptResult result = MemPoolAccept(pool, active_chainstate).AcceptSingleTransaction(tx, args);
+    MempoolAcceptResult result = MemPoolAccept(pool, active_chainstate, active_chainstate.GetMainSignals()).AcceptSingleTransaction(tx, args);
     if (result.m_result_type != MempoolAcceptResult::ResultType::VALID) {
         // Remove coins that were not present in the coins cache before calling
         // AcceptSingleTransaction(); this is to prevent memory DoS in case we receive a large
@@ -1642,10 +1645,10 @@ PackageMempoolAcceptResult ProcessNewPackage(Chainstate& active_chainstate, CTxM
         AssertLockHeld(cs_main);
         if (test_accept) {
             auto args = MemPoolAccept::ATMPArgs::PackageTestAccept(chainparams, GetTime(), coins_to_uncache);
-            return MemPoolAccept(pool, active_chainstate).AcceptMultipleTransactions(package, args);
+            return MemPoolAccept(pool, active_chainstate, active_chainstate.GetMainSignals()).AcceptMultipleTransactions(package, args);
         } else {
             auto args = MemPoolAccept::ATMPArgs::PackageChildWithParents(chainparams, GetTime(), coins_to_uncache);
-            return MemPoolAccept(pool, active_chainstate).AcceptPackage(package, args);
+            return MemPoolAccept(pool, active_chainstate, active_chainstate.GetMainSignals()).AcceptPackage(package, args);
         }
     }();
 
@@ -1699,6 +1702,11 @@ const CBlockIndex* Chainstate::SnapshotBase()
     if (!m_from_snapshot_blockhash) return nullptr;
     if (!m_cached_snapshot_base) m_cached_snapshot_base = Assert(m_chainman.m_blockman.LookupBlockIndex(*m_from_snapshot_blockhash));
     return m_cached_snapshot_base;
+}
+
+CMainSignals& Chainstate::GetMainSignals()
+{
+    return m_chainman.m_signals;
 }
 
 void Chainstate::InitCoinsDB(
@@ -3195,11 +3203,11 @@ static bool NotifyHeaderTip(ChainstateManager& chainman) LOCKS_EXCLUDED(cs_main)
     return fNotify;
 }
 
-static void LimitValidationInterfaceQueue() LOCKS_EXCLUDED(cs_main) {
+static void LimitValidationInterfaceQueue(CMainSignals& signals) LOCKS_EXCLUDED(cs_main) {
     AssertLockNotHeld(cs_main);
 
-    if (GetMainSignals().CallbacksPending() > 10) {
-        SyncWithValidationInterfaceQueue();
+    if (signals.CallbacksPending() > 10) {
+        signals.SyncWithValidationInterfaceQueue();
     }
 }
 
@@ -3237,7 +3245,7 @@ bool Chainstate::ActivateBestChain(BlockValidationState& state, std::shared_ptr<
         // Note that if a validationinterface callback ends up calling
         // ActivateBestChain this may lead to a deadlock! We should
         // probably have a DEBUG_LOCKORDER test for this in the future.
-        LimitValidationInterfaceQueue();
+        LimitValidationInterfaceQueue(GetMainSignals());
 
         {
             LOCK(cs_main);
@@ -3436,7 +3444,7 @@ bool Chainstate::InvalidateBlock(BlockValidationState& state, CBlockIndex* pinde
         if (m_chainman.m_interrupt) break;
 
         // Make sure the queue of validation callbacks doesn't grow unboundedly.
-        LimitValidationInterfaceQueue();
+        LimitValidationInterfaceQueue(GetMainSignals());
 
         LOCK(cs_main);
         // Lock for as long as disconnectpool is in scope to make sure MaybeUpdateMempoolForReorg is
@@ -4145,7 +4153,7 @@ bool ChainstateManager::AcceptBlock(const std::shared_ptr<const CBlock>& pblock,
     // Header is valid/has work, merkle tree and segwit merkle tree are good...RELAY NOW
     // (but if it does not build on our best tip, let the SendMessages loop relay it)
     if (!IsInitialBlockDownload() && ActiveTip() == pindex->pprev)
-        GetMainSignals().NewPoWValidBlock(pindex, pblock);
+        m_signals.NewPoWValidBlock(pindex, pblock);
 
     // Write block to history file
     if (fNewBlock) *fNewBlock = true;
@@ -4198,7 +4206,7 @@ bool ChainstateManager::ProcessNewBlock(const std::shared_ptr<const CBlock>& blo
             ret = AcceptBlock(block, state, &pindex, force_processing, nullptr, new_block, min_pow_checked);
         }
         if (!ret) {
-            GetMainSignals().BlockChecked(*block, state);
+            m_signals.BlockChecked(*block, state);
             return error("%s: AcceptBlock FAILED (%s)", __func__, state.ToString());
         }
     }
@@ -5791,10 +5799,11 @@ static ChainstateManager::Options&& Flatten(ChainstateManager::Options&& opts)
     return std::move(opts);
 }
 
-ChainstateManager::ChainstateManager(const util::SignalInterrupt& interrupt, Options options, node::BlockManager::Options blockman_options)
+ChainstateManager::ChainstateManager(const util::SignalInterrupt& interrupt, Options options, node::BlockManager::Options blockman_options, CMainSignals& signals)
     : m_interrupt{interrupt},
       m_options{Flatten(std::move(options))},
-      m_blockman{interrupt, std::move(blockman_options)} {}
+      m_blockman{interrupt, std::move(blockman_options)},
+      m_signals{signals} {}
 
 ChainstateManager::~ChainstateManager()
 {

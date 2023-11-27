@@ -101,7 +101,7 @@ TransactionError BroadcastTransaction(NodeContext& node, const CTransactionRef t
                 // with a transaction to/from their wallet, immediately call some
                 // wallet RPC, and get a stale result because callbacks have not
                 // yet been processed.
-                CallFunctionInValidationInterfaceQueue([&promise] {
+                node.main_signals->CallFunctionInValidationInterfaceQueue([&promise] {
                     promise.set_value();
                 });
                 callback_set = true;

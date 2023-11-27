@@ -793,7 +793,7 @@ BOOST_FIXTURE_TEST_CASE(CreateWallet, TestChain100Setup)
     CKey key;
     key.MakeNewKey(true);
     AddKey(*wallet, key);
-    TestUnloadWallet(std::move(wallet));
+    TestUnloadWallet(std::move(wallet), *m_node.main_signals);
 
 
     // Add log hook to detect AddToWallet events from rescans, blockConnected,
@@ -816,7 +816,7 @@ BOOST_FIXTURE_TEST_CASE(CreateWallet, TestChain100Setup)
     // transactionAddedToMempool notifications, and create block and mempool
     // transactions paying to the wallet
     std::promise<void> promise;
-    CallFunctionInValidationInterfaceQueue([&promise] {
+    m_node.main_signals->CallFunctionInValidationInterfaceQueue([&promise] {
         promise.get_future().wait();
     });
     std::string error;
@@ -844,13 +844,13 @@ BOOST_FIXTURE_TEST_CASE(CreateWallet, TestChain100Setup)
     // Unblock notification queue and make sure stale blockConnected and
     // transactionAddedToMempool events are processed
     promise.set_value();
-    SyncWithValidationInterfaceQueue();
+    m_node.main_signals->SyncWithValidationInterfaceQueue();
     // AddToWallet events for block_tx and mempool_tx events are counted a
     // second time as the notification queue is processed
     BOOST_CHECK_EQUAL(addtx_count, 5);
 
 
-    TestUnloadWallet(std::move(wallet));
+    TestUnloadWallet(std::move(wallet), *m_node.main_signals);
 
 
     // Load wallet again, this time creating new block and mempool transactions
@@ -867,7 +867,7 @@ BOOST_FIXTURE_TEST_CASE(CreateWallet, TestChain100Setup)
             m_coinbase_txns.push_back(CreateAndProcessBlock({block_tx}, GetScriptForRawPubKey(coinbaseKey.GetPubKey())).vtx[0]);
             mempool_tx = TestSimpleSpend(*m_coinbase_txns[3], 0, coinbaseKey, GetScriptForRawPubKey(key.GetPubKey()));
             BOOST_CHECK(m_node.chain->broadcastTransaction(MakeTransactionRef(mempool_tx), DEFAULT_TRANSACTION_MAXFEE, false, error));
-            SyncWithValidationInterfaceQueue();
+            m_node.main_signals->SyncWithValidationInterfaceQueue();
         });
     wallet = TestLoadWallet(context);
     // Since mempool transactions are requested at the end of loading, there will
@@ -880,7 +880,7 @@ BOOST_FIXTURE_TEST_CASE(CreateWallet, TestChain100Setup)
     }
 
 
-    TestUnloadWallet(std::move(wallet));
+    TestUnloadWallet(std::move(wallet), *m_node.main_signals);
 }
 
 BOOST_FIXTURE_TEST_CASE(CreateWalletWithoutChain, BasicTestingSetup)
@@ -908,7 +908,7 @@ BOOST_FIXTURE_TEST_CASE(ZapSelectTx, TestChain100Setup)
     auto block_tx = TestSimpleSpend(*m_coinbase_txns[0], 0, coinbaseKey, GetScriptForRawPubKey(key.GetPubKey()));
     CreateAndProcessBlock({block_tx}, GetScriptForRawPubKey(coinbaseKey.GetPubKey()));
 
-    SyncWithValidationInterfaceQueue();
+    m_node.main_signals->SyncWithValidationInterfaceQueue();
 
     {
         auto block_hash = block_tx.GetHash();
@@ -925,7 +925,7 @@ BOOST_FIXTURE_TEST_CASE(ZapSelectTx, TestChain100Setup)
         BOOST_CHECK_EQUAL(wallet->mapWallet.count(block_hash), 0u);
     }
 
-    TestUnloadWallet(std::move(wallet));
+    TestUnloadWallet(std::move(wallet), *m_node.main_signals);
 }
 
 /**
