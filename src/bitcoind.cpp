@@ -185,7 +185,8 @@ static bool AppInit(NodeContext& node)
             return false;
         }
 
-        node.main_signals = std::make_unique<CMainSignals>();
+        node.scheduler = std::make_unique<CScheduler>();
+        node.main_signals = std::make_unique<CMainSignals>(*node.scheduler);
         node.kernel = std::make_unique<kernel::Context>();
         if (!AppInitSanityChecks(*node.kernel))
         {

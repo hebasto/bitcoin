@@ -74,12 +74,10 @@ int main(int argc, char* argv[])
     // Start the lightweight task scheduler thread
     scheduler.m_service_thread = std::thread(util::TraceThread, "scheduler", [&] { scheduler.serviceQueue(); });
 
-    CMainSignals main_signals{};
+    CMainSignals main_signals{scheduler};
 
     // Gather some entropy once per minute.
     scheduler.scheduleEvery(RandAddPeriodic, std::chrono::minutes{1});
-
-    main_signals.RegisterBackgroundSignalScheduler(scheduler);
 
     class KernelNotifications : public kernel::Notifications
     {
@@ -304,5 +302,4 @@ epilogue:
             }
         }
     }
-    main_signals.UnregisterBackgroundSignalScheduler();
 }

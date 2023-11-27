@@ -98,7 +98,8 @@ public:
         if (!AppInitBasicSetup(args(), Assert(context())->exit_status)) return false;
         if (!AppInitParameterInteraction(args())) return false;
 
-        m_context->main_signals = std::make_unique<CMainSignals>();
+        m_context->scheduler = std::make_unique<CScheduler>();
+        m_context->main_signals = std::make_unique<CMainSignals>(*m_context->scheduler);
         m_context->kernel = std::make_unique<kernel::Context>();
         if (!AppInitSanityChecks(*m_context->kernel)) return false;
 
