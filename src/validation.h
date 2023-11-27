@@ -51,6 +51,7 @@ class Chainstate;
 class CTxMemPool;
 class ChainstateManager;
 struct ChainTxData;
+class CMainSignals;
 class DisconnectedBlockTransactions;
 struct PrecomputedTransactionData;
 struct LockPoints;
@@ -550,6 +551,8 @@ public:
     //! @sa ChainstateRole
     ChainstateRole GetRole() const EXCLUSIVE_LOCKS_REQUIRED(::cs_main);
 
+    CMainSignals& GetMainSignals();
+
     /**
      * Initialize the CoinsViews UTXO set database management data structures. The in-memory
      * cache is initialized separately.
@@ -929,7 +932,7 @@ private:
 public:
     using Options = kernel::ChainstateManagerOpts;
 
-    explicit ChainstateManager(const util::SignalInterrupt& interrupt, Options options, node::BlockManager::Options blockman_options);
+    explicit ChainstateManager(const util::SignalInterrupt& interrupt, Options options, node::BlockManager::Options blockman_options, CMainSignals& signals);
 
     //! Function to restart active indexes; set dynamically to avoid a circular
     //! dependency on `base/index.cpp`.
@@ -968,6 +971,7 @@ public:
     //! A single BlockManager instance is shared across each constructed
     //! chainstate to avoid duplicating block metadata.
     node::BlockManager m_blockman;
+    CMainSignals& m_signals;
 
     /**
      * Whether initial block download has ended and IsInitialBlockDownload

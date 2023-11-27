@@ -17,6 +17,7 @@ enum class OutputType;
 namespace interfaces {
 class Chain;
 } // namespace interfaces
+class CMainSignals;
 
 namespace wallet {
 class CWallet;
@@ -38,7 +39,7 @@ std::unique_ptr<CWallet> CreateSyncedWallet(interfaces::Chain& chain, CChain& cc
 
 std::shared_ptr<CWallet> TestLoadWallet(WalletContext& context);
 std::shared_ptr<CWallet> TestLoadWallet(std::unique_ptr<WalletDatabase> database, WalletContext& context, uint64_t create_flags);
-void TestUnloadWallet(std::shared_ptr<CWallet>&& wallet);
+void TestUnloadWallet(std::shared_ptr<CWallet>&& wallet, CMainSignals& main_signals);
 
 // Creates a copy of the provided database
 std::unique_ptr<WalletDatabase> DuplicateMockDatabase(WalletDatabase& database);

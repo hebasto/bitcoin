@@ -1002,6 +1002,7 @@ static RPCHelpMan submitblock()
     }
 
     ChainstateManager& chainman = EnsureAnyChainman(request.context);
+    NodeContext& node = EnsureAnyNodeContext(request.context);
     uint256 hash = block.GetHash();
     {
         LOCK(cs_main);
@@ -1026,9 +1027,9 @@ static RPCHelpMan submitblock()
 
     bool new_block;
     auto sc = std::make_shared<submitblock_StateCatcher>(block.GetHash());
-    RegisterSharedValidationInterface(sc);
+    node.main_signals->RegisterSharedValidationInterface(sc);
     bool accepted = chainman.ProcessNewBlock(blockptr, /*force_processing=*/true, /*min_pow_checked=*/true, /*new_block=*/&new_block);
-    UnregisterSharedValidationInterface(sc);
+    node.main_signals->UnregisterSharedValidationInterface(sc);
     if (!new_block && accepted) {
         return "duplicate";
     }
