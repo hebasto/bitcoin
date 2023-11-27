@@ -240,7 +240,6 @@ jobs:
     env:
       CCACHE_MAXSIZE: '120M'
       VCPKG_DEFAULT_TRIPLET: 'x64-windows-static'
-      VCPKG_MANIFEST_MODE: 'OFF'
 
     steps:
       - name: Checkout
@@ -258,11 +257,12 @@ jobs:
 
       - name: Install dependency packages
         run: |
+          Set-Location -Path ${{ runner.temp }}
           Invoke-Expression "$env:VCPKG_INSTALLATION_ROOT\vcpkg --vcpkg-root $env:VCPKG_INSTALLATION_ROOT install berkeleydb boost-date-time boost-multi-index boost-signals2 boost-test libevent miniupnpc sqlite3 zeromq"
 
       - name: Generate build system
         run: |
-          cmake -B build -A x64 -DVCPKG_TARGET_TRIPLET="$env:VCPKG_DEFAULT_TRIPLET" -DWITH_NATPMP=OFF
+          cmake -B build -A x64 -DVCPKG_TARGET_TRIPLET="$env:VCPKG_DEFAULT_TRIPLET" -DVCPKG_MANIFEST_MODE=OFF -DWITH_NATPMP=OFF
 
       - name: Build RelWithDebInfo configuration
         run: |
