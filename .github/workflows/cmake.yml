@@ -219,3 +219,64 @@ jobs:
           # TODO: Re-enable bench_sanity_check_high_priority after fixing a bug.
           # See: https://github.com/bitcoin/bitcoin/issues/28940
           ctest --test-dir build -j $env:NUMBER_OF_PROCESSORS -C Release -E bench_sanity_check_high_priority
+
+
+  win64-native-classic-mode:
+    name: ${{ matrix.host.name }}
+    runs-on: windows-2022
+
+    strategy:
+      fail-fast: false
+      matrix:
+        host:
+          - name: 'Win64 native, VS 2022, deb & rel'
+            build_type: ''
+          - name: 'Win64 native, VS 2022, rel-only'
+            build_type: 'release'
+          # Building boost-exception:x64-windows-static fails in debug-only configuration.
+          # - name: 'Win64 native, VS 2022, debug-only'
+          #   build_type: 'debug'
+
+    env:
+      CCACHE_MAXSIZE: '120M'
+      VCPKG_DEFAULT_TRIPLET: 'x64-windows-static'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Visual Studio Developer PowerShell
+        # Using microsoft/setup-msbuild is not enough as it does not add other Visual Studio tools to PATH.
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Setup vcpkg
+        run: |
+          Add-Content -Path "$env:VCPKG_INSTALLATION_ROOT\triplets\x64-windows-static.cmake" -Value "set(VCPKG_BUILD_TYPE ${{ matrix.host.build_type }})"
+          Invoke-Expression "$env:VCPKG_INSTALLATION_ROOT\vcpkg --vcpkg-root $env:VCPKG_INSTALLATION_ROOT integrate install"
+          "CMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Install dependency packages
+        run: |
+          Set-Location -Path ${{ runner.temp }}
+          Invoke-Expression "$env:VCPKG_INSTALLATION_ROOT\vcpkg --vcpkg-root $env:VCPKG_INSTALLATION_ROOT install berkeleydb boost-date-time boost-multi-index boost-signals2 boost-test libevent miniupnpc sqlite3 zeromq"
+
+      - name: Generate build system
+        run: |
+          cmake -B build -A x64 -DVCPKG_TARGET_TRIPLET="$env:VCPKG_DEFAULT_TRIPLET" -DVCPKG_MANIFEST_MODE=OFF -DWITH_NATPMP=OFF
+
+      - name: Build RelWithDebInfo configuration
+        run: |
+          cmake --build build -j $env:NUMBER_OF_PROCESSORS -t bitcoind --config RelWithDebInfo
+
+      - name: Build Debug configuration
+        if: ${{ matrix.host.build_type != 'release' }}
+        run: |
+          cmake --build build -j $env:NUMBER_OF_PROCESSORS -t bitcoind --config Debug
+
+      - name: Build Release configuration
+        run: |
+          cmake --build build -j $env:NUMBER_OF_PROCESSORS -t bitcoind --config Release
+
+      - name: Build MinSizeRel configuration
+        run: |
+          cmake --build build -j $env:NUMBER_OF_PROCESSORS -t bitcoind --config MinSizeRel
