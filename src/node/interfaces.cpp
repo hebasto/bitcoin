@@ -461,7 +461,7 @@ private:
     CMainSignals& m_signals;
 
 public:
-    explicit NotificationsHandlerImpl(std::shared_ptr<Chain::Notifications> notifications, CMainSignals& signals)
+    NotificationsHandlerImpl(std::shared_ptr<Chain::Notifications> notifications, CMainSignals& signals)
         : m_signals{signals}, m_proxy{std::make_shared<NotificationsProxy>(std::move(notifications))}
     {
         m_signals.RegisterSharedValidationInterface(m_proxy);
