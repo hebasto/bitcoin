@@ -171,9 +171,9 @@ jobs:
       - name: Disable external signer support
         if: ${{ !matrix.config.external_signer_enabled }}
         run: |
-          Get-Content "build_msvc\bitcoin_config.h" | Where-Object {$_ -notmatch 'external\ signer\ support|ENABLE_EXTERNAL_SIGNER'} | Set-Content "${{ runner.temp }}\bitcoin_config.h"
-          Remove-Item "build_msvc\bitcoin_config.h"
-          Move-Item "${{ runner.temp }}\bitcoin_config.h" "build_msvc\bitcoin_config.h"
+          Get-Content "src\config\bitcoin-config.h" | Where-Object {$_ -notmatch 'external\ signer\ support|ENABLE_EXTERNAL_SIGNER'} | Set-Content "${{ runner.temp }}\bitcoin-config.h"
+          Remove-Item "src\config\bitcoin-config.h"
+          Move-Item "${{ runner.temp }}\bitcoin-config.h" "src\config\bitcoin-config.h"
 
       - name: Build
         shell: cmd
