@@ -428,7 +428,7 @@ namespace {
 class MemPoolAccept
 {
 public:
-    explicit MemPoolAccept(CTxMemPool& mempool, Chainstate& active_chainstate, CMainSignals& signals) :
+    MemPoolAccept(CTxMemPool& mempool, Chainstate& active_chainstate, CMainSignals& signals) :
         m_pool(mempool),
         m_view(&m_dummy),
         m_viewmempool(&active_chainstate.CoinsTip(), m_pool),
