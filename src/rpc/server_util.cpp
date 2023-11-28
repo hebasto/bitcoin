@@ -10,7 +10,6 @@
 #include <policy/fees.h>
 #include <rpc/protocol.h>
 #include <rpc/request.h>
-#include <txmempool.h>
 #include <util/any.h>
 
 #include <any>
