@@ -46,7 +46,9 @@ jobs:
         uses: actions/checkout@v4
 
       - run: |
-          Get-Content "build_msvc\bitcoin_config.h.in" | Where-Object {$_ -notmatch 'external\ signer\ support|ENABLE_EXTERNAL_SIGNER'} | Set-Content "build_msvc\bitcoin_config.h.in"
+          Get-Content "build_msvc\bitcoin_config.h.in" | Where-Object {$_ -notmatch 'external\ signer\ support|ENABLE_EXTERNAL_SIGNER'} | Set-Content "${{ runner.temp }}\bitcoin_config.h.in"
+          Remove-Item "build_msvc\bitcoin_config.h.in"
+          Move-Item "${{ runner.temp }}\bitcoin_config.h.in" "build_msvc\bitcoin_config.h.in"
 
       - run: |
           git diff
