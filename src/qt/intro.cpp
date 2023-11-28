@@ -9,7 +9,6 @@
 #include <chainparams.h>
 #include <qt/intro.h>
 #include <qt/forms/ui_intro.h>
-#include <util/chaintype.h>
 #include <util/fs.h>
 
 #include <qt/guiconstants.h>
@@ -17,7 +16,6 @@
 #include <qt/optionsmodel.h>
 
 #include <common/args.h>
-#include <interfaces/node.h>
 #include <util/fs_helpers.h>
 #include <validation.h>
 
