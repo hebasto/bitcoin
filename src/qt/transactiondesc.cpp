@@ -20,7 +20,6 @@
 #include <key_io.h>
 #include <logging.h>
 #include <policy/policy.h>
-#include <validation.h>
 #include <wallet/types.h>
 
 #include <stdint.h>

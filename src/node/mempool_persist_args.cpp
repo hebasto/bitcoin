@@ -6,7 +6,6 @@
 
 #include <common/args.h>
 #include <util/fs.h>
-#include <validation.h>
 
 namespace node {
 
