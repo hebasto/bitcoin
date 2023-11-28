@@ -36,10 +36,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - name: 'Win64 native, VS 2022, external signer enabled'
-            external_signer: 'enabled'
-          - name: 'Win64 native, VS 2022, external signer disabled'
-            external_signer: 'disabled'
+          - name: 'Win64, VS 2022 (ext.signer=ON)'
+            external_signer_enabled: true
+          - name: 'Win64, VS 2022 (ext.signer=OFF)'
+            external_signer_enabled: false
 
     env:
       CCACHE_MAXSIZE: '200M'
@@ -169,7 +169,7 @@ jobs:
         run: py -3 build_msvc\msvc-autogen.py
 
       - name: Disable external signer support
-        if: matrix.config.external_signer == 'disabled'
+        if: ${{ !matrix.config.external_signer_enabled }}
         run: |
           Get-Content "build_msvc\bitcoin_config.h" | Where-Object {$_ -notmatch 'external\ signer\ support|ENABLE_EXTERNAL_SIGNER'} | Set-Content "${{ runner.temp }}\bitcoin_config.h"
           Remove-Item "build_msvc\bitcoin_config.h"
@@ -186,7 +186,7 @@ jobs:
 
       - name: Save Ccache cache
         uses: actions/cache/save@v3
-        if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true' && matrix.config.external_signer == 'enabled'
+        if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true' && matrix.config.external_signer_enabled
         with:
           path: ~/AppData/Local/ccache
           # https://github.com/actions/cache/blob/main/tips-and-workarounds.md#update-a-cache
