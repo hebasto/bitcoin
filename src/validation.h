@@ -932,7 +932,7 @@ private:
 public:
     using Options = kernel::ChainstateManagerOpts;
 
-    explicit ChainstateManager(const util::SignalInterrupt& interrupt, Options options, node::BlockManager::Options blockman_options, CMainSignals& signals);
+    ChainstateManager(const util::SignalInterrupt& interrupt, Options options, node::BlockManager::Options blockman_options, CMainSignals& signals);
 
     //! Function to restart active indexes; set dynamically to avoid a circular
     //! dependency on `base/index.cpp`.

@@ -457,7 +457,7 @@ public:
      * accepting transactions becomes O(N^2) where N is the number of transactions
      * in the pool.
      */
-    explicit CTxMemPool(const Options& opts, CMainSignals& signals);
+    CTxMemPool(const Options& opts, CMainSignals& signals);
 
     /**
      * If sanity-checking is turned on, check makes sure the pool is
