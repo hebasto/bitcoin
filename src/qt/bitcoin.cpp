@@ -37,7 +37,6 @@
 #include <util/string.h>
 #include <util/threadnames.h>
 #include <util/translation.h>
-#include <validation.h>
 
 #ifdef ENABLE_WALLET
 #include <qt/paymentserver.h>
