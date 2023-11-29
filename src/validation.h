@@ -33,6 +33,7 @@
 #include <util/hasher.h>
 #include <util/result.h>
 #include <util/translation.h>
+#include <validationinterface.h>
 #include <versionbits.h>
 
 #include <atomic>
@@ -51,7 +52,6 @@ class Chainstate;
 class CTxMemPool;
 class ChainstateManager;
 struct ChainTxData;
-class CMainSignals;
 class DisconnectedBlockTransactions;
 struct PrecomputedTransactionData;
 struct LockPoints;

@@ -21,6 +21,7 @@
 #include <util/epochguard.h>
 #include <util/hasher.h>
 #include <util/result.h>
+#include <validationinterface.h>
 
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/identity.hpp>
@@ -40,7 +41,6 @@
 #include <vector>
 
 class CChain;
-class CMainSignals;
 
 /** Fake height value used in Coin to signify they are only in the memory pool (since 0.8) */
 static const uint32_t MEMPOOL_HEIGHT = 0x7FFFFFFF;
