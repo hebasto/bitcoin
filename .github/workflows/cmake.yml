@@ -216,6 +216,4 @@ jobs:
 
       - name: Test Release configuration
         run: |
-          # TODO: Re-enable bench_sanity_check_high_priority after fixing a bug.
-          # See: https://github.com/bitcoin/bitcoin/issues/28940
-          ctest --test-dir build -j $env:NUMBER_OF_PROCESSORS -C Release -E bench_sanity_check_high_priority
+          ctest --test-dir build -j $env:NUMBER_OF_PROCESSORS -C Release
