@@ -56,7 +56,8 @@ BOOST_AUTO_TEST_CASE(run_command)
 //         using SubprocessException = subprocess::CalledProcessError;
 // #endif
         BOOST_CHECK_EXCEPTION(RunCommandParseJSON({"invalid_command"}), std::runtime_error, [&](const std::runtime_error& e) {
-            BOOST_CHECK(std::string(e.what()).find("RunCommandParseJSON error:") == std::string::npos);
+            // BOOST_CHECK(std::string(e.what()).find("RunCommandParseJSON error:") == std::string::npos);
+            BOOST_CHECK_EQUAL(std::string(e.what()), std::string{});
             // BOOST_CHECK_EQUAL(e.err_code, expected_error);
             return true;
         });
