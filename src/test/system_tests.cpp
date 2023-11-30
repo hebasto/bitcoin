@@ -62,19 +62,19 @@ BOOST_AUTO_TEST_CASE(run_command)
             return true;
         });
     }
-//     {
-//         // Return non-zero exit code, no output to stderr
-// #ifdef WIN32
-//         const std::vector<std::string> command = {"cmd.exe", "/c", "exit", "1"};
-// #else
-//         const std::vector<std::string> command = {"false"};
-// #endif
-//         BOOST_CHECK_EXCEPTION(RunCommandParseJSON(command), std::runtime_error, [&](const std::runtime_error& e) {
-//             const std::string what{e.what()};
-//             BOOST_CHECK(what.find(strprintf("RunCommandParseJSON error: process(%s) returned 1: \n", Join(command, " "))) != std::string::npos);
-//             return true;
-//         });
-//     }
+    {
+        // Return non-zero exit code, no output to stderr
+#ifdef WIN32
+        const std::vector<std::string> command = {"cmd.exe", "/c", "exit", "1"};
+#else
+        const std::vector<std::string> command = {"false"};
+#endif
+        BOOST_CHECK_EXCEPTION(RunCommandParseJSON(command), std::runtime_error, [&](const std::runtime_error& e) {
+            const std::string what{e.what()};
+            BOOST_CHECK(what.find(strprintf("RunCommandParseJSON error: process(%s) returned 1: \n", Join(command, " "))) != std::string::npos);
+            return true;
+        });
+    }
 //     {
 //         // Return non-zero exit code, with error message for stderr
 // #ifdef WIN32
