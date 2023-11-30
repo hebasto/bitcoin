@@ -270,7 +270,7 @@ jobs:
           key: ${{ github.job }}-ccache-${{ github.run_id }}
 
       - name: Run unit tests
-        run: src\test_bitcoin.exe -l test_suite
+        run: src\test_bitcoin.exe -t system_tests
 
       - name: Run benchmarks
         run: src\bench_bitcoin.exe -sanity-check

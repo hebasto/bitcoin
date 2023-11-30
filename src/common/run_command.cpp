@@ -32,6 +32,10 @@ UniValue RunCommandParseJSON(const std::vector<std::string>& str_command, const 
         c.send(str_std_in);
     }
     auto [out_res, err_res] = c.communicate();
+
+    std::cerr << "= START ================== OUT: " << out_res.buf.data() << std::endl;
+    std::cerr << "========================== ERR: " << err_res.buf.data() << std::endl;
+
     stdout_stream.str(std::string{out_res.buf.begin(), out_res.buf.end()});
     stderr_stream.str(std::string{err_res.buf.begin(), err_res.buf.end()});
 
@@ -39,6 +43,9 @@ UniValue RunCommandParseJSON(const std::vector<std::string>& str_command, const 
     std::string error;
     std::getline(stdout_stream, result);
     std::getline(stderr_stream, error);
+
+    std::cerr << "========================== result: " << result << std::endl;
+    std::cerr << "= FINISH ================= error: " << error << std::endl << std::endl << std::endl;
 
     c.wait();
     const int n_error = c.retcode();
