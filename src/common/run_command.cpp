@@ -8,6 +8,7 @@
 
 #include <common/run_command.h>
 #include <util/string.h>
+#include <util/time.h>
 
 #include <tinyformat.h>
 #include <univalue.h>
@@ -47,11 +48,16 @@ UniValue RunCommandParseJSON(const std::vector<std::string>& str_command, const 
     std::cerr << "========================== result: " << result << std::endl;
     std::cerr << "========================== error: " << error << std::endl;
 
+    while (c.poll() == -1) {
+        UninterruptibleSleep(100ms);
+    }
+
+
     // auto ret_code_from_wait = c.wait();
     // std::cerr << "========================== ret_code_from_wait: " << ret_code_from_wait  << std::endl;
 
-    // const int n_error = c.retcode();
-    const int n_error = c.wait();
+    const int n_error = c.retcode();
+    // const int n_error = c.wait();
     std::cerr << "= FINISH ================= n_error: " << n_error << std::endl << std::endl << std::endl;
 
     if (n_error) throw std::runtime_error(strprintf("RunCommandParseJSON error: process(%s) returned %d: %s\n", Join(str_command, " "), n_error, error));
