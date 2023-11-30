@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(run_command)
     {
         // Return non-zero exit code, no output to stderr
 #ifdef WIN32
-        const std::vector<std::string> command = {"cmd.exe", "/c", "exit", "1"};
+        const std::vector<std::string> command = {"exit", "1"};
 #else
         const std::vector<std::string> command = {"false"};
 #endif
