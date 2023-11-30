@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(run_command)
     }
     {
 #ifdef WIN32
-        const UniValue result = RunCommandParseJSON({"cmd.exe", "/c", "echo", "{\"success\": true}"});
+        const UniValue result = RunCommandParseJSON({"echo", "{\"success\": true}"});
 #else
         const UniValue result = RunCommandParseJSON({"echo", "{\"success\": true}"});
 #endif
