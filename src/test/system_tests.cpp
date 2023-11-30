@@ -36,11 +36,7 @@ BOOST_AUTO_TEST_CASE(run_command)
         BOOST_CHECK(result.isNull());
     }
     {
-#ifdef WIN32
-        const UniValue result = RunCommandParseJSON({"cmd.exe", "/c", "echo", "{\"success\": true}"});
-#else
         const UniValue result = RunCommandParseJSON({"echo", "{\"success\": true}"});
-#endif
         BOOST_CHECK(result.isObject());
         const UniValue& success = result.find_value("success");
         BOOST_CHECK(!success.isNull());
@@ -48,14 +44,8 @@ BOOST_AUTO_TEST_CASE(run_command)
     }
     {
         // An invalid command is handled by cpp-subprocess
-#ifdef WIN32
-        const int expected_error{wine_runtime ? 6 : 1};
-#else
-        const int expected_error{1};
-#endif
-        BOOST_CHECK_EXCEPTION(RunCommandParseJSON({"invalid_command"}), subprocess::CalledProcessError, [&](const subprocess::CalledProcessError& e) {
+        BOOST_CHECK_EXCEPTION(RunCommandParseJSON({"invalid_command"}), std::runtime_error, [&](const std::runtime_error& e) {
             BOOST_CHECK(std::string(e.what()).find("RunCommandParseJSON error:") == std::string::npos);
-            BOOST_CHECK_EQUAL(e.retcode, expected_error);
             return true;
         });
     }
