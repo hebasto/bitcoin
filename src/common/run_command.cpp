@@ -45,10 +45,14 @@ UniValue RunCommandParseJSON(const std::vector<std::string>& str_command, const 
     std::getline(stderr_stream, error);
 
     std::cerr << "========================== result: " << result << std::endl;
-    std::cerr << "= FINISH ================= error: " << error << std::endl << std::endl << std::endl;
+    std::cerr << "========================== error: " << error << std::endl;
 
-    c.wait();
+    auto ret_code_from_wait = c.wait();
+    std::cerr << "========================== ret_code_from_wait: " << ret_code_from_wait  << std::endl;
+
     const int n_error = c.retcode();
+    std::cerr << "= FINISH ================= n_error: " << n_error << std::endl << std::endl << std::endl;
+
     if (n_error) throw std::runtime_error(strprintf("RunCommandParseJSON error: process(%s) returned %d: %s\n", Join(str_command, " "), n_error, error));
     if (!result_json.read(result)) throw std::runtime_error("Unable to parse JSON: " + result);
 
