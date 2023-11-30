@@ -70,9 +70,9 @@ BOOST_AUTO_TEST_CASE(run_command)
         const std::vector<std::string> command = {"false"};
 #endif
         BOOST_CHECK_EXCEPTION(RunCommandParseJSON(command), std::runtime_error, [&](const std::runtime_error& e) {
-            // const std::string what{e.what()};
-            // BOOST_CHECK(what.find(strprintf("RunCommandParseJSON error: process(%s) returned 1: \n", Join(command, " "))) != std::string::npos);
-            BOOST_CHECK_EQUAL(std::string(e.what()), std::string{});  // My own addition.
+            const std::string what{e.what()};
+            BOOST_CHECK(what.find(strprintf("RunCommandParseJSON error: process(%s) returned 1: \n", Join(command, " "))) != std::string::npos);
+            // BOOST_CHECK_EQUAL(std::string(e.what()), std::string{});  // My own addition.
             return true;
         });
     }
