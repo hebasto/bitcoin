@@ -266,6 +266,7 @@ BITCOIN_CORE_H = \
   script/descriptor.h \
   script/keyorigin.h \
   script/miniscript.h \
+  script/parsing.h \
   script/sigcache.h \
   script/sign.h \
   script/signingprovider.h \
@@ -318,7 +319,6 @@ BITCOIN_CORE_H = \
   util/serfloat.h \
   util/signalinterrupt.h \
   util/sock.h \
-  util/spanparsing.h \
   util/string.h \
   util/subprocess.hpp \
   util/syserror.h \
@@ -706,6 +706,7 @@ libbitcoin_common_a_SOURCES = \
   scheduler.cpp \
   script/descriptor.cpp \
   script/miniscript.cpp \
+  script/parsing.cpp \
   script/sign.cpp \
   script/signingprovider.cpp \
   script/solver.cpp \
@@ -755,7 +756,6 @@ libbitcoin_util_a_SOURCES = \
   util/threadinterrupt.cpp \
   util/threadnames.cpp \
   util/serfloat.cpp \
-  util/spanparsing.cpp \
   util/strencodings.cpp \
   util/string.cpp \
   util/time.cpp \
