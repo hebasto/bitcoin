@@ -9,10 +9,8 @@ add_library(bitcoin_util STATIC EXCLUDE_FROM_ALL
   bytevectorhash.cpp
   chaintype.cpp
   check.cpp
-  error.cpp
   exception.cpp
   feefrac.cpp
-  fees.cpp
   fs.cpp
   fs_helpers.cpp
   hasher.cpp
