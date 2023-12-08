@@ -43,6 +43,7 @@ inline uint32_t bswap_32(uint32_t x)
 #if HAVE_DECL_BSWAP_64 == 0
 inline uint64_t bswap_64(uint64_t x)
 {
+#error using slow path
      return (((x & 0xff00000000000000ull) >> 56)
           | ((x & 0x00ff000000000000ull) >> 40)
           | ((x & 0x0000ff0000000000ull) >> 24)
