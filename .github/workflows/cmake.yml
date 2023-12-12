@@ -80,6 +80,62 @@ jobs:
           diff -u src/obj/build.h build/src/obj/build.h
 
 
+  ubuntu-native-build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04]
+
+    env:
+      CCACHE_MAXSIZE: '120M'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependency packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends ccache libevent-dev libboost-dev libsqlite3-dev libdb-dev libdb++-dev libminiupnpc-dev libnatpmp-dev libzmq3-dev systemtap-sdt-dev
+          echo "CCACHE_DIR=${{ runner.temp }}/ccache" >> "$GITHUB_ENV"
+
+      - name: CMake version
+        run: cmake --version
+
+      - name: Restore Ccache cache
+        uses: actions/cache/restore@v3
+        id: ccache-cache
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ matrix.host.triplet }}-ccache-${{ github.run_id }}
+          restore-keys: ${{ matrix.host.triplet }}-ccache-
+
+      - name: Generate build system
+        run: |
+          cmake -B build
+
+      - name: Build
+        run: |
+          ccache --zero-stats
+          cmake --build build -j $(nproc)
+          ccache --version | head -n 1 && ccache --show-stats
+          ls -l build/src/bitcoind build/src/test/test_bitcoin build/src/bench/bench_bitcoin
+
+      - name: Save Ccache cache
+        uses: actions/cache/save@v3
+        if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ matrix.host.triplet }}-ccache-${{ github.run_id }}
+
+      - name: Check
+        run: |
+          ctest --test-dir build -j $(nproc)
+
+
   cross-build:
     name: ${{ matrix.host.name }}
     runs-on: ubuntu-22.04
