@@ -99,7 +99,7 @@ jobs:
       - name: Install dependency packages
         run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends ccache libevent-dev libboost-dev libsqlite3-dev libdb-dev libdb++-dev libminiupnpc-dev libnatpmp-dev libzmq3-dev systemtap-sdt-dev
+          sudo apt-get install --no-install-recommends cmake ccache libevent-dev libboost-dev libsqlite3-dev libdb-dev libdb++-dev libminiupnpc-dev libnatpmp-dev libzmq3-dev systemtap-sdt-dev
           echo "CCACHE_DIR=${{ runner.temp }}/ccache" >> "$GITHUB_ENV"
 
       - name: CMake version
