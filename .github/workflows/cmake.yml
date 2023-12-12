@@ -103,7 +103,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - run: echo ${{ fromJSON(matrix.conf.packages) }}
+      - run: echo ${{ fromJSON(${{ matrix.conf.packages }}) }}
 
       - name: Remove preinstalled CMake
         if: ${{ contains(fromJSON(matrix.conf.packages), 'cmake') }}
@@ -128,8 +128,8 @@ jobs:
         id: ccache-cache
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ${{ matrix.host.triplet }}-ccache-${{ github.run_id }}
-          restore-keys: ${{ matrix.host.triplet }}-ccache-
+          key: ${{ matrix.conf.os }}-ccache-${{ github.run_id }}
+          restore-keys: ${{ matrix.conf.os }}-ccache-
 
       - name: Generate build system
         run: |
