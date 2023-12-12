@@ -80,6 +80,76 @@ jobs:
           diff -u src/obj/build.h build/src/obj/build.h
 
 
+  ubuntu-native-build:
+    name: ${{ matrix.conf.os }}
+    runs-on: ${{ matrix.conf.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        conf:
+          - os: 'ubuntu-20.04'
+            packages: 'cmake g++-11'
+            options: '-DWERROR=ON -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11'
+          - os: 'ubuntu-22.04'
+            packages: 'cmake'
+            options: '-DWERROR=ON'
+          - os: 'ubuntu-latest'
+            packages: ''
+            options: '-DWERROR=ON'
+
+    env:
+      CCACHE_MAXSIZE: '120M'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Remove preinstalled CMake
+        if: ${{ contains(matrix.conf.packages, 'cmake') }}
+        run: |
+          sudo rm /usr/local/bin/cmake
+
+      - name: Install packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends ${{ matrix.conf.packages }} ccache libevent-dev libboost-dev libsqlite3-dev libdb-dev libdb++-dev libminiupnpc-dev libnatpmp-dev libzmq3-dev systemtap-sdt-dev
+          echo "CCACHE_DIR=${{ runner.temp }}/ccache" >> "$GITHUB_ENV"
+
+      - name: CMake version
+        run: cmake --version
+
+      - name: Restore Ccache cache
+        uses: actions/cache/restore@v3
+        id: ccache-cache
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ matrix.conf.os }}-ccache-${{ github.run_id }}
+          restore-keys: ${{ matrix.conf.os }}-ccache-
+
+      - name: Generate build system
+        run: |
+          cmake -B build ${{ matrix.conf.options }}
+
+      - name: Build
+        run: |
+          ccache --zero-stats
+          cmake --build build -j $(nproc)
+          ccache --version | head -n 1 && ccache --show-stats
+          ls -l build/src/bitcoind build/src/test/test_bitcoin build/src/bench/bench_bitcoin
+
+      - name: Save Ccache cache
+        uses: actions/cache/save@v3
+        if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ matrix.conf.os }}-ccache-${{ github.run_id }}
+
+      - name: Check
+        run: |
+          ctest --test-dir build -j $(nproc)
+
+
   cross-build:
     name: ${{ matrix.host.name }}
     runs-on: ubuntu-22.04
