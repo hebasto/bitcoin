@@ -103,10 +103,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - run: echo ${{ fromJSON(${{ matrix.conf.packages }}) }}
+      # - run: echo ${{ fromJSON(${{ matrix.conf.packages }}) }}
 
       - name: Remove preinstalled CMake
-        if: ${{ contains(fromJSON(matrix.conf.packages), 'cmake') }}
+        if: ${{ contains(matrix.conf.packages, 'cmake') }}
         run: |
           sudo rm /usr/local/bin/cmake
 
