@@ -107,6 +107,8 @@ jobs:
           which -a cmake
           cmake --version
 
+      - run: printenv
+
       - name: Restore Ccache cache
         uses: actions/cache/restore@v3
         id: ccache-cache
