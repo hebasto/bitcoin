@@ -21,9 +21,6 @@ jobs:
     name: 'Debug ccache'
     runs-on: ubuntu-22.04
 
-    env:
-      CCACHE_MAXSIZE: '120M'
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,11 +43,20 @@ jobs:
         run: |
           cmake -B build
 
+      - name: Ccache stats BEFORE
+        run: |
+          ccache --version | head -n 1
+          ccache --show-stats --verbose
+          ccache --zero-stats
+
       - name: Build
         run: |
-          ccache --zero-stats
           cmake --build build -j $(nproc) -t bitcoind
-          ccache --version | head -n 1 && ccache --show-stats
+
+      - name: Ccache stats AFTER
+        run: |
+          ccache --version | head -n 1
+          ccache --show-stats --verbose
 
       - name: Save Ccache cache
         uses: actions/cache/save@v3
