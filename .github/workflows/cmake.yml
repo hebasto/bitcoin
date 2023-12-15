@@ -64,3 +64,86 @@ jobs:
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ${{ github.job }}-ccache-${{ github.run_id }}
+
+
+  cross-build:
+    name: ${{ matrix.host.name }}
+    runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        host:
+          - name: 'Linux 32-bit, Clang, link to libatomic'
+            packages: 'clang-14 g++-multilib'
+            triplet: 'i686-pc-linux-gnu'
+            c_compiler: 'clang-14 -m32'
+            cxx_compiler: 'clang++-14 -m32'
+            depends_options: 'NO_QT=1'
+            configure_options: '-DWERROR=ON'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependency packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends ccache ${{ matrix.host.packages }}
+          echo "CCACHE_DIR=${{ runner.temp }}/ccache" >> "$GITHUB_ENV"
+
+      - name: Depends fingerprint
+        id: depends_fingerprint
+        run: |
+          ${{ matrix.host.c_compiler }} -v 2>&1 | tee depends/c_compiler_version
+          ${{ matrix.host.cxx_compiler }} -v 2>&1 | tee depends/cxx_compiler_version
+          echo ${{ matrix.host.depends_options }} > depends/depends_options
+          echo "hash=${{ hashFiles('./depends/**') }}" >> "$GITHUB_OUTPUT"
+
+      - name: Depends cache
+        id: depends_cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            depends/built
+          key: ${{ matrix.host.triplet }}-depends-${{ steps.depends_fingerprint.outputs.hash }}
+
+      - name: Build depends
+        run: |
+          cd depends
+          make -j$(nproc) HOST=${{ matrix.host.triplet }} CC='${{ matrix.host.c_compiler }}' CXX='${{ matrix.host.cxx_compiler }}' ${{ matrix.host.depends_options }} LOG=1
+
+      - name: Restore Ccache cache
+        uses: actions/cache/restore@v3
+        id: ccache-cache
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ matrix.host.triplet }}-ccache-${{ github.run_id }}
+          restore-keys: ${{ matrix.host.triplet }}-ccache-
+
+      - name: Generate build system
+        run: |
+          cmake -B build --toolchain depends/${{ matrix.host.triplet }}/share/toolchain.cmake ${{ matrix.host.configure_options }}
+
+      - name: Build
+        run: |
+          ccache --zero-stats
+          cmake --build build -j $(nproc)
+          ccache --version | head -n 1 && ccache --show-stats
+          file build/src/bitcoind
+
+      - name: Save Ccache cache
+        uses: actions/cache/save@v3
+        if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ matrix.host.triplet }}-ccache-${{ github.run_id }}
+
+      - name: Test
+        run: |
+          ctest --test-dir build -j $(nproc)
+
+      - name: Install
+        run: |
+          cmake --install build --prefix install
+          tree install
