@@ -17,130 +17,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-info:
-    name: 'Test obj/build.h generation'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - run: cp cmake/script/GenerateBuildInfo.cmake ${{ runner.temp }}
-
-      - name: Test at HEAD
-        run: |
-          rm -rf src/obj build/src/obj
-          mkdir -p src/obj build/src/obj
-          ./share/genbuild.sh ${PWD}/src/obj/build.h ${PWD}
-          cmake -DBUILD_INFO_HEADER_PATH=${PWD}/build/src/obj/build.h -DSOURCE_DIR=${PWD} -P ${{ runner.temp }}/GenerateBuildInfo.cmake
-          cat src/obj/build.h
-          diff -u src/obj/build.h build/src/obj/build.h
-
-      - name: Test out of tree
-        run: |
-          rm -rf src/obj build/src/obj
-          mkdir -p src/obj build/src/obj
-          ./share/genbuild.sh ${PWD}/src/obj/build.h ${{ runner.temp }}
-          cmake -DBUILD_INFO_HEADER_PATH=${PWD}/build/src/obj/build.h -DSOURCE_DIR=${{ runner.temp }} -P ${{ runner.temp }}/GenerateBuildInfo.cmake
-          cat src/obj/build.h
-          diff -u src/obj/build.h build/src/obj/build.h
-
-      - name: Test at tag
-        run: |
-          rm -rf src/obj build/src/obj
-          mkdir -p src/obj build/src/obj
-          git -c advice.detachedHead=false checkout v25.1
-          ./share/genbuild.sh ${PWD}/src/obj/build.h ${PWD}
-          cmake -DBUILD_INFO_HEADER_PATH=${PWD}/build/src/obj/build.h -DSOURCE_DIR=${PWD} -P ${{ runner.temp }}/GenerateBuildInfo.cmake
-          cat src/obj/build.h
-          diff -u src/obj/build.h build/src/obj/build.h
-
-      - name: Test dirty tree
-        run: |
-          rm -rf src/obj build/src/obj
-          mkdir -p src/obj build/src/obj
-          echo "test" >> README.md
-          ./share/genbuild.sh ${PWD}/src/obj/build.h ${PWD}
-          cmake -DBUILD_INFO_HEADER_PATH=${PWD}/build/src/obj/build.h -DSOURCE_DIR=${PWD} -P ${{ runner.temp }}/GenerateBuildInfo.cmake
-          cat src/obj/build.h
-          diff -u src/obj/build.h build/src/obj/build.h
-
-      - name: Test BITCOIN_GENBUILD_NO_GIT
-        env:
-          BITCOIN_GENBUILD_NO_GIT: '1'
-        run: |
-          rm -rf src/obj build/src/obj
-          mkdir -p src/obj build/src/obj
-          ./share/genbuild.sh ${PWD}/src/obj/build.h ${PWD}
-          cmake -DBUILD_INFO_HEADER_PATH=${PWD}/build/src/obj/build.h -DSOURCE_DIR=${PWD} -P ${{ runner.temp }}/GenerateBuildInfo.cmake
-          cat src/obj/build.h
-          diff -u src/obj/build.h build/src/obj/build.h
-
-
-  ubuntu-focal-native:
-    name: 'Ubuntu 20.04, CMake 3.16, Boost from depends'
-    runs-on: ubuntu-20.04
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Remove preinstalled CMake
-        run: |
-          sudo rm /usr/local/bin/cmake /usr/local/bin/ctest
-
-      - name: Install packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends curl g++10 cmake libevent-dev libsqlite3-dev libdb-dev libdb++-dev libminiupnpc-dev libnatpmp-dev libzmq3-dev systemtap-sdt-dev
-
-      - name: CMake version
-        run: |
-          cmake --version
-          ctest --version
-
-      - name: Build Boost in depends
-        working-directory: ./depends
-        run: |
-          make -j $(nproc) NO_LIBEVENT=1 NO_QT=1 NO_WALLET=1 NO_NATPMP=1 NO_UPNP=1 NO_ZMQ=1 NO_USDT=1 ALLOW_HOST_PACKAGES=1 CC=gcc-10 CXX=g++-10
-
-      - name: Generate build system
-        run: |
-          cmake -B build -DCMAKE_TOOLCHAIN_FILE=depends/x86_64-pc-linux-gnu/share/toolchain.cmake -DENABLE_WALLET=ON -DWITH_NATPMP=ON -DWITH_MINIUPNPC=ON -DWITH_ZMQ=ON -DWITH_USDT=ON -DWERROR=ON
-
-      - name: Build
-        working-directory: ./build
-        run: |
-          cmake --build . -j $(nproc)
-
-      - name: Test
-        working-directory: ./build
-        run: |
-          ctest -j $(nproc)
-
-      - name: Install
-        run: |
-          cmake --install build --prefix install
-          tree install
-
-
-  cross-build:
-    name: ${{ matrix.host.name }}
+  debug-ccache:
+    name: 'Debug ccache'
     runs-on: ubuntu-22.04
-
-    strategy:
-      fail-fast: false
-      matrix:
-        host:
-          - name: 'Linux 32-bit, Clang, link to libatomic'
-            packages: 'clang-14 g++-multilib'
-            triplet: 'i686-pc-linux-gnu'
-            c_compiler: 'clang-14 -m32'
-            cxx_compiler: 'clang++-14 -m32'
-            depends_options: 'NO_QT=1'
-            configure_options: '-DWERROR=ON'
 
     env:
       CCACHE_MAXSIZE: '120M'
@@ -152,126 +31,30 @@ jobs:
       - name: Install dependency packages
         run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends ccache ${{ matrix.host.packages }}
+          sudo apt-get install --no-install-recommends ccache libboost-dev libevent-dev
           echo "CCACHE_DIR=${{ runner.temp }}/ccache" >> "$GITHUB_ENV"
-
-      - name: Depends fingerprint
-        id: depends_fingerprint
-        run: |
-          ${{ matrix.host.c_compiler }} -v 2>&1 | tee depends/c_compiler_version
-          ${{ matrix.host.cxx_compiler }} -v 2>&1 | tee depends/cxx_compiler_version
-          echo ${{ matrix.host.depends_options }} > depends/depends_options
-          echo "hash=${{ hashFiles('./depends/**') }}" >> "$GITHUB_OUTPUT"
-
-      - name: Depends cache
-        id: depends_cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            depends/built
-          key: ${{ matrix.host.triplet }}-depends-${{ steps.depends_fingerprint.outputs.hash }}
-
-      - name: Build depends
-        run: |
-          cd depends
-          make -j$(nproc) HOST=${{ matrix.host.triplet }} CC='${{ matrix.host.c_compiler }}' CXX='${{ matrix.host.cxx_compiler }}' ${{ matrix.host.depends_options }} LOG=1
 
       - name: Restore Ccache cache
         uses: actions/cache/restore@v3
         id: ccache-cache
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ${{ matrix.host.triplet }}-ccache-${{ github.run_id }}
-          restore-keys: ${{ matrix.host.triplet }}-ccache-
+          key: ${{ github.job }}-ccache-${{ github.run_id }}
+          restore-keys: ${{ github.job }}-ccache-
 
       - name: Generate build system
         run: |
-          cmake -B build --toolchain depends/${{ matrix.host.triplet }}/share/toolchain.cmake ${{ matrix.host.configure_options }}
+          cmake -B build
 
       - name: Build
         run: |
           ccache --zero-stats
-          cmake --build build -j $(nproc)
+          cmake --build build -j $(nproc) -t bitcoind
           ccache --version | head -n 1 && ccache --show-stats
-          file build/src/bitcoind
 
       - name: Save Ccache cache
         uses: actions/cache/save@v3
         if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true'
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ${{ matrix.host.triplet }}-ccache-${{ github.run_id }}
-
-      - name: Test
-        run: |
-          ctest --test-dir build -j $(nproc)
-
-      - name: Install
-        run: |
-          cmake --install build --prefix install
-          tree install
-
-
-  win64-native-builtin-tools:
-    name: 'Win64 native, VS 2022, built-in tools'
-    runs-on: windows-2022
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Remove non-MSVC tool installations
-        run: |
-          Remove-Item -Path "$env:ProgramFiles/CMake" -Recurse -Force
-          Remove-Item -Path "$env:VCPKG_INSTALLATION_ROOT" -Recurse -Force
-
-      - name: Configure Visual Studio Developer PowerShell
-        # Using microsoft/setup-msbuild is not enough as it does not add other Visual Studio tools to PATH.
-        uses: ilammy/msvc-dev-cmd@v1
-
-      - name: Check build tools
-        run: |
-          cmake --version | Out-File -FilePath "cmake_version"
-          Get-Content -Path "cmake_version"
-          Write-Output "---"
-          msbuild -version | Out-File -FilePath "msbuild_version"
-          Get-Content -Path "msbuild_version"
-          Write-Output "---"
-          $env:VCToolsVersion | Out-File -FilePath "toolset_version"
-          Get-Content -Path "toolset_version"
-          # GHA Windows images have different versions of MSVC toolsets being installed
-          # side-by-side. Therefore, the VCPKG_PLATFORM_TOOLSET_VERSION must be set explicitly
-          # to avoid linker errors when using vcpkg in the manifest mode.
-          # See: https://github.com/bitcoin/bitcoin/pull/28934
-          Add-Content -Path "$env:VCPKG_ROOT\triplets\x64-windows-static.cmake" -Value "set(VCPKG_PLATFORM_TOOLSET_VERSION $env:VCToolsVersion)"
-
-      - name: Restore vcpkg binary cache
-        uses: actions/cache/restore@v3
-        id: vcpkg-binary-cache
-        with:
-          path: ~/AppData/Local/vcpkg/archives
-          key: ${{ runner.os }}-${{ runner.arch }}-vcpkg-binary-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
-
-      - name: Generate build system
-        run: |
-          cmake -B build -A x64 --toolchain $env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DWITH_NATPMP=OFF
-
-      - name: Save vcpkg binary cache
-        uses: actions/cache/save@v3
-        if: github.event_name != 'pull_request' && steps.vcpkg-binary-cache.outputs.cache-hit != 'true'
-        with:
-          path: ~/AppData/Local/vcpkg/archives
-          key: ${{ runner.os }}-${{ runner.arch }}-vcpkg-binary-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
-
-      - name: Build Release configuration
-        run: |
-          cmake --build build -j $env:NUMBER_OF_PROCESSORS --config Release
-
-      - name: Test Release configuration
-        run: |
-          ctest --test-dir build -j $env:NUMBER_OF_PROCESSORS -C Release
-
-      - name: Install Release configuration
-        run: |
-          cmake --install build --prefix install --config Release
-          tree /f install
+          key: ${{ github.job }}-ccache-${{ github.run_id }}
