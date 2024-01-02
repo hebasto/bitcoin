@@ -91,6 +91,7 @@ jobs:
       - name: Clang version
         run: |
           clang --version
+          xcode-select --print-path
           clang++ -Wp,-v -E src/compat/assumptions.h
 
       - name: Install Homebrew packages
