@@ -53,6 +53,8 @@ jobs:
         run: |
           brew install automake libtool pkg-config gnu-getopt ccache boost libevent miniupnpc libnatpmp zeromq qt@5 qrencode
           brew --prefix libevent
+          pkg-config --cflags libevent
+          pkg-config --libs libevent
 
       - name: Set Ccache directory
         run: echo "CCACHE_DIR=${RUNNER_TEMP}/ccache_dir" >> "$GITHUB_ENV"
