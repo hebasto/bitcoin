@@ -92,6 +92,8 @@ jobs:
         run: |
           sudo xcode-select --switch /Applications/Xcode_15.0.1.app
           clang --version
+          xcode-select --print-path
+          clang++ -Wp,-v -E src/compat/assumptions.h
 
       - name: Install Homebrew packages
         env:
