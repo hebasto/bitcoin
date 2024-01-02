@@ -740,12 +740,14 @@ case $host in
          dnl option to system-ify all /usr/local/include paths without adding it to the list
          dnl of search paths in case it's not already there.
          if test "$suppress_external_warnings" != "no"; then
+           MACOS_DEVELOPER_DIR="$(xcode-select --print-path)"
            AX_CHECK_PREPROC_FLAG([-nostdinc], [CORE_CPPFLAGS="$CORE_CPPFLAGS -nostdinc"], [], [$CXXFLAG_WERROR])
-           CORE_CPPFLAGS="$CORE_CPPFLAGS -isystem /Applications/Xcode_14.3.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"
-           CORE_CPPFLAGS="$CORE_CPPFLAGS -isystem /Applications/Xcode_14.3.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1"
-           CORE_CPPFLAGS="$CORE_CPPFLAGS -isystem /Applications/Xcode_14.3.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
-           CORE_CPPFLAGS="$CORE_CPPFLAGS -isystem /Applications/Xcode_14.3.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"
-           CORE_CPPFLAGS="$CORE_CPPFLAGS -isystem /Applications/Xcode_14.3.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include"
+           CORE_CPPFLAGS="$CORE_CPPFLAGS -isystem /usr/local/include"
+           CORE_CPPFLAGS="$CORE_CPPFLAGS -isystem ${MACOS_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1"
+           CORE_CPPFLAGS="$CORE_CPPFLAGS -isystem ${MACOS_DEVELOPER_DIR}/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include"
+           CORE_CPPFLAGS="$CORE_CPPFLAGS -isystem ${MACOS_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"
+           CORE_CPPFLAGS="$CORE_CPPFLAGS -isystem ${MACOS_DEVELOPER_DIR}/Toolchains/XcodeDefault.xctoolchain/usr/include"
+           CORE_CPPFLAGS="$CORE_CPPFLAGS -isystem ${MACOS_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
          fi
 
          if test "$use_bdb" != "no" && $BREW list --versions berkeley-db@4 >/dev/null && test "$BDB_CFLAGS" = "" && test "$BDB_LIBS" = ""; then
