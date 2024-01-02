@@ -746,7 +746,7 @@ case $host in
            MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include"
            MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"
            MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Toolchains/XcodeDefault.xctoolchain/usr/include"
-           MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
+           MACOS_INC="$MACOS_INC -iframework ${MACOS_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
            AX_CHECK_PREPROC_FLAG([$MACOS_INC], [CORE_CPPFLAGS="$CORE_CPPFLAGS $MACOS_INC"], [], [$CXXFLAG_WERROR])
          fi
 
