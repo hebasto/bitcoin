@@ -736,11 +736,18 @@ case $host in
          dnl Homebrew may create symlinks in /usr/local/include for some packages.
          dnl Because MacOS's clang internally adds "-I /usr/local/include" to its search
          dnl paths, this will negate efforts to use -isystem for those packages, as they
-         dnl will be found first in /usr/local. Use the internal "-internal-isystem"
-         dnl option to system-ify all /usr/local/include paths without adding it to the list
-         dnl of search paths in case it's not already there.
+         dnl will be found first in /usr/local. Use the "-nostdinc" to override
+         dnl include paths.
          if test "$suppress_external_warnings" != "no"; then
-           AX_CHECK_PREPROC_FLAG([-Xclang -internal-isystem/usr/local/include], [CORE_CPPFLAGS="$CORE_CPPFLAGS -Xclang -internal-isystem/usr/local/include"], [], [$CXXFLAG_WERROR])
+           MACOS_DEVELOPER_DIR="$(xcode-select --print-path)"
+           MACOS_INC="-nostdinc"
+           MACOS_INC="$MACOS_INC -isystem /usr/local/include"
+           MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1"
+           MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include"
+           MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"
+           MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Toolchains/XcodeDefault.xctoolchain/usr/include"
+           MACOS_INC="$MACOS_INC -iframework ${MACOS_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
+           AX_CHECK_PREPROC_FLAG([$MACOS_INC], [CORE_CPPFLAGS="$CORE_CPPFLAGS $MACOS_INC"], [], [$CXXFLAG_WERROR])
          fi
 
          if test "$use_bdb" != "no" && $BREW list --versions berkeley-db@4 >/dev/null && test "$BDB_CFLAGS" = "" && test "$BDB_LIBS" = ""; then
