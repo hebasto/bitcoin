@@ -738,12 +738,20 @@ case $host in
          dnl paths, this will negate efforts to use -isystem for those packages, as they
          dnl will be found first in /usr/local. Use the "-nostdinc" to override
          dnl include paths.
+
+# /usr/local/include
+# /Applications/Xcode_15.0.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1
+# /Applications/Xcode_15.0.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include
+# /Applications/Xcode_15.0.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include
+# /Applications/Xcode_15.0.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include
+# /Applications/Xcode_15.0.1.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks
+
          if test "$suppress_external_warnings" != "no"; then
            MACOS_DEVELOPER_DIR="$(xcode-select --print-path)"
            MACOS_INC="-nostdinc"
            MACOS_INC="$MACOS_INC -isystem /usr/local/include"
            MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1"
-           MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/14.0.3/include"
+           MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/15.0.0/include"
            MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"
            MACOS_INC="$MACOS_INC -isystem ${MACOS_DEVELOPER_DIR}/Toolchains/XcodeDefault.xctoolchain/usr/include"
            MACOS_INC="$MACOS_INC -iframework ${MACOS_DEVELOPER_DIR}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
