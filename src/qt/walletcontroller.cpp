@@ -16,6 +16,7 @@
 #include <interfaces/node.h>
 #include <util/string.h>
 #include <util/threadnames.h>
+#include <util/time.h>
 #include <util/translation.h>
 #include <wallet/wallet.h>
 
@@ -206,6 +207,9 @@ void WalletControllerActivity::showProgressDialog(const QString& title_text, con
     // The setValue call forces QProgressDialog to start the internal duration estimation.
     // See details in https://bugreports.qt.io/browse/QTBUG-47042.
     progress_dialog->setValue(0);
+
+    assert(progress_dialog->isWindow());
+
     // When requested, launch dialog minimized
     if (show_minimized) progress_dialog->showMinimized();
 }
@@ -383,6 +387,8 @@ void LoadWalletsActivity::load(bool show_loading_minimized)
         for (auto& wallet : node().walletLoader().getWallets()) {
             m_wallet_controller->getOrCreateWallet(std::move(wallet));
         }
+
+        UninterruptibleSleep(std::chrono::seconds{5});
 
         QTimer::singleShot(0, this, [this] { Q_EMIT finished(); });
     });
