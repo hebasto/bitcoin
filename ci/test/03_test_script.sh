@@ -134,6 +134,9 @@ cd "${BASE_BUILD_DIR}"
 
 bash -c "${BASE_ROOT_DIR}/configure --cache-file=config.cache $BITCOIN_CONFIG_ALL $BITCOIN_CONFIG" || ( (cat config.log) && false)
 
+cat config.log
+exit 1
+
 make distdir VERSION="$HOST"
 
 cd "${BASE_BUILD_DIR}/bitcoin-$HOST"
