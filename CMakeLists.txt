@@ -93,6 +93,7 @@ tristate_option(WITH_USDT
 )
 
 option(BUILD_BENCH "Build bench_bitcoin executable." OFF)
+option(INSTALL_MAN "Install man pages." ON)
 
 set(configure_warnings)
 

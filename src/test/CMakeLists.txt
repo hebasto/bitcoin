@@ -154,3 +154,7 @@ target_link_libraries(test_bitcoin
 if(ENABLE_WALLET)
   add_subdirectory(${PROJECT_SOURCE_DIR}/src/wallet/test wallet)
 endif()
+
+install(TARGETS test_bitcoin
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
