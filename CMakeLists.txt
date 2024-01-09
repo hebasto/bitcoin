@@ -64,6 +64,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
 option(BUILD_DAEMON "Build bitcoind executable." ON)
 option(BUILD_CLI "Build bitcoin-cli executable." ON)
 option(BUILD_TX "Build bitcoin-tx executable." ON)
+option(BUILD_UTIL "Build bitcoin-util executable." ON)
 
 # TODO: These tri-state options will be removed and most features
 #       will become opt-in by default before merging into master.
@@ -215,6 +216,7 @@ message("Executables:")
 message("  bitcoind ............................ ${BUILD_DAEMON}")
 message("  bitcoin-cli ......................... ${BUILD_CLI}")
 message("  bitcoin-tx .......................... ${BUILD_TX}")
+message("  bitcoin-util ........................ ${BUILD_UTIL}")
 message("Optional features:")
 message("  port mapping:")
 message("   - using NAT-PMP .................... ${WITH_NATPMP}")
