@@ -208,12 +208,23 @@ include(cmake/secp256k1.cmake)
 
 include(cmake/optional.cmake)
 
+find_package(Python3 3.9 COMPONENTS Interpreter)
+if(Python3_EXECUTABLE)
+  set(PYTHON_COMMAND ${Python3_EXECUTABLE})
+else()
+  list(APPEND configure_warnings
+    "Minimum required Python not found. Utils and rpcauth tests are disabled."
+  )
+endif()
+
 target_compile_definitions(core_base_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS})
 target_compile_definitions(core_depends_release_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_RELWITHDEBINFO})
 target_compile_definitions(core_depends_debug_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_DEBUG})
 
 add_subdirectory(src)
 add_subdirectory(test)
+
+include(cmake/tests.cmake)
 
 
 include(GetTargetInterface)
