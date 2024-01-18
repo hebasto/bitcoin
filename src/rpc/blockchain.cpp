@@ -2749,7 +2749,7 @@ static RPCHelpMan loadtxoutset()
     try {
         // Read data from the file
         afile >> metadata;
-    } catch (const std::exception& e) {
+    } catch (const std::exception&) {
         // Handle any exception, which includes reaching the end of the file e.g. file size < sizeOf(metadata)
         throw JSONRPCError(RPC_INTERNAL_ERROR, strprintf("Unable to load UTXO snapshot, "
             "couldn't read snapshot metadata from file %s.\nThe file may be corrupted "
