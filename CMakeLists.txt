@@ -24,6 +24,19 @@ project("Bitcoin Core"
   LANGUAGES CXX ASM
 )
 
+
+
+try_compile(RESULT_SSP ${CMAKE_BINARY_DIR}/test_projects/ssp ${CMAKE_SOURCE_DIR}/cmake/test/ssp
+            TestSSP
+            OUTPUT_VARIABLE OUTPUT)
+
+
+message("=================== RESULT_SSP is ${RESULT_SSP}")
+message("=================== OUTPUT is ${OUTPUT}")
+
+return()
+
+
 set(PACKAGE_NAME ${PROJECT_NAME})
 set(CLIENT_VERSION_IS_RELEASE "false")
 set(COPYRIGHT_YEAR "2023")
@@ -194,8 +207,8 @@ add_threads_if_needed()
 include(AddBoostIfNeeded)
 add_boost_if_needed()
 
-include(AddLibeventIfNeeded)
-add_libevent_if_needed()
+# include(AddLibeventIfNeeded)
+# add_libevent_if_needed()
 
 include(cmake/introspection.cmake)
 
@@ -267,20 +280,45 @@ if(HARDENING)
     try_append_cxx_flags("-fcf-protection=full" TARGET hardening_interface)
 
     if(MINGW)
-      set(ssp_source "
-        #include <cstring>
+      # set(ssp_source "
+      #   #include <string.h>
 
-        void f(const char* s)
+      #   void f(const char* s)
+      #   {
+      #     char b[42];
+      #     strcpy(b, s);
+      #   }
+
+      #   int main()
+      #   {
+      #       f(\"test\");
+      #   }
+      # ")
+
+      set(ssp_source "
+        #include <string>
+
+        static void f()
         {
-          char b[42];
-          std::strcpy(b, s);
+            try {
+                std::string key, value;
+            }
+            catch (...) {
+                throw;
+            }
         }
 
-        int main()
+        int main(int argc, char* argv[])
         {
-            f(\"test\");
+            try {
+                f();
+            }
+            catch (...) {
+            }
         }
       ")
+
+
       include(CMakePushCheckState)
       cmake_push_check_state(RESET)
       include(GetTargetInterface)
@@ -417,3 +455,6 @@ endif()
 
 # We want all build properties to be encapsulated properly.
 include(WarnAboutGlobalProperties)
+
+find_library(LIBSSP NAMES ssp)
+message("========================= ${LIBSSP}")

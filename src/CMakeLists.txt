@@ -256,7 +256,7 @@ target_link_libraries(bitcoin_node
     minisketch
     univalue
     Boost::headers
-    libevent::libevent
+    # libevent::libevent
     $<TARGET_NAME_IF_EXISTS:PkgConfig::libevent_pthreads>
     $<TARGET_NAME_IF_EXISTS:NATPMP::NATPMP>
     $<TARGET_NAME_IF_EXISTS:MiniUPnPc::MiniUPnPc>
@@ -298,7 +298,7 @@ if(BUILD_CLI)
     bitcoin_cli
     bitcoin_common
     bitcoin_util
-    libevent::libevent
+    # libevent::libevent
   )
   list(APPEND installable_targets bitcoin-cli)
 endif()
@@ -308,8 +308,8 @@ if(BUILD_TX)
   add_executable(bitcoin-tx bitcoin-tx.cpp)
   target_link_libraries(bitcoin-tx
     core_interface
-    bitcoin_common
-    bitcoin_util
+    # bitcoin_common
+    # bitcoin_util
     univalue
   )
   list(APPEND installable_targets bitcoin-tx)
