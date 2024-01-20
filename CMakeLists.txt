@@ -267,12 +267,35 @@ if(HARDENING)
     try_append_cxx_flags("-fcf-protection=full" TARGET hardening_interface)
 
     if(MINGW)
-      # Older versions of gcc required libssp to be linked, but this was fixed
-      # with gcc-11. This can be removed when those older versions are no longer
-      # supported.
-      if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 11.0)
-        target_link_libraries(hardening_interface INTERFACE ssp)
-      endif()
+      set(ssp_source "
+        #include <cstring>
+
+        void f(const char* s)
+        {
+          char b[42];
+          std::strcpy(b, s);
+        }
+
+        int main()
+        {
+            f(\"test\");
+        }
+      ")
+      include(CMakePushCheckState)
+      cmake_push_check_state(RESET)
+      include(GetTargetInterface)
+      get_target_interface(CMAKE_REQUIRED_FLAGS hardening_interface COMPILE_OPTIONS)
+      include(CheckSourceCompilesAndLinks)
+      check_cxx_source_links("${ssp_source}" HARDENED_LINKS_WITHOUT_LIBSSP)
+      unset(ssp_source)
+      cmake_pop_check_state()
+
+      # # Older versions of gcc required libssp to be linked, but this was fixed
+      # # with gcc-11. This can be removed when those older versions are no longer
+      # # supported.
+      # if(CMAKE_CXX_COMPILER_VERSION VERSION_LESS 11.0)
+      #   target_link_libraries(hardening_interface INTERFACE ssp)
+      # endif()
 
       # stack-clash-protection doesn't compile with GCC 10 and earlier.
       # In any case, it is a no-op for Windows.
