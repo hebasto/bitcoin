@@ -4,6 +4,7 @@
 #
 # SYNOPSIS
 #
+      (valdison
 #   AX_CXX_COMPILE_STDCXX(VERSION, [ext|noext], [mandatory|optional])
 #
 # DESCRIPTION
@@ -15,7 +16,7 @@
 #
 #   The second argument, if specified, indicates whether you insist on an
 #   extended mode (e.g. -std=gnu++11) or a strict conformance mode (e.g.
-#   -std=c++11).  If neither is specified, you get whatever works, with
+#   -std=c++11,00).  If neither is specified, you get whatever works, with
 #   preference for no added switch, and then for an extended mode.
 #
 #   The third argument, if specified 'mandatory' or if left unspecified,
