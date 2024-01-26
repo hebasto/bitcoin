@@ -115,10 +115,6 @@ add_library(bitcoin_common STATIC EXCLUDE_FROM_ALL
   script/solver.cpp
   warnings.cpp
 )
-target_compile_definitions(bitcoin_common
-  PRIVATE
-    ${THREAD_LOCAL_IF_AVAILABLE}
-)
 target_link_libraries(bitcoin_common
   PRIVATE
     core_interface

@@ -19,7 +19,6 @@ function(add_threads_if_needed)
   find_package(Threads REQUIRED)
   set_target_properties(Threads::Threads PROPERTIES IMPORTED_GLOBAL TRUE)
 
-  set(thread_local)
   if(MINGW)
     #[=[
     mingw32's implementation of thread_local has been shown to behave
@@ -36,7 +35,8 @@ function(add_threads_if_needed)
      - https://groups.google.com/d/msg/bsdmailinglist/22ncTZAbDp4/Dii_pII5AwAJ
     ]=]
   elseif(THREADLOCAL)
-    set(thread_local "$<$<COMPILE_FEATURES:cxx_thread_local>:HAVE_THREAD_LOCAL>")
+    target_compile_definitions(core_base_interface INTERFACE
+      "$<$<COMPILE_FEATURES:cxx_thread_local>:HAVE_THREAD_LOCAL>"
+    )
   endif()
-  set(THREAD_LOCAL_IF_AVAILABLE "${thread_local}" PARENT_SCOPE)
 endfunction()

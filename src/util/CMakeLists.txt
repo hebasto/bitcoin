@@ -41,11 +41,6 @@ add_library(bitcoin_util STATIC EXCLUDE_FROM_ALL
   ../sync.cpp
 )
 
-target_compile_definitions(bitcoin_util
-  PRIVATE
-    ${THREAD_LOCAL_IF_AVAILABLE}
-)
-
 target_link_libraries(bitcoin_util
   PRIVATE
     core_interface
