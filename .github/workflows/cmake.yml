@@ -402,7 +402,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build -A x64 --toolchain $env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DWITH_NATPMP=OFF
+          cmake -B build -A x64 --toolchain $env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DWITH_NATPMP=OFF -DWERROR=ON
 
       - name: Save vcpkg binary cache
         uses: actions/cache/save@v3
@@ -471,7 +471,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build
+          cmake -B build -DWERROR=ON
 
       - name: Build
         run: |
