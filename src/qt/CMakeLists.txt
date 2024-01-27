@@ -85,6 +85,9 @@ target_include_directories(bitcoinqt
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
 )
+set_property(SOURCE macnotificationhandler.mm
+  APPEND PROPERTY COMPILE_OPTIONS -Wno-error=deprecated-declarations
+)
 target_link_libraries(bitcoinqt
   PUBLIC
     Qt5::Widgets
