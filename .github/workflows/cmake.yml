@@ -113,29 +113,29 @@ jobs:
           # BerkeleyDB: Using our own FindBerkeleyDB module.
           - system_packages: 'libboost-dev libevent-dev'
             depends_options: 'NO_BDB=1 NO_SQLITE=1 NO_USDT=1'
-            build_options: '-DWITH_BDB=ON'
+            build_options: '-DENABLE_WALLET=ON -DWITH_BDB=ON'
             expected: 'fail'
           - system_packages: 'libboost-dev libevent-dev libdb-dev libdb++-dev'
             depends_options: 'NO_BDB=1 NO_SQLITE=1 NO_USDT=1'
-            build_options: '-DWITH_BDB=ON'
+            build_options: '-DENABLE_WALLET=ON -DWITH_BDB=ON'
             expected: 'fail'
           - system_packages: 'libboost-dev libevent-dev'
             depends_options: 'NO_SQLITE=1 NO_USDT=1'
-            build_options: '-DWITH_BDB=ON'
+            build_options: '-DENABLE_WALLET=ON -DWITH_BDB=ON'
             expected: 'pass'
 
           # SQLite: Using CMake's FindSQLite3 module.
           - system_packages: 'libboost-dev libevent-dev'
             depends_options: 'NO_BDB=1 NO_SQLITE=1 NO_USDT=1'
-            build_options: '-DWITH_SQLITE=ON'
+            build_options: '-DENABLE_WALLET=ON -DWITH_SQLITE=ON'
             expected: 'fail'
           - system_packages: 'libboost-dev libevent-dev libsqlite3-dev'
             depends_options: 'NO_BDB=1 NO_SQLITE=1 NO_USDT=1'
-            build_options: '-DWITH_SQLITE=ON'
+            build_options: '-DENABLE_WALLET=ON -DWITH_SQLITE=ON'
             expected: 'fail'
           - system_packages: 'libboost-dev libevent-dev'
             depends_options: 'NO_BDB=1 NO_USDT=1'
-            build_options: '-DWITH_SQLITE=ON'
+            build_options: '-DENABLE_WALLET=ON -DWITH_SQLITE=ON'
             expected: 'pass'
 
           # USDT: Header-only. Using CMake's find_path function.
@@ -193,7 +193,7 @@ jobs:
       - name: Install packages
         run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends curl g++10 cmake ccache libevent-dev libsqlite3-dev libdb-dev libdb++-dev libminiupnpc-dev libnatpmp-dev libzmq3-dev systemtap-sdt-dev
+          sudo apt-get install --no-install-recommends curl g++10 cmake ccache libevent-dev libsqlite3-dev libdb-dev libdb++-dev libminiupnpc-dev libnatpmp-dev libzmq3-dev systemtap-sdt-dev libqt5gui5 libqt5core5a libqt5dbus5 qttools5-dev qttools5-dev-tools
           echo "CCACHE_DIR=${{ runner.temp }}/ccache" >> "$GITHUB_ENV"
 
       - name: CMake version
@@ -215,8 +215,18 @@ jobs:
           restore-keys: ${{ github.job }}-ccache-
 
       - name: Generate build system
-        run: |
-          cmake -B build -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_CXX_COMPILER=g++-10 -DBoost_INCLUDE_DIR="${PWD}/boost_1_84_0" -DENABLE_WALLET=ON -DWITH_MINIUPNPC=ON -DWITH_NATPMP=ON -DWITH_ZMQ=ON -DWITH_USDT=ON -DWERROR=ON
+        run: >
+          cmake -B build \
+            -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_CXX_COMPILER=g++-10 \
+            -DBoost_INCLUDE_DIR="${PWD}/boost_1_84_0" \
+            -DENABLE_WALLET=ON -DWITH_SQLITE=ON -DWITH_BDB=ON \
+            -DWITH_GUI=Qt5 \
+            -DWITH_MINIUPNPC=ON \
+            -DWITH_NATPMP=ON \
+            -DWITH_ZMQ=ON \
+            -DWITH_USDT=ON \
+            -DWERROR=ON \
+            -DCCACHE=ON
 
       - name: Build
         working-directory: build
