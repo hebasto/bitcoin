@@ -260,6 +260,8 @@ jobs:
             c_compiler: 'clang-14 -m32'
             cxx_compiler: 'clang++-14 -m32'
             depends_options: ''
+            # For -Wno-error=unreachable-code, please refer to https://github.com/bitcoin/bitcoin/issues/29334
+            configure_env: 'env CXXFLAGS="-Wno-error=unreachable-code"'
             configure_options: '-DWERROR=ON'
           - name: 'MinGW-w64'
             triplet: 'x86_64-w64-mingw32'
@@ -331,7 +333,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build --toolchain depends/${{ matrix.host.triplet }}/share/toolchain.cmake ${{ matrix.host.configure_options }}
+          ${{ matrix.host.configure_env }} cmake -B build --toolchain depends/${{ matrix.host.triplet }}/share/toolchain.cmake ${{ matrix.host.configure_options }}
 
       - name: Build
         run: |
@@ -412,7 +414,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build --preset vs2022
+          cmake -B build --preset vs2022 -DWERROR=ON
 
       - name: Save vcpkg binary cache
         uses: actions/cache/save@v4
@@ -467,9 +469,14 @@ jobs:
           - name: 'macOS 13 native, x86_64, Xcode 14.3.1'
             xcode_path: '/Applications/Xcode_14.3.1.app'
             ccache_id: 'macos-13-xcode-14.3.1'
+            # For -Wno-error=unreachable-code, please refer to https://github.com/bitcoin/bitcoin/issues/29334
+            configure_env: 'env CXXFLAGS="-Wno-error=unreachable-code" OBJCXXFLAGS="-Wno-error=deprecated-declarations"'
+            configure_options: '-DWERROR=ON'
           - name: 'macOS 13 native, x86_64, Xcode 15.1'
             xcode_path: '/Applications/Xcode_15.1.app'
             ccache_id: 'macos-13-xcode-15.1'
+            configure_env: 'env OBJCXXFLAGS="-Wno-error=deprecated-declarations"'
+            configure_options: '-DWERROR=ON'
 
     steps:
       - name: Checkout
@@ -502,7 +509,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build
+          ${{ matrix.conf.configure_env }} cmake -B build ${{ matrix.conf.configure_options }}
 
       - name: Build
         run: |
