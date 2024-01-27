@@ -260,7 +260,7 @@ jobs:
             c_compiler: 'clang-14 -m32'
             cxx_compiler: 'clang++-14 -m32'
             depends_options: ''
-            configure_options: '-DWERROR=ON'
+            configure_options: '-DWERROR=ON -DCMAKE_CXX_FLAGS_RELWITHDEBINFO="-O2 -g -Wno-error=unreachable-code"'
           - name: 'MinGW-w64'
             triplet: 'x86_64-w64-mingw32'
             packages: 'g++-mingw-w64-x86-64-posix'
@@ -405,7 +405,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build -A x64 --toolchain $env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DWITH_NATPMP=OFF
+          cmake -B build -A x64 --toolchain $env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DWITH_NATPMP=OFF -DWERROR=ON
 
       - name: Save vcpkg binary cache
         uses: actions/cache/save@v3
@@ -474,7 +474,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build
+          cmake -B build -DWERROR=ON
 
       - name: Build
         run: |
