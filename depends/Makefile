@@ -273,9 +273,15 @@ $(host_prefix)/share/toolchain.cmake : toolchain.cmake.in $(host_prefix)/.stamp_
             -e 's|@INSTALL_NAME_TOOL@|$(host_INSTALL_NAME_TOOL)|' \
             -e 's|@OTOOL@|$(host_OTOOL)|' \
             -e 's|@depends_prefix@|$(host_prefix)|' \
-            -e 's|@CFLAGS@|$(strip $(host_CFLAGS) $(host_$(release_type)_CFLAGS))|' \
-            -e 's|@CXXFLAGS@|$(strip $(host_CXXFLAGS) $(host_$(release_type)_CXXFLAGS))|' \
-            -e 's|@CPPFLAGS@|$(strip $(host_CPPFLAGS) $(host_$(release_type)_CPPFLAGS))|' \
+            -e 's|@CFLAGS@|$(strip $(host_CFLAGS))|' \
+            -e 's|@CFLAGS_RELEASE@|$(strip $(host_release_CFLAGS))|' \
+            -e 's|@CFLAGS_DEBUG@|$(strip $(host_debug_CFLAGS))|' \
+            -e 's|@CXXFLAGS@|$(strip $(host_CXXFLAGS))|' \
+            -e 's|@CXXFLAGS_RELEASE@|$(strip $(host_release_CXXFLAGS))|' \
+            -e 's|@CXXFLAGS_DEBUG@|$(strip $(host_debug_CXXFLAGS))|' \
+            -e 's|@CPPFLAGS@|$(strip $(host_CPPFLAGS))|' \
+            -e 's|@CPPFLAGS_RELEASE@|$(strip $(host_release_CPPFLAGS))|' \
+            -e 's|@CPPFLAGS_DEBUG@|$(strip $(host_debug_CPPFLAGS))|' \
             -e 's|@no_qt@|$(NO_QT)|' \
             -e 's|@no_qr@|$(NO_QR)|' \
             -e 's|@no_zmq@|$(NO_ZMQ)|' \

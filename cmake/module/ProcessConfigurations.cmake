@@ -2,6 +2,30 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
+include_guard(GLOBAL)
+
+macro(normalize_string string)
+  string(REGEX REPLACE " +" " " ${string} "${${string}}")
+  string(STRIP "${${string}}" ${string})
+endmacro()
+
+function(are_flags_overridden flags)
+  cmake_parse_arguments(PARSE_ARGV 1
+    AFO          # prefix
+    ""           # options
+    "RESULT_VAR" # one_value_keywords
+    ""           # multi_value_keywords
+  )
+  normalize_string(${flags})
+  normalize_string(${flags}_INIT)
+  if(${flags} STREQUAL ${flags}_INIT)
+    set(${AFO_RESULT_VAR} FALSE PARENT_SCOPE)
+  else()
+    set(${AFO_RESULT_VAR} TRUE PARENT_SCOPE)
+  endif()
+endfunction()
+
+
 function(get_all_configs output)
   get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
   if(is_multi_config)
@@ -63,6 +87,11 @@ function(remove_c_flag_from_all_configs flag)
     list(FILTER flags EXCLUDE REGEX "${flag}")
     list(JOIN flags " " new_flags)
     set(CMAKE_C_FLAGS_${config_uppercase} "${new_flags}" PARENT_SCOPE)
+    set(CMAKE_C_FLAGS_${config_uppercase} "${new_flags}"
+      CACHE STRING
+      "Flags used by the C compiler during ${config_uppercase} builds."
+      FORCE
+    )
   endforeach()
 endfunction()
 
@@ -75,6 +104,11 @@ function(remove_cxx_flag_from_all_configs flag)
     list(FILTER flags EXCLUDE REGEX "${flag}")
     list(JOIN flags " " new_flags)
     set(CMAKE_CXX_FLAGS_${config_uppercase} "${new_flags}" PARENT_SCOPE)
+    set(CMAKE_CXX_FLAGS_${config_uppercase} "${new_flags}"
+      CACHE STRING
+      "Flags used by the CXX compiler during ${config_uppercase} builds."
+      FORCE
+    )
   endforeach()
 endfunction()
 
@@ -82,12 +116,22 @@ function(replace_c_flag_in_config config old_flag new_flag)
   string(TOUPPER "${config}" config_uppercase)
   string(REGEX REPLACE "(^| )${old_flag}( |$)" "\\1${new_flag}\\2" new_flags "${CMAKE_C_FLAGS_${config_uppercase}}")
   set(CMAKE_C_FLAGS_${config_uppercase} "${new_flags}" PARENT_SCOPE)
+  set(CMAKE_C_FLAGS_${config_uppercase} "${new_flags}"
+    CACHE STRING
+    "Flags used by the C compiler during ${config_uppercase} builds."
+    FORCE
+  )
 endfunction()
 
 function(replace_cxx_flag_in_config config old_flag new_flag)
   string(TOUPPER "${config}" config_uppercase)
   string(REGEX REPLACE "(^| )${old_flag}( |$)" "\\1${new_flag}\\2" new_flags "${CMAKE_CXX_FLAGS_${config_uppercase}}")
   set(CMAKE_CXX_FLAGS_${config_uppercase} "${new_flags}" PARENT_SCOPE)
+  set(CMAKE_CXX_FLAGS_${config_uppercase} "${new_flags}"
+    CACHE STRING
+    "Flags used by the CXX compiler during ${config_uppercase} builds."
+    FORCE
+  )
 endfunction()
 
 function(separate_by_configs options)

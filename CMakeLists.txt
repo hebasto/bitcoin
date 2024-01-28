@@ -201,9 +201,11 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 if(CMAKE_CROSSCOMPILING)
-  target_compile_definitions(core_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS})
-  target_compile_options(core_interface INTERFACE "$<$<COMPILE_LANGUAGE:C>:${DEPENDS_C_COMPILER_FLAGS}>")
-  target_compile_options(core_interface INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${DEPENDS_CXX_COMPILER_FLAGS}>")
+  target_compile_definitions(core_interface INTERFACE
+    "${DEPENDS_COMPILE_DEFINITIONS}"
+    "$<$<CONFIG:RelWithDebInfo>:${DEPENDS_COMPILE_DEFINITIONS_RELWITHDEBINFO}>"
+    "$<$<CONFIG:Debug>:${DEPENDS_COMPILE_DEFINITIONS_DEBUG}>"
+  )
 endif()
 
 include(AddThreadsIfNeeded)
@@ -259,7 +261,7 @@ include(cmake/secp256k1.cmake)
 include(ProcessConfigurations)
 set_default_config(RelWithDebInfo)
 
-# Redefine configuration flags.
+# Redefine/adjust per-configuration flags.
 target_compile_definitions(core_interface INTERFACE
   $<$<CONFIG:Debug>:DEBUG>
   $<$<CONFIG:Debug>:DEBUG_LOCKORDER>
@@ -275,20 +277,53 @@ else()
   remove_c_flag_from_all_configs(-DNDEBUG)
   remove_cxx_flag_from_all_configs(-DNDEBUG)
 
+  # Adjust flags used by the C/CXX compiler during RELEASE builds.
   # Prefer -O2 optimization level. (-O3 is CMake's default for Release for many compilers.)
   replace_c_flag_in_config(Release -O3 -O2)
   replace_cxx_flag_in_config(Release -O3 -O2)
 
-  set(debug_flags)
-  try_append_cxx_flags("-O0" VAR debug_flags)
-  try_append_cxx_flags("-g3" VAR debug_flags RESULT_VAR compiler_supports_g3)
-  if(NOT compiler_supports_g3)
-    try_append_cxx_flags("-g" VAR debug_flags)
+  include(ProcessConfigurations)
+  are_flags_overridden(CMAKE_CXX_FLAGS_DEBUG RESULT_VAR cxx_flags_debug_overridden)
+  if(NOT cxx_flags_debug_overridden)
+    # Redefine flags used by the CXX compiler during DEBUG builds.
+    try_append_cxx_flags("-g3" RESULT_VAR compiler_supports_g3)
+    if(compiler_supports_g3)
+      replace_cxx_flag_in_config(Debug -g -g3)
+    endif()
+
+    try_append_cxx_flags("-ftrapv" RESULT_VAR compiler_supports_ftrapv)
+    if(compiler_supports_ftrapv)
+      string(PREPEND CMAKE_CXX_FLAGS_DEBUG "-ftrapv ")
+    endif()
+    unset(compiler_supports_ftrapv)
+
+    string(PREPEND CMAKE_CXX_FLAGS_DEBUG "-O0 ")
+
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}"
+      CACHE STRING
+      "Flags used by the CXX compiler during DEBUG builds."
+      FORCE
+    )
   endif()
-  set(CMAKE_C_FLAGS_DEBUG "${debug_flags}")
-  try_append_cxx_flags("-ftrapv" VAR debug_flags)
-  set(CMAKE_CXX_FLAGS_DEBUG "${debug_flags}")
-  unset(debug_flags)
+  unset(cxx_flags_debug_overridden)
+
+  are_flags_overridden(CMAKE_C_FLAGS_DEBUG RESULT_VAR c_flags_debug_overridden)
+  if(NOT c_flags_debug_overridden)
+    # Redefine flags used by the C compiler during DEBUG builds.
+    if(compiler_supports_g3)
+      replace_c_flag_in_config(Debug -g -g3)
+    endif()
+
+    string(PREPEND CMAKE_C_FLAGS_DEBUG "-O0 ")
+
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}"
+      CACHE STRING
+      "Flags used by the C compiler during DEBUG builds."
+      FORCE
+    )
+  endif()
+  unset(compiler_supports_g3)
+  unset(c_flags_debug_overridden)
 endif()
 
 include(cmake/optional_qt.cmake)
@@ -417,13 +452,9 @@ endif()
 message("Cross compiling ....................... ${cross_status}")
 message("Preprocessor defined macros ........... ${definitions_ALL}")
 message("C compiler ............................ ${CMAKE_C_COMPILER}")
-list(JOIN DEPENDS_C_COMPILER_FLAGS " " depends_c_flags)
-string(STRIP "${CMAKE_C_FLAGS} ${depends_c_flags}" combined_c_flags)
-message("CFLAGS ................................ ${combined_c_flags}")
+message("CFLAGS ................................ ${CMAKE_C_FLAGS}")
 message("C++ compiler .......................... ${CMAKE_CXX_COMPILER}")
-list(JOIN DEPENDS_CXX_COMPILER_FLAGS " " depends_cxx_flags)
-string(STRIP "${CMAKE_CXX_FLAGS} ${depends_cxx_flags}" combined_cxx_flags)
-message("CXXFLAGS .............................. ${combined_cxx_flags}")
+message("CXXFLAGS .............................. ${CMAKE_CXX_FLAGS}")
 include(GetTargetInterface)
 get_target_interface(common_compile_options core_interface COMPILE_OPTIONS)
 message("Common compile options ................ ${common_compile_options}")
