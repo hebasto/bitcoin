@@ -56,8 +56,6 @@ function(add_boost_if_needed)
     # Boost 1.78 requires the following workaround.
     # See: https://github.com/boostorg/process/issues/235
     string(APPEND CMAKE_REQUIRED_FLAGS " -Wno-error=narrowing")
-    # Boost 1.73 requires the following workaround on systems with libc<2.34.
-    set(CMAKE_REQUIRED_LIBRARIES Threads::Threads)
     check_cxx_source_compiles("
       #define BOOST_PROCESS_USE_STD_FS
       #include <boost/process.hpp>
