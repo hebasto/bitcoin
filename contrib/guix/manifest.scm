@@ -108,6 +108,16 @@ desirable for building Bitcoin Core release binaries."
                         base-libc
                         base-gcc))
 
+
+(define-public mingw-w64-x86_64-winpthreads-ucrt
+  (package
+    (inherit mingw-w64-x86_64-winpthreads)
+    (arguments
+      (substitute-keyword-arguments (package-arguments mingw-w64-x86_64-winpthreads)
+        ((#:configure-flags flags)
+          `(append ,flags
+                   '("--with-default-msvcrt=ucrt")))))))
+
 (define (gcc-mingw-patches gcc)
   (package-with-extra-patches gcc
     (search-our-patches "gcc-remap-guix-store.patch"
@@ -116,7 +126,7 @@ desirable for building Bitcoin Core release binaries."
 (define (make-mingw-pthreads-cross-toolchain target)
   "Create a cross-compilation toolchain package for TARGET"
   (let* ((xbinutils (cross-binutils target))
-         (pthreads-xlibc mingw-w64-x86_64-winpthreads)
+         (pthreads-xlibc mingw-w64-x86_64-winpthreads-ucrt)
          (pthreads-xgcc (cross-gcc target
                                     #:xgcc (gcc-mingw-patches mingw-w64-base-gcc)
                                     #:xbinutils xbinutils
