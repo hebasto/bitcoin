@@ -273,6 +273,8 @@ jobs:
             configure_options: '-DCMAKE_BUILD_TYPE=Debug'
             cache_suffix: '-debug'
             exe_extension: '.exe'
+            # Avoid "No space left on device" error.
+            skip_install: 'true'
 
     steps:
       - name: Checkout
@@ -355,6 +357,7 @@ jobs:
           ctest --test-dir build -j $(nproc)
 
       - name: Install
+        if: ${{ matrix.host.skip_install != 'true' }}
         run: |
           cmake --install build --prefix install
           tree install
