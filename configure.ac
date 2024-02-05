@@ -326,7 +326,14 @@ AC_LANG_PUSH([C++])
 dnl Always set -g -O2 in our CXXFLAGS. Autoconf will try and set CXXFLAGS to "-g -O2" by default,
 dnl so we suppress that (if CXXFLAGS hasn't been overridden by the user), given we are adding it
 dnl ourselves.
-CORE_CXXFLAGS="$CORE_CXXFLAGS -g -O2"
+
+# Altered fot the OSS-Fuzz DEMO case.
+# The goal is to move the -g flag position
+# and achieve clang's crash.
+#
+# CORE_CXXFLAGS="$CORE_CXXFLAGS -g -O2"
+CORE_CXXFLAGS="$CORE_CXXFLAGS -O2"
+CXXFLAGS="$CXXFLAGS -g"
 
 if test "$CXXFLAGS_overridden" = "no"; then
   CXXFLAGS=""
