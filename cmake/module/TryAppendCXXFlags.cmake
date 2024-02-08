@@ -8,14 +8,6 @@ include(CheckCXXSourceCompiles)
 #[=[
 Usage examples:
 
-  try_append_cxx_flags("-Wformat -Wformat-security" VAR warn_cxx_flags)
-
-
-  try_append_cxx_flags("-Wsuggest-override" VAR warn_cxx_flags
-    SOURCE "struct A { virtual void f(); }; struct B : A { void f() final; };"
-  )
-
-
   try_append_cxx_flags("-fsanitize=${SANITIZERS}" TARGET core_interface
     RESULT_VAR cxx_supports_sanitizers
   )
@@ -45,20 +37,20 @@ function(try_append_cxx_flags flags)
   cmake_parse_arguments(PARSE_ARGV 1
     TACXXF                            # prefix
     ""                                # options
-    "TARGET;VAR;SOURCE;RESULT_VAR"    # one_value_keywords
+    "SOURCE;TARGET;RESULT_VAR"        # one_value_keywords
     "IF_CHECK_PASSED;IF_CHECK_FAILED" # multi_value_keywords
   )
 
   string(MAKE_C_IDENTIFIER "${flags}" result)
   string(TOUPPER "${result}" result)
-  string(PREPEND result CXX_SUPPORTS_)
+  string(PREPEND result "CXX_SUPPORTS_")
 
   set(source "int main() { return 0; }")
   if(DEFINED TACXXF_SOURCE AND NOT TACXXF_SOURCE STREQUAL source)
     set(source "${TACXXF_SOURCE}")
     string(SHA256 source_hash "${source}")
-    string(SUBSTRING ${source_hash} 0 4 source_hash_head)
-    string(APPEND result _${source_hash_head})
+    string(SUBSTRING "${source_hash}" 0 4 source_hash_head)
+    string(APPEND result "_${source_hash_head}")
   endif()
 
   # This avoids running a linker.
@@ -66,33 +58,16 @@ function(try_append_cxx_flags flags)
   set(CMAKE_REQUIRED_FLAGS "${flags} ${working_compiler_werror_flag}")
   check_cxx_source_compiles("${source}" ${result})
 
-  if(${result})
-    if(DEFINED TACXXF_IF_CHECK_PASSED)
-      if(DEFINED TACXXF_TARGET)
+  if(DEFINED TACXXF_TARGET)
+    if(${result})
+      if(DEFINED TACXXF_IF_CHECK_PASSED)
         target_compile_options(${TACXXF_TARGET} INTERFACE ${TACXXF_IF_CHECK_PASSED})
-      endif()
-      if(DEFINED TACXXF_VAR)
-        string(STRIP "${${TACXXF_VAR}} ${TACXXF_IF_CHECK_PASSED}" ${TACXXF_VAR})
-      endif()
-    else()
-      if(DEFINED TACXXF_TARGET)
+      else()
         target_compile_options(${TACXXF_TARGET} INTERFACE ${flags})
       endif()
-      if(DEFINED TACXXF_VAR)
-        string(STRIP "${${TACXXF_VAR}} ${flags}" ${TACXXF_VAR})
-      endif()
-    endif()
-  elseif(DEFINED TACXXF_IF_CHECK_FAILED)
-    if(DEFINED TACXXF_TARGET)
+    elseif(DEFINED TACXXF_IF_CHECK_FAILED)
       target_compile_options(${TACXXF_TARGET} INTERFACE ${TACXXF_IF_CHECK_FAILED})
     endif()
-    if(DEFINED TACXXF_VAR)
-      string(STRIP "${${TACXXF_VAR}} ${TACXXF_IF_CHECK_FAILED}" ${TACXXF_VAR})
-    endif()
-  endif()
-
-  if(DEFINED TACXXF_VAR)
-    set(${TACXXF_VAR} "${${TACXXF_VAR}}" PARENT_SCOPE)
   endif()
 
   if(DEFINED TACXXF_RESULT_VAR)
@@ -101,7 +76,12 @@ function(try_append_cxx_flags flags)
 endfunction()
 
 if(MSVC)
-  try_append_cxx_flags("/WX /options:strict" VAR working_compiler_werror_flag)
+  set(working_compiler_werror_flag "/WX /options:strict")
 else()
-  try_append_cxx_flags("-Werror" VAR working_compiler_werror_flag)
+  set(working_compiler_werror_flag "-Werror")
 endif()
+try_append_cxx_flags("${working_compiler_werror_flag}" RESULT_VAR cxx_supports_werror_flag)
+if(NOT cxx_supports_werror_flag)
+  set(working_compiler_werror_flag "")
+endif()
+unset(cxx_supports_werror_flag)
