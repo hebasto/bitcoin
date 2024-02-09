@@ -39,6 +39,17 @@ macro(cross_pkg_check_modules prefix)
     pkg_check_modules(${prefix} ${ARGN})
     set(ENV{PKG_CONFIG_PATH} ${pkg_config_path_saved})
     set(ENV{PKG_CONFIG_LIBDIR} ${pkg_config_libdir_saved})
+    unset(pkg_config_path_saved)
+    unset(pkg_config_libdir_saved)
+
+    if(TARGET PkgConfig::${prefix})
+      # TODO: Consider to rework this code after addressing this CMake
+      # issue https://gitlab.kitware.com/cmake/cmake/-/issues/21714
+      set(${prefix}_private_libraries ${${prefix}_STATIC_LIBRARIES})
+      list(REMOVE_ITEM ${prefix}_private_libraries ${${prefix}_LIBRARIES})
+      target_link_libraries(PkgConfig::${prefix} INTERFACE ${${prefix}_private_libraries})
+      unset(${prefix}_private_libraries)
+    endif()
   else()
     pkg_check_modules(${prefix} ${ARGN})
   endif()

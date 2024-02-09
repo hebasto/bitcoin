@@ -88,9 +88,6 @@ if(WITH_ZMQ)
       target_compile_definitions(PkgConfig::libzmq INTERFACE
         $<$<PLATFORM_ID:Windows>:ZMQ_STATIC>
       )
-      target_link_libraries(PkgConfig::libzmq INTERFACE
-        $<$<PLATFORM_ID:Windows>:iphlpapi;ws2_32>
-      )
     endif()
   endif()
   if(TARGET libzmq OR TARGET PkgConfig::libzmq)

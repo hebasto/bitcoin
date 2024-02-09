@@ -47,9 +47,12 @@ function(add_libevent_if_needed)
     libevent>=${libevent_minimum_version}
   )
   check_evhttp_connection_get_peer(PkgConfig::libevent)
-  target_link_libraries(PkgConfig::libevent INTERFACE
-    $<$<BOOL:${MINGW}>:iphlpapi;ssp;ws2_32>
-  )
+  if(MINGW)
+    target_link_libraries(PkgConfig::libevent INTERFACE
+      iphlpapi
+      ssp
+    )
+  endif()
   add_library(libevent::libevent ALIAS PkgConfig::libevent)
 
   if(NOT WIN32)
