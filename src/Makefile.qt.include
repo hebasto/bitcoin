@@ -92,7 +92,8 @@ QT_MOC_CPP = \
 BITCOIN_MM = \
   qt/macdockiconhandler.mm \
   qt/macnotificationhandler.mm \
-  qt/macos_appnap.mm
+  qt/macos_appnap.mm \
+  qt/macos_usernotification.mm
 
 QT_MOC = \
   qt/bitcoinamountfield.moc \
@@ -128,6 +129,7 @@ BITCOIN_QT_H = \
   qt/macdockiconhandler.h \
   qt/macnotificationhandler.h \
   qt/macos_appnap.h \
+  qt/macos_usernotification.h \
   qt/modaloverlay.h \
   qt/networkstyle.h \
   qt/notificator.h \
