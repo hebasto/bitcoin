@@ -211,7 +211,7 @@ void Notificator::notifySystray(Class cls, const QString &title, const QString &
 void Notificator::notifyMacUserNotificationCenter(const QString &title, const QString &text)
 {
     // icon is not supported by the user notification center yet. OSX will use the app icon.
-    // MacosUserNotificationHandler::instance()->showNotification(title, text);
+    MacosUserNotificationHandler::instance()->showNotification(title, text);
 }
 #endif
 

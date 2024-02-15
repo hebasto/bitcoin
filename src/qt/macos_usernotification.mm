@@ -43,14 +43,23 @@
 
 void MacosUserNotificationHandler::showNotification(const QString& title, const QString& text)
 {
-    // check if users OS has support for NSUserNotification
-    if(this->hasUserNotificationCenterSupport()) {
-        NSUserNotification* userNotification = [[NSUserNotification alloc] init];
-        userNotification.title = title.toNSString();
-        userNotification.informativeText = text.toNSString();
-        [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification: userNotification];
-        [userNotification release];
-    }
+    if (!this->hasUserNotificationCenterSupport()) return;
+
+    UNMutableNotificationContent* content = [[UNMutableNotificationContent alloc] init];
+    content.title = title.toNSString();
+    content.body = text.toNSString();
+    content.sound = [UNNotificationSound defaultSound];
+
+    UNTimeIntervalNotificationTrigger* trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:1 repeats:NO];
+
+    UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:@"NOTIFICATION" content:content trigger:trigger];
+
+    UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
+    [center addNotificationRequest:request withCompletionHandler:^(NSError* _Nullable error) {
+        if (!error) {
+            LogPrintf("HEBASTO - %s:%s Notifications permission ERROR.\n", __func__, __LINE__);
+        }
+    }];
 }
 
 bool MacosUserNotificationHandler::hasUserNotificationCenterSupport(void)
