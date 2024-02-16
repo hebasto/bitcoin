@@ -2016,3 +2016,6 @@ echo "  LDFLAGS         = $LTO_LDFLAGS $PTHREAD_LIBS $HARDENED_LDFLAGS $GPROF_LD
 echo "  AR              = $AR"
 echo "  ARFLAGS         = $ARFLAGS"
 echo
+echo "  EVENT_PTHREADS_CFLAGS      = $EVENT_PTHREADS_CFLAGS"
+echo "  EVENT_CFLAGS               = $EVENT_CFLAGS"
+echo "  suppress_external_warnings = $suppress_external_warnings"
