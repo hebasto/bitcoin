@@ -228,6 +228,39 @@ BOOST_AUTO_TEST_CASE(db_availability_after_write_error)
     }
 }
 
+// Verify 'ErasePrefix' functionality using db keys similar to the ones used by the wallet.
+// Keys are in the form of std::pair<TYPE, ENTRY_ID>
+BOOST_AUTO_TEST_CASE(erase_prefix)
+{
+    const std::string key = "key";
+    const std::string key2 = "key2";
+    const std::string value = "value";
+    const std::string value2 = "value_2";
+    auto make_key = [](std::string type, std::string id) { return std::make_pair(type, id); };
+
+    for (const auto& database : TestDatabases(m_path_root)) {
+        std::unique_ptr<DatabaseBatch> batch = database->MakeBatch();
+
+        // Write two entries with the same key type prefix, a third one with a different prefix
+        // and a fourth one with the type-id values inverted
+        BOOST_CHECK(batch->Write(make_key(key, value), value));
+        BOOST_CHECK(batch->Write(make_key(key, value2), value2));
+        BOOST_CHECK(batch->Write(make_key(key2, value), value));
+        BOOST_CHECK(batch->Write(make_key(value, key), value));
+
+        // Erase the ones with the same prefix and verify result
+        BOOST_CHECK(batch->TxnBegin());
+        BOOST_CHECK(batch->ErasePrefix(DataStream() << key));
+        BOOST_CHECK(batch->TxnCommit());
+
+        BOOST_CHECK(!batch->Exists(make_key(key, value)));
+        BOOST_CHECK(!batch->Exists(make_key(key, value2)));
+        // Also verify that entries with a different prefix were not erased
+        BOOST_CHECK(batch->Exists(make_key(key2, value)));
+        BOOST_CHECK(batch->Exists(make_key(value, key)));
+    }
+}
+
 #ifdef USE_SQLITE
 
 // Test-only statement execution error
@@ -279,8 +312,48 @@ BOOST_AUTO_TEST_CASE(txn_close_failure_dangling_txn)
     BOOST_CHECK(!batch2->Exists(key));
 }
 
-#endif // USE_SQLITE
+BOOST_AUTO_TEST_CASE(concurrent_txn_dont_interfere)
+{
+    std::string key = "key";
+    std::string value = "value";
+    std::string value2 = "value_2";
 
+    DatabaseOptions options;
+    DatabaseStatus status;
+    bilingual_str error;
+    const auto& database = MakeSQLiteDatabase(m_path_root / "sqlite", options, status, error);
+
+    std::unique_ptr<DatabaseBatch> handler = Assert(database)->MakeBatch();
+
+    // Verify concurrent db transactions does not interfere between each other.
+    // Start db txn, write key and check the key does exist within the db txn.
+    BOOST_CHECK(handler->TxnBegin());
+    BOOST_CHECK(handler->Write(key, value));
+    BOOST_CHECK(handler->Exists(key));
+
+    // But, the same key, does not exist in another handler
+    std::unique_ptr<DatabaseBatch> handler2 = Assert(database)->MakeBatch();
+    BOOST_CHECK(handler2->Exists(key));
+
+    // Attempt to commit the handler txn calling the handler2 methods.
+    // Which, must not be possible.
+    BOOST_CHECK(!handler2->TxnCommit());
+    BOOST_CHECK(!handler2->TxnAbort());
+
+    // Only the first handler can commit the changes.
+    BOOST_CHECK(handler->TxnCommit());
+    // And, once commit is completed, handler2 can read the record
+    std::string read_value;
+    BOOST_CHECK(handler2->Read(key, read_value));
+    BOOST_CHECK_EQUAL(read_value, value);
+
+    // Also, once txn is committed, single write statements are re-enabled.
+    // Which means that handler2 can read the record changes directly.
+    BOOST_CHECK(handler->Write(key, value2, /*fOverwrite=*/true));
+    BOOST_CHECK(handler2->Read(key, read_value));
+    BOOST_CHECK_EQUAL(read_value, value2);
+}
+#endif // USE_SQLITE
 
 BOOST_AUTO_TEST_SUITE_END()
 } // namespace wallet
