@@ -31,6 +31,9 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS forms)
 set(qt_minimum_required_version 5.11.3)
 
 set(qt_components Core Gui Widgets Network LinguistTools)
+if(BUILD_GUI_TESTS)
+  list(APPEND qt_components Test)
+endif()
 
 if(CMAKE_CROSSCOMPILING)
   # The find_package(Qt ...) function internally uses find_library()
@@ -188,3 +191,7 @@ install(TARGETS bitcoin-qt
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   COMPONENT GUI
 )
+
+if(BUILD_GUI_TESTS)
+  add_subdirectory(test)
+endif()

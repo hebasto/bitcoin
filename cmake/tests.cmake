@@ -67,3 +67,9 @@ if(TARGET object)
     COMMAND object
   )
 endif()
+
+if(TARGET test_bitcoin-qt)
+  add_test(NAME test_bitcoin-qt
+    COMMAND test_bitcoin-qt
+  )
+endif()

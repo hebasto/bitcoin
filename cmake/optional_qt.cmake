@@ -41,6 +41,7 @@ if(WITH_GUI)
       message(WARNING "Qt not found, disabling.\n"
                       "To skip this warning check, use \"-DWITH_GUI=OFF\".\n")
       set(WITH_GUI OFF)
+      set(BUILD_GUI_TESTS OFF)
     endif()
   endif()
 endif()
