@@ -989,6 +989,10 @@ void BitcoinGUI::gotoLoadPSBT(bool from_clipboard)
 
 void BitcoinGUI::updateNetworkState()
 {
+    std::cerr << "======================= " << __func__ << ": " << std::this_thread::get_id() << "\n";
+
+    UninterruptibleSleep(100ms);
+
     int count = clientModel->getNumConnections();
     QString icon;
     switch(count)

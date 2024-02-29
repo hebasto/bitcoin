@@ -72,10 +72,14 @@ ClientModel::ClientModel(interfaces::Node& node, OptionsModel *_optionsModel, QO
 
 ClientModel::~ClientModel()
 {
+    std::cerr << "======================= " << __func__ << ": " << std::this_thread::get_id() << "\n";
+
     unsubscribeFromCoreSignals();
 
     m_thread->quit();
     m_thread->wait();
+
+    std::cerr << "======================= " << __func__ << ":" << __LINE__ << "\n";
 }
 
 int ClientModel::getNumConnections(unsigned int flags) const
@@ -88,6 +92,8 @@ int ClientModel::getNumConnections(unsigned int flags) const
         connections = ConnectionDirection::Out;
     else if (flags == CONNECTIONS_ALL)
         connections = ConnectionDirection::Both;
+
+    std::cerr << "======================= " << __func__ << ": " << std::this_thread::get_id() << "\n";
 
     return m_node.getNodeCount(connections);
 }
