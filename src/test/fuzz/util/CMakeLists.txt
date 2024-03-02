@@ -18,14 +18,17 @@ target_link_libraries(test_fuzz
     Boost::headers
 )
 
-include(CheckSourceCompilesAndLinks)
-check_cxx_source_links_with_flags("${SANITIZER_LDFLAGS}" "
-    #include <cstdint>
-    #include <cstddef>
-    extern \"C\" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) { return 0; }
-    // No main() function.
-  " BINARY_LINKS_WITHOUT_MAIN_FUNCTION
-)
+if(DEFINED SANITIZER_LDFLAGS)
+  include(CheckSourceCompilesAndLinks)
+  check_cxx_source_links_with_flags("${SANITIZER_LDFLAGS}" "
+      #include <cstdint>
+      #include <cstddef>
+      extern \"C\" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) { return 0; }
+      // No main() function.
+    " BINARY_LINKS_WITHOUT_MAIN_FUNCTION
+  )
+endif()
+
 if(NOT BINARY_LINKS_WITHOUT_MAIN_FUNCTION)
   target_compile_definitions(test_fuzz PRIVATE PROVIDE_FUZZ_MAIN_FUNCTION)
 endif()
