@@ -27,6 +27,7 @@ This module defines the following variables:
 
 #]=======================================================================]
 
+set(_BerkeleyDB_homebrew_prefix "")
 if(BREW_COMMAND)
   # The Homebrew package manager installs the berkeley-db* packages as
   # "keg-only", which means they are not symlinked into the default prefix.
