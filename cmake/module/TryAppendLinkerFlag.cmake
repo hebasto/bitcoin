@@ -5,6 +5,8 @@
 include_guard(GLOBAL)
 include(CheckCXXSourceCompiles)
 
+set(working_linker_werror_flag "")
+
 #[=[
 Usage example:
 
