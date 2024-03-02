@@ -1,10 +1,15 @@
-# Copyright (c) 2023 The Bitcoin Core developers
+# Copyright (c) 2023-present The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
-# file COPYING or http://www.opensource.org/licenses/mit-license.php.
+# file COPYING or https://opensource.org/license/mit/.
 
 if(NOT MSVC)
   include(CrossPkgConfig)
   cross_pkg_check_modules(PC_MiniUPnPc QUIET miniupnpc)
+endif()
+
+if(NOT PC_MiniUPnPc_FOUND)
+  set(PC_MiniUPnPc_INCLUDE_DIRS "")
+  set(PC_MiniUPnPc_LIBRARY_DIRS "")
 endif()
 
 find_path(MiniUPnPc_INCLUDE_DIR
