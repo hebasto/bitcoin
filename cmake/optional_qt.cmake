@@ -12,6 +12,7 @@ if(WITH_GUI)
   set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS ON)
   set(QT_NO_CREATE_VERSIONLESS_TARGETS ON)
 
+  set(qt5_brew_prefix "")
   if(BREW_COMMAND)
     execute_process(
       COMMAND ${BREW_COMMAND} --prefix qt@5
