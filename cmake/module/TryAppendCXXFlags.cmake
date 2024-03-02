@@ -5,6 +5,8 @@
 include_guard(GLOBAL)
 include(CheckCXXSourceCompiles)
 
+set(working_compiler_werror_flag "")
+
 #[=[
 Add language-wide flags, which will be passed to all invocations of the compiler.
 This includes invocations that drive compiling and those that drive linking.
