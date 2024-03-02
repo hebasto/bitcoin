@@ -175,7 +175,7 @@ jobs:
       - name: Generate build system. Expected to PASS
         if: ${{ matrix.conf.expected == 'pass' }}
         run: |
-          cmake -B build -DCMAKE_TOOLCHAIN_FILE=depends/x86_64-pc-linux-gnu/share/toolchain.cmake
+          cmake -B build -DCMAKE_TOOLCHAIN_FILE=depends/x86_64-pc-linux-gnu/share/toolchain.cmake --warn-uninitialized -Werror=dev
 
 
   ubuntu-focal-native:
@@ -216,7 +216,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_CXX_COMPILER=g++-10 -DBoost_INCLUDE_DIR="${PWD}/boost_1_84_0" -DENABLE_WALLET=ON -DWITH_MINIUPNPC=ON -DWITH_NATPMP=ON -DWITH_ZMQ=ON -DWITH_USDT=ON -DWERROR=ON
+          cmake -B build -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_CXX_COMPILER=g++-10 -DBoost_INCLUDE_DIR="${PWD}/boost_1_84_0" -DENABLE_WALLET=ON -DWITH_MINIUPNPC=ON -DWITH_NATPMP=ON -DWITH_ZMQ=ON -DWITH_USDT=ON -DWERROR=ON --warn-uninitialized -Werror=dev
 
       - name: Build
         working-directory: build
@@ -371,12 +371,17 @@ jobs:
       fail-fast: false
       matrix:
         conf:
-          - name: 'Win64, VS 2022, dynamic'
-            triplet: 'x64-windows'
-            preset: 'vs2022'
           - name: 'Win64, VS 2022, static'
             triplet: 'x64-windows-static'
             preset: 'vs2022-static'
+          - name: 'Win64, VS 2022, dynamic'
+            triplet: 'x64-windows'
+            preset: 'vs2022'
+          - name: 'Win64, VS 2022, no Qt, undefined'
+            triplet: 'x64-windows'
+            preset: 'vs2022'
+            configure_options: '-DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DVCPKG_MANIFEST_FEATURES="wallet;miniupnpc;zeromq;tests" -DWITH_GUI=OFF --warn-uninitialized -Werror=dev'
+            skip_caching: 'true'
 
     steps:
       - name: Checkout
@@ -423,11 +428,11 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build --preset ${{ matrix.conf.preset }}
+          cmake -B build --preset ${{ matrix.conf.preset }} ${{ matrix.conf.configure_options }}
 
       - name: Save vcpkg binary cache
         uses: actions/cache/save@v4
-        if: github.event_name != 'pull_request' && steps.vcpkg-binary-cache.outputs.cache-hit != 'true'
+        if: github.event_name != 'pull_request' && steps.vcpkg-binary-cache.outputs.cache-hit != 'true' && matrix.conf.skip_caching != 'true'
         with:
           path: ~/AppData/Local/vcpkg/archives
           key: ${{ matrix.conf.triplet }}-vcpkg-binary-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
@@ -456,7 +461,7 @@ jobs:
 
       - name: Save Ccache cache
         uses: actions/cache/save@v4
-        if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true'
+        if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true' && matrix.conf.skip_caching != 'true'
         with:
           path: ~/AppData/Local/ccache
           key: ${{ matrix.conf.triplet }}-ccache-${{ github.run_id }}
@@ -518,7 +523,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build
+          cmake -B build --warn-uninitialized -Werror=dev
 
       - name: Build
         run: |
