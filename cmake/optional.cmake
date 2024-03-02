@@ -5,11 +5,13 @@
 # Optional features and packages.
 
 if(CCACHE)
-  set(ccache_hints)
-  if(MSVC AND EXISTS "$ENV{ChocolateyInstall}")
-    # Bypass a shim executable provided by Chocolatey.
-    # See https://docs.chocolatey.org/en-us/features/shim
-    file(GLOB ccache_hints "$ENV{ChocolateyInstall}/lib/ccache/tools/ccache-*")
+  set(ccache_hints "")
+  if(MSVC AND DEFINED ENV{ChocolateyInstall})
+    if(EXISTS "$ENV{ChocolateyInstall}")
+      # Bypass a shim executable provided by Chocolatey.
+      # See https://docs.chocolatey.org/en-us/features/shim
+      file(GLOB ccache_hints "$ENV{ChocolateyInstall}/lib/ccache/tools/ccache-*")
+    endif()
   endif()
   find_program(CCACHE_COMMAND ccache HINTS ${ccache_hints})
   unset(ccache_hints)
