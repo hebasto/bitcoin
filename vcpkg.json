@@ -16,11 +16,11 @@
   "features": {
     "wallet": {
       "description": "Enable wallet",
-      "dependencies": [ "berkeleydb", "sqlite3" ]
+      "dependencies": [ "berkeleydb", { "name": "sqlite3", "default-features": false } ]
     },
     "sqlite": {
       "description": "Enable SQLite wallet support",
-      "dependencies": [ "sqlite3" ]
+      "dependencies": [ { "name": "sqlite3", "default-features": false } ]
     },
     "berkeleydb": {
       "description": "Enable Berkeley DB wallet support",
