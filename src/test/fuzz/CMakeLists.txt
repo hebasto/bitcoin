@@ -138,7 +138,7 @@ if(ENABLE_WALLET)
       ${CMAKE_SOURCE_DIR}/src/wallet/test/fuzz/coinselection.cpp
       ${CMAKE_SOURCE_DIR}/src/wallet/test/fuzz/fees.cpp
       ${CMAKE_SOURCE_DIR}/src/wallet/test/fuzz/parse_iso8601.cpp
-      $<$<BOOL:${USE_SQLITE}>:${CMAKE_SOURCE_DIR}/src/wallet/test/fuzz/notifications.cpp>
+      $<$<BOOL:${WITH_SQLITE}>:${CMAKE_SOURCE_DIR}/src/wallet/test/fuzz/notifications.cpp>
   )
   target_link_libraries(fuzz bitcoin_wallet)
 endif()
