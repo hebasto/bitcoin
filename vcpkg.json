@@ -11,7 +11,8 @@
     "wallet",
     "miniupnpc",
     "zeromq",
-    "tests"
+    "tests",
+    "qt5"
   ],
   "features": {
     "wallet": {
@@ -37,6 +38,10 @@
     "tests": {
       "description": "Build test_bitcoin.exe executable",
       "dependencies": [ "boost-test" ]
+    },
+    "qt5": {
+      "description": "Build GUI, Qt 5",
+      "dependencies": [ "qt5-base", "qt5-tools" ]
     }
   }
 }
