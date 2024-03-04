@@ -48,14 +48,27 @@ void EditAddressAndSubmit(
         EditAddressDialog* dialog,
         const QString& label, const QString& address, QString expected_msg)
 {
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
     QString warning_text;
 
     dialog->findChild<QLineEdit*>("labelEdit")->setText(label);
     dialog->findChild<QValidatedLineEdit*>("addressEdit")->setText(address);
 
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+    
     ConfirmMessage(&warning_text, 5ms);
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
     dialog->accept();
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+    
     QCOMPARE(warning_text, expected_msg);
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+    
 }
 
 /**
@@ -79,6 +92,9 @@ void TestAddAddressesToSendBook(interfaces::Node& node)
     const std::shared_ptr<CWallet> wallet = std::make_shared<CWallet>(node.context()->chain.get(), "", CreateMockableWalletDatabase());
     wallet->LoadWallet();
     wallet->SetWalletFlag(WALLET_FLAG_DESCRIPTORS);
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
     {
         LOCK(wallet->cs_wallet);
         wallet->SetupDescriptorScriptPubKeyMans();
@@ -111,11 +127,16 @@ void TestAddAddressesToSendBook(interfaces::Node& node)
     std::tie(std::ignore, new_address_a) = build_address();
     std::tie(std::ignore, new_address_b) = build_address();
 
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
     {
         LOCK(wallet->cs_wallet);
         wallet->SetAddressBook(r_key_dest, r_label.toStdString(), wallet::AddressPurpose::RECEIVE);
         wallet->SetAddressBook(s_key_dest, s_label.toStdString(), wallet::AddressPurpose::SEND);
     }
+
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
 
     auto check_addbook_size = [&wallet](int expected_size) {
         LOCK(wallet->cs_wallet);
@@ -133,6 +154,9 @@ void TestAddAddressesToSendBook(interfaces::Node& node)
     ClientModel clientModel(node, &optionsModel);
     WalletContext& context = *node.walletLoader().context();
     AddWallet(context, wallet);
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
     WalletModel walletModel(interfaces::MakeWallet(context, wallet), clientModel, platformStyle.get());
     RemoveWallet(context, wallet, /* load_on_start= */ std::nullopt);
     EditAddressDialog editAddressDialog(EditAddressDialog::NewSendingAddress);
@@ -143,14 +167,23 @@ void TestAddAddressesToSendBook(interfaces::Node& node)
     auto table_view = address_book.findChild<QTableView*>("tableView");
     QCOMPARE(table_view->model()->rowCount(), 1);
 
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
     EditAddressAndSubmit(
         &editAddressDialog, QString("uhoh"), preexisting_r_address,
         QString(
             "Address \"%1\" already exists as a receiving address with label "
             "\"%2\" and so cannot be added as a sending address."
             ).arg(preexisting_r_address).arg(r_label));
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
     check_addbook_size(2);
     QCOMPARE(table_view->model()->rowCount(), 1);
+
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
 
     EditAddressAndSubmit(
         &editAddressDialog, QString("uhoh, different"), preexisting_s_address,
@@ -161,12 +194,18 @@ void TestAddAddressesToSendBook(interfaces::Node& node)
     check_addbook_size(2);
     QCOMPARE(table_view->model()->rowCount(), 1);
 
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
     // Submit a new address which should add successfully - we expect the
     // warning message to be blank.
     EditAddressAndSubmit(
         &editAddressDialog, QString("io - new A"), new_address_a, QString(""));
     check_addbook_size(3);
     QCOMPARE(table_view->model()->rowCount(), 2);
+
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
 
     EditAddressAndSubmit(
         &editAddressDialog, QString("io - new B"), new_address_b, QString(""));
@@ -180,6 +219,9 @@ void TestAddAddressesToSendBook(interfaces::Node& node)
 
     search_line->setText(s_label);
     QCOMPARE(table_view->model()->rowCount(), 1);
+
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
 
     search_line->setText("io");
     QCOMPARE(table_view->model()->rowCount(), 2);

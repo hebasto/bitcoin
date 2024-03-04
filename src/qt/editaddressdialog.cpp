@@ -95,11 +95,21 @@ bool EditAddressDialog::saveCurrentRow()
 
 void EditAddressDialog::accept()
 {
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
     if(!model)
         return;
 
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
     if(!saveCurrentRow())
     {
+        std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
+        std::cerr << "+++   " << __func__ << ":" << __LINE__ << " " << model->getEditStatus() << "\n";
+
         switch(model->getEditStatus())
         {
         case AddressTableModel::OK:
@@ -113,11 +123,16 @@ void EditAddressDialog::accept()
                 tr("The entered address \"%1\" is not a valid Bitcoin address.").arg(ui->addressEdit->text()),
                 QMessageBox::Ok, QMessageBox::Ok);
             break;
-        case AddressTableModel::DUPLICATE_ADDRESS:
-            QMessageBox::warning(this, windowTitle(),
-                getDuplicateAddressWarning(),
+        case AddressTableModel::DUPLICATE_ADDRESS: {
+            auto wt = windowTitle();
+            auto daw = getDuplicateAddressWarning();
+            std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+            QMessageBox::warning(this, wt,
+                daw,
                 QMessageBox::Ok, QMessageBox::Ok);
+            std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
             break;
+        }
         case AddressTableModel::WALLET_UNLOCK_FAILURE:
             QMessageBox::critical(this, windowTitle(),
                 tr("Could not unlock wallet."),
@@ -130,9 +145,16 @@ void EditAddressDialog::accept()
             break;
 
         }
+        std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
         return;
     }
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
     QDialog::accept();
+
+    std::cerr << "+++   " << __func__ << ":" << __LINE__ << "\n";
+
 }
 
 QString EditAddressDialog::getDuplicateAddressWarning() const

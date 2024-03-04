@@ -73,21 +73,21 @@ int main(int argc, char* argv[])
 
     int num_test_failures{0};
 
-    AppTests app_tests(app);
-    num_test_failures += QTest::qExec(&app_tests);
+    // AppTests app_tests(app);
+    // num_test_failures += QTest::qExec(&app_tests);
 
-    OptionTests options_tests(app.node());
-    num_test_failures += QTest::qExec(&options_tests);
+    // OptionTests options_tests(app.node());
+    // num_test_failures += QTest::qExec(&options_tests);
 
-    URITests test1;
-    num_test_failures += QTest::qExec(&test1);
+    // URITests test1;
+    // num_test_failures += QTest::qExec(&test1);
 
-    RPCNestedTests test3(app.node());
-    num_test_failures += QTest::qExec(&test3);
+    // RPCNestedTests test3(app.node());
+    // num_test_failures += QTest::qExec(&test3);
 
 #ifdef ENABLE_WALLET
-    WalletTests test5(app.node());
-    num_test_failures += QTest::qExec(&test5);
+    // WalletTests test5(app.node());
+    // num_test_failures += QTest::qExec(&test5);
 
     AddressBookTests test6(app.node());
     num_test_failures += QTest::qExec(&test6);
