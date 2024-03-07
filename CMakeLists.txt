@@ -68,6 +68,11 @@ tristate_option(WITH_USDT
   "if sys/sdt.h is found."
   AUTO
 )
+tristate_option(WITH_EXTERNAL_SIGNER
+  "Enable external signer support."
+  "if Boost.Process is found."
+  AUTO
+)
 
 option(BUILD_TESTS "Build test_bitcoin executable." ON)
 option(BUILD_BENCH "Build bench_bitcoin executable." ON)
@@ -412,6 +417,7 @@ message("  SQLite, descriptor wallets .......... ${WITH_SQLITE}")
 message("  Berkeley DB, legacy wallets ......... ${WITH_BDB}")
 message("Optional packages:")
 message("  GUI ................................. ${WITH_GUI}")
+message("  external signer ..................... ${WITH_EXTERNAL_SIGNER}")
 message("  NAT-PMP ............................. ${WITH_NATPMP}")
 message("  UPnP ................................ ${WITH_MINIUPNPC}")
 message("  ZeroMQ .............................. ${WITH_ZMQ}")

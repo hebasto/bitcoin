@@ -215,4 +215,7 @@
 /* Define if Berkeley DB (BDB) support should be compiled in. */
 #cmakedefine USE_BDB
 
+/* Define if external signer support is enabled. */
+#cmakedefine ENABLE_EXTERNAL_SIGNER
+
 #endif //BITCOIN_CONFIG_H
