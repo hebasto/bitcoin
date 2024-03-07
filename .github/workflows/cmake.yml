@@ -251,10 +251,11 @@ jobs:
         run: |
           ctest -j $(nproc)
 
-      - name: Install
+      - name: Install and run
         run: |
           cmake --install build --prefix install
           tree install
+          ./install/bin/bitcoind -version
 
 
   cross-build:
@@ -385,6 +386,7 @@ jobs:
           - name: 'Win64, VS 2022, dynamic'
             triplet: 'x64-windows'
             preset: 'vs2022'
+            skip_install_and_run: 'true'
           - name: 'Win64, VS 2022, static'
             triplet: 'x64-windows-static'
             preset: 'vs2022-static'
@@ -477,10 +479,12 @@ jobs:
         run: |
           ctest -j $env:NUMBER_OF_PROCESSORS -C Release
 
-      - name: Install Release configuration
+      - name: Install and run Release configuration
+        if: ${{ matrix.conf.skip_install_and_run != 'true' }}
         run: |
           cmake --install build --prefix install --config Release
           tree /f install
+          .\install\bin\bitcoind.exe -version
 
 
   macos-native-x86_64:
@@ -557,7 +561,8 @@ jobs:
         run: |
           ctest --test-dir build -j $(sysctl -n hw.logicalcpu)
 
-      - name: Install
+      - name: Install and run
         run: |
           cmake --install build --prefix install
           tree install
+          ./install/bin/bitcoind -version

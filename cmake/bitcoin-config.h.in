@@ -10,16 +10,16 @@
 #cmakedefine CHAR_EQUALS_INT8 1
 
 /* Version Build */
-#define CLIENT_VERSION_BUILD @PROJECT_VERSION_PATCH@
+#define CLIENT_VERSION_BUILD @CLIENT_VERSION_BUILD@
 
 /* Version is release */
 #define CLIENT_VERSION_IS_RELEASE @CLIENT_VERSION_IS_RELEASE@
 
 /* Major version */
-#define CLIENT_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define CLIENT_VERSION_MAJOR @CLIENT_VERSION_MAJOR@
 
 /* Minor version */
-#define CLIENT_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define CLIENT_VERSION_MINOR @CLIENT_VERSION_MINOR@
 
 /* Copyright holder(s) before %s replacement */
 #define COPYRIGHT_HOLDERS "@COPYRIGHT_HOLDERS@"
@@ -28,7 +28,7 @@
 #define COPYRIGHT_HOLDERS_FINAL "@COPYRIGHT_HOLDERS_FINAL@"
 
 /* Replacement for %s in copyright holders string */
-#define COPYRIGHT_HOLDERS_SUBSTITUTION "@PROJECT_NAME@"
+#define COPYRIGHT_HOLDERS_SUBSTITUTION "@PACKAGE_NAME@"
 
 /* Copyright year */
 #define COPYRIGHT_YEAR @COPYRIGHT_YEAR@
@@ -191,13 +191,13 @@
 #define PACKAGE_BUGREPORT "@PACKAGE_BUGREPORT@"
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "@PROJECT_NAME@"
+#define PACKAGE_NAME "@PACKAGE_NAME@"
 
 /* Define to the home page for this package. */
 #define PACKAGE_URL "@PROJECT_HOMEPAGE_URL@"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "@PROJECT_VERSION@"
+#define PACKAGE_VERSION "@PACKAGE_VERSION@"
 
 /* Define to 1 if strerror_r returns char *. */
 #cmakedefine STRERROR_R_CHAR_P 1
