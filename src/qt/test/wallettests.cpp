@@ -478,5 +478,14 @@ void WalletTests::walletTests()
         return;
     }
 #endif
+#if defined(Q_OS_WIN) && defined(QT_STATIC)
+    if (QApplication::platformName() == "minimal") {
+        // Disable for Windows on "minimal" platform when linked statically
+        // to avoid crashes inside the Qt framework.
+        QWARN("Skipping WalletTests on Windows statically linked build with 'minimal' platform set due to Qt bugs. "
+              "To run WalletTests, set QT_QPA_PLATFORM=windows or link binaries dynamically.");
+        return;
+    }
+#endif
     TestGUI(m_node);
 }
