@@ -6,10 +6,6 @@
 #ifndef BITCOIN_VALIDATION_H
 #define BITCOIN_VALIDATION_H
 
-#if defined(HAVE_CONFIG_H)
-#include <config/bitcoin-config.h>
-#endif
-
 #include <arith_uint256.h>
 #include <attributes.h>
 #include <chain.h>
@@ -382,6 +378,9 @@ bool TestBlockValidity(BlockValidationState& state,
 
 /** Check with the proof of work on each blockheader matches the value in nBits */
 bool HasValidProofOfWork(const std::vector<CBlockHeader>& headers, const Consensus::Params& consensusParams);
+
+/** Check if a block has been mutated (with respect to its merkle root and witness commitments). */
+bool IsBlockMutated(const CBlock& block, bool check_witness_root);
 
 /** Return the sum of the work on a given set of headers */
 arith_uint256 CalculateHeadersWork(const std::vector<CBlockHeader>& headers);
