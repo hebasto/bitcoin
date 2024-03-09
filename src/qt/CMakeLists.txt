@@ -9,6 +9,9 @@ endif()
 if(WITH_DBUS)
   list(APPEND qt_components DBus)
 endif()
+if(BUILD_GUI_TESTS)
+  list(APPEND qt_components Test)
+endif()
 find_package(Qt5 5.11.3 MODULE REQUIRED
   COMPONENTS ${qt_components}
 )
@@ -264,6 +267,10 @@ import_plugins(bitcoin-qt)
 set(installable_targets bitcoin-qt)
 if(WIN32)
   set_target_properties(bitcoin-qt PROPERTIES WIN32_EXECUTABLE TRUE)
+endif()
+
+if(BUILD_GUI_TESTS)
+  add_subdirectory(test)
 endif()
 
 
