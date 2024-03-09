@@ -273,6 +273,10 @@ jobs:
             cxx_compiler: 'clang++-14 -m32'
             depends_options: ''
             configure_options: '-DWERROR=ON'
+          - name: 'Linux 64-bit, multiprocess'
+            triplet: 'x86_64-pc-linux-gnu'
+            depends_options: 'MULTIPROCESS=1'
+            configure_options: '-DWERROR=ON'
           - name: 'MinGW-w64'
             triplet: 'x86_64-w64-mingw32'
             packages: 'g++-mingw-w64-x86-64-posix'
@@ -364,7 +368,7 @@ jobs:
           key: ${{ matrix.host.triplet }}${{ matrix.host.cache_suffix }}-ccache-${{ github.run_id }}
 
       - name: Test
-        if: ${{ matrix.host.triplet == 'i686-pc-linux-gnu' }}
+        if: ${{ matrix.host.triplet == 'i686-pc-linux-gnu' || matrix.host.triplet == 'x86_64-pc-linux-gnu' }}
         run: |
           ctest --test-dir build -j $(nproc)
 
