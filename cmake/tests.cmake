@@ -70,3 +70,16 @@ if(TARGET object)
     COMMAND object
   )
 endif()
+
+if(TARGET test_bitcoin-qt)
+  add_test(NAME test_bitcoin-qt
+    COMMAND test_bitcoin-qt
+  )
+  if(WIN32 AND VCPKG_TARGET_TRIPLET)
+    # On Windows, vcpkg configures Qt with `-opengl dynamic`, which makes
+    # the "minimal" platform plugin unusable due to internal Qt bugs.
+    set_tests_properties(test_bitcoin-qt PROPERTIES
+      ENVIRONMENT "QT_QPA_PLATFORM=windows"
+    )
+  endif()
+endif()
