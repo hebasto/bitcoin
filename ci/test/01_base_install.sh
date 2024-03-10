@@ -32,7 +32,7 @@ fi
 
 if [ -n "$PIP_PACKAGES" ]; then
   # shellcheck disable=SC2086
-  ${CI_RETRY_EXE} pip3 install --user $PIP_PACKAGES
+  ${CI_RETRY_EXE} ${CI_PYTHON_COMMAND} -m pip install --user $PIP_PACKAGES
 fi
 
 if [[ ${USE_MEMORY_SANITIZER} == "true" ]]; then

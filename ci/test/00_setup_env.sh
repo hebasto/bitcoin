@@ -70,3 +70,5 @@ export CI_BASE_PACKAGES=${CI_BASE_PACKAGES:-build-essential libtool autotools-de
 export GOAL=${GOAL:-install}
 export DIR_QA_ASSETS=${DIR_QA_ASSETS:-${BASE_SCRATCH_DIR}/qa-assets}
 export CI_RETRY_EXE=${CI_RETRY_EXE:-"retry --"}
+
+export CI_PYTHON_COMMAND=${CI_PYTHON_COMMAND:-"python3"}
