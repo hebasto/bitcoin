@@ -110,7 +110,7 @@ if [ -z "$NO_WERROR" ]; then
 fi
 
 ccache --zero-stats
-PRINT_CCACHE_STATISTICS="ccache --version | head -n 1 && ccache --show-stats --verbose"
+PRINT_CCACHE_STATISTICS="ccache --version | head -n 1 && ccache --show-stats"
 
 mkdir -p "${BASE_BUILD_DIR}"
 cd "${BASE_BUILD_DIR}"
