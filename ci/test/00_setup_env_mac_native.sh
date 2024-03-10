@@ -12,7 +12,7 @@ export HOST=x86_64-apple-darwin
 export CI_PYTHON_COMMAND="python"
 export PIP_PACKAGES="zmq"
 export GOAL="install"
-export BITCOIN_CONFIG="--with-gui --with-miniupnpc --with-natpmp --enable-reduce-exports"
+export BITCOIN_CONFIG="-DWITH_GUI=Qt5 -DWITH_MINIUPNPC=ON -DWITH_NATPMP=ON -DREDUCE_EXPORTS=ON"
 export CI_OS_NAME="macos"
 export NO_DEPENDS=1
 export OSX_SDK=""

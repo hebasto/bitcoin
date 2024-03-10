@@ -102,6 +102,10 @@ target_include_directories(bitcoinqt
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
 )
+set_property(SOURCE macnotificationhandler.mm
+  # Ignore warnings "'NSUserNotificationCenter' is deprecated: first deprecated in macOS 11.0".
+  APPEND PROPERTY COMPILE_OPTIONS -Wno-deprecated-declarations
+)
 target_link_libraries(bitcoinqt
   PUBLIC
     Qt5::Widgets
