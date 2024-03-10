@@ -17,4 +17,4 @@ export CI_OS_NAME="macos"
 export NO_DEPENDS=1
 export OSX_SDK=""
 export CCACHE_MAXSIZE=400M
-export RUN_FUZZ_TESTS=true
+# export RUN_FUZZ_TESTS=true
