@@ -88,6 +88,7 @@ jobs:
 
     env:
       CCACHE_MAXSIZE: '200M'
+      CCACHE_NOHASHDIR: 1
       PYTHONUTF8: 1
       TEST_RUNNER_TIMEOUT_FACTOR: 40
 
