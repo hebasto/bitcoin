@@ -7,6 +7,9 @@
 export LC_ALL=C.UTF-8
 
 export HOST=x86_64-apple-darwin
+# Homebrew's python@3.12 is marked as externally managed (PEP 668).
+# Sticking to macOS system python for simplicity.
+export CI_PYTHON_COMMAND="python"
 export PIP_PACKAGES="zmq"
 export GOAL="install"
 export BITCOIN_CONFIG="--with-gui --with-miniupnpc --with-natpmp --enable-reduce-exports"
