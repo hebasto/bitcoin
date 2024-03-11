@@ -56,7 +56,7 @@ jobs:
           brew install automake libtool pkg-config gnu-getopt ccache boost libevent miniupnpc libnatpmp zeromq qt@5 qrencode
 
       - name: Set Ccache directory
-        run: echo "CCACHE_DIR=${RUNNER_TEMP}/ccache_dir" >> "$GITHUB_ENV"
+        run: echo "CCACHE_DIR=${{ github.workspace }}/ccache_dir" >> "$GITHUB_ENV"
 
       - name: Restore Ccache cache
         id: ccache-cache
