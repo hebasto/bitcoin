@@ -179,12 +179,30 @@ target_link_libraries(bitcoin-qt
 )
 
 import_plugins(bitcoin-qt)
-
+set(installable_targets bitcoin-qt)
 if(WIN32)
   set_target_properties(bitcoin-qt PROPERTIES WIN32_EXECUTABLE TRUE)
 endif()
 
-install(TARGETS bitcoin-qt
+if(MULTIPROCESS)
+  add_executable(bitcoin-gui
+    main.cpp
+    ../init/bitcoin-gui.cpp
+  )
+  target_link_libraries(bitcoin-gui
+    core_interface
+    bitcoinqt
+    bitcoin_node
+    bitcoin_ipc
+  )
+  import_plugins(bitcoin-gui)
+  list(APPEND installable_targets bitcoin-gui)
+  if(WIN32)
+    set_target_properties(bitcoin-gui PROPERTIES WIN32_EXECUTABLE TRUE)
+  endif()
+endif()
+
+install(TARGETS ${installable_targets}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   COMPONENT GUI
 )
