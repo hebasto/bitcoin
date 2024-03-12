@@ -84,6 +84,7 @@ tristate_option(WITH_EXTERNAL_SIGNER
   AUTO
 )
 tristate_option(WITH_QRENCODE "Enable QR code support." "if libqrencode is found." AUTO)
+tristate_option(MULTIPROCESS "Build multiprocess bitcoin-node, bitcoin-wallet, and bitcoin-gui executables in addition to monolithic bitcoind and bitcoin-qt executables. Requires libmultiprocess library. Experimental." "if libmultiprocess is found." OFF)
 
 option(BUILD_TESTS "Build test_bitcoin executable." ON)
 cmake_dependent_option(BUILD_GUI_TESTS "Build test_bitcoin-qt executable." ON "BUILD_TESTS" OFF)
@@ -532,6 +533,7 @@ if(WITH_GUI)
   message("  QR code (GUI) ....................... ${WITH_QRENCODE}")
 endif()
 message("  external signer ..................... ${WITH_EXTERNAL_SIGNER}")
+message("  multiprocess ........................ ${MULTIPROCESS}")
 message("  NAT-PMP ............................. ${WITH_NATPMP}")
 message("  UPnP ................................ ${WITH_MINIUPNPC}")
 message("  ZeroMQ .............................. ${WITH_ZMQ}")
