@@ -101,16 +101,19 @@ if [ "$DOWNLOAD_PREVIOUS_RELEASES" = "true" ]; then
   test/get_previous_releases.py -b -t "$PREVIOUS_RELEASES_DIR"
 fi
 
-BITCOIN_CONFIG_ALL="--disable-dependency-tracking"
+BITCOIN_CONFIG_ALL=""
 if [ -z "$NO_DEPENDS" ]; then
-  BITCOIN_CONFIG_ALL="${BITCOIN_CONFIG_ALL} CONFIG_SITE=$DEPENDS_DIR/$HOST/share/config.site"
+  BITCOIN_CONFIG_ALL="${BITCOIN_CONFIG_ALL} -DCMAKE_TOOLCHAIN_FILE=$DEPENDS_DIR/$HOST/share/toolchain.cmake"
 fi
 if [ -z "$NO_WERROR" ]; then
-  BITCOIN_CONFIG_ALL="${BITCOIN_CONFIG_ALL} --enable-werror"
+  BITCOIN_CONFIG_ALL="${BITCOIN_CONFIG_ALL} -DWERROR=ON"
 fi
 
 ccache --zero-stats
 PRINT_CCACHE_STATISTICS="ccache --version | head -n 1 && ccache --show-stats"
+
+mkdir -p "${BASE_BUILD_DIR}"
+cd "${BASE_BUILD_DIR}"
 
 if [ -n "$ANDROID_TOOLS_URL" ]; then
   make distclean || true
@@ -121,31 +124,15 @@ if [ -n "$ANDROID_TOOLS_URL" ]; then
   exit 0
 fi
 
-BITCOIN_CONFIG_ALL="${BITCOIN_CONFIG_ALL} --enable-external-signer --prefix=$BASE_OUTDIR"
-
-if [ -n "$CONFIG_SHELL" ]; then
-  "$CONFIG_SHELL" -c "./autogen.sh"
-else
-  ./autogen.sh
-fi
-
-mkdir -p "${BASE_BUILD_DIR}"
-cd "${BASE_BUILD_DIR}"
-
-bash -c "${BASE_ROOT_DIR}/configure --cache-file=config.cache $BITCOIN_CONFIG_ALL $BITCOIN_CONFIG" || ( (cat config.log) && false)
-
-make distdir VERSION="$HOST"
-
-cd "${BASE_BUILD_DIR}/bitcoin-$HOST"
-
-bash -c "./configure --cache-file=../config.cache $BITCOIN_CONFIG_ALL $BITCOIN_CONFIG" || ( (cat config.log) && false)
+BITCOIN_CONFIG_ALL="$BITCOIN_CONFIG_ALL -DWITH_EXTERNAL_SIGNER=ON -DCMAKE_INSTALL_PREFIX=$BASE_OUTDIR"
 
 if [[ "${RUN_TIDY}" == "true" ]]; then
-  MAYBE_BEAR="bear --config src/.bear-tidy-config"
-  MAYBE_TOKEN="--"
+  BITCOIN_CONFIG_ALL="$BITCOIN_CONFIG_ALL -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
 fi
 
-bash -c "${MAYBE_BEAR} ${MAYBE_TOKEN} make $MAKEJOBS $GOAL" || ( echo "Build failure. Verbose build follows." && make "$GOAL" V=1 ; false )
+bash -c "$BITCOIN_CONFIG_ENV cmake -S $BASE_ROOT_DIR $BITCOIN_CONFIG_ALL $BITCOIN_CONFIG || ( (cat CMakeFiles/CMakeOutput.log CMakeFiles/CMakeError.log) && false)"
+
+bash -c "make $MAKEJOBS all $GOAL" || ( echo "Build failure. Verbose build follows." && make all "$GOAL" V=1 ; false )
 
 bash -c "${PRINT_CCACHE_STATISTICS}"
 du -sh "${DEPENDS_DIR}"/*/
@@ -163,7 +150,7 @@ if [ -n "$USE_VALGRIND" ]; then
 fi
 
 if [ "$RUN_UNIT_TESTS" = "true" ]; then
-  DIR_UNIT_TEST_DATA="${DIR_UNIT_TEST_DATA}" LD_LIBRARY_PATH="${DEPENDS_DIR}/${HOST}/lib" make "${MAKEJOBS}" check VERBOSE=1
+  DIR_UNIT_TEST_DATA="${DIR_UNIT_TEST_DATA}" LD_LIBRARY_PATH="${DEPENDS_DIR}/${HOST}/lib" CTEST_OUTPUT_ON_FAILURE=ON ctest "${MAKEJOBS}"
 fi
 
 if [ "$RUN_UNIT_TESTS_SEQUENTIAL" = "true" ]; then
