@@ -12,6 +12,6 @@ export CI_IMAGE_NAME_TAG="docker.io/amd64/ubuntu:22.04"
 export PACKAGES="llvm clang g++-multilib"
 export DEP_OPTS="DEBUG=1 MULTIPROCESS=1"
 export GOAL="install"
-export BITCOIN_CONFIG="--enable-debug CC='clang -m32' CXX='clang++ -m32' \
-CPPFLAGS='-DBOOST_MULTI_INDEX_ENABLE_SAFE_MODE'"
+export BITCOIN_CONFIG="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER='clang;-m32' -DCMAKE_CXX_COMPILER='clang++;-m32'"
+export BITCOIN_CONFIG_ENV="CXXFLAGS=-DBOOST_MULTI_INDEX_ENABLE_SAFE_MODE"
 export BITCOIND=bitcoin-node  # Used in functional tests
