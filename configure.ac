@@ -697,6 +697,8 @@ case $host in
      dnl Avoid the use of aligned vector instructions when building for Windows.
      dnl See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=54412.
      AX_CHECK_COMPILE_FLAG([-Wa,-muse-unaligned-vector-move], [CORE_CXXFLAGS="$CORE_CXXFLAGS -Wa,-muse-unaligned-vector-move"], [], [$CXXFLAG_WERROR])
+
+     AX_CHECK_COMPILE_FLAG([-mcrtdll=ucrt], [CORE_CXXFLAGS="$CORE_CXXFLAGS -mcrtdll=ucrt"], [], [$CXXFLAG_WERROR])
      ;;
   *darwin*)
      TARGET_OS=darwin
