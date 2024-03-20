@@ -184,7 +184,9 @@ if(WIN32)
     )
     # Improve parallelism in MSBuild.
     # See: https://devblogs.microsoft.com/cppblog/improved-parallelism-in-msbuild/.
-    list(APPEND CMAKE_VS_GLOBALS "UseMultiToolTask=true")
+    set_target_properties(core_base_interface PROPERTIES
+      VS_GLOBAL_UseMultiToolTask "true"
+    )
   endif()
 
   if(MINGW)
