@@ -21,10 +21,10 @@ if(CCACHE)
         # See https://github.com/ccache/ccache/wiki/MS-Visual-Studio
         set(CCACHE ON)
         file(COPY_FILE ${CCACHE_COMMAND} ${CMAKE_BINARY_DIR}/cl.exe ONLY_IF_DIFFERENT)
-        list(APPEND CMAKE_VS_GLOBALS
-          "CLToolExe=cl.exe"
-          "CLToolPath=${CMAKE_BINARY_DIR}"
-          "DebugInformationFormat=OldStyle"
+        set_target_properties(core_base_interface PROPERTIES
+          VS_GLOBAL_CLToolExe "cl.exe"
+          VS_GLOBAL_CLToolPath "${CMAKE_BINARY_DIR}"
+          VS_GLOBAL_DebugInformationFormat "OldStyle"
         )
         set(CMAKE_VS_NO_COMPILE_BATCHING ON)
         # By default Visual Studio generators will use /Zi which is not compatible
