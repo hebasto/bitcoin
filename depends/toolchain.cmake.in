@@ -4,8 +4,10 @@
 
 # This file is expected to be highly volatile and may still change substantially.
 
-set(CMAKE_SYSTEM_NAME @host_system@)
-set(CMAKE_SYSTEM_PROCESSOR @host_arch@)
+if(@depends_crosscompiling@)
+  set(CMAKE_SYSTEM_NAME @host_system@)
+  set(CMAKE_SYSTEM_PROCESSOR @host_arch@)
+endif()
 
 function(split_compiler_launcher env_compiler launcher compiler)
   set(${launcher})

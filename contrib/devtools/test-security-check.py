@@ -149,7 +149,10 @@ class TestSecurityChecks(unittest.TestCase):
         clean_files(source, executable)
 
 if __name__ == '__main__':
-    print(f'Environment CC: {os.getenv('CC')}')
-    print(f'Environment CFLAGS: {os.getenv('CFLAGS')}')
-    print(f'Environment LDFLAGS: {os.getenv('LDFLAGS')}')
+    cc = os.getenv('CC')
+    print(f'Environment CC: {cc}')
+    cflags = os.getenv('CFLAGS')
+    print(f'Environment CFLAGS: {cflags}')
+    ldflags = os.getenv('LDFLAGS')
+    print(f'Environment LDFLAGS: {ldflags}')
     unittest.main()

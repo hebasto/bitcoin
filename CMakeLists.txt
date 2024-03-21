@@ -307,58 +307,57 @@ include(cmake/leveldb.cmake)
 include(cmake/minisketch.cmake)
 include(cmake/secp256k1.cmake)
 
+add_library(warn_interface INTERFACE)
+target_link_libraries(core_interface INTERFACE warn_interface)
 include(ProcessConfigurations)
 are_flags_overridden(CMAKE_CXX_FLAGS cxx_flags_overridden)
 # TODO: Rework after https://github.com/bitcoin/bitcoin/pull/25972.
-if(NOT cxx_flags_overridden AND NOT CMAKE_CROSSCOMPILING)
-  add_library(warn_interface INTERFACE)
-  target_link_libraries(core_interface INTERFACE warn_interface)
-  if(MSVC)
-    try_append_cxx_flags("/W3" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("/wd4018" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("/wd4244" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("/wd4267" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("/wd4715" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("/wd4805" TARGET warn_interface SKIP_LINK)
-    target_compile_definitions(warn_interface INTERFACE
-      _CRT_SECURE_NO_WARNINGS
-      _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
-    )
-  else()
-    try_append_cxx_flags("-Wall" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wextra" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wgnu" TARGET warn_interface SKIP_LINK)
-    # Some compilers will ignore -Wformat-security without -Wformat, so just combine the two here.
-    try_append_cxx_flags("-Wformat;-Wformat-security" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wvla" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wshadow-field" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wthread-safety" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wloop-analysis" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wredundant-decls" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wunused-member-function" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wdate-time" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wconditional-uninitialized" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wduplicated-branches" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wduplicated-cond" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wlogical-op" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Woverloaded-virtual" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wsuggest-override" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wimplicit-fallthrough" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wunreachable-code" TARGET warn_interface SKIP_LINK)
-    try_append_cxx_flags("-Wdocumentation" TARGET warn_interface SKIP_LINK)
+if(NOT cxx_flags_overridden AND NOT CMAKE_TOOLCHAIN_FILE)
+  try_append_cxx_flags("-Wall" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wextra" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wgnu" TARGET warn_interface SKIP_LINK)
+  # Some compilers will ignore -Wformat-security without -Wformat, so just combine the two here.
+  try_append_cxx_flags("-Wformat;-Wformat-security" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wvla" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wshadow-field" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wthread-safety" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wloop-analysis" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wredundant-decls" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wunused-member-function" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wdate-time" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wconditional-uninitialized" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wduplicated-branches" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wduplicated-cond" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wlogical-op" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Woverloaded-virtual" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wsuggest-override" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wimplicit-fallthrough" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wunreachable-code" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wdocumentation" TARGET warn_interface SKIP_LINK)
 
-    # Some compilers (gcc) ignore unknown -Wno-* options, but warn about all
-    # unknown options if any other warning is produced. Test the -Wfoo case, and
-    # set the -Wno-foo case if it works.
-    try_append_cxx_flags("-Wunused-parameter" TARGET warn_interface SKIP_LINK
-      IF_CHECK_PASSED "-Wno-unused-parameter"
-    )
-    try_append_cxx_flags("-Wself-assign" TARGET warn_interface SKIP_LINK
-      IF_CHECK_PASSED "-Wno-self-assign"
-    )
-  endif()
+  # Some compilers (gcc) ignore unknown -Wno-* options, but warn about all
+  # unknown options if any other warning is produced. Test the -Wfoo case, and
+  # set the -Wno-foo case if it works.
+  try_append_cxx_flags("-Wunused-parameter" TARGET warn_interface SKIP_LINK
+    IF_CHECK_PASSED "-Wno-unused-parameter"
+  )
+  try_append_cxx_flags("-Wself-assign" TARGET warn_interface SKIP_LINK
+    IF_CHECK_PASSED "-Wno-self-assign"
+  )
 endif()
 unset(cxx_flags_overridden)
+if(MSVC)
+  try_append_cxx_flags("/W3" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("/wd4018" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("/wd4244" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("/wd4267" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("/wd4715" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("/wd4805" TARGET warn_interface SKIP_LINK)
+  target_compile_definitions(warn_interface INTERFACE
+    _CRT_SECURE_NO_WARNINGS
+    _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+  )
+endif()
 
 set_default_config(RelWithDebInfo)
 
@@ -509,22 +508,20 @@ else()
   )
 endif()
 
-if(CMAKE_CROSSCOMPILING)
-  target_compile_definitions(core_base_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS})
-  target_compile_definitions(core_depends_release_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_RELWITHDEBINFO})
-  target_compile_definitions(core_depends_debug_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_DEBUG})
+target_compile_definitions(core_base_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS})
+target_compile_definitions(core_depends_release_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_RELWITHDEBINFO})
+target_compile_definitions(core_depends_debug_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_DEBUG})
 
-  # If {C,CXX}FLAGS variables are defined during building depends and
-  # configuring this build system, their content might be duplicated.
-  if(DEFINED ENV{CFLAGS})
-    deduplicate_flags(CMAKE_C_FLAGS)
-  endif()
-  if(DEFINED ENV{CXXFLAGS})
-    deduplicate_flags(CMAKE_CXX_FLAGS)
-  endif()
-  if(DEFINED ENV{LDFLAGS})
-    deduplicate_flags(CMAKE_EXE_LINKER_FLAGS)
-  endif()
+# If {C,CXX,LD}FLAGS variables are defined during building depends and
+# configuring this build system, their content might be duplicated.
+if(DEFINED ENV{CFLAGS})
+  deduplicate_flags(CMAKE_C_FLAGS)
+endif()
+if(DEFINED ENV{CXXFLAGS})
+  deduplicate_flags(CMAKE_CXX_FLAGS)
+endif()
+if(DEFINED ENV{LDFLAGS})
+  deduplicate_flags(CMAKE_EXE_LINKER_FLAGS)
 endif()
 
 add_subdirectory(src)
