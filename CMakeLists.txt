@@ -79,6 +79,7 @@ include(CMakeDependentOption)
 cmake_dependent_option(BUILD_WALLET_TOOL "Build bitcoin-wallet tool." ${BUILD_TESTS} "ENABLE_WALLET" OFF)
 
 option(ENABLE_HARDENING "Attempt to harden the resulting executables." ON)
+option(REDUCE_EXPORTS "Attempt to reduce exported symbols in the resulting executables." OFF)
 
 tristate_option(WITH_CCACHE "Use ccache for compiling." "if ccache is found." AUTO)
 tristate_option(WITH_NATPMP "Enable NAT-PMP." "if libnatpmp is found." AUTO)
@@ -349,6 +350,12 @@ if(ENABLE_HARDENING)
       try_append_linker_flag("-Wl,-fixup_chains" TARGET hardening_interface)
     endif()
   endif()
+endif()
+
+if(REDUCE_EXPORTS)
+  set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+  set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
+  try_append_linker_flag("-Wl,--exclude-libs,ALL" TARGET core_base_interface)
 endif()
 
 find_package(Python3 3.9 COMPONENTS Interpreter)
