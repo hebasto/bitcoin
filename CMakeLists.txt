@@ -75,6 +75,8 @@ target_link_libraries(core_base_interface INTERFACE
 )
 target_link_libraries(core_interface INTERFACE core_base_interface)
 
+include(cmake/introspection.cmake)
+
 # TODO: The `CMAKE_SKIP_BUILD_RPATH` variable setting can be deleted
 #       in the future after reordering Guix script commands to
 #       perform binary checks after the installation step.
