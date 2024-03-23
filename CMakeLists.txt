@@ -55,15 +55,35 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
+
 set(configure_warnings)
+
+# The core_interface library aims to encapsulate common build flags.
+# It is intended to be a usage requirement for all other targets.
+add_library(core_interface INTERFACE)
+# The core_base_interface library is a subset of the core_interface
+# designated to be used with subtrees. In particular, it does not
+# include the warn_interface as subtree's warnings are not fixable
+# in our tree.
+add_library(core_base_interface INTERFACE)
+target_link_libraries(core_interface INTERFACE core_base_interface)
+
+include(GetTargetInterface)
+get_target_interface(definitions core_interface COMPILE_DEFINITIONS)
 
 message("\n")
 message("Configure summary")
 message("=================")
+message("Preprocessor defined macros ........... ${definitions}")
 message("C compiler ............................ ${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}, ${CMAKE_C_COMPILER}")
 message("CFLAGS ................................ ${CMAKE_C_FLAGS}")
 message("C++ compiler .......................... ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}, ${CMAKE_CXX_COMPILER}")
 message("CXXFLAGS .............................. ${CMAKE_CXX_FLAGS}")
+get_target_interface(common_compile_options core_interface COMPILE_OPTIONS)
+message("Common compile options ................ ${common_compile_options}")
+get_target_interface(common_link_options core_interface LINK_OPTIONS)
+message("Common link options ................... ${common_link_options}")
 message("Linker flags for executables .......... ${CMAKE_EXE_LINKER_FLAGS}")
 message("Linker flags for shared libraries ..... ${CMAKE_SHARED_LINKER_FLAGS}")
 if(DEFINED CMAKE_BUILD_TYPE)
@@ -95,3 +115,6 @@ if(configure_warnings)
     endforeach()
     message("  ******\n")
 endif()
+
+# We want all build properties to be encapsulated properly.
+include(WarnAboutGlobalProperties)
