@@ -80,6 +80,76 @@ add_library(core_interface INTERFACE)
 add_library(core_base_interface INTERFACE)
 target_link_libraries(core_interface INTERFACE core_base_interface)
 
+if(WIN32)
+  #[=[
+  This build system supports two ways to build binaries for Windows.
+
+  1. Building on Windows using MSVC.
+  Implementation notes:
+  - /DWIN32 and /D_WINDOWS definitions are included into the CMAKE_CXX_FLAGS_INIT
+    and CMAKE_CXX_FLAGS_INIT variables by default.
+  - A run-time library is selected using the CMAKE_MSVC_RUNTIME_LIBRARY variable.
+  - MSVC-specific options, for example, /Zc:__cplusplus, are additionally required.
+
+  2. Cross-compiling using MinGW.
+  Implementation notes:
+  - WIN32 and _WINDOWS definitions must be provided explicitly.
+  - A run-time library must be specified explicitly using _MT definition.
+  ]=]
+
+  target_compile_definitions(core_base_interface INTERFACE
+    _WIN32_WINNT=0x0601
+    _WIN32_IE=0x0501
+    WIN32_LEAN_AND_MEAN
+    NOMINMAX
+  )
+
+  if(MSVC)
+    if(VCPKG_TARGET_TRIPLET MATCHES "-static")
+      set(msvc_library_linkage "")
+    else()
+      set(msvc_library_linkage "DLL")
+    endif()
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>${msvc_library_linkage}")
+    unset(msvc_library_linkage)
+
+    target_compile_definitions(core_base_interface INTERFACE
+      _UNICODE;UNICODE
+    )
+    target_compile_options(core_interface INTERFACE
+      /utf-8
+      /Zc:preprocessor
+      /Zc:__cplusplus
+      /sdl
+    )
+    # Improve parallelism in MSBuild.
+    # See: https://devblogs.microsoft.com/cppblog/improved-parallelism-in-msbuild/.
+    list(APPEND CMAKE_VS_GLOBALS "UseMultiToolTask=true")
+  endif()
+
+  if(MINGW)
+    target_compile_definitions(core_base_interface INTERFACE
+      WIN32
+      _WINDOWS
+      _MT
+    )
+  endif()
+endif()
+
+# Use 64-bit off_t on 32-bit Linux.
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux" AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+  # Ensure 64-bit offsets are used for filesystem accesses for 32-bit compilation.
+  target_compile_definitions(core_base_interface INTERFACE
+    _FILE_OFFSET_BITS=64
+  )
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+  target_compile_definitions(core_base_interface INTERFACE
+    MAC_OSX
+  )
+endif()
+
 include(cmake/introspection.cmake)
 
 add_subdirectory(src)
