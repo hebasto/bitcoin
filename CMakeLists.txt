@@ -191,6 +191,7 @@ include(cmake/introspection.cmake)
 include(cmake/ccache.cmake)
 
 include(cmake/crc32c.cmake)
+include(cmake/leveldb.cmake)
 
 include(ProcessConfigurations)
 set_default_config(RelWithDebInfo)
