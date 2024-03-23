@@ -69,6 +69,8 @@ add_library(core_interface INTERFACE)
 add_library(core_base_interface INTERFACE)
 target_link_libraries(core_interface INTERFACE core_base_interface)
 
+add_subdirectory(src)
+
 include(GetTargetInterface)
 get_target_interface(definitions core_interface COMPILE_DEFINITIONS)
 
