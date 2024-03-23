@@ -100,17 +100,23 @@ set(CMAKE_STRIP "@STRIP@")
 set(CMAKE_OBJCOPY "@OBJCOPY@")
 set(CMAKE_OBJDUMP "@OBJDUMP@")
 
+
+#=============================
+# Find path settings
+#=============================
 # Using our own built dependencies should not be
 # affected by a potentially random environment.
-set(CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH OFF)
-
-set(CMAKE_FIND_ROOT_PATH "@depends_prefix@")
+set(CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH NO)
+set(CMAKE_FIND_USE_CMAKE_SYSTEM_PATH NO)
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
-set(QT_TRANSLATIONS_DIR "@depends_prefix@/translations")
-
+# Point CMake to search in the ${CMAKE_FIND_ROOT_PATH}/${CMAKE_PREFIX_PATH}
+# directory when using find_library(), find_file(), find_path(), and
+# find_package() commands.
+cmake_path(GET CMAKE_CURRENT_LIST_DIR PARENT_PATH CMAKE_FIND_ROOT_PATH)
+cmake_path(SET CMAKE_PREFIX_PATH "/")
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND NOT CMAKE_HOST_APPLE)
   # The find_package(Qt ...) function internally uses find_library()
   # calls for all dependencies to ensure their availability.
@@ -118,17 +124,25 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND NOT CMAKE_HOST_APPLE)
   # on the file system; therefore, a hint is required.
   set(CMAKE_FRAMEWORK_PATH "@OSX_SDK@/System/Library/Frameworks")
 endif()
+# TODO: Consider using our FindQt5 module to search for the translation directory.
+cmake_path(APPEND CMAKE_FIND_ROOT_PATH "translations" OUTPUT_VARIABLE QT_TRANSLATIONS_DIR)
 
 
-# Customize pkg-config behaviour.
+#=============================
+# Pkg-config behaviour
+#=============================
 cmake_path(APPEND CMAKE_FIND_ROOT_PATH "lib" "pkgconfig" OUTPUT_VARIABLE pkg_config_path)
 set(ENV{PKG_CONFIG_PATH} ${pkg_config_path})
 set(ENV{PKG_CONFIG_LIBDIR} ${pkg_config_path})
 unset(pkg_config_path)
-set(PKG_CONFIG_ARGN --static)
+# Defining the prefix variable explicitly makes depends relocatable, which
+# simplifies, for example, building on NixOS.
+set(PKG_CONFIG_ARGN --static --define-variable=prefix=${CMAKE_FIND_ROOT_PATH})
 
 
-# Set configuration options for the main build system.
+#=============================
+# Main build system options
+#=============================
 if("@no_qt@")
   set(BUILD_GUI OFF CACHE BOOL "")
 else()
