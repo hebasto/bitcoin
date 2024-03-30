@@ -15,7 +15,7 @@ void MockedDescriptorConverter::Init() {
         // an extended one.
         if (IdIsCompPubKey(i) || IdIsUnCompPubKey(i) || IdIsXOnlyPubKey(i) || IdIsConstPrivKey(i)) {
             CKey privkey;
-            privkey.Set(UCharCast(key_data.begin()), UCharCast(key_data.end()), !IdIsUnCompPubKey(i));
+            privkey.Set(UCharCast(key_data.data()), UCharCast(key_data.data()) + 32, !IdIsUnCompPubKey(i));
             if (IdIsCompPubKey(i) || IdIsUnCompPubKey(i)) {
                 CPubKey pubkey{privkey.GetPubKey()};
                 keys_str[i] = HexStr(pubkey);
