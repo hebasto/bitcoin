@@ -1223,7 +1223,7 @@ FUZZ_TARGET(miniscript_stable, .init = FuzzInit)
 FUZZ_TARGET(miniscript_smart, .init = FuzzInitSmart)
 {
     /** The set of types we aim to construct nodes for. Together they cover all. */
-    static constexpr std::array<Type, 4> BASE_TYPES{"B"_mst, "V"_mst, "K"_mst, "W"_mst};
+    constexpr std::array<Type, 4> BASE_TYPES{"B"_mst, "V"_mst, "K"_mst, "W"_mst};
 
     FuzzedDataProvider provider(buffer.data(), buffer.size());
     const auto script_ctx{(MsCtx)provider.ConsumeBool()};
