@@ -10,7 +10,10 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- TODO: Fix the code and remove bitdeque.cpp exclusion. -->
-    <ClCompile Include="..\..\src\test\fuzz\*.cpp" Exclude="..\..\src\test\fuzz\bitdeque.cpp" />
+    <ClCompile Include="..\..\src\test\fuzz\*.cpp" Exclude="..\..\src\test\fuzz\bitdeque.cpp;..\..\src\test\fuzz\miniscript.cpp" />
+    <ClCompile Include="..\..\src\test\fuzz\miniscript.cpp">
+      <ObjectFileName>$(IntDir)test_fuzz_miniscript.obj</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="..\..\src\test\fuzz\util\descriptor.cpp">
       <ObjectFileName>$(IntDir)test_fuzz_util_descriptor.obj</ObjectFileName>
     </ClCompile>
@@ -40,6 +43,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\libbitcoin_node\libbitcoin_node.vcxproj">
+      <Project>{460fee33-1fe1-483f-b3bf-931ff8e969a5}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\libminisketch\libminisketch.vcxproj">
       <Project>{542007e3-be0d-4b0d-a6b0-aa8813e2558d}</Project>
     </ProjectReference>
@@ -54,9 +60,6 @@
     </ProjectReference>
     <ProjectReference Include="..\libbitcoin_crypto\libbitcoin_crypto.vcxproj">
       <Project>{6190199c-6cf4-4dad-bfbd-93fa72a760c1}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\libbitcoin_node\libbitcoin_node.vcxproj">
-      <Project>{460fee33-1fe1-483f-b3bf-931ff8e969a5}</Project>
     </ProjectReference>
     <ProjectReference Include="..\libbitcoin_util\libbitcoin_util.vcxproj">
       <Project>{b53a5535-ee9d-4c6f-9a26-f79ee3bc3754}</Project>
