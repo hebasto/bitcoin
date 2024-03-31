@@ -278,6 +278,13 @@ jobs:
           # https://github.com/actions/cache/blob/main/tips-and-workarounds.md#update-a-cache
           key: ${{ github.job }}-ccache-${{ github.run_id }}
 
+      - name: Clone fuzz corpus
+        run: |
+          git clone --depth=1 https://github.com/bitcoin-core/qa-assets "$env:RUNNER_TEMP\qa-assets"
+          Set-Location "$env:RUNNER_TEMP\qa-assets"
+          Write-Host "Using qa-assets repo from commit ..."
+          git log -1
+
       - name: Run unit tests
         run: src\test_bitcoin.exe -l test_suite
 
