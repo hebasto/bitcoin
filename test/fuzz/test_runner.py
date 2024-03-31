@@ -156,7 +156,7 @@ def main():
                 fuzz_bin,
                 '-help=1',
             ],
-            env=get_fuzz_env(target=test_list_selection[0], source_dir=config['environment']['SRCDIR']),
+            env={**os.environ, **get_fuzz_env(target=test_list_selection[0], source_dir=config['environment']['SRCDIR'])},
             timeout=20,
             check=False,
             stderr=subprocess.PIPE,
@@ -257,6 +257,7 @@ def generate_corpus(*, fuzz_pool, src_dir, fuzz_bin, corpus_dir, targets):
             subprocess.run(
                 command,
                 env={
+                    **os.environ,
                     **t_env,
                     **get_fuzz_env(target=t, source_dir=src_dir),
                 },
@@ -314,7 +315,7 @@ def merge_inputs(*, fuzz_pool, corpus, test_list, src_dir, fuzz_bin, merge_dirs)
             output = 'Run {} with args {}\n'.format(t, " ".join(args))
             output += subprocess.run(
                 args,
-                env=get_fuzz_env(target=t, source_dir=src_dir),
+                env={**os.environ, **get_fuzz_env(target=t, source_dir=src_dir)},
                 check=True,
                 stderr=subprocess.PIPE,
                 text=True,
@@ -353,7 +354,7 @@ def run_once(*, fuzz_pool, corpus, test_list, src_dir, fuzz_bin, using_libfuzzer
             output = 'Run {} with args {}'.format(t, args)
             result = subprocess.run(
                 args,
-                env=get_fuzz_env(target=t, source_dir=src_dir),
+                env={**os.environ, **get_fuzz_env(target=t, source_dir=src_dir)},
                 stderr=subprocess.PIPE,
                 text=True,
             )
@@ -392,6 +393,7 @@ def parse_test_list(*, fuzz_bin, source_dir):
     test_list_all = subprocess.run(
         fuzz_bin,
         env={
+            **os.environ,
             'PRINT_ALL_FUZZ_TARGETS_AND_ABORT': '',
             **get_fuzz_env(target="", source_dir=source_dir)
         },
