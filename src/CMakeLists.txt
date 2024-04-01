@@ -335,6 +335,17 @@ if(BUILD_KERNEL_LIB)
   add_subdirectory(kernel)
 endif()
 
+if(BUILD_UTIL_CHAINSTATE)
+  add_executable(bitcoin-chainstate
+    bitcoin-chainstate.cpp
+  )
+  target_link_libraries(bitcoin-chainstate
+    PRIVATE
+      core_interface
+      bitcoinkernel
+  )
+endif()
+
 
 add_subdirectory(test/util)
 if(BUILD_BENCH)
