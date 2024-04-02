@@ -1241,38 +1241,38 @@ static int CommandLineRPC(int argc, char *argv[])
 
 MAIN_FUNCTION
 {
-#ifdef WIN32
-    common::WinCmdLineArgs winArgs;
-    std::tie(argc, argv) = winArgs.get();
-#endif
-    SetupEnvironment();
-    if (!SetupNetworking()) {
-        tfm::format(std::cerr, "Error: Initializing networking failed\n");
-        return EXIT_FAILURE;
-    }
-    event_set_log_callback(&libevent_log_cb);
+    std::cerr << "1 =====\n";
 
-    try {
-        int ret = AppInitRPC(argc, argv);
-        if (ret != CONTINUE_EXECUTION)
-            return ret;
-    }
-    catch (const std::exception& e) {
-        PrintExceptionContinue(&e, "AppInitRPC()");
-        return EXIT_FAILURE;
-    } catch (...) {
-        PrintExceptionContinue(nullptr, "AppInitRPC()");
-        return EXIT_FAILURE;
+    std::cerr << "MAX_COMPUTERNAME_LENGTH is " << MAX_COMPUTERNAME_LENGTH << "\n";
+
+
+    constexpr DWORD max_size = MAX_COMPUTERNAME_LENGTH + 1;
+    char hname42[max_size];
+    DWORD size = max_size;
+
+    if (GetComputerName(hname42, &size) != 0) {
+        std::cerr << "---\n";
+        std::cerr << hname42 << "\n";
+        std::cerr << "---\n";
     }
 
-    int ret = EXIT_FAILURE;
-    try {
-        ret = CommandLineRPC(argc, argv);
+    std::cerr << "2 =====\n";
+
+    char hname[256];
+    if (gethostname(hname, 256) == 0) {
+        std::cerr << "---\n";
+        std::cerr << hname << "\n";
+        std::cerr << "---\n";
     }
-    catch (const std::exception& e) {
-        PrintExceptionContinue(&e, "CommandLineRPC()");
-    } catch (...) {
-        PrintExceptionContinue(nullptr, "CommandLineRPC()");
+
+    std::cerr << "3 =====\n";
+
+    SetupNetworking();
+    if (gethostname(hname, 256) == 0) {
+        std::cerr << "---\n";
+        std::cerr << hname << "\n";
+        std::cerr << "---\n";
     }
-    return ret;
+
+    std::cerr << "4 =====\n";
 }
