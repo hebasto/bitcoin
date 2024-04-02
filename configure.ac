@@ -588,8 +588,6 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 )
 CXXFLAGS="$TEMP_CXXFLAGS"
 
-CORE_CPPFLAGS="$CORE_CPPFLAGS -DHAVE_BUILD_INFO"
-
 AC_ARG_WITH([utils],
   [AS_HELP_STRING([--with-utils],
   [build bitcoin-cli bitcoin-tx bitcoin-util bitcoin-wallet (default=yes)])],
