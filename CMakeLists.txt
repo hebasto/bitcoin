@@ -150,6 +150,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   )
 endif()
 
+include(AddThreadsIfNeeded)
+add_threads_if_needed()
+
 include(cmake/introspection.cmake)
 
 include(cmake/crc32c.cmake)
