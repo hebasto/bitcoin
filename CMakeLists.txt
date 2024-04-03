@@ -224,6 +224,73 @@ include(cmake/leveldb.cmake)
 include(cmake/minisketch.cmake)
 include(cmake/secp256k1.cmake)
 
+include(ProcessConfigurations)
+set_default_config(RelWithDebInfo)
+
+# Redefine/adjust per-configuration flags.
+target_compile_definitions(core_depends_debug_interface INTERFACE
+  DEBUG
+  DEBUG_LOCKORDER
+  DEBUG_LOCKCONTENTION
+  RPC_DOC_CHECK
+  ABORT_ON_FAILED_ASSUME
+)
+# We leave assertions on.
+if(MSVC)
+  remove_c_flag_from_all_configs(/DNDEBUG)
+  remove_cxx_flag_from_all_configs(/DNDEBUG)
+else()
+  remove_c_flag_from_all_configs(-DNDEBUG)
+  remove_cxx_flag_from_all_configs(-DNDEBUG)
+
+  # Adjust flags used by the C/CXX compiler during RELEASE builds.
+  # Prefer -O2 optimization level. (-O3 is CMake's default for Release for many compilers.)
+  replace_c_flag_in_config(Release -O3 -O2)
+  replace_cxx_flag_in_config(Release -O3 -O2)
+
+  are_flags_overridden(CMAKE_CXX_FLAGS_DEBUG cxx_flags_debug_overridden)
+  if(NOT cxx_flags_debug_overridden)
+    # Redefine flags used by the CXX compiler during DEBUG builds.
+    try_append_cxx_flags("-g3" RESULT_VAR compiler_supports_g3)
+    if(compiler_supports_g3)
+      replace_cxx_flag_in_config(Debug -g -g3)
+    endif()
+
+    try_append_cxx_flags("-ftrapv" RESULT_VAR compiler_supports_ftrapv)
+    if(compiler_supports_ftrapv)
+      string(PREPEND CMAKE_CXX_FLAGS_DEBUG "-ftrapv ")
+    endif()
+    unset(compiler_supports_ftrapv)
+
+    string(PREPEND CMAKE_CXX_FLAGS_DEBUG "-O0 ")
+
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}"
+      CACHE STRING
+      "Flags used by the CXX compiler during DEBUG builds."
+      FORCE
+    )
+  endif()
+  unset(cxx_flags_debug_overridden)
+
+  are_flags_overridden(CMAKE_C_FLAGS_DEBUG c_flags_debug_overridden)
+  if(NOT c_flags_debug_overridden)
+    # Redefine flags used by the C compiler during DEBUG builds.
+    if(compiler_supports_g3)
+      replace_c_flag_in_config(Debug -g -g3)
+    endif()
+
+    string(PREPEND CMAKE_C_FLAGS_DEBUG "-O0 ")
+
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}"
+      CACHE STRING
+      "Flags used by the C compiler during DEBUG builds."
+      FORCE
+    )
+  endif()
+  unset(compiler_supports_g3)
+  unset(c_flags_debug_overridden)
+endif()
+
 include(cmake/optional.cmake)
 
 find_package(Python3 3.9 COMPONENTS Interpreter)
@@ -238,6 +305,18 @@ endif()
 target_compile_definitions(core_base_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS})
 target_compile_definitions(core_depends_release_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_RELWITHDEBINFO})
 target_compile_definitions(core_depends_debug_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_DEBUG})
+
+# If {C,CXX,LD}FLAGS variables are defined during building depends and
+# configuring this build system, their content might be duplicated.
+if(DEFINED ENV{CFLAGS})
+  deduplicate_flags(CMAKE_C_FLAGS)
+endif()
+if(DEFINED ENV{CXXFLAGS})
+  deduplicate_flags(CMAKE_CXX_FLAGS)
+endif()
+if(DEFINED ENV{LDFLAGS})
+  deduplicate_flags(CMAKE_EXE_LINKER_FLAGS)
+endif()
 
 add_subdirectory(src)
 add_subdirectory(test)
@@ -291,27 +370,7 @@ get_target_interface(common_link_options core_interface LINK_OPTIONS)
 message("Common link options ................... ${common_link_options}")
 message("Linker flags for executables .......... ${CMAKE_EXE_LINKER_FLAGS}")
 message("Linker flags for shared libraries ..... ${CMAKE_SHARED_LINKER_FLAGS}")
-if(DEFINED CMAKE_BUILD_TYPE)
-  message("Build type:")
-  message(" - CMAKE_BUILD_TYPE ................... ${CMAKE_BUILD_TYPE}")
-  string(TOUPPER "${CMAKE_BUILD_TYPE}" build_type)
-  message(" - CFLAGS ............................. ${CMAKE_C_FLAGS_${build_type}}")
-  message(" - CXXFLAGS ........................... ${CMAKE_CXX_FLAGS_${build_type}}")
-  message(" - LDFLAGS for executables ............ ${CMAKE_EXE_LINKER_FLAGS_${build_type}}")
-  message(" - LDFLAGS for shared libraries ....... ${CMAKE_SHARED_LINKER_FLAGS_${build_type}}")
-else()
-  message("Available configurations .............. ${CMAKE_CONFIGURATION_TYPES}")
-  message("Debug configuration:")
-  message(" - CFLAGS ............................. ${CMAKE_C_FLAGS_DEBUG}")
-  message(" - CXXFLAGS ........................... ${CMAKE_CXX_FLAGS_DEBUG}")
-  message(" - LDFLAGS for executables ............ ${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
-  message(" - LDFLAGS for shared libraries ....... ${CMAKE_SHARED_LINKER_FLAGS_DEBUG}")
-  message("Release configuration:")
-  message(" - CFLAGS ............................. ${CMAKE_C_FLAGS_RELEASE}")
-  message(" - CXXFLAGS ........................... ${CMAKE_CXX_FLAGS_RELEASE}")
-  message(" - LDFLAGS for executables ............ ${CMAKE_EXE_LINKER_FLAGS_RELEASE}")
-  message(" - LDFLAGS for shared libraries ....... ${CMAKE_SHARED_LINKER_FLAGS_RELEASE}")
-endif()
+print_config_flags()
 message("Use ccache for compiling .............. ${WITH_CCACHE}")
 message("\n")
 if(configure_warnings)
