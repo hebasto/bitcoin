@@ -458,8 +458,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          # TODO: Re-enable default features, once the liblzma package become available to build again.
-          cmake -B build --preset ${{ matrix.conf.preset }} -DWERROR=ON -DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DVCPKG_MANIFEST_FEATURES="wallet;miniupnpc;zeromq;tests"
+          cmake -B build --preset ${{ matrix.conf.preset }} -DWERROR=ON
 
       - name: Save vcpkg binary cache
         uses: actions/cache/save@v4
