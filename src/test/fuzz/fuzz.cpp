@@ -134,10 +134,10 @@ void initialize()
 #if defined(PROVIDE_FUZZ_MAIN_FUNCTION)
 static bool read_stdin(std::vector<uint8_t>& data)
 {
-    uint8_t buffer[1024];
+    std::cin::char_type buffer[1024];
     size_t length = 0;
     do {
-        std::cin.read(reinterpret_cast<char*>(buffer), 1024);
+        std::cin.read(buffer, 1024);
         length = std::cin.gcount();
         data.insert(data.end(), buffer, buffer + length);
     } while (length > 0);
