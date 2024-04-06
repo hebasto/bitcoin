@@ -135,7 +135,7 @@ void initialize()
 static bool read_stdin(std::vector<uint8_t>& data)
 {
     uint8_t buffer[1024];
-    size_t length = 0;
+    ssize_t length = 0;
     do {
         std::cin.read(reinterpret_cast<char*>(buffer), 1024);
         length = std::cin.gcount();
