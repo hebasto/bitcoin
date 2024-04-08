@@ -16,5 +16,7 @@ export RUN_UNIT_TESTS_SEQUENTIAL="true"
 export RUN_UNIT_TESTS="false"
 export GOAL="install"
 export DOWNLOAD_PREVIOUS_RELEASES="true"
-export BITCOIN_CONFIG="--enable-zmq --with-gui=qt5 --enable-reduce-exports --enable-debug \
-CFLAGS=\"-g0 -O2 -funsigned-char\" CPPFLAGS='-DBOOST_MULTI_INDEX_ENABLE_SAFE_MODE' CXXFLAGS=\"-g0 -O2 -funsigned-char\""
+export BITCOIN_CONFIG="-DWITH_ZMQ=ON -DWITH_GUI=Qt5 -DREDUCE_EXPORTS=ON \
+-DCMAKE_BUILD_TYPE=Debug \
+-DCMAKE_C_FLAGS_DEBUG='-funsigned-char -g0 -O2' \
+-DCMAKE_CXX_FLAGS_DEBUG='-DBOOST_MULTI_INDEX_ENABLE_SAFE_MODE -funsigned-char -g0 -O2'"

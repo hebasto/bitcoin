@@ -29,6 +29,7 @@ endif()
 # Instead, prefer the target-specific target_link_libraries() one.
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/dummy_cxx_source.cpp "#error")
 add_library(check_loose_linked_libraries OBJECT EXCLUDE_FROM_ALL ${CMAKE_CURRENT_BINARY_DIR}/dummy_cxx_source.cpp)
+set_target_properties(check_loose_linked_libraries PROPERTIES EXPORT_COMPILE_COMMANDS OFF)
 get_target_property(global_linked_libraries check_loose_linked_libraries LINK_LIBRARIES)
 if(global_linked_libraries)
   message(AUTHOR_WARNING "There are libraries linked with `link_libraries` commands: ${global_linked_libraries}")

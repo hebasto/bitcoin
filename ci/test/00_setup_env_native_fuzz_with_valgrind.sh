@@ -16,5 +16,7 @@ export RUN_FUZZ_TESTS=true
 export FUZZ_TESTS_CONFIG="--valgrind"
 export GOAL="install"
 # Temporarily pin dwarf 4, until using Valgrind 3.20 or later
-export BITCOIN_CONFIG="--enable-fuzz --with-sanitizers=fuzzer CC=clang CXX=clang++ CFLAGS=-gdwarf-4 CXXFLAGS=-gdwarf-4"
+export BITCOIN_CONFIG="-DFUZZ=ON -DSANITIZERS=fuzzer \
+-DCMAKE_C_COMPILER='clang;-gdwarf-4' -DCMAKE_CXX_COMPILER='clang++;-gdwarf-4'"
+export BITCOIN_CONFIG_ENV="CXXFLAGS=-Wno-error=unreachable-code"
 export CCACHE_MAXSIZE=200M
