@@ -310,7 +310,7 @@ jobs:
       - name: Install dependency packages
         run: |
           apt-get update
-          apt-get install --no-install-recommends -y autoconf ccache curl make libtool pkg-config patch ${{ matrix.host.packages }}
+          apt-get install --no-install-recommends -y autoconf ca-certificates ccache curl make libtool pkg-config patch ${{ matrix.host.packages }}
           echo "CCACHE_DIR=${{ runner.temp }}/ccache" >> "$GITHUB_ENV"
 
       - name: Depends fingerprint (1)
