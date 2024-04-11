@@ -227,7 +227,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build -DCMAKE_C_COMPILER=gcc-10 -DCMAKE_CXX_COMPILER=g++-10 -DBoost_INCLUDE_DIR="${PWD}/${{ matrix.conf.boost_archive }}" -DENABLE_WALLET=ON -DWITH_EXTERNAL_SIGNER=ON -DWITH_MINIUPNPC=ON -DWITH_NATPMP=ON -DWITH_ZMQ=ON -DWITH_USDT=ON -DWERROR=ON
+          cmake -B build -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_CXX_COMPILER=g++-11 -DBoost_INCLUDE_DIR="${PWD}/${{ matrix.conf.boost_archive }}" -DENABLE_WALLET=ON -DWITH_EXTERNAL_SIGNER=ON -DWITH_MINIUPNPC=ON -DWITH_NATPMP=ON -DWITH_ZMQ=ON -DWITH_USDT=ON -DWERROR=ON
 
       - name: Build
         working-directory: build
