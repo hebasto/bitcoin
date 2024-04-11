@@ -260,7 +260,8 @@ jobs:
 
   cross-build:
     name: ${{ matrix.host.name }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container: debian:bookworm
 
     strategy:
       fail-fast: false
@@ -308,8 +309,8 @@ jobs:
 
       - name: Install dependency packages
         run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends ccache ${{ matrix.host.packages }}
+          apt-get update
+          apt-get install --no-install-recommends -y ccache ${{ matrix.host.packages }}
           echo "CCACHE_DIR=${{ runner.temp }}/ccache" >> "$GITHUB_ENV"
 
       - name: Depends fingerprint (1)
