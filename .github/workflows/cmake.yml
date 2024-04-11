@@ -269,12 +269,10 @@ jobs:
         host:
           - name: 'Linux 32-bit, Clang, link to libatomic'
             triplet: 'i686-pc-linux-gnu'
-            packages: 'clang-14 g++-multilib'
-            c_compiler: 'clang-14 -m32'
-            cxx_compiler: 'clang++-14 -m32'
+            packages: 'clang-15 g++-multilib'
+            c_compiler: 'clang-15 -m32'
+            cxx_compiler: 'clang++-15 -m32'
             depends_options: ''
-            # For -Wno-error=unreachable-code, please refer to https://github.com/bitcoin/bitcoin/issues/29334
-            configure_env: 'env CXXFLAGS="-Wno-error=unreachable-code"'
             configure_options: '-DWERROR=ON'
           - name: 'Linux 64-bit, multiprocess'
             triplet: 'x86_64-pc-linux-gnu'
