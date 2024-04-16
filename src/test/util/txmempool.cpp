@@ -164,12 +164,12 @@ void CheckMempoolTRUCInvariants(const CTxMemPool& tx_pool)
             if (anc_count > 1) {
                 Assert(entry.GetTxSize() <= TRUC_CHILD_MAX_VSIZE);
                 // All TRUC transactions must only have TRUC unconfirmed parents.
-                const auto& parents = entry.GetMemPoolParentsConst();
+                const auto& parents = tx_pool.GetParents(entry);
                 Assert(parents.begin()->get().GetSharedTx()->version == TRUC_VERSION);
             }
         } else if (anc_count > 1) {
             // All non-TRUC transactions must only have non-TRUC unconfirmed parents.
-            for (const auto& parent : entry.GetMemPoolParentsConst()) {
+            for (const auto& parent : tx_pool.GetParents(entry)) {
                 Assert(parent.get().GetSharedTx()->version != TRUC_VERSION);
             }
         }
