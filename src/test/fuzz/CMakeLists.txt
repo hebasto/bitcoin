@@ -4,6 +4,15 @@
 
 add_subdirectory(util)
 
+add_library(fuzz_secp256k1 STATIC
+  secp256k1_ec_seckey_import_export_der.cpp
+  secp256k1_ecdsa_signature_parse_der_lax.cpp
+)
+target_link_libraries(fuzz_secp256k1
+  core_interface
+  secp256k1
+)
+
 add_executable(fuzz
   addition_overflow.cpp
   addrman.cpp
@@ -97,8 +106,6 @@ add_executable(fuzz
   script_sigcache.cpp
   script_sign.cpp
   scriptnum_ops.cpp
-  secp256k1_ec_seckey_import_export_der.cpp
-  secp256k1_ecdsa_signature_parse_der_lax.cpp
   signature_checker.cpp
   signet.cpp
   socks5.cpp
@@ -123,10 +130,10 @@ add_executable(fuzz
 target_link_libraries(fuzz
   core_interface
   test_fuzz
+  fuzz_secp256k1
   bitcoin_node
   minisketch
   bitcoin_cli
-  secp256k1
   Boost::headers
   libevent::libevent
 )
