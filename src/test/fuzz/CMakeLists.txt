@@ -123,8 +123,9 @@ add_executable(fuzz
 target_link_libraries(fuzz
   core_interface
   test_fuzz
-  bitcoin_cli
+  bitcoin_node
   minisketch
+  bitcoin_cli
   secp256k1
   Boost::headers
   libevent::libevent
