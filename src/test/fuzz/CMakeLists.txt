@@ -124,10 +124,7 @@ target_link_libraries(fuzz
   core_interface
   test_fuzz
   bitcoin_cli
-  bitcoin_common
   minisketch
-  leveldb
-  univalue
   secp256k1
   Boost::headers
   libevent::libevent
