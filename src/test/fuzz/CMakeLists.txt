@@ -131,6 +131,7 @@ target_link_libraries(fuzz
   core_interface
   test_fuzz
   bitcoin_cli
+  bitcoin_node
   minisketch
   fuzz_secp256k1
   Boost::headers
