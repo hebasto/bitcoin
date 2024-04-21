@@ -119,7 +119,12 @@ tristate_option(WITH_USDT
 )
 cmake_dependent_option(ENABLE_EXTERNAL_SIGNER "Enable external signer support." ON "NOT WIN32" OFF)
 tristate_option(WITH_QRENCODE "Enable QR code support." "if libqrencode is found." AUTO)
-tristate_option(WITH_MULTIPROCESS "Build multiprocess bitcoin-node and bitcoin-gui executables in addition to monolithic bitcoind and bitcoin-qt executables. Requires libmultiprocess library. Experimental." "if libmultiprocess is found." OFF)
+
+option(WITH_MULTIPROCESS "Build multiprocess bitcoin-node and bitcoin-gui executables in addition to monolithic bitcoind and bitcoin-qt executables. Requires libmultiprocess library. Experimental." OFF)
+if(WITH_MULTIPROCESS)
+  find_package(Libmultiprocess CONFIG REQUIRED)
+  find_package(LibmultiprocessGen CONFIG REQUIRED)
+endif()
 
 cmake_dependent_option(BUILD_GUI_TESTS "Build test_bitcoin-qt executable." ON "BUILD_TESTS" OFF)
 option(BUILD_BENCH "Build bench_bitcoin executable." OFF)
