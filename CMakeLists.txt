@@ -92,7 +92,11 @@ if(WITH_NATPMP)
   find_package(NATPMP MODULE REQUIRED)
 endif()
 
-tristate_option(WITH_MINIUPNPC "Enable UPnP." "if libminiupnpc is found." AUTO)
+option(WITH_MINIUPNPC "Enable UPnP." OFF)
+if(WITH_MINIUPNPC)
+  find_package(MiniUPnPc MODULE REQUIRED)
+endif()
+
 tristate_option(WITH_ZMQ "Enable ZMQ notifications." "if libzmq is found." AUTO)
 tristate_option(WITH_USDT
   "Enable tracepoints for Userspace, Statically Defined Tracing."
