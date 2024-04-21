@@ -86,7 +86,12 @@ option(REDUCE_EXPORTS "Attempt to reduce exported symbols in the resulting execu
 option(WERROR "Treat compiler warnings as errors." OFF)
 
 tristate_option(WITH_CCACHE "Use ccache for compiling." "if ccache is found." AUTO)
-tristate_option(WITH_NATPMP "Enable NAT-PMP." "if libnatpmp is found." AUTO)
+
+option(WITH_NATPMP "Enable NAT-PMP." OFF)
+if(WITH_NATPMP)
+  find_package(NATPMP MODULE REQUIRED)
+endif()
+
 tristate_option(WITH_MINIUPNPC "Enable UPnP." "if libminiupnpc is found." AUTO)
 tristate_option(WITH_ZMQ "Enable ZMQ notifications." "if libzmq is found." AUTO)
 tristate_option(WITH_USDT
