@@ -60,6 +60,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
 #=============================
 # Configurable options
 #=============================
+include(CMakeDependentOption)
 # When adding a new option, end the <help_text> with a full stop for consistency.
 option(BUILD_DAEMON "Build bitcoind executable." ON)
 option(BUILD_CLI "Build bitcoin-cli executable." ON)
@@ -72,19 +73,43 @@ option(BUILD_UTIL_CHAINSTATE "Build experimental bitcoin-chainstate executable."
 option(BUILD_KERNEL_LIB "Build experimental bitcoinkernel library." ${BUILD_UTIL_CHAINSTATE})
 
 option(ENABLE_WALLET "Enable wallet." ON)
-# TODO: These tri-state options will be removed and most features
-#       will become opt-in by default before merging into master.
-include(TristateOption)
-tristate_option(WITH_SQLITE "Enable SQLite wallet support." "if libsqlite3 is found." AUTO)
-tristate_option(WITH_BDB "Enable Berkeley DB (BDB) wallet support." "if libdb_cxx is found." AUTO)
-option(WARN_INCOMPATIBLE_BDB "Warn when using a Berkeley DB (BDB) version other than 4.8." ON)
-include(CMakeDependentOption)
+option(WITH_SQLITE "Enable SQLite wallet support." ${ENABLE_WALLET})
+if(WITH_SQLITE)
+  if(VCPKG_TARGET_TRIPLET)
+    # Use of the `unofficial::` namespace is a vcpkg package manager convention.
+    find_package(unofficial-sqlite3 CONFIG REQUIRED)
+  else()
+    find_package(SQLite3 3.7.17 REQUIRED)
+  endif()
+  set(USE_SQLITE ON)
+  set(ENABLE_WALLET ON)
+endif()
+option(WITH_BDB "Enable Berkeley DB (BDB) wallet support." OFF)
+cmake_dependent_option(WARN_INCOMPATIBLE_BDB "Warn when using a Berkeley DB (BDB) version other than 4.8." ON "WITH_BDB" OFF)
+if(WITH_BDB)
+  find_package(BerkeleyDB 4.8 MODULE REQUIRED)
+  set(USE_BDB ON)
+  set(ENABLE_WALLET ON)
+  if(NOT BerkeleyDB_VERSION VERSION_EQUAL 4.8)
+    message(WARNING "Found Berkeley DB (BDB) other than 4.8.\n"
+                    "BDB (legacy) wallets opened by this build will not be portable!"
+    )
+    if(WARN_INCOMPATIBLE_BDB)
+      message(WARNING "If this is intended, pass \"-DWARN_INCOMPATIBLE_BDB=OFF\".\n"
+                      "Passing \"-DWITH_BDB=OFF\" will suppress this warning."
+      )
+    endif()
+  endif()
+endif()
 cmake_dependent_option(BUILD_WALLET_TOOL "Build bitcoin-wallet tool." ${BUILD_TESTS} "ENABLE_WALLET" OFF)
 
 option(ENABLE_HARDENING "Attempt to harden the resulting executables." ON)
 option(REDUCE_EXPORTS "Attempt to reduce exported symbols in the resulting executables." OFF)
 option(WERROR "Treat compiler warnings as errors." OFF)
 
+# TODO: These tri-state options will be removed and most features
+#       will become opt-in by default before merging into master.
+include(TristateOption)
 tristate_option(WITH_CCACHE "Use ccache for compiling." "if ccache is found." AUTO)
 
 option(WITH_NATPMP "Enable NAT-PMP." OFF)
