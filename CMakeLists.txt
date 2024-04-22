@@ -112,11 +112,11 @@ if(WITH_ZMQ)
   endif()
 endif()
 
-tristate_option(WITH_USDT
-  "Enable tracepoints for Userspace, Statically Defined Tracing."
-  "if sys/sdt.h is found."
-  AUTO
-)
+option(WITH_USDT "Enable tracepoints for Userspace, Statically Defined Tracing." OFF)
+if(WITH_USDT)
+  find_package(USDT MODULE REQUIRED)
+endif()
+
 cmake_dependent_option(ENABLE_EXTERNAL_SIGNER "Enable external signer support." ON "NOT WIN32" OFF)
 
 include(cmake/optional_qt.cmake)

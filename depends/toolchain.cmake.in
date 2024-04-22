@@ -168,8 +168,10 @@ else()
   set(WITH_NATPMP ON CACHE BOOL "")
 endif()
 
-if(NOT WITH_USDT AND "@no_usdt@" STREQUAL "1")
-  set(WITH_USDT OFF CACHE STRING "Enable tracepoints for Userspace, Statically Defined Tracing.")
+if("@usdt_packages@" STREQUAL "")
+  set(WITH_USDT OFF CACHE BOOL "")
+else()
+  set(WITH_USDT ON CACHE BOOL "")
 endif()
 
 if("@no_harden@")
