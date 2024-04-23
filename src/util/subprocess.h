@@ -65,7 +65,7 @@ Documentation for C++ subprocessing library.
 
 extern "C" {
 #ifdef __USING_WINDOWS__
-  #include <Windows.h>
+  #include <windows.h>
   #include <io.h>
   #include <cwchar>
 
@@ -169,7 +169,7 @@ namespace util
     //
 
     if (force == false && argument.empty() == false &&
-        argument.find_first_of(L" \t\n\v\"") == argument.npos) {
+        argument.find_first_of(L" \t\n\v") == argument.npos) {
       command_line.append(argument);
     }
     else {

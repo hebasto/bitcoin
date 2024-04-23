@@ -39,6 +39,9 @@ UniValue RunCommandParseJSON(const std::string& str_command, const std::string& 
     std::getline(stdout_stream, result);
     std::getline(stderr_stream, error);
 
+#ifdef WIN32
+    assert(c.poll() != -1);
+#endif
     const int n_error = c.retcode();
     if (n_error) throw std::runtime_error(strprintf("RunCommandParseJSON error: process(%s) returned %d: %s\n", str_command, n_error, error));
     if (!result_json.read(result)) throw std::runtime_error("Unable to parse JSON: " + result);
