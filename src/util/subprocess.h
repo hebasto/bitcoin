@@ -944,23 +944,21 @@ private:
  * interface to the client.
  *
  * API's provided by the class:
- * 1. Popen({"cmd"}, output{..}, error{..}, ....)
- *    Command provided as a sequence.
- * 2. Popen("cmd arg1"m output{..}, error{..}, ....)
+ * 1. Popen("cmd arg1", output{..}, error{..}, ....)
  *    Command provided in a single string.
- * 3. wait()             - Wait for the child to exit.
- * 4. retcode()          - The return code of the exited child.
- * 5. pid()              - PID of the spawned child.
- * 6. poll()             - Check the status of the running child.
- * 7. kill(sig_num)      - Kill the child. SIGTERM used by default.
- * 8. send(...)          - Send input to the input channel of the child.
- * 9. communicate(...)   - Get the output/error from the child and close the channels
+ * 2. wait()             - Wait for the child to exit.
+ * 3. retcode()          - The return code of the exited child.
+ * 4. pid()              - PID of the spawned child.
+ * 5. poll()             - Check the status of the running child.
+ * 6. kill(sig_num)      - Kill the child. SIGTERM used by default.
+ * 7. send(...)          - Send input to the input channel of the child.
+ * 8. communicate(...)   - Get the output/error from the child and close the channels
  *                         from the parent side.
- *10. input()            - Get the input channel/File pointer. Can be used for
+ * 9. input()            - Get the input channel/File pointer. Can be used for
  *                         customizing the way of sending input to child.
- *11. output()           - Get the output channel/File pointer. Usually used
+ *10. output()           - Get the output channel/File pointer. Usually used
                            in case of redirection. See piping examples.
- *12. error()            - Get the error channel/File pointer. Usually used
+ *11. error()            - Get the error channel/File pointer. Usually used
                            in case of redirection.
  */
 class Popen
@@ -974,29 +972,6 @@ public:
     args_(cmd_args)
   {
     vargs_ = util::split(cmd_args);
-    init_args(std::forward<Args>(args)...);
-
-    // Setup the communication channels of the Popen class
-    stream_.setup_comm_channels();
-
-    execute_process();
-  }
-
-  template <typename... Args>
-  Popen(std::initializer_list<const char*> cmd_args, Args&& ...args)
-  {
-    vargs_.insert(vargs_.end(), cmd_args.begin(), cmd_args.end());
-    init_args(std::forward<Args>(args)...);
-
-    // Setup the communication channels of the Popen class
-    stream_.setup_comm_channels();
-
-    execute_process();
-  }
-
-  template <typename... Args>
-  Popen(std::vector<std::string> vargs_, Args &&... args) : vargs_(vargs_)
-  {
     init_args(std::forward<Args>(args)...);
 
     // Setup the communication channels of the Popen class
