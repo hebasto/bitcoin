@@ -808,8 +808,7 @@ public:
   {}
   void operator=(const Communication&) = delete;
 public:
-  int send(const char* msg, size_t length);
-  int send(const std::vector<char>& msg);
+  int send(const std::string& msg);
 
   std::pair<OutBuffer, ErrBuffer> communicate(const char* msg, size_t length);
   std::pair<OutBuffer, ErrBuffer> communicate(const std::vector<char>& msg)
@@ -887,10 +886,7 @@ public:
   void set_err_buf_cap(size_t cap) { comm_.set_err_buf_cap(cap); }
 
 public: /* Communication forwarding API's */
-  int send(const char* msg, size_t length)
-  { return comm_.send(msg, length); }
-
-  int send(const std::vector<char>& msg)
+  int send(const std::string& msg)
   { return comm_.send(msg); }
 
   std::pair<OutBuffer, ErrBuffer> communicate(const char* msg, size_t length)
@@ -1005,13 +1001,7 @@ public:
 
   void set_err_buf_cap(size_t cap) { stream_.set_err_buf_cap(cap); }
 
-  int send(const char* msg, size_t length)
-  { return stream_.send(msg, length); }
-
   int send(const std::string& msg)
-  { return send(msg.c_str(), msg.size()); }
-
-  int send(const std::vector<char>& msg)
   { return stream_.send(msg); }
 
   std::pair<OutBuffer, ErrBuffer> communicate(const char* msg, size_t length)
@@ -1451,15 +1441,10 @@ namespace detail {
   #endif
   }
 
-  inline int Communication::send(const char* msg, size_t length)
+  inline int Communication::send(const std::string& msg)
   {
     if (stream_->input() == nullptr) return -1;
-    return std::fwrite(msg, sizeof(char), length, stream_->input());
-  }
-
-  inline int Communication::send(const std::vector<char>& msg)
-  {
-    return send(msg.data(), msg.size());
+    return std::fwrite(msg.c_str(), sizeof(char), msg.size(), stream_->input());
   }
 
   inline std::pair<OutBuffer, ErrBuffer>
