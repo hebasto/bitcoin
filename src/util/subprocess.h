@@ -812,9 +812,6 @@ public:
 
   std::pair<OutBuffer, ErrBuffer> communicate();
 
-  void set_out_buf_cap(size_t cap) { out_buf_cap_ = cap; }
-  void set_err_buf_cap(size_t cap) { err_buf_cap_ = cap; }
-
 private:
   std::pair<OutBuffer, ErrBuffer> communicate_threaded();
 
@@ -878,9 +875,6 @@ public:
   void input(FILE* fp)  { input_.reset(fp, fclose); }
   void output(FILE* fp) { output_.reset(fp, fclose); }
   void error(FILE* fp)  { error_.reset(fp, fclose); }
-
-  void set_out_buf_cap(size_t cap) { comm_.set_out_buf_cap(cap); }
-  void set_err_buf_cap(size_t cap) { comm_.set_err_buf_cap(cap); }
 
 public: /* Communication forwarding API's */
   int send(const std::string& msg)
@@ -990,10 +984,6 @@ public:
   // Does not fail, Caller is expected to recheck the
   // status with a call to poll()
   void kill(int sig_num = 9);
-
-  void set_out_buf_cap(size_t cap) { stream_.set_out_buf_cap(cap); }
-
-  void set_err_buf_cap(size_t cap) { stream_.set_err_buf_cap(cap); }
 
   int send(const std::string& msg)
   { return stream_.send(msg); }
