@@ -810,16 +810,13 @@ public:
 public:
   int send(const std::string& msg);
 
-  std::pair<OutBuffer, ErrBuffer> communicate(const char* msg, size_t length);
-  std::pair<OutBuffer, ErrBuffer> communicate(const std::vector<char>& msg)
-  { return communicate(msg.data(), msg.size()); }
+  std::pair<OutBuffer, ErrBuffer> communicate();
 
   void set_out_buf_cap(size_t cap) { out_buf_cap_ = cap; }
   void set_err_buf_cap(size_t cap) { err_buf_cap_ = cap; }
 
 private:
-  std::pair<OutBuffer, ErrBuffer> communicate_threaded(
-      const char* msg, size_t length);
+  std::pair<OutBuffer, ErrBuffer> communicate_threaded();
 
 private:
   Streams* stream_;
@@ -889,11 +886,8 @@ public: /* Communication forwarding API's */
   int send(const std::string& msg)
   { return comm_.send(msg); }
 
-  std::pair<OutBuffer, ErrBuffer> communicate(const char* msg, size_t length)
-  { return comm_.communicate(msg, length); }
-
-  std::pair<OutBuffer, ErrBuffer> communicate(const std::vector<char>& msg)
-  { return comm_.communicate(msg); }
+  std::pair<OutBuffer, ErrBuffer> communicate()
+  { return comm_.communicate(); }
 
 
 public:// Yes they are public
@@ -948,7 +942,7 @@ private:
  * 5. poll()             - Check the status of the running child.
  * 6. kill(sig_num)      - Kill the child. SIGTERM used by default.
  * 7. send(...)          - Send input to the input channel of the child.
- * 8. communicate(...)   - Get the output/error from the child and close the channels
+ * 8. communicate()      - Get the output/error from the child and close the channels
  *                         from the parent side.
  * 9. input()            - Get the input channel/File pointer. Can be used for
  *                         customizing the way of sending input to child.
@@ -1004,28 +998,11 @@ public:
   int send(const std::string& msg)
   { return stream_.send(msg); }
 
-  std::pair<OutBuffer, ErrBuffer> communicate(const char* msg, size_t length)
-  {
-    auto res = stream_.communicate(msg, length);
-    retcode_ = wait();
-    return res;
-  }
-
-  std::pair<OutBuffer, ErrBuffer> communicate(const std::string& msg)
-  {
-    return communicate(msg.c_str(), msg.size());
-  }
-
-  std::pair<OutBuffer, ErrBuffer> communicate(const std::vector<char>& msg)
-  {
-    auto res = stream_.communicate(msg);
-    retcode_ = wait();
-    return res;
-  }
-
   std::pair<OutBuffer, ErrBuffer> communicate()
   {
-    return communicate(nullptr, 0);
+    auto res = stream_.communicate();
+    retcode_ = wait();
+    return res;
   }
 
   FILE* input()  { return stream_.input(); }
@@ -1448,27 +1425,18 @@ namespace detail {
   }
 
   inline std::pair<OutBuffer, ErrBuffer>
-  Communication::communicate(const char* msg, size_t length)
+  Communication::communicate()
   {
     // Optimization from subprocess.py
     // If we are using one pipe, or no pipe
     // at all, using select() or threads is unnecessary.
     auto hndls = {stream_->input(), stream_->output(), stream_->error()};
     int count = std::count(std::begin(hndls), std::end(hndls), nullptr);
-    const int len_conv = length;
 
     if (count >= 2) {
       OutBuffer obuf;
       ErrBuffer ebuf;
       if (stream_->input()) {
-        if (msg) {
-          int wbytes = std::fwrite(msg, sizeof(char), length, stream_->input());
-          if (wbytes < len_conv) {
-            if (errno != EPIPE && errno != EINVAL) {
-              throw OSError("fwrite error", errno);
-            }
-          }
-        }
         // Close the input stream
         stream_->input_.reset();
       } else if (stream_->output()) {
@@ -1509,17 +1477,16 @@ namespace detail {
       return std::make_pair(std::move(obuf), std::move(ebuf));
     }
 
-    return communicate_threaded(msg, length);
+    return communicate_threaded();
   }
 
 
   inline std::pair<OutBuffer, ErrBuffer>
-  Communication::communicate_threaded(const char* msg, size_t length)
+  Communication::communicate_threaded()
   {
     OutBuffer obuf;
     ErrBuffer ebuf;
     std::future<int> out_fut, err_fut;
-    const int length_conv = length;
 
     if (stream_->output()) {
       obuf.add_cap(out_buf_cap_);
@@ -1538,14 +1505,6 @@ namespace detail {
                           });
     }
     if (stream_->input()) {
-      if (msg) {
-        int wbytes = std::fwrite(msg, sizeof(char), length, stream_->input());
-        if (wbytes < length_conv) {
-          if (errno != EPIPE && errno != EINVAL) {
-            throw OSError("fwrite error", errno);
-          }
-        }
-      }
       stream_->input_.reset();
     }
 
