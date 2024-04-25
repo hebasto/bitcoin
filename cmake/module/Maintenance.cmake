@@ -32,7 +32,9 @@ function(add_maintenance_targets)
   endif()
   string(STRIP "${CMAKE_C_COMPILER} ${CMAKE_C_COMPILER_ARG1}" c_compiler_command)
   string(STRIP "${CMAKE_C_COMPILER_LAUNCHER} ${c_compiler_command}" c_compiler_command)
+  message("::::::::::::::::::::::::::: CC=${c_compiler_command} CFLAGS=${CMAKE_C_FLAGS} LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/devtools/test-security-check.py TestSecurityChecks.test_${exe_format}")
   add_custom_target(test-security-check
+    COMMAND ${CMAKE_COMMAND} -E echo "CC=${c_compiler_command} CFLAGS=${CMAKE_C_FLAGS} LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/devtools/test-security-check.py TestSecurityChecks.test_${exe_format}"
     COMMAND ${CMAKE_COMMAND} -E env CC=${c_compiler_command} CFLAGS=${CMAKE_C_FLAGS} LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/devtools/test-security-check.py TestSecurityChecks.test_${exe_format}
     COMMAND ${CMAKE_COMMAND} -E env CC=${c_compiler_command} CFLAGS=${CMAKE_C_FLAGS} LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/devtools/test-symbol-check.py TestSymbolChecks.test_${exe_format}
     VERBATIM
