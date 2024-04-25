@@ -42,6 +42,8 @@ def call_security_check(cc: str, source: str, executable: str, options) -> tuple
     return (p.returncode, p.stdout.rstrip())
 
 def get_arch(cc, source, executable):
+    to_run = [*cc, source, '-o', executable]
+    print(f'get_arch ============================== to_run: {to_run}')
     subprocess.run([*cc, source, '-o', executable], check=True)
     binary = lief.parse(executable)
     arch = binary.abstract.header.architecture
@@ -54,7 +56,9 @@ class TestSecurityChecks(unittest.TestCase):
         executable = 'test1'
         cc = determine_wellknown_cmd('CC', 'gcc')
         write_testcode(source)
+        print(f'test_ELF ============================== cc: {cc}')
         arch = get_arch(cc, source, executable)
+        print(f'test_ELF ============================== arch: {arch}')
 
         if arch == lief.ARCHITECTURES.X86:
             self.assertEqual(call_security_check(cc, source, executable, ['-Wl,-zexecstack','-fno-stack-protector','-Wl,-znorelro','-no-pie','-fno-PIE', '-Wl,-z,separate-code']),
@@ -150,7 +154,7 @@ class TestSecurityChecks(unittest.TestCase):
 
 if __name__ == '__main__':
     cc = os.getenv('CC')
-    print(f'Environment CC: {cc}')
+    print(f'Environment CC: @{cc}@')
     cflags = os.getenv('CFLAGS')
     print(f'Environment CFLAGS: {cflags}')
     ldflags = os.getenv('LDFLAGS')

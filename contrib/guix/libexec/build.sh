@@ -190,7 +190,7 @@ esac
 ####################
 
 # Build the depends tree, overriding variables that assume multilib gcc
-make -C depends --jobs="$JOBS" HOST="$HOST" \
+make -C depends --jobs="$JOBS" HOST="$HOST" NO_QT=1 NO_WALLET=1 NO_ZMQ=1 NO_UPNP=1 NO_NATPMP=1 NO_USDT=1 \
                                    ${V:+V=1} \
                                    ${SOURCES_PATH+SOURCES_PATH="$SOURCES_PATH"} \
                                    ${BASE_CACHE+BASE_CACHE="$BASE_CACHE"} \
