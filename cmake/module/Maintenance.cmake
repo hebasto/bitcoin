@@ -30,8 +30,9 @@ function(add_maintenance_targets)
   else()
     set(exe_format ELF)
   endif()
-  string(STRIP "${CMAKE_C_COMPILER} ${CMAKE_C_COMPILER_ARG1}" c_compiler_command)
-  string(STRIP "${CMAKE_C_COMPILER_LAUNCHER} ${c_compiler_command}" c_compiler_command)
+  list(JOIN CMAKE_C_COMPILER_LAUNCHER " " c_compiler_command)
+  string(STRIP "${c_compiler_command} ${CMAKE_C_COMPILER}" c_compiler_command)
+  string(STRIP "${c_compiler_command} ${CMAKE_C_COMPILER_ARG1}" c_compiler_command)
   message("::::::::::::::::::::::::::: CC=${c_compiler_command} CFLAGS=${CMAKE_C_FLAGS} LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/devtools/test-security-check.py TestSecurityChecks.test_${exe_format}")
   add_custom_target(test-security-check
     COMMAND ${CMAKE_COMMAND} -E echo "CC=${c_compiler_command} CFLAGS=${CMAKE_C_FLAGS} LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/devtools/test-security-check.py TestSecurityChecks.test_${exe_format}"
