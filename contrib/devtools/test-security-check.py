@@ -42,6 +42,8 @@ def call_security_check(cc: str, source: str, executable: str, options) -> tuple
     return (p.returncode, p.stdout.rstrip())
 
 def get_arch(cc, source, executable):
+    to_run = [*cc, source, '-o', executable]
+    print(f'get_arch ============================== to_run: {to_run}')
     subprocess.run([*cc, source, '-o', executable], check=True)
     binary = lief.parse(executable)
     arch = binary.abstract.header.architecture
