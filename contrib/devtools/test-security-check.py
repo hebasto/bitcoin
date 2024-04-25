@@ -154,7 +154,7 @@ class TestSecurityChecks(unittest.TestCase):
 
 if __name__ == '__main__':
     cc = os.getenv('CC')
-    print(f'Environment CC: {cc}')
+    print(f'Environment CC: @{cc}@')
     cflags = os.getenv('CFLAGS')
     print(f'Environment CFLAGS: {cflags}')
     ldflags = os.getenv('LDFLAGS')
