@@ -54,7 +54,9 @@ class TestSecurityChecks(unittest.TestCase):
         executable = 'test1'
         cc = determine_wellknown_cmd('CC', 'gcc')
         write_testcode(source)
+        print(f'test_ELF ============================== cc: {cc}')
         arch = get_arch(cc, source, executable)
+        print(f'test_ELF ============================== arch: {arch}')
 
         if arch == lief.ARCHITECTURES.X86:
             self.assertEqual(call_security_check(cc, source, executable, ['-Wl,-zexecstack','-fno-stack-protector','-Wl,-znorelro','-no-pie','-fno-PIE', '-Wl,-z,separate-code']),
