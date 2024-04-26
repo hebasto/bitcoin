@@ -69,6 +69,7 @@ foreach(config IN LISTS CMAKE_BUILD_TYPE CMAKE_CONFIGURATION_TYPES)
 endforeach()
 add_subdirectory(secp256k1)
 set_target_properties(secp256k1 PROPERTIES EXPORT_COMPILE_COMMANDS OFF)
+string(APPEND CMAKE_C_COMPILE_OBJECT " ${APPEND_CPPFLAGS} ${APPEND_CFLAGS}")
 
 # Stable, backwards-compatible consensus functionality.
 add_library(bitcoin_consensus STATIC EXCLUDE_FROM_ALL
