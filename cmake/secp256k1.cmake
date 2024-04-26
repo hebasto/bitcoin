@@ -9,6 +9,7 @@
 enable_language(C)
 set(CMAKE_C_STANDARD 90)
 set(CMAKE_C_EXTENSIONS OFF)
+string(APPEND CMAKE_C_COMPILE_OBJECT " ${APPEND_CPPFLAGS} ${APPEND_CFLAGS}")
 
 include(CheckCSourceCompiles)
 check_c_source_compiles("

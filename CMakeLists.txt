@@ -169,6 +169,14 @@ cmake_dependent_option(ENABLE_FUZZ "Build for fuzzing. Enabling this will disabl
 
 option(INSTALL_MAN "Install man pages." ON)
 
+set(APPEND_CPPFLAGS "" CACHE STRING "Preprocessor flags that are appended to the flags added by the build system.")
+set(APPEND_CFLAGS "" CACHE STRING "C compiler flags that are appended to the flags added by the build system.")
+set(APPEND_CXXFLAGS "" CACHE STRING "(Objective) C++ compiler flags that are appended to the flags added by the build system.")
+set(APPEND_LDFLAGS "" CACHE STRING "Linker flags that are appended to the flags added by the build system.")
+string(APPEND CMAKE_CXX_COMPILE_OBJECT " ${APPEND_CPPFLAGS} ${APPEND_CXXFLAGS}")
+string(APPEND CMAKE_CXX_CREATE_SHARED_LIBRARY " ${APPEND_LDFLAGS}")
+string(APPEND CMAKE_CXX_LINK_EXECUTABLE " ${APPEND_LDFLAGS}")
+
 set(configure_warnings)
 
 include(CheckPIESupported)
