@@ -10,6 +10,7 @@ macro(normalize_string string)
 endmacro()
 
 function(are_flags_overridden flags_var result_var)
+  message("========================= ${flags_var}_INIT: ${${flags_var}_INIT}")
   normalize_string(${flags_var})
   normalize_string(${flags_var}_INIT)
   if(${flags_var} STREQUAL ${flags_var}_INIT)

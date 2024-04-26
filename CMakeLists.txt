@@ -360,6 +360,9 @@ if(NOT cxx_flags_overridden)
 endif()
 unset(cxx_flags_overridden)
 
+
+return()
+
 set_default_config(RelWithDebInfo)
 
 # Redefine/adjust per-configuration flags.
