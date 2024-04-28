@@ -211,6 +211,11 @@ if(ENABLE_WALLET)
   )
 endif()
 
+if(WITH_DBUS)
+  target_compile_definitions(bitcoinqt PRIVATE USE_DBUS)
+  target_link_libraries(bitcoinqt PRIVATE Qt5::DBus)
+endif()
+
 if(qt_lib_type STREQUAL "STATIC_LIBRARY")
   # We want to define static plugins to link ourselves, thus preventing
   # automatic linking against a "sane" set of default static plugins.
