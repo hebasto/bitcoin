@@ -6,6 +6,9 @@ set(qt_components Core Gui Widgets LinguistTools)
 if(ENABLE_WALLET)
   list(APPEND qt_components Network)
 endif()
+if(WITH_DBUS)
+  list(APPEND qt_components DBus)
+endif()
 find_package(Qt5 5.11.3 MODULE REQUIRED
   COMPONENTS ${qt_components}
 )
@@ -231,6 +234,11 @@ if(ENABLE_WALLET)
       bitcoin_wallet
       Qt5::Network
   )
+endif()
+
+if(WITH_DBUS)
+  target_compile_definitions(bitcoinqt PRIVATE USE_DBUS)
+  target_link_libraries(bitcoinqt PRIVATE Qt5::DBus)
 endif()
 
 if(QT_IS_STATIC)
