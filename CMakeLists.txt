@@ -70,6 +70,11 @@ tristate_option(WITH_CCACHE "Use ccache for compiling." "if ccache is found." AU
 tristate_option(WITH_NATPMP "Enable NAT-PMP." "if libnatpmp is found." AUTO)
 tristate_option(WITH_MINIUPNPC "Enable UPnP." "if libminiupnpc is found." AUTO)
 tristate_option(WITH_ZMQ "Enable ZMQ notifications." "if libzmq is found." AUTO)
+tristate_option(WITH_USDT
+  "Enable tracepoints for Userspace, Statically Defined Tracing."
+  "if sys/sdt.h is found."
+  AUTO
+)
 
 set(configure_warnings)
 
@@ -211,6 +216,7 @@ message("  port mapping:")
 message("   - using NAT-PMP .................... ${WITH_NATPMP}")
 message("   - using UPnP ....................... ${WITH_MINIUPNPC}")
 message("  ZeroMQ .............................. ${WITH_ZMQ}")
+message("  USDT tracing ........................ ${WITH_USDT}")
 message("")
 if(CMAKE_CROSSCOMPILING)
   set(cross_status "TRUE, for ${CMAKE_SYSTEM_NAME}, ${CMAKE_SYSTEM_PROCESSOR}")
