@@ -165,6 +165,7 @@ target_link_libraries(bitcoinqt
     Boost::headers
     $<TARGET_NAME_IF_EXISTS:NATPMP::NATPMP>
     $<TARGET_NAME_IF_EXISTS:MiniUPnPc::MiniUPnPc>
+    $<TARGET_NAME_IF_EXISTS:PkgConfig::libqrencode>
     $<$<PLATFORM_ID:Darwin>:-framework\ AppKit>
     $<$<CXX_COMPILER_ID:MSVC>:shlwapi>
 )

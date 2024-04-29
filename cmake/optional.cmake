@@ -155,3 +155,24 @@ else()
   set(WITH_SQLITE OFF)
   set(WITH_BDB OFF)
 endif()
+
+if(WITH_GUI AND WITH_QRENCODE)
+  if(VCPKG_TARGET_TRIPLET)
+    # TODO: vcpkg fails to build libqrencode package due to
+    #       the build error in its libiconv dependency.
+    #       See: https://github.com/microsoft/vcpkg/issues/36924.
+  else()
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(libqrencode IMPORTED_TARGET libqrencode)
+  endif()
+  if(TARGET PkgConfig::libqrencode)
+    set_target_properties(PkgConfig::libqrencode PROPERTIES
+      INTERFACE_COMPILE_DEFINITIONS USE_QRCODE
+    )
+    set(WITH_QRENCODE ON)
+  elseif(WITH_QRENCODE STREQUAL "AUTO")
+    set(WITH_QRENCODE OFF)
+  else()
+    message(FATAL_ERROR "libqrencode requested, but not found.")
+  endif()
+endif()

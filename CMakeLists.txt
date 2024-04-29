@@ -91,6 +91,7 @@ tristate_option(WITH_USDT
   "if sys/sdt.h is found."
   AUTO
 )
+tristate_option(WITH_QRENCODE "Enable QR code support." "if libqrencode is found." AUTO)
 
 cmake_dependent_option(BUILD_GUI_TESTS "Build test_bitcoin-qt executable." ON "BUILD_TESTS" OFF)
 option(BUILD_BENCH "Build bench_bitcoin executable." OFF)
@@ -433,6 +434,7 @@ message("   - using NAT-PMP .................... ${WITH_NATPMP}")
 message("   - using UPnP ....................... ${WITH_MINIUPNPC}")
 message("  ZeroMQ .............................. ${WITH_ZMQ}")
 message("  USDT tracing ........................ ${WITH_USDT}")
+message("  QR code (GUI) ....................... ${WITH_QRENCODE}")
 message("Tests:")
 message("  test_bitcoin ........................ ${BUILD_TESTS}")
 message("  test_bitcoin-qt ..................... ${BUILD_GUI_TESTS}")
