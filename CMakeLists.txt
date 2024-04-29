@@ -97,7 +97,21 @@ if(WITH_MINIUPNPC)
   find_package(MiniUPnPc MODULE REQUIRED)
 endif()
 
-tristate_option(WITH_ZMQ "Enable ZMQ notifications." "if libzmq is found." AUTO)
+option(WITH_ZMQ "Enable ZMQ notifications." OFF)
+if(WITH_ZMQ)
+  if(VCPKG_TARGET_TRIPLET)
+    find_package(ZeroMQ CONFIG REQUIRED)
+  else()
+    # The ZeroMQ project has provided config files since v4.2.2.
+    # TODO: Switch to find_package(ZeroMQ) at some point in the future.
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(libzmq REQUIRED IMPORTED_TARGET libzmq>=4)
+    target_link_libraries(PkgConfig::libzmq INTERFACE
+      $<$<PLATFORM_ID:Windows>:iphlpapi;ws2_32>
+    )
+  endif()
+endif()
+
 tristate_option(WITH_USDT
   "Enable tracepoints for Userspace, Statically Defined Tracing."
   "if sys/sdt.h is found."

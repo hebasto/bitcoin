@@ -138,8 +138,10 @@ if(NOT WITH_QRENCODE AND "@no_qr@" STREQUAL "1")
   set(WITH_QRENCODE OFF CACHE STRING "Enable QR code support.")
 endif()
 
-if(NOT WITH_ZMQ AND "@no_zmq@" STREQUAL "1")
-  set(WITH_ZMQ OFF CACHE STRING "Enable ZMQ notifications.")
+if("@no_zmq@")
+  set(WITH_ZMQ OFF CACHE BOOL "")
+else()
+  set(WITH_ZMQ ON CACHE BOOL "")
 endif()
 
 if(NOT ENABLE_WALLET AND "@no_wallet@" STREQUAL "1")
