@@ -29,7 +29,7 @@ class bitdeque
 
     // Forward and friend declarations of iterator types.
     template<bool Const> class Iterator;
-    template<bool Const> friend class Iterator;
+    template<bool Const> friend class Iterator<>;
 
     /** Iterator to a bitdeque element, const or not. */
     template<bool Const>
