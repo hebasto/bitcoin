@@ -122,6 +122,7 @@ target_link_libraries(bitcoin_common
     univalue
     secp256k1
     Boost::headers
+    $<$<PLATFORM_ID:Windows>:ws2_32>
 )
 
 
