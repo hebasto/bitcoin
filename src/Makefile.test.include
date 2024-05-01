@@ -333,7 +333,7 @@ test_fuzz_fuzz_SOURCES = \
  test/fuzz/locale.cpp \
  test/fuzz/merkleblock.cpp \
  test/fuzz/message.cpp \
- test/fuzz/miniscript.cpp \
+ test/fuzz/miniscript_renamed.cpp \
  test/fuzz/minisketch.cpp \
  test/fuzz/mini_miner.cpp \
  test/fuzz/muhash.cpp \
