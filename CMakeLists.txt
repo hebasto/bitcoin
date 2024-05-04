@@ -218,7 +218,7 @@ add_threads_if_needed()
 include(AddBoostIfNeeded)
 add_boost_if_needed()
 
-if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TESTS OR BUILD_BENCH)
+if(BUILD_DAEMON OR WITH_GUI OR BUILD_CLI OR BUILD_TESTS OR BUILD_BENCH)
   find_package(Libevent 2.1.8 MODULE REQUIRED)
 endif()
 
@@ -295,6 +295,8 @@ else()
   unset(compiler_supports_g3)
   unset(c_flags_debug_overridden)
 endif()
+
+include(cmake/optional_qt.cmake)
 
 include(cmake/optional.cmake)
 
@@ -414,6 +416,7 @@ message("Configure summary")
 message("=================")
 message("Executables:")
 message("  bitcoind ............................ ${BUILD_DAEMON}")
+message("  bitcoin-qt (GUI) .................... ${WITH_GUI}")
 message("  bitcoin-cli ......................... ${BUILD_CLI}")
 message("  bitcoin-tx .......................... ${BUILD_TX}")
 message("  bitcoin-util ........................ ${BUILD_UTIL}")
