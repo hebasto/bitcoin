@@ -484,6 +484,22 @@ else()
   unset(cxx_flags_debug_overridden)
 endif()
 
+set(CMAKE_CXX_FLAGS_COVERAGE "-Og --coverage")
+set(CMAKE_OBJCXX_FLAGS_COVERAGE "-Og --coverage")
+set(CMAKE_EXE_LINKER_FLAGS_COVERAGE "--coverage")
+set(CMAKE_SHARED_LINKER_FLAGS_COVERAGE "--coverage")
+get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(is_multi_config)
+  if(NOT "Coverage" IN_LIST CMAKE_CONFIGURATION_TYPES)
+    list(APPEND CMAKE_CONFIGURATION_TYPES Coverage)
+  endif()
+endif()
+
+configure_file(cmake/script/Coverage.cmake Coverage.cmake COPYONLY)
+configure_file(cmake/script/CoverageFuzz.cmake CoverageFuzz.cmake COPYONLY)
+configure_file(cmake/script/CoverageInclude.cmake.in CoverageInclude.cmake @ONLY)
+configure_file(contrib/filter-lcov.py filter-lcov.py COPYONLY)
+
 # Don't allow extended (non-ASCII) symbols in identifiers. This is easier for code review.
 try_append_cxx_flags("-fno-extended-identifiers" TARGET core_interface SKIP_LINK)
 
