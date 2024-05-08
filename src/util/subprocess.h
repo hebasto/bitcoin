@@ -55,16 +55,12 @@ Documentation for C++ subprocessing library.
 #include <string>
 #include <vector>
 
-#if (defined _MSC_VER) || (defined __MINGW32__)
-  #define __USING_WINDOWS__
-#endif
-
-#ifdef __USING_WINDOWS__
+#ifdef WIN32
   #include <codecvt>
 #endif
 
 extern "C" {
-#ifdef __USING_WINDOWS__
+#ifdef WIN32
   #include <windows.h>
   #include <io.h>
   #include <cwchar>
@@ -225,7 +221,7 @@ namespace util
     }
   }
 
-#ifdef __USING_WINDOWS__
+#ifdef WIN32
   inline std::string get_last_error(DWORD errorMessageID)
   {
     if (errorMessageID == 0)
@@ -326,7 +322,7 @@ namespace util
   }
 
 
-#ifndef __USING_WINDOWS__
+#ifndef WIN32
   /*!
    * Function: set_clo_on_exec
    * Sets/Resets the FD_CLOEXEC flag on the provided file descriptor
@@ -414,7 +410,7 @@ namespace util
   static inline
   int read_atmost_n(FILE* fp, char* buf, size_t read_upto)
   {
-#ifdef __USING_WINDOWS__
+#ifdef WIN32
     return (int)fread(buf, 1, read_upto, fp);
 #else
     int fd = subprocess_fileno(fp);
@@ -487,7 +483,7 @@ namespace util
     return total_bytes_read;
   }
 
-#ifndef __USING_WINDOWS__
+#ifndef WIN32
   /*!
    * Function: wait_for_child_exit
    * Waits for the process with pid `pid` to exit
@@ -588,7 +584,7 @@ struct input
   }
   explicit input(IOTYPE typ) {
     assert (typ == PIPE && "STDOUT/STDERR not allowed");
-#ifndef __USING_WINDOWS__
+#ifndef WIN32
     std::tie(rd_ch_, wr_ch_) = util::pipe_cloexec();
 #endif
   }
@@ -621,7 +617,7 @@ struct output
   }
   explicit output(IOTYPE typ) {
     assert (typ == PIPE && "STDOUT/STDERR not allowed");
-#ifndef __USING_WINDOWS__
+#ifndef WIN32
     std::tie(rd_ch_, wr_ch_) = util::pipe_cloexec();
 #endif
   }
@@ -653,7 +649,7 @@ struct error
   explicit error(IOTYPE typ) {
     assert ((typ == PIPE || typ == STDOUT) && "STDERR not allowed");
     if (typ == PIPE) {
-#ifndef __USING_WINDOWS__
+#ifndef WIN32
       std::tie(rd_ch_, wr_ch_) = util::pipe_cloexec();
 #endif
     } else {
@@ -864,7 +860,7 @@ public:// Yes they are public
   std::shared_ptr<FILE> output_ = nullptr;
   std::shared_ptr<FILE> error_  = nullptr;
 
-#ifdef __USING_WINDOWS__
+#ifdef WIN32
   HANDLE g_hChildStd_IN_Rd = nullptr;
   HANDLE g_hChildStd_IN_Wr = nullptr;
   HANDLE g_hChildStd_OUT_Rd = nullptr;
@@ -1005,7 +1001,7 @@ private:
 private:
   detail::Streams stream_;
 
-#ifdef __USING_WINDOWS__
+#ifdef WIN32
   HANDLE process_handle_;
   std::future<void> cleanup_future_;
 #endif
@@ -1046,7 +1042,7 @@ inline void Popen::populate_c_argv()
 
 inline int Popen::wait() noexcept(false)
 {
-#ifdef __USING_WINDOWS__
+#ifdef WIN32
   int ret = WaitForSingleObject(process_handle_, INFINITE);
   if (ret != WAIT_OBJECT_0) return -1;
 
@@ -1074,7 +1070,7 @@ inline int Popen::wait() noexcept(false)
 
 inline void Popen::execute_process() noexcept(false)
 {
-#ifdef __USING_WINDOWS__
+#ifdef WIN32
   if (exe_name_.length()) {
     this->vargs_.insert(this->vargs_.begin(), this->exe_name_);
     this->populate_c_argv();
@@ -1248,7 +1244,7 @@ namespace detail {
 
 
   inline void Child::execute_child() {
-#ifndef __USING_WINDOWS__
+#ifndef WIN32
     int sys_ret = -1;
     auto& stream = parent_->stream_;
 
@@ -1314,7 +1310,7 @@ namespace detail {
 
   inline void Streams::setup_comm_channels()
   {
-#ifdef __USING_WINDOWS__
+#ifdef WIN32
     util::configure_pipe(&this->g_hChildStd_IN_Rd, &this->g_hChildStd_IN_Wr, &this->g_hChildStd_IN_Wr);
     this->input(util::file_from_handle(this->g_hChildStd_IN_Wr, "w"));
     this->write_to_child_ = subprocess_fileno(this->input());
