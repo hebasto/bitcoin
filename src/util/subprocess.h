@@ -75,6 +75,10 @@ extern "C" {
 #else
   #include <sys/wait.h>
   #include <unistd.h>
+#ifdef CODE_COVERAGE
+void __gcov_dump(void);
+void __gcov_reset(void);
+#endif
 #endif
   #include <csignal>
   #include <fcntl.h>
@@ -1353,8 +1357,16 @@ namespace detail {
       if (stream.err_write_ != -1 && stream.err_write_ > 2)
         close(stream.err_write_);
 
+#ifdef CODE_COVERAGE
+      // Dump counters only, they will be lost after exec.
+      __gcov_dump();
+#endif
       // Replace the current image with the executable
       sys_ret = execvp(parent_->exe_name_.c_str(), parent_->cargv_.data());
+#ifdef CODE_COVERAGE
+      // We reach this code only when execv fails, reset counter then here.
+      __gcov_reset();
+#endif
 
       if (sys_ret == -1) throw OSError("execve failed", errno);
 
