@@ -249,6 +249,6 @@ jobs:
       - name: Run fuzz binaries
         working-directory: build
         env:
-          BITCOINFUZZ: "${{ github.workspace}}\\src\\fuzz.exe"
+          BITCOINFUZZ: '${{ github.workspace }}\build\src\test\fuzz\Release\fuzz.exe'
         shell: cmd
         run: py -3 test\fuzz\test_runner.py --par %NUMBER_OF_PROCESSORS% --loglevel DEBUG %RUNNER_TEMP%\qa-assets\fuzz_seed_corpus
