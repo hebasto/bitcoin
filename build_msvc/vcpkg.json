@@ -15,7 +15,7 @@
   "overrides": [
     {
       "name": "libevent",
-      "version": "2.1.12#7"
+      "version": "2.1.12+20230128"
     }
   ]
 }
