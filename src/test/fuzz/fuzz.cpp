@@ -219,6 +219,9 @@ int main(int argc, char** argv)
             for (fs::directory_iterator it(input_path); it != fs::directory_iterator(); ++it) {
                 if (!fs::is_regular_file(it->path())) continue;
                 g_input_path = it->path();
+
+                std::cerr << "g_input_path is " << g_input_path << '\n';
+
                 Assert(read_file(it->path(), buffer));
                 test_one_input(buffer);
                 ++tested;

@@ -41,8 +41,26 @@ FUZZ_TARGET(http_request)
     // this fuzzing harness. The workaround is not aesthetically pleasing, but it successfully avoids the troublesome
     // code path. " http:// HTTP/1.1\n" was a crashing input prior to this workaround.
     const std::string http_buffer_str = ToLower(std::string{http_buffer.begin(), http_buffer.end()});
-    if (http_buffer_str.find(" http://") != std::string::npos || http_buffer_str.find(" https://") != std::string::npos ||
-        evhttp_parse_firstline_(evreq, evbuf) != 1 || evhttp_parse_headers_(evreq, evbuf) != 1) {
+
+    std::cerr << __func__ << ":" << __LINE__ << " http_buffer_str is " << http_buffer_str << "\n";
+
+    if (http_buffer_str.find(" http://") != std::string::npos) {
+        std::cerr << __func__ << ":" << __LINE__ << " http_buffer_str is " << http_buffer_str << "\n";
+        evbuffer_free(evbuf);
+        evhttp_request_free(evreq);
+        return;
+    } else if (http_buffer_str.find(" https://") != std::string::npos) {
+        std::cerr << __func__ << ":" << __LINE__ << " http_buffer_str is " << http_buffer_str << "\n";
+        evbuffer_free(evbuf);
+        evhttp_request_free(evreq);
+        return;
+    } else if (evhttp_parse_firstline_(evreq, evbuf) != 1) {
+        std::cerr << __func__ << ":" << __LINE__ << " http_buffer_str is " << http_buffer_str << "\n";
+        evbuffer_free(evbuf);
+        evhttp_request_free(evreq);
+        return;
+    } else if (evhttp_parse_headers_(evreq, evbuf) != 1) {
+        std::cerr << __func__ << ":" << __LINE__ << " http_buffer_str is " << http_buffer_str << "\n";
         evbuffer_free(evbuf);
         evhttp_request_free(evreq);
         return;
