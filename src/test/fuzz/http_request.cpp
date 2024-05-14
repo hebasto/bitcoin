@@ -49,21 +49,30 @@ FUZZ_TARGET(http_request)
         evbuffer_free(evbuf);
         evhttp_request_free(evreq);
         return;
-    } else if (http_buffer_str.find(" https://") != std::string::npos) {
+    } else {
         std::cerr << __func__ << ":" << __LINE__ << "\n";
-        evbuffer_free(evbuf);
-        evhttp_request_free(evreq);
-        return;
-    } else if (evhttp_parse_firstline_(evreq, evbuf) != 1) {
-        std::cerr << __func__ << ":" << __LINE__ << "\n";
-        evbuffer_free(evbuf);
-        evhttp_request_free(evreq);
-        return;
-    } else if (evhttp_parse_headers_(evreq, evbuf) != 1) {
-        std::cerr << __func__ << ":" << __LINE__ << "\n";
-        evbuffer_free(evbuf);
-        evhttp_request_free(evreq);
-        return;
+        if (http_buffer_str.find(" https://") != std::string::npos) {
+            std::cerr << __func__ << ":" << __LINE__ << "\n";
+            evbuffer_free(evbuf);
+            evhttp_request_free(evreq);
+            return;
+        } else {
+            std::cerr << __func__ << ":" << __LINE__ << "\n";
+            if (evhttp_parse_firstline_(evreq, evbuf) != 1) {
+                std::cerr << __func__ << ":" << __LINE__ << "\n";
+                evbuffer_free(evbuf);
+                evhttp_request_free(evreq);
+                return;
+            } else {
+                std::cerr << __func__ << ":" << __LINE__ << "\n";
+                if (evhttp_parse_headers_(evreq, evbuf) != 1) {
+                    std::cerr << __func__ << ":" << __LINE__ << "\n";
+                    evbuffer_free(evbuf);
+                    evhttp_request_free(evreq);
+                    return;
+                }
+            }
+        }
     }
 
     util::SignalInterrupt interrupt;
