@@ -10,7 +10,7 @@
 # it is best not to touch CMAKE_SYSTEM_NAME unless cross-compiling is
 # intended.
 if(@depends_crosscompiling@)
-  set(CMAKE_SYSTEM_NAME @host_system@)
+  set(CMAKE_SYSTEM_NAME @host_system_name@)
   set(CMAKE_SYSTEM_PROCESSOR @host_arch@)
 endif()
 

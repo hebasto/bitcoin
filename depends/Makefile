@@ -259,7 +259,7 @@ endif
 $(host_prefix)/toolchain.cmake : toolchain.cmake.in $(host_prefix)/.stamp_$(final_build_id)
 	@mkdir -p $(@D)
 	sed -e 's|@depends_crosscompiling@|$(crosscompiling)|' \
-            -e 's|@host_system@|$($(host_os)_cmake_system)|' \
+            -e 's|@host_system_name@|$($(host_os)_cmake_system_name)|' \
             -e 's|@host_arch@|$(host_arch)|' \
             -e 's|@CC@|$(host_CC)|' \
             -e 's|@CXX@|$(host_CXX)|' \
