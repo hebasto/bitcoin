@@ -359,7 +359,9 @@ target_link_options(sanitizing_interface INTERFACE ${SANITIZER_LDFLAGS})
 include(AddBoostIfNeeded)
 add_boost_if_needed()
 
-find_package(Libevent 2.1.8 MODULE REQUIRED)
+if(BUILD_DAEMON OR BUILD_GUI OR BUILD_CLI OR BUILD_TESTS OR BUILD_BENCH OR BUILD_FUZZ_BINARY)
+  find_package(Libevent 2.1.8 MODULE REQUIRED)
+endif()
 
 include(cmake/introspection.cmake)
 

@@ -254,7 +254,7 @@ target_link_libraries(bitcoin_node
     minisketch
     univalue
     Boost::headers
-    libevent::libevent
+    $<TARGET_NAME_IF_EXISTS:libevent::libevent>
     $<TARGET_NAME_IF_EXISTS:libevent::pthreads>
     $<TARGET_NAME_IF_EXISTS:NATPMP::NATPMP>
     $<TARGET_NAME_IF_EXISTS:MiniUPnPc::MiniUPnPc>
@@ -312,7 +312,7 @@ if(BUILD_CLI)
     bitcoin_cli
     bitcoin_common
     bitcoin_util
-    libevent::libevent
+    $<TARGET_NAME_IF_EXISTS:libevent::libevent>
   )
   list(APPEND installable_targets bitcoin-cli)
 endif()
