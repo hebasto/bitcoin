@@ -255,7 +255,7 @@ target_link_libraries(bitcoin_node
     univalue
     Boost::headers
     libevent::libevent
-    $<TARGET_NAME_IF_EXISTS:PkgConfig::libevent_pthreads>
+    $<TARGET_NAME_IF_EXISTS:libevent::pthreads>
     $<TARGET_NAME_IF_EXISTS:NATPMP::NATPMP>
     $<TARGET_NAME_IF_EXISTS:MiniUPnPc::MiniUPnPc>
     $<TARGET_NAME_IF_EXISTS:bitcoin_zmq>

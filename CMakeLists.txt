@@ -359,8 +359,7 @@ target_link_options(sanitizing_interface INTERFACE ${SANITIZER_LDFLAGS})
 include(AddBoostIfNeeded)
 add_boost_if_needed()
 
-include(AddLibeventIfNeeded)
-add_libevent_if_needed()
+find_package(Libevent 2.1.8 MODULE REQUIRED)
 
 include(cmake/introspection.cmake)
 
