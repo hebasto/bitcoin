@@ -197,11 +197,11 @@ add_library(core_interface INTERFACE)
 # include the warn_interface as subtree's warnings are not fixable
 # in our tree.
 add_library(core_base_interface INTERFACE)
-add_library(core_depends_release_interface INTERFACE)
-add_library(core_depends_debug_interface INTERFACE)
+add_library(core_interface_relwithdebinfo INTERFACE)
+add_library(core_interface_debug INTERFACE)
 target_link_libraries(core_base_interface INTERFACE
-  $<$<CONFIG:RelWithDebInfo>:core_depends_release_interface>
-  $<$<CONFIG:Debug>:core_depends_debug_interface>
+  $<$<CONFIG:RelWithDebInfo>:core_interface_relwithdebinfo>
+  $<$<CONFIG:Debug>:core_interface_debug>
 )
 target_link_libraries(core_interface INTERFACE core_base_interface)
 
@@ -420,7 +420,7 @@ include(ProcessConfigurations)
 set_default_config(RelWithDebInfo)
 
 # Redefine/adjust per-configuration flags.
-target_compile_definitions(core_depends_debug_interface INTERFACE
+target_compile_definitions(core_interface_debug INTERFACE
   DEBUG
   DEBUG_LOCKORDER
   DEBUG_LOCKCONTENTION
@@ -565,8 +565,8 @@ else()
 endif()
 
 target_compile_definitions(core_base_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS})
-target_compile_definitions(core_depends_release_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_RELWITHDEBINFO})
-target_compile_definitions(core_depends_debug_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_DEBUG})
+target_compile_definitions(core_interface_relwithdebinfo INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_RELWITHDEBINFO})
+target_compile_definitions(core_interface_debug INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_DEBUG})
 
 # If {C,CXX,LD}FLAGS variables are defined during building depends and
 # configuring this build system, their content might be duplicated.
@@ -591,12 +591,6 @@ setup_split_debug_script()
 add_maintenance_targets()
 add_windows_deploy_target()
 add_macos_deploy_target()
-
-
-include(GetTargetInterface)
-get_target_interface(definitions core_interface COMPILE_DEFINITIONS)
-get_target_interface(definitions_RELWITHDEBINFO core_depends_release_interface COMPILE_DEFINITIONS)
-get_target_interface(definitions_DEBUG core_depends_debug_interface COMPILE_DEFINITIONS)
 
 message("\n")
 message("Configure summary")
@@ -643,18 +637,10 @@ if(CMAKE_CROSSCOMPILING)
   string(APPEND cross_status ", for ${CMAKE_SYSTEM_NAME} ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 message("Cross compiling ....................... ${cross_status}")
-message("Preprocessor defined macros ........... ${definitions}")
 message("C compiler ............................ ${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}, ${CMAKE_C_COMPILER}")
-message("CFLAGS ................................ ${CMAKE_C_FLAGS} ${APPEND_CPPFLAGS} ${APPEND_CFLAGS}")
 message("C++ compiler .......................... ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}, ${CMAKE_CXX_COMPILER}")
-message("CXXFLAGS .............................. ${CMAKE_CXX_FLAGS} ${APPEND_CPPFLAGS} ${APPEND_CXXFLAGS}")
-get_target_interface(common_compile_options core_interface COMPILE_OPTIONS)
-message("Common compile options ................ ${common_compile_options}")
-get_target_interface(common_link_options core_interface LINK_OPTIONS)
-message("Common link options ................... ${common_link_options}")
-message("Linker flags for executables .......... ${CMAKE_EXE_LINKER_FLAGS} ${APPEND_LDFLAGS}")
-message("Linker flags for shared libraries ..... ${CMAKE_SHARED_LINKER_FLAGS} ${APPEND_LDFLAGS}")
-print_config_flags()
+include(FlagsSummary)
+flags_summary()
 message("Attempt to harden executables ......... ${ENABLE_HARDENING}")
 message("Treat compiler warnings as errors ..... ${WERROR}")
 message("Use ccache for compiling .............. ${WITH_CCACHE}")
