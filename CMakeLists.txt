@@ -485,6 +485,11 @@ else()
   endif()
   unset(compiler_supports_g3)
   unset(c_flags_debug_overridden)
+
+  deduplicate_flags(CMAKE_C_FLAGS_RELWITHDEBINFO)
+  deduplicate_flags(CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+  deduplicate_flags(CMAKE_C_FLAGS_DEBUG)
+  deduplicate_flags(CMAKE_CXX_FLAGS_DEBUG)
 endif()
 
 include(cmake/optional.cmake)
