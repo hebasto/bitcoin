@@ -454,7 +454,9 @@ else()
     endif()
     unset(compiler_supports_ftrapv)
 
-    string(PREPEND CMAKE_CXX_FLAGS_DEBUG "-O0 ")
+    if(NOT CMAKE_CXX_FLAGS_DEBUG MATCHES "(^| )-O[^ ]*")
+      string(PREPEND CMAKE_CXX_FLAGS_DEBUG "-O0 ")
+    endif()
 
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}"
       CACHE STRING
@@ -471,7 +473,9 @@ else()
       replace_c_flag_in_config(Debug -g -g3)
     endif()
 
-    string(PREPEND CMAKE_C_FLAGS_DEBUG "-O0 ")
+    if(NOT CMAKE_C_FLAGS_DEBUG MATCHES "(^| )-O[^ ]*")
+      string(PREPEND CMAKE_C_FLAGS_DEBUG "-O0 ")
+    endif()
 
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}"
       CACHE STRING
