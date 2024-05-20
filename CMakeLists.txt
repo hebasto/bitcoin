@@ -209,6 +209,7 @@ target_compile_definitions(core_depends_release_interface INTERFACE ${DEPENDS_CO
 target_compile_definitions(core_depends_debug_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_DEBUG})
 
 add_subdirectory(src)
+add_subdirectory(test)
 
 
 include(GetTargetInterface)
