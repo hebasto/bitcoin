@@ -92,7 +92,7 @@ For linux S390X cross compilation:
 
 ### Install the required dependencies: OpenBSD
 
-    pkg_add bash gtar
+    pkg_add bash gmake gtar
 
 ### Dependency Options
 
