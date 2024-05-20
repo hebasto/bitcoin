@@ -62,6 +62,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
 #=============================
 # When adding a new option, end the <help_text> with a full stop for consistency.
 option(BUILD_DAEMON "Build bitcoind executable." ON)
+option(BUILD_CLI "Build bitcoin-cli executable." ON)
 
 # TODO: These tri-state options will be removed and most features
 #       will become opt-in by default before merging into master.
@@ -181,7 +182,7 @@ add_threads_if_needed()
 include(AddBoostIfNeeded)
 add_boost_if_needed()
 
-if(BUILD_DAEMON)
+if(BUILD_DAEMON OR BUILD_CLI)
   find_package(Libevent 2.1.8 MODULE REQUIRED)
 endif()
 
@@ -211,6 +212,7 @@ message("Configure summary")
 message("=================")
 message("Executables:")
 message("  bitcoind ............................ ${BUILD_DAEMON}")
+message("  bitcoin-cli ......................... ${BUILD_CLI}")
 message("Optional features:")
 message("  port mapping:")
 message("   - using NAT-PMP .................... ${WITH_NATPMP}")
