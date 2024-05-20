@@ -84,6 +84,12 @@ add_library(core_interface INTERFACE)
 # include the warn_interface as subtree's warnings are not fixable
 # in our tree.
 add_library(core_base_interface INTERFACE)
+add_library(core_depends_release_interface INTERFACE)
+add_library(core_depends_debug_interface INTERFACE)
+target_link_libraries(core_base_interface INTERFACE
+  $<$<CONFIG:RelWithDebInfo>:core_depends_release_interface>
+  $<$<CONFIG:Debug>:core_depends_debug_interface>
+)
 target_link_libraries(core_interface INTERFACE core_base_interface)
 
 if(WIN32)
@@ -173,10 +179,17 @@ include(cmake/leveldb.cmake)
 include(cmake/minisketch.cmake)
 include(cmake/secp256k1.cmake)
 
+target_compile_definitions(core_base_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS})
+target_compile_definitions(core_depends_release_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_RELWITHDEBINFO})
+target_compile_definitions(core_depends_debug_interface INTERFACE ${DEPENDS_COMPILE_DEFINITIONS_DEBUG})
+
 add_subdirectory(src)
+
 
 include(GetTargetInterface)
 get_target_interface(definitions core_interface COMPILE_DEFINITIONS)
+get_target_interface(definitions_RELWITHDEBINFO core_depends_release_interface COMPILE_DEFINITIONS)
+get_target_interface(definitions_DEBUG core_depends_debug_interface COMPILE_DEFINITIONS)
 
 message("\n")
 message("Configure summary")
@@ -184,6 +197,12 @@ message("=================")
 message("Executables:")
 message("  bitcoind ............................ ${BUILD_DAEMON}")
 message("")
+if(CMAKE_CROSSCOMPILING)
+  set(cross_status "TRUE, for ${CMAKE_SYSTEM_NAME}, ${CMAKE_SYSTEM_PROCESSOR}")
+else()
+  set(cross_status "FALSE")
+endif()
+message("Cross compiling ....................... ${cross_status}")
 message("Preprocessor defined macros ........... ${definitions}")
 message("C compiler ............................ ${CMAKE_C_COMPILER_ID} ${CMAKE_C_COMPILER_VERSION}, ${CMAKE_C_COMPILER}")
 message("CFLAGS ................................ ${CMAKE_C_FLAGS}")
