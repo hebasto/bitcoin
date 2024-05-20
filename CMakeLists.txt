@@ -68,6 +68,8 @@ option(BUILD_TESTS "Build test_bitcoin executable." ON)
 option(BUILD_TX "Build bitcoin-tx executable." ${BUILD_TESTS})
 option(BUILD_UTIL "Build bitcoin-util executable." ${BUILD_TESTS})
 
+option(BUILD_KERNEL_LIB "Build experimental bitcoinkernel library." OFF)
+
 option(ENABLE_WALLET "Enable wallet." ON)
 # TODO: These tri-state options will be removed and most features
 #       will become opt-in by default before merging into master.
@@ -537,6 +539,7 @@ message("  bitcoin-cli ......................... ${BUILD_CLI}")
 message("  bitcoin-tx .......................... ${BUILD_TX}")
 message("  bitcoin-util ........................ ${BUILD_UTIL}")
 message("  bitcoin-wallet ...................... ${BUILD_WALLET_TOOL}")
+message("  libbitcoinkernel (experimental) ..... ${BUILD_KERNEL_LIB}")
 message("Optional features:")
 message("  wallet support ...................... ${ENABLE_WALLET}")
 if(ENABLE_WALLET)

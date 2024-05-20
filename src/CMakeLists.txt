@@ -331,6 +331,11 @@ if(WITH_GUI)
 endif()
 
 
+if(BUILD_KERNEL_LIB)
+  add_subdirectory(kernel)
+endif()
+
+
 add_subdirectory(test/util)
 if(BUILD_BENCH)
   add_subdirectory(bench)
