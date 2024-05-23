@@ -502,8 +502,12 @@ if(ENABLE_HARDENING)
     try_append_linker_flag("/HIGHENTROPYVA" TARGET hardening_interface)
     try_append_linker_flag("/NXCOMPAT" TARGET hardening_interface)
   else()
-    target_compile_options(hardening_interface INTERFACE
-      $<$<NOT:$<CONFIG:Debug>>:-U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3>
+    add_library(hardening_interface_nondebug INTERFACE)
+    target_link_libraries(hardening_interface INTERFACE
+      $<$<NOT:$<CONFIG:Debug>>:hardening_interface_nondebug>
+    )
+    target_compile_options(hardening_interface_nondebug INTERFACE
+      -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=3
     )
 
     try_append_cxx_flags("-Wstack-protector" TARGET hardening_interface SKIP_LINK)
