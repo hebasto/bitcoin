@@ -519,7 +519,7 @@ jobs:
           .\install\bin\bitcoind.exe -version
 
 
-  macos-native-x86_64:
+  macos-native:
     name: '${{ matrix.os.name }}, ${{ matrix.xcode.name }}'
     runs-on: ${{ matrix.os.os }}
 
@@ -604,6 +604,47 @@ jobs:
           cmake --install build --prefix install
           tree install
           ./install/bin/bitcoind -version
+
+      - name: Deploy
+        run: |
+          cmake --build build --target deploy
+          ls -l build/*.zip
+
+
+  macos-cross:
+    name: 'macOS 14 arm64, cross-compiling to x86_64'
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Clang version, ${{ runner.arch }}
+        run: |
+          clang --version
+
+      - name: Install Homebrew packages
+        env:
+          HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
+        run: |
+          brew install autoconf automake libtool make pkg-config
+
+      - name: Build depends
+        working-directory: depends
+        run: |
+          make -j $(sysctl -n hw.logicalcpu) HOST=x86_64-apple-darwin LOG=1
+
+      - name: Generate build system
+        run: |
+          cmake -B build --preset ci-darwin --toolchain depends/x86_64-apple-darwin/toolchain.cmake
+
+      - name: Build
+        env:
+          CCACHE_COMPILERCHECK: '%compiler% -v'
+        run: |
+          cmake --build build -j $(sysctl -n hw.logicalcpu)
+          lipo -archs build/src/bitcoind
+          lipo -archs build/src/qt/bitcoin-qt
 
       - name: Deploy
         run: |
