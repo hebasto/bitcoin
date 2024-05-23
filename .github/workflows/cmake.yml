@@ -632,8 +632,7 @@ jobs:
       - name: Build depends
         working-directory: depends
         run: |
-          echo $(sysctl -n hw.logicalcpu)
-          make -j2 HOST=x86_64-apple-darwin LOG=1
+          make HOST=x86_64-apple-darwin LOG=1
 
       - name: Generate build system
         run: |
