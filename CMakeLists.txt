@@ -428,15 +428,12 @@ target_compile_definitions(core_interface_debug INTERFACE
 )
 # We leave assertions on.
 if(MSVC)
-  remove_c_flag_from_all_configs(/DNDEBUG)
   remove_cxx_flag_from_all_configs(/DNDEBUG)
 else()
-  remove_c_flag_from_all_configs(-DNDEBUG)
   remove_cxx_flag_from_all_configs(-DNDEBUG)
 
-  # Adjust flags used by the C/CXX compiler during RELEASE builds.
+  # Adjust flags used by the CXX compiler during RELEASE builds.
   # Prefer -O2 optimization level. (-O3 is CMake's default for Release for many compilers.)
-  replace_c_flag_in_config(Release -O3 -O2)
   replace_cxx_flag_in_config(Release -O3 -O2)
 
   are_flags_overridden(CMAKE_CXX_FLAGS_DEBUG cxx_flags_debug_overridden)
@@ -446,6 +443,7 @@ else()
     if(compiler_supports_g3)
       replace_cxx_flag_in_config(Debug -g -g3)
     endif()
+    unset(compiler_supports_g3)
 
     try_append_cxx_flags("-ftrapv" RESULT_VAR compiler_supports_ftrapv)
     if(compiler_supports_ftrapv)
@@ -462,24 +460,6 @@ else()
     )
   endif()
   unset(cxx_flags_debug_overridden)
-
-  are_flags_overridden(CMAKE_C_FLAGS_DEBUG c_flags_debug_overridden)
-  if(NOT c_flags_debug_overridden)
-    # Redefine flags used by the C compiler during DEBUG builds.
-    if(compiler_supports_g3)
-      replace_c_flag_in_config(Debug -g -g3)
-    endif()
-
-    string(PREPEND CMAKE_C_FLAGS_DEBUG "-O0 ")
-
-    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}"
-      CACHE STRING
-      "Flags used by the C compiler during DEBUG builds."
-      FORCE
-    )
-  endif()
-  unset(compiler_supports_g3)
-  unset(c_flags_debug_overridden)
 endif()
 
 set(CMAKE_CXX_FLAGS_COVERAGE "-Og --coverage")

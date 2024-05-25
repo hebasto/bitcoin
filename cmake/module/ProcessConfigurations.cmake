@@ -84,23 +84,6 @@ function(set_default_config config)
   endif()
 endfunction()
 
-function(remove_c_flag_from_all_configs flag)
-  get_all_configs(all_configs)
-  foreach(config IN LISTS all_configs)
-    string(TOUPPER "${config}" config_uppercase)
-    set(flags "${CMAKE_C_FLAGS_${config_uppercase}}")
-    separate_arguments(flags)
-    list(FILTER flags EXCLUDE REGEX "${flag}")
-    list(JOIN flags " " new_flags)
-    set(CMAKE_C_FLAGS_${config_uppercase} "${new_flags}" PARENT_SCOPE)
-    set(CMAKE_C_FLAGS_${config_uppercase} "${new_flags}"
-      CACHE STRING
-      "Flags used by the C compiler during ${config_uppercase} builds."
-      FORCE
-    )
-  endforeach()
-endfunction()
-
 function(remove_cxx_flag_from_all_configs flag)
   get_all_configs(all_configs)
   foreach(config IN LISTS all_configs)
@@ -116,17 +99,6 @@ function(remove_cxx_flag_from_all_configs flag)
       FORCE
     )
   endforeach()
-endfunction()
-
-function(replace_c_flag_in_config config old_flag new_flag)
-  string(TOUPPER "${config}" config_uppercase)
-  string(REGEX REPLACE "(^| )${old_flag}( |$)" "\\1${new_flag}\\2" new_flags "${CMAKE_C_FLAGS_${config_uppercase}}")
-  set(CMAKE_C_FLAGS_${config_uppercase} "${new_flags}" PARENT_SCOPE)
-  set(CMAKE_C_FLAGS_${config_uppercase} "${new_flags}"
-    CACHE STRING
-    "Flags used by the C compiler during ${config_uppercase} builds."
-    FORCE
-  )
 endfunction()
 
 function(replace_cxx_flag_in_config config old_flag new_flag)
