@@ -317,13 +317,11 @@ endif()
 include(AddThreadsIfNeeded)
 add_threads_if_needed()
 
-add_library(sanitizing_interface INTERFACE)
-target_link_libraries(core_base_interface INTERFACE sanitizing_interface)
 if(SANITIZERS)
   # First check if the compiler accepts flags. If an incompatible pair like
   # -fsanitize=address,thread is used here, this check will fail. This will also
   # fail if a bad argument is passed, e.g. -fsanitize=undfeined
-  try_append_cxx_flags("-fsanitize=${SANITIZERS}" TARGET sanitizing_interface
+  try_append_cxx_flags("-fsanitize=${SANITIZERS}" TARGET core_base_interface
     RESULT_VAR cxx_supports_sanitizers
     SKIP_LINK
   )
@@ -350,7 +348,7 @@ if(SANITIZERS)
     message(FATAL_ERROR "Linker did not accept requested flags, you are missing required libraries.")
   endif()
 endif()
-target_link_options(sanitizing_interface INTERFACE ${SANITIZER_LDFLAGS})
+target_link_options(core_base_interface INTERFACE ${SANITIZER_LDFLAGS})
 
 include(AddBoostIfNeeded)
 add_boost_if_needed()
@@ -507,7 +505,7 @@ try_append_cxx_flags("-fstack-reuse=none" TARGET core_base_interface)
 
 if(ENABLE_HARDENING)
   add_library(hardening_interface INTERFACE)
-  target_link_libraries(core_base_interface INTERFACE hardening_interface)
+  target_link_libraries(core_interface INTERFACE hardening_interface)
   if(MSVC)
     try_append_linker_flag("/DYNAMICBASE" TARGET hardening_interface)
     try_append_linker_flag("/HIGHENTROPYVA" TARGET hardening_interface)

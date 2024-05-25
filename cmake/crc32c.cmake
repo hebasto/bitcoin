@@ -85,7 +85,10 @@ target_compile_definitions(crc32c_common INTERFACE
   HAVE_STRONG_GETAUXVAL=$<BOOL:${HAVE_STRONG_GETAUXVAL}>
   BYTE_ORDER_BIG_ENDIAN=$<STREQUAL:${CMAKE_CXX_BYTE_ORDER},BIG_ENDIAN>
 )
-target_link_libraries(crc32c_common INTERFACE core_base_interface)
+target_link_libraries(crc32c_common INTERFACE
+  core_base_interface
+  hardening_interface
+)
 
 add_library(crc32c STATIC EXCLUDE_FROM_ALL
   ${PROJECT_SOURCE_DIR}/src/crc32c/src/crc32c.cc
