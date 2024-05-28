@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <span>
+#include <string>
 #include <string_view>
 #include <vector>
 
@@ -258,6 +259,55 @@ public:
 
     /** Check whether this Context object is valid. */
     explicit operator bool() const noexcept { return bool{m_context}; }
+};
+
+class ChainstateManagerOptions
+{
+private:
+    struct Deleter {
+        void operator()(kernel_ChainstateManagerOptions* ptr) const
+        {
+            kernel_chainstate_manager_options_destroy(ptr);
+        }
+    };
+
+    std::unique_ptr<kernel_ChainstateManagerOptions, Deleter> m_options;
+
+public:
+    ChainstateManagerOptions(const Context& context, const std::string& data_dir, const std::string& blocks_dir) noexcept
+        : m_options{kernel_chainstate_manager_options_create(context.m_context.get(), data_dir.c_str(), data_dir.length(), blocks_dir.c_str(), blocks_dir.length())}
+    {
+    }
+
+    /** Check whether this ChainstateManagerOptions object is valid. */
+    explicit operator bool() const noexcept { return bool{m_options}; }
+
+    friend class ChainMan;
+};
+
+class ChainMan
+{
+private:
+    kernel_ChainstateManager* m_chainman;
+    const Context& m_context;
+
+public:
+    ChainMan(const Context& context, const ChainstateManagerOptions& chainman_opts) noexcept
+        : m_chainman{kernel_chainstate_manager_create(context.m_context.get(), chainman_opts.m_options.get())},
+          m_context{context}
+    {
+    }
+
+    /** Check whether this ChainMan object is valid. */
+    explicit operator bool() const noexcept { return m_chainman != nullptr; }
+
+    ChainMan(const ChainMan&) = delete;
+    ChainMan& operator=(const ChainMan&) = delete;
+
+    ~ChainMan()
+    {
+        kernel_chainstate_manager_destroy(m_chainman, m_context.m_context.get());
+    }
 };
 
 #endif // BITCOIN_KERNEL_BITCOINKERNEL_WRAPPER_H

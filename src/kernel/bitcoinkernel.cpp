@@ -7,12 +7,14 @@
 #include <kernel/bitcoinkernel.h>
 
 #include <consensus/amount.h>
+#include <kernel/caches.h>
 #include <kernel/chainparams.h>
 #include <kernel/checks.h>
 #include <kernel/context.h>
 #include <kernel/notifications_interface.h>
 #include <kernel/warning.h>
 #include <logging.h>
+#include <node/blockstorage.h>
 #include <primitives/transaction.h>
 #include <script/interpreter.h>
 #include <script/script.h>
@@ -20,6 +22,7 @@
 #include <streams.h>
 #include <sync.h>
 #include <tinyformat.h>
+#include <util/fs.h>
 #include <util/result.h>
 #include <util/signalinterrupt.h>
 #include <util/translation.h>
@@ -227,6 +230,29 @@ public:
     }
 };
 
+//! Helper struct to wrap the ChainstateManager-related Options
+struct ChainstateManagerOptions {
+    mutable Mutex m_mutex;
+    ChainstateManager::Options m_chainman_options GUARDED_BY(m_mutex);
+    node::BlockManager::Options m_blockman_options GUARDED_BY(m_mutex);
+
+    ChainstateManagerOptions(const Context* context, const fs::path& data_dir, const fs::path& blocks_dir)
+        : m_chainman_options{ChainstateManager::Options{
+              .chainparams = *context->m_chainparams,
+              .datadir = data_dir,
+              .notifications = *context->m_notifications}},
+          m_blockman_options{node::BlockManager::Options{
+              .chainparams = *context->m_chainparams,
+              .blocks_dir = blocks_dir,
+              .notifications = *context->m_notifications,
+              .block_tree_db_params = DBParams{
+                  .path = data_dir / "blocks" / "index",
+                  .cache_bytes = kernel::CacheSizes{DEFAULT_KERNEL_CACHE}.block_tree_db,
+              }}}
+    {
+    }
+};
+
 const CTransaction* cast_transaction(const kernel_Transaction* transaction)
 {
     assert(transaction);
@@ -274,6 +300,30 @@ Context* cast_context(kernel_Context* context)
 {
     assert(context);
     return reinterpret_cast<Context*>(context);
+}
+
+const Context* cast_const_context(const kernel_Context* context)
+{
+    assert(context);
+    return reinterpret_cast<const Context*>(context);
+}
+
+const ChainstateManagerOptions* cast_const_chainstate_manager_options(const kernel_ChainstateManagerOptions* options)
+{
+    assert(options);
+    return reinterpret_cast<const ChainstateManagerOptions*>(options);
+}
+
+ChainstateManagerOptions* cast_chainstate_manager_options(kernel_ChainstateManagerOptions* options)
+{
+    assert(options);
+    return reinterpret_cast<ChainstateManagerOptions*>(options);
+}
+
+ChainstateManager* cast_chainstate_manager(kernel_ChainstateManager* chainman)
+{
+    assert(chainman);
+    return reinterpret_cast<ChainstateManager*>(chainman);
 }
 
 } // namespace
@@ -536,4 +586,62 @@ void kernel_context_destroy(kernel_Context* context)
     if (context) {
         delete cast_context(context);
     }
+}
+
+kernel_ChainstateManagerOptions* kernel_chainstate_manager_options_create(const kernel_Context* context_, const char* data_dir, size_t data_dir_len, const char* blocks_dir, size_t blocks_dir_len)
+{
+    try {
+        fs::path abs_data_dir{fs::absolute(fs::PathFromString({data_dir, data_dir_len}))};
+        fs::create_directories(abs_data_dir);
+        fs::path abs_blocks_dir{fs::absolute(fs::PathFromString({blocks_dir, blocks_dir_len}))};
+        fs::create_directories(abs_blocks_dir);
+        auto context{cast_const_context(context_)};
+        return reinterpret_cast<kernel_ChainstateManagerOptions*>(new ChainstateManagerOptions(context, abs_data_dir, abs_blocks_dir));
+    } catch (const std::exception& e) {
+        LogError("Failed to create chainstate manager options: %s", e.what());
+        return nullptr;
+    }
+}
+
+void kernel_chainstate_manager_options_destroy(kernel_ChainstateManagerOptions* options)
+{
+    if (options) {
+        delete cast_chainstate_manager_options(options);
+    }
+}
+
+kernel_ChainstateManager* kernel_chainstate_manager_create(
+    const kernel_Context* context_,
+    const kernel_ChainstateManagerOptions* chainman_opts_)
+{
+    auto chainman_opts{cast_const_chainstate_manager_options(chainman_opts_)};
+    auto context{cast_const_context(context_)};
+
+    try {
+        LOCK(chainman_opts->m_mutex);
+        return reinterpret_cast<kernel_ChainstateManager*>(new ChainstateManager{*context->m_interrupt, chainman_opts->m_chainman_options, chainman_opts->m_blockman_options});
+    } catch (const std::exception& e) {
+        LogError("Failed to create chainstate manager: %s", e.what());
+        return nullptr;
+    }
+}
+
+void kernel_chainstate_manager_destroy(kernel_ChainstateManager* chainman_, const kernel_Context* context_)
+{
+    if (!chainman_) return;
+
+    auto chainman{cast_chainstate_manager(chainman_)};
+
+    {
+        LOCK(cs_main);
+        for (Chainstate* chainstate : chainman->GetAll()) {
+            if (chainstate->CanFlushToDisk()) {
+                chainstate->ForceFlushStateToDisk();
+                chainstate->ResetCoinsViews();
+            }
+        }
+    }
+
+    delete chainman;
+    return;
 }

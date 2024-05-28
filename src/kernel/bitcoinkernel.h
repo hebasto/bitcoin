@@ -166,6 +166,29 @@ typedef struct kernel_Context kernel_Context;
  */
 typedef struct kernel_BlockIndex kernel_BlockIndex;
 
+/**
+ * Opaque data structure for holding options for creating a new chainstate
+ * manager.
+ *
+ * The chainstate manager options are used to set some parameters for the
+ * chainstate manager. For now it just holds default options.
+ */
+typedef struct kernel_ChainstateManagerOptions kernel_ChainstateManagerOptions;
+
+/**
+ * Opaque data structure for holding a chainstate manager.
+ *
+ * The chainstate manager is the central object for doing validation tasks as
+ * well as retrieving data from the chain. Internally it is a complex data
+ * structure with diverse functionality.
+ *
+ * The chainstate manager is only valid for as long as the context with which it
+ * was created remains in memory.
+ *
+ * Its functionality will be more and more exposed in the future.
+ */
+typedef struct kernel_ChainstateManager kernel_ChainstateManager;
+
 /** Current sync state passed to tip changed callbacks. */
 typedef enum {
     kernel_INIT_REINDEX,
@@ -562,6 +585,66 @@ BITCOINKERNEL_API kernel_Context* BITCOINKERNEL_WARN_UNUSED_RESULT kernel_contex
  * Destroy the context.
  */
 BITCOINKERNEL_API void kernel_context_destroy(kernel_Context* context);
+
+///@}
+
+/** @name ChainstateManagerOptions
+ * Functions for working with chainstate manager options.
+ */
+///@{
+
+/**
+ * @brief Create options for the chainstate manager.
+ *
+ * @param[in] context          Non-null, the created options will associate with this kernel context
+ *                             for the duration of their lifetime. The same context needs to be used
+ *                             when instantiating the chainstate manager.
+ * @param[in] data_directory   Non-null, path string of the directory containing the chainstate data.
+ *                             If the directory does not exist yet, it will be created.
+ * @param[in] blocks_directory Non-null, path string of the directory containing the block data. If
+ *                             the directory does not exist yet, it will be created.
+ * @return                     The allocated chainstate manager options, or null on error.
+ */
+BITCOINKERNEL_API kernel_ChainstateManagerOptions* BITCOINKERNEL_WARN_UNUSED_RESULT kernel_chainstate_manager_options_create(
+    const kernel_Context* context,
+    const char* data_directory,
+    size_t data_directory_len,
+    const char* blocks_directory,
+    size_t blocks_directory_len
+) BITCOINKERNEL_ARG_NONNULL(1, 2);
+
+/**
+ * Destroy the chainstate manager options.
+ */
+BITCOINKERNEL_API void kernel_chainstate_manager_options_destroy(kernel_ChainstateManagerOptions* chainstate_manager_options);
+
+///@}
+
+/** @name ChainstateManager
+ * Functions for chainstate management.
+ */
+///@{
+
+/**
+ * @brief Create a chainstate manager. This is the main object for many
+ * validation tasks as well as for retrieving data from the chain. It is only
+ * valid for as long as the passed in context also remains in memory.
+ *
+ * @param[in] chainstate_manager_options Non-null, created by @ref kernel_chainstate_manager_options_create.
+ * @param[in] context                    Non-null, the created chainstate manager will associate with this
+ *                                       kernel context for the duration of its lifetime. The same context
+ *                                       needs to be used for later interactions with the chainstate manager.
+ * @return                               The allocated chainstate manager, or null on error.
+ */
+BITCOINKERNEL_API kernel_ChainstateManager* BITCOINKERNEL_WARN_UNUSED_RESULT kernel_chainstate_manager_create(
+    const kernel_Context* context,
+    const kernel_ChainstateManagerOptions* chainstate_manager_options
+) BITCOINKERNEL_ARG_NONNULL(1, 2);
+
+/**
+ * Destroy the chainstate manager.
+ */
+BITCOINKERNEL_API void kernel_chainstate_manager_destroy(kernel_ChainstateManager* chainstate_manager, const kernel_Context* context);
 
 ///@}
 
