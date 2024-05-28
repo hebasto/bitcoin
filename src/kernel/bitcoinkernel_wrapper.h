@@ -1,0 +1,105 @@
+// Copyright (c) 2024-present The Bitcoin Core developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#ifndef BITCOIN_KERNEL_BITCOINKERNEL_WRAPPER_H
+#define BITCOIN_KERNEL_BITCOINKERNEL_WRAPPER_H
+
+#include <kernel/bitcoinkernel.h>
+
+#include <memory>
+#include <span>
+#include <vector>
+
+class Transaction
+{
+private:
+    struct Deleter {
+        void operator()(kernel_Transaction* ptr) const
+        {
+            kernel_transaction_destroy(ptr);
+        }
+    };
+
+public:
+    std::unique_ptr<kernel_Transaction, Deleter> m_transaction;
+
+    Transaction(std::span<const unsigned char> raw_transaction) noexcept
+        : m_transaction{kernel_transaction_create(raw_transaction.data(), raw_transaction.size())}
+    {
+    }
+
+    /** Check whether this Transaction object is valid. */
+    explicit operator bool() const noexcept { return bool{m_transaction}; }
+};
+
+class ScriptPubkey
+{
+private:
+    struct Deleter {
+        void operator()(kernel_ScriptPubkey* ptr) const
+        {
+            kernel_script_pubkey_destroy(ptr);
+        }
+    };
+
+public:
+    std::unique_ptr<kernel_ScriptPubkey, Deleter> m_script_pubkey;
+
+    ScriptPubkey(std::span<const unsigned char> script_pubkey) noexcept
+        : m_script_pubkey{kernel_script_pubkey_create(script_pubkey.data(), script_pubkey.size())}
+    {
+    }
+
+    /** Check whether this ScriptPubkey object is valid. */
+    explicit operator bool() const noexcept { return bool{m_script_pubkey}; }
+};
+
+class TransactionOutput
+{
+private:
+    struct Deleter {
+        void operator()(kernel_TransactionOutput* ptr) const
+        {
+            kernel_transaction_output_destroy(ptr);
+        }
+    };
+
+public:
+    std::unique_ptr<kernel_TransactionOutput, Deleter> m_transaction_output;
+
+    TransactionOutput(const ScriptPubkey& script_pubkey, int64_t amount) noexcept
+        : m_transaction_output{kernel_transaction_output_create(script_pubkey.m_script_pubkey.get(), amount)}
+    {
+    }
+};
+
+int verify_script(const ScriptPubkey& script_pubkey,
+                  int64_t amount,
+                  const Transaction& tx_to,
+                  const std::span<const TransactionOutput> spent_outputs,
+                  unsigned int input_index,
+                  unsigned int flags,
+                  kernel_ScriptVerifyStatus& status) noexcept
+{
+    const kernel_TransactionOutput** spent_outputs_ptr = nullptr;
+    std::vector<const kernel_TransactionOutput*> raw_spent_outputs;
+    if (spent_outputs.size() > 0) {
+        raw_spent_outputs.reserve(spent_outputs.size());
+
+        for (const auto& output : spent_outputs) {
+            raw_spent_outputs.push_back(output.m_transaction_output.get());
+        }
+        spent_outputs_ptr = raw_spent_outputs.data();
+    }
+    return kernel_verify_script(
+        script_pubkey.m_script_pubkey.get(),
+        amount,
+        tx_to.m_transaction.get(),
+        spent_outputs_ptr, spent_outputs.size(),
+        input_index,
+        flags,
+        &status);
+}
+
+#endif // BITCOIN_KERNEL_BITCOINKERNEL_WRAPPER_H
