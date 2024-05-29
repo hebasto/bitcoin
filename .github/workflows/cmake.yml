@@ -18,8 +18,8 @@ concurrency:
 
 jobs:
   ubuntu-jammy-native:
-    name: 'Ubuntu 24.04, CMake 3.22, Boost ${{ matrix.conf.boost_version }}'
-    runs-on: ubuntu-24.04
+    name: 'Ubuntu 22.04, CMake 3.22, Boost ${{ matrix.conf.boost_version }}'
+    runs-on: ubuntu-22.04
 
     strategy:
       fail-fast: false
@@ -45,7 +45,7 @@ jobs:
           # Workaround for https://github.com/actions/runner-images/issues/9733.
           sudo rm /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update
-          sudo apt-get install --no-install-recommends curl cmake ccache libevent-dev libsqlite3-dev libdb-dev libdb++-dev libminiupnpc-dev libnatpmp-dev libzmq3-dev systemtap-sdt-dev
+          sudo apt-get install --no-install-recommends tree g++-12 curl cmake ccache libevent-dev libsqlite3-dev libdb-dev libdb++-dev libminiupnpc-dev libnatpmp-dev libzmq3-dev systemtap-sdt-dev
           echo "CCACHE_DIR=${{ runner.temp }}/ccache" >> "$GITHUB_ENV"
 
       - name: CMake version
@@ -68,7 +68,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build --preset ci-linux -DBoost_INCLUDE_DIR="${PWD}/${{ matrix.conf.boost_archive }}"
+          cmake -B build --preset ci-linux -DBoost_INCLUDE_DIR="${PWD}/${{ matrix.conf.boost_archive }}" -DCMAKE_C_COMPILER=gcc-12 -DCMAKE_CXX_COMPILER=g++-12
 
       - name: Build
         working-directory: build
