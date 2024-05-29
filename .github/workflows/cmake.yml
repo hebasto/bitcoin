@@ -68,7 +68,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build --preset ci-linux -DBoost_INCLUDE_DIR="${PWD}/${{ matrix.conf.boost_archive }}" -DCMAKE_C_COMPILER=gcc-12 -DCMAKE_CXX_COMPILER=g++-12
+          cmake -B build --preset ci-linux -DBoost_INCLUDE_DIR="${PWD}/${{ matrix.conf.boost_archive }}" -DCMAKE_C_COMPILER=gcc-12 -DCMAKE_CXX_COMPILER=g++-12 -DAPPEND_CXXFLAGS="-Wno-maybe-uninitialized"
 
       - name: Build
         working-directory: build
