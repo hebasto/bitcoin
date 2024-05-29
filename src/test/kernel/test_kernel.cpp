@@ -10,7 +10,9 @@
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
+#include <memory>
 #include <span>
+#include <string_view>
 #include <vector>
 
 std::vector<unsigned char> hex_string_to_char_vec(std::string_view hex)
@@ -27,6 +29,15 @@ std::vector<unsigned char> hex_string_to_char_vec(std::string_view hex)
     }
     return bytes;
 }
+
+class TestLog
+{
+public:
+    void LogMessage(std::string_view message)
+    {
+        std::cout << "kernel: " << message;
+    }
+};
 
 constexpr auto VERIFY_ALL_PRE_SEGWIT{kernel_SCRIPT_FLAGS_VERIFY_P2SH | kernel_SCRIPT_FLAGS_VERIFY_DERSIG |
                                      kernel_SCRIPT_FLAGS_VERIFY_NULLDUMMY | kernel_SCRIPT_FLAGS_VERIFY_CHECKLOCKTIMEVERIFY |
@@ -153,10 +164,40 @@ void script_verify_test()
         /*is_taproot*/ true);
 }
 
+void logging_test()
+{
+    kernel_LoggingOptions logging_options = {
+        .log_timestamps = true,
+        .log_time_micros = true,
+        .log_threadnames = false,
+        .log_sourcelocations = false,
+        .always_print_category_levels = true,
+    };
+
+    kernel_add_log_level_category(kernel_LogCategory::kernel_LOG_BENCH, kernel_LogLevel::kernel_LOG_TRACE);
+    kernel_disable_log_category(kernel_LogCategory::kernel_LOG_BENCH);
+    kernel_enable_log_category(kernel_LogCategory::kernel_LOG_VALIDATION);
+    kernel_disable_log_category(kernel_LogCategory::kernel_LOG_VALIDATION);
+
+    // Check that connecting, connecting another, and then disconnecting and connecting a logger again works.
+    {
+        kernel_add_log_level_category(kernel_LogCategory::kernel_LOG_KERNEL, kernel_LogLevel::kernel_LOG_TRACE);
+        kernel_enable_log_category(kernel_LogCategory::kernel_LOG_KERNEL);
+        Logger logger{std::make_unique<TestLog>(TestLog{}), logging_options};
+        assert(logger);
+        Logger logger_2{std::make_unique<TestLog>(TestLog{}), logging_options};
+        assert(logger_2);
+    }
+    Logger logger{std::make_unique<TestLog>(TestLog{}), logging_options};
+    assert(logger);
+}
+
 int main()
 {
     transaction_test();
     script_verify_test();
+    logging_test();
+
     std::cout << "Libbitcoinkernel test completed." << std::endl;
     return 0;
 }

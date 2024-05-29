@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <span>
+#include <string_view>
 #include <vector>
 
 class Transaction
@@ -101,5 +102,38 @@ int verify_script(const ScriptPubkey& script_pubkey,
         flags,
         &status);
 }
+
+template <typename T>
+concept Log = requires(T a, std::string_view message) {
+    { a.LogMessage(message) } -> std::same_as<void>;
+};
+
+template <Log T>
+class Logger
+{
+private:
+    struct Deleter {
+        void operator()(kernel_LoggingConnection* ptr) const
+        {
+            kernel_logging_connection_destroy(ptr);
+        }
+    };
+
+    std::unique_ptr<T> m_log;
+    std::unique_ptr<kernel_LoggingConnection, Deleter> m_connection;
+
+public:
+    Logger(std::unique_ptr<T> log, const kernel_LoggingOptions& logging_options) noexcept
+        : m_log{std::move(log)},
+          m_connection{kernel_logging_connection_create(
+              [](void* user_data, const char* message, size_t message_len) { static_cast<T*>(user_data)->LogMessage({message, message_len}); },
+              m_log.get(),
+              logging_options)}
+    {
+    }
+
+    /** Check whether this Logger object is valid. */
+    explicit operator bool() const noexcept { return bool{m_connection}; }
+};
 
 #endif // BITCOIN_KERNEL_BITCOINKERNEL_WRAPPER_H
