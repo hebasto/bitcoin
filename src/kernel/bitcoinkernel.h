@@ -640,8 +640,9 @@ BITCOINKERNEL_API void kernel_chainstate_manager_options_destroy(kernel_Chainsta
 
 /**
  * @brief Create a chainstate manager. This is the main object for many
- * validation tasks as well as for retrieving data from the chain. It is only
- * valid for as long as the passed in context also remains in memory.
+ * validation tasks as well as for retrieving data from the chain and
+ * interacting with its chainstate and indexes. It is only valid for as long as
+ * the passed in context also remains in memory.
  *
  * @param[in] chainstate_manager_options Non-null, created by @ref kernel_chainstate_manager_options_create.
  * @param[in] context                    Non-null, the created chainstate manager will associate with this
