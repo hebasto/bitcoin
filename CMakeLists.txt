@@ -15,6 +15,39 @@ if(POLICY CMP0141)
 endif()
 cmake_minimum_required(VERSION 3.22)
 
+
+message("CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
+message("PROJECT_SOURCE_DIR=${PROJECT_SOURCE_DIR}")
+
+
+get_cmake_property(_variableNames CACHE_VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+
+
+# return()
+
+if(NOT INTERNAL_BUILD)
+  file(WRITE ${CMAKE_BINARY_DIR}/internal_build_cache "set(INTERNAL_BUILD ON CACHE BOOL \"\" FORCE)\n")
+  get_cmake_property(cache_variable_names CACHE_VARIABLES)
+  foreach (v ${cache_variable_names})
+      file(APPEND ${CMAKE_BINARY_DIR}/internal_build_cache "set(${v} \"${${v}}\" CACHE STRING \"\" FORCE)\n")
+  endforeach()
+
+  string(RANDOM internal_binary_dir)
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} -S ${CMAKE_SOURCE_DIR} -B ${CMAKE_BINARY_DIR}/${internal_binary_dir} -C ${CMAKE_BINARY_DIR}/internal_build_cache
+    ERROR_VARIABLE error
+  )
+  message("=============================================================")
+  message("${error}")
+  message("=============================================================")
+endif()
+return()
+
+
 #=============================
 # Project / Package metadata
 #=============================
@@ -56,6 +89,35 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
+
+
+
+get_cmake_property(_variableNames CACHE_VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+return()
+
+
+
+get_cmake_property(_variableNames CACHE_VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+
+
+return()
+
+
+
+
+
+
+
+
+
 
 #=============================
 # Configurable options
