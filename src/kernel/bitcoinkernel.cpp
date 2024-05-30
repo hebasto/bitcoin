@@ -730,6 +730,30 @@ void kernel_chainstate_manager_destroy(kernel_ChainstateManager* chainman_, cons
     return;
 }
 
+bool kernel_import_blocks(const kernel_Context* context_,
+                          kernel_ChainstateManager* chainman_,
+                          const char** block_file_paths,
+                          size_t* block_file_paths_lens,
+                          size_t block_file_paths_len)
+{
+    try {
+        auto chainman{cast_chainstate_manager(chainman_)};
+        std::vector<fs::path> import_files;
+        import_files.reserve(block_file_paths_len);
+        for (uint32_t i = 0; i < block_file_paths_len; i++) {
+            if (block_file_paths[i] != nullptr) {
+                import_files.emplace_back(std::string{block_file_paths[i], block_file_paths_lens[i]}.c_str());
+            }
+        }
+        node::ImportBlocks(*chainman, import_files);
+        chainman->ActiveChainstate().ForceFlushStateToDisk();
+    } catch (const std::exception& e) {
+        LogError("Failed to import blocks: %s", e.what());
+        return false;
+    }
+    return true;
+}
+
 kernel_Block* kernel_block_create(const unsigned char* raw_block, size_t raw_block_length)
 {
     auto block{new CBlock()};

@@ -457,6 +457,9 @@ void chainman_reindex_test(TestDirectory& test_directory)
     TestKernelNotifications notifications{};
     auto context{create_context(notifications, kernel_ChainType::kernel_CHAIN_TYPE_MAINNET)};
     auto chainman{create_chainman(test_directory, true, false, false, false, context)};
+
+    std::vector<std::string> import_files;
+    assert(chainman->ImportBlocks(import_files));
 }
 
 void chainman_reindex_chainstate_test(TestDirectory& test_directory)
@@ -464,6 +467,10 @@ void chainman_reindex_chainstate_test(TestDirectory& test_directory)
     TestKernelNotifications notifications{};
     auto context{create_context(notifications, kernel_ChainType::kernel_CHAIN_TYPE_MAINNET)};
     auto chainman{create_chainman(test_directory, false, true, false, false, context)};
+
+    std::vector<std::string> import_files;
+    import_files.push_back((test_directory.m_directory / "blocks" / "blk00000.dat").string());
+    chainman->ImportBlocks(import_files);
 }
 
 int main()
