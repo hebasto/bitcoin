@@ -75,6 +75,11 @@ extern "C" {
  * functions, e.g. for scripts, may communicate more detailed error information
  * through status code out parameters.
  *
+ * The kernel notifications issue callbacks for errors. These are usually
+ * indicative of a system error. If such an error is issued, it is recommended
+ * to halt and tear down the existing kernel objects. Remediating the error may
+ * require system intervention by the user.
+ *
  * @section pointer Pointer and argument conventions
  *
  * The user is responsible for de-allocating the memory owned by pointers
@@ -152,6 +157,28 @@ typedef struct kernel_ContextOptions kernel_ContextOptions;
  */
 typedef struct kernel_Context kernel_Context;
 
+/**
+ * Opaque data structure for holding a block index pointer.
+ *
+ * This is a pointer to an element in the block index currently in memory of the
+ * chainstate manager. It is valid for the lifetime of the chainstate manager it
+ * was retrieved from.
+ */
+typedef struct kernel_BlockIndex kernel_BlockIndex;
+
+/** Current sync state passed to tip changed callbacks. */
+typedef enum {
+    kernel_INIT_REINDEX,
+    kernel_INIT_DOWNLOAD,
+    kernel_POST_INIT
+} kernel_SynchronizationState;
+
+/** Possible warning types issued by validation. */
+typedef enum {
+    kernel_UNKNOWN_NEW_RULES_ACTIVATED,
+    kernel_LARGE_WORK_INVALID_CHAIN
+} kernel_Warning;
+
 /** Callback function types */
 
 /**
@@ -159,6 +186,36 @@ typedef struct kernel_Context kernel_Context;
  * internal logs will pass through this callback.
  */
 typedef void (*kernel_LogCallback)(void* user_data, const char* message, size_t message_len);
+
+/**
+ * Function signatures for the kernel notifications.
+ */
+typedef void (*kernel_NotifyBlockTip)(void* user_data, kernel_SynchronizationState state, const kernel_BlockIndex* index);
+typedef void (*kernel_NotifyHeaderTip)(void* user_data, kernel_SynchronizationState state, int64_t height, int64_t timestamp, bool presync);
+typedef void (*kernel_NotifyProgress)(void* user_data, const char* title, size_t title_len, int progress_percent, bool resume_possible);
+typedef void (*kernel_NotifyWarningSet)(void* user_data, kernel_Warning warning, const char* message, size_t message_len);
+typedef void (*kernel_NotifyWarningUnset)(void* user_data, kernel_Warning warning);
+typedef void (*kernel_NotifyFlushError)(void* user_data, const char* message, size_t message_len);
+typedef void (*kernel_NotifyFatalError)(void* user_data, const char* message, size_t message_len);
+
+/**
+ * A struct for holding the kernel notification callbacks. The user data
+ * pointer may be used to point to user-defined structures to make processing
+ * the notifications easier. Note that this makes it the user's responsibility
+ * to ensure that the user_data outlives the kernel objects. Notifications can
+ * occur even as kernel objects are deleted, so care has to be taken to ensure
+ * safe unwinding.
+ */
+typedef struct {
+    const void* user_data;                   //!< Holds a user-defined opaque structure that is passed to the notification callbacks.
+    kernel_NotifyBlockTip block_tip;         //!< The chain's tip was updated to the provided block index.
+    kernel_NotifyHeaderTip header_tip;       //!< A new best block header was added.
+    kernel_NotifyProgress progress;          //!< Reports on current block synchronization progress.
+    kernel_NotifyWarningSet warning_set;     //!< A warning issued by the kernel library during validation.
+    kernel_NotifyWarningUnset warning_unset; //!< A previous condition leading to the issuance of a warning is no longer given.
+    kernel_NotifyFlushError flush_error;     //!< An error encountered when flushing data to disk.
+    kernel_NotifyFatalError fatal_error;     //!< A un-recoverable system error encountered by the library.
+} kernel_NotificationInterfaceCallbacks;
 
 /**
  * A collection of logging categories that may be encountered by kernel code.
@@ -464,6 +521,18 @@ BITCOINKERNEL_API void kernel_context_options_set_chainparams(
     kernel_ContextOptions* context_options,
     const kernel_ChainParameters* chain_parameters
 ) BITCOINKERNEL_ARG_NONNULL(1, 2);
+
+/**
+ * @brief Set the kernel notifications for the context options. The context
+ * created with the options will be configured with these notifications.
+ *
+ * @param[in] context_options Non-null, previously created by @ref kernel_context_options_create.
+ * @param[in] notifications   Is set to the context options.
+ */
+BITCOINKERNEL_API void kernel_context_options_set_notifications(
+    kernel_ContextOptions* context_options,
+    kernel_NotificationInterfaceCallbacks notifications
+) BITCOINKERNEL_ARG_NONNULL(1);
 
 /**
  * Destroy the context options.
