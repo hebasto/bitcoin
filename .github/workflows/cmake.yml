@@ -520,17 +520,23 @@ jobs:
 
 
   macos-native:
-    name: '${{ matrix.os.name }}, ${{ matrix.xcode.name }}'
-    runs-on: ${{ matrix.os.os }}
+    name: '${{ matrix.conf.name }}, ${{ matrix.xcode.name }}'
+    runs-on: ${{ matrix.conf.os }}
 
     strategy:
       fail-fast: false
       matrix:
-        os:
+        conf:
           - name: 'macOS 13 native, x86_64'
             os: macos-13
+            boost_package: 'boost'
           - name: 'macOS 14 native, arm64'
             os: macos-14
+            boost_package: 'boost'
+          - name: 'macOS 14 native, arm64, Boost 1.76'
+            os: macos-14
+            boost_package: 'boost@1.76'
+            build_options: '-DBoost_INCLUDE_DIR=/opt/homebrew/opt/boost@1.76/include'
         xcode:
           - name: 'Xcode 15.2'
             id: 'xcode-15.2'
@@ -546,7 +552,7 @@ jobs:
           clang --version
 
       - name: Workaround for Homebrew python link
-        if: matrix.os.os == 'macos-13'
+        if: matrix.conf.os == 'macos-13'
         env:
           HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
         run: |
@@ -556,7 +562,7 @@ jobs:
         env:
           HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: 1
         run: |
-          brew install ccache cmake pkg-config boost libevent berkeley-db@4 qt@5 qrencode libnatpmp miniupnpc zeromq tree
+          brew install ccache cmake pkg-config ${{ matrix.conf.boost_package }} libevent berkeley-db@4 qt@5 qrencode libnatpmp miniupnpc zeromq tree
           echo "CCACHE_DIR=${{ runner.temp }}/ccache" >> "$GITHUB_ENV"
 
       - name: CMake version
@@ -569,12 +575,12 @@ jobs:
         id: ccache-cache
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ${{ matrix.os.os }}-${{ matrix.xcode.id }}-ccache-${{ github.run_id }}
-          restore-keys: ${{ matrix.os.os }}-${{ matrix.xcode.id }}-ccache-
+          key: ${{ matrix.conf.os }}-${{ matrix.xcode.id }}-ccache-${{ github.run_id }}
+          restore-keys: ${{ matrix.conf.os }}-${{ matrix.xcode.id }}-ccache-
 
       - name: Generate build system
         run: |
-          cmake -B build --preset ci-darwin
+          cmake -B build --preset ci-darwin ${{ matrix.conf.build_options }}
 
       - name: Build
         env:
@@ -593,7 +599,7 @@ jobs:
         if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true'
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ${{ matrix.os.os }}-${{ matrix.xcode.id }}-ccache-${{ github.run_id }}
+          key: ${{ matrix.conf.os }}-${{ matrix.xcode.id }}-ccache-${{ github.run_id }}
 
       - name: Test
         run: |
