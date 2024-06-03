@@ -7,7 +7,10 @@
 #include <kernel/bitcoinkernel.h>
 
 #include <consensus/amount.h>
+#include <kernel/chainparams.h>
+#include <kernel/checks.h>
 #include <kernel/context.h>
+#include <kernel/notifications_interface.h>
 #include <logging.h>
 #include <primitives/transaction.h>
 #include <script/interpreter.h>
@@ -15,6 +18,8 @@
 #include <serialize.h>
 #include <streams.h>
 #include <tinyformat.h>
+#include <util/result.h>
+#include <util/signalinterrupt.h>
 #include <util/translation.h>
 
 #include <cassert>
@@ -23,6 +28,7 @@
 #include <exception>
 #include <functional>
 #include <list>
+#include <memory>
 #include <span>
 #include <string>
 #include <utility>
@@ -105,6 +111,32 @@ BCLog::LogFlags get_bclog_flag(const kernel_LogCategory category)
     assert(false);
 }
 
+struct ContextOptions {
+};
+
+class Context
+{
+public:
+    std::unique_ptr<kernel::Context> m_context;
+
+    std::unique_ptr<kernel::Notifications> m_notifications;
+
+    std::unique_ptr<util::SignalInterrupt> m_interrupt;
+
+    std::unique_ptr<const CChainParams> m_chainparams;
+
+    Context(const ContextOptions* options, bool& sane)
+        : m_context{std::make_unique<kernel::Context>()},
+          m_notifications{std::make_unique<kernel::Notifications>()},
+          m_interrupt{std::make_unique<util::SignalInterrupt>()},
+          m_chainparams{CChainParams::Main()}
+    {
+        if (!kernel::SanityChecks(*m_context)) {
+            sane = false;
+        }
+    }
+};
+
 const CTransaction* cast_transaction(const kernel_Transaction* transaction)
 {
     assert(transaction);
@@ -122,6 +154,13 @@ const CTxOut* cast_transaction_output(const kernel_TransactionOutput* transactio
     assert(transaction_output);
     return reinterpret_cast<const CTxOut*>(transaction_output);
 }
+
+const ContextOptions* cast_const_context_options(const kernel_ContextOptions* options)
+{
+    assert(options);
+    return reinterpret_cast<const ContextOptions*>(options);
+}
+
 } // namespace
 
 kernel_Transaction* kernel_transaction_create(const unsigned char* raw_transaction, size_t raw_transaction_len)
@@ -299,4 +338,34 @@ void kernel_logging_connection_destroy(kernel_LoggingConnection* connection_)
     if (!LogInstance().Enabled()) {
         LogInstance().DisconnectTestLogger();
     }
+}
+
+kernel_ContextOptions* kernel_context_options_create()
+{
+    return reinterpret_cast<kernel_ContextOptions*>(new ContextOptions{});
+}
+
+void kernel_context_options_destroy(kernel_ContextOptions* options)
+{
+    if (options) {
+        delete reinterpret_cast<ContextOptions*>(options);
+    }
+}
+
+kernel_Context* kernel_context_create(const kernel_ContextOptions* options_)
+{
+    auto options{cast_const_context_options(options_)};
+    bool sane{true};
+    auto context{new Context{options, sane}};
+    if (!sane) {
+        LogError("Kernel context sanity check failed.");
+        delete context;
+        return nullptr;
+    }
+    return reinterpret_cast<kernel_Context*>(context);
+}
+
+void kernel_context_destroy(kernel_Context* context_)
+{
+    delete reinterpret_cast<Context*>(context_);
 }

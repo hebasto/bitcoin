@@ -136,4 +136,49 @@ public:
     explicit operator bool() const noexcept { return bool{m_connection}; }
 };
 
+class ContextOptions
+{
+private:
+    struct Deleter {
+        void operator()(kernel_ContextOptions* ptr) const
+        {
+            kernel_context_options_destroy(ptr);
+        }
+    };
+
+    std::unique_ptr<kernel_ContextOptions, Deleter> m_options;
+
+public:
+    ContextOptions() noexcept : m_options{kernel_context_options_create()} {}
+
+    friend class Context;
+};
+
+class Context
+{
+private:
+    struct Deleter {
+        void operator()(kernel_Context* ptr) const
+        {
+            kernel_context_destroy(ptr);
+        }
+    };
+
+public:
+    std::unique_ptr<kernel_Context, Deleter> m_context;
+
+    Context(ContextOptions& opts) noexcept
+        : m_context{kernel_context_create(opts.m_options.get())}
+    {
+    }
+
+    Context() noexcept
+        : m_context{kernel_context_create(ContextOptions{}.m_options.get())}
+    {
+    }
+
+    /** Check whether this Context object is valid. */
+    explicit operator bool() const noexcept { return bool{m_context}; }
+};
+
 #endif // BITCOIN_KERNEL_BITCOINKERNEL_WRAPPER_H
