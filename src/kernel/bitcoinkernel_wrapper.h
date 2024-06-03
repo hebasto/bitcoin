@@ -136,6 +136,24 @@ public:
     explicit operator bool() const noexcept { return bool{m_connection}; }
 };
 
+class ChainParams
+{
+private:
+    struct Deleter {
+        void operator()(kernel_ChainParameters* ptr) const
+        {
+            kernel_chain_parameters_destroy(ptr);
+        }
+    };
+
+    std::unique_ptr<kernel_ChainParameters, Deleter> m_chain_params;
+
+public:
+    ChainParams(kernel_ChainType chain_type) noexcept : m_chain_params{kernel_chain_parameters_create(chain_type)} {}
+
+    friend class ContextOptions;
+};
+
 class ContextOptions
 {
 private:
@@ -150,6 +168,11 @@ private:
 
 public:
     ContextOptions() noexcept : m_options{kernel_context_options_create()} {}
+
+    void SetChainParams(ChainParams& chain_params) const noexcept
+    {
+        kernel_context_options_set_chainparams(m_options.get(), chain_params.m_chain_params.get());
+    }
 
     friend class Context;
 };
