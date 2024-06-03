@@ -32,6 +32,7 @@ bench_bench_bitcoin_SOURCES = \
   bench/duplicate_inputs.cpp \
   bench/ellswift.cpp \
   bench/examples.cpp \
+  bench/feefrac_mul.cpp \
   bench/gcs_filter.cpp \
   bench/hashpadding.cpp \
   bench/index_blockfilter.cpp \
