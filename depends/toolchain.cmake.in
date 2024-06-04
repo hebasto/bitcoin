@@ -129,9 +129,9 @@ set(PKG_CONFIG_ARGN --static)
 
 # Set configuration options for the main build system.
 if("@no_qt@")
-  set(WITH_GUI OFF CACHE BOOL "")
+  set(BUILD_GUI OFF CACHE BOOL "")
 else()
-  set(WITH_GUI ON CACHE BOOL "")
+  set(BUILD_GUI ON CACHE BOOL "")
 endif()
 
 if(NOT WITH_QRENCODE AND "@no_qr@" STREQUAL "1")
