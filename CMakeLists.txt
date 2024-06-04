@@ -63,8 +63,10 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
 # When adding a new option, end the <help_text> with a full stop for consistency.
 option(BUILD_DAEMON "Build bitcoind executable." ON)
 option(BUILD_CLI "Build bitcoin-cli executable." ON)
-option(BUILD_TX "Build bitcoin-tx executable." ON)
-option(BUILD_UTIL "Build bitcoin-util executable." ON)
+
+option(BUILD_TESTS "Build test_bitcoin executable." ON)
+option(BUILD_TX "Build bitcoin-tx executable." ${BUILD_TESTS})
+option(BUILD_UTIL "Build bitcoin-util executable." ${BUILD_TESTS})
 
 option(ENABLE_WALLET "Enable wallet." ON)
 # TODO: These tri-state options will be removed and most features
@@ -74,7 +76,7 @@ tristate_option(WITH_SQLITE "Enable SQLite wallet support." "if libsqlite3 is fo
 tristate_option(WITH_BDB "Enable Berkeley DB (BDB) wallet support." "if libdb_cxx is found." AUTO)
 option(WARN_INCOMPATIBLE_BDB "Warn when using a Berkeley DB (BDB) version other than 4.8." ON)
 include(CMakeDependentOption)
-cmake_dependent_option(BUILD_WALLET_TOOL "Build bitcoin-wallet tool." ON "ENABLE_WALLET" OFF)
+cmake_dependent_option(BUILD_WALLET_TOOL "Build bitcoin-wallet tool." ${BUILD_TESTS} "ENABLE_WALLET" OFF)
 
 tristate_option(WITH_CCACHE "Use ccache for compiling." "if ccache is found." AUTO)
 tristate_option(WITH_NATPMP "Enable NAT-PMP." "if libnatpmp is found." AUTO)
@@ -86,7 +88,6 @@ tristate_option(WITH_USDT
   AUTO
 )
 
-option(BUILD_TESTS "Build test_bitcoin executable." ON)
 option(BUILD_BENCH "Build bench_bitcoin executable." OFF)
 
 set(configure_warnings)
