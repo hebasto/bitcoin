@@ -34,6 +34,9 @@ add_dependencies(bitcoin_clientversion generate_build_info)
 add_subdirectory(crypto)
 add_subdirectory(univalue)
 add_subdirectory(util)
+if(WITH_MULTIPROCESS)
+  add_subdirectory(ipc)
+endif()
 
 
 # Stable, backwards-compatible consensus functionality.
@@ -272,6 +275,19 @@ if(BUILD_DAEMON)
     $<TARGET_NAME_IF_EXISTS:bitcoin_wallet>
   )
   list(APPEND installable_targets bitcoind)
+endif()
+if(WITH_MULTIPROCESS)
+  add_executable(bitcoin-node
+    bitcoind.cpp
+    init/bitcoin-node.cpp
+  )
+  target_link_libraries(bitcoin-node
+    core_interface
+    bitcoin_node
+    bitcoin_ipc
+    $<TARGET_NAME_IF_EXISTS:bitcoin_wallet>
+  )
+  list(APPEND installable_targets bitcoin-node)
 endif()
 
 

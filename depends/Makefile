@@ -292,6 +292,7 @@ $(host_prefix)/toolchain.cmake : toolchain.cmake.in $(host_prefix)/.stamp_$(fina
             -e 's|@no_natpmp@|$(NO_NATPMP)|' \
             -e 's|@no_usdt@|$(NO_USDT)|' \
             -e 's|@no_harden@|$(NO_HARDEN)|' \
+            -e 's|@multiprocess@|$(MULTIPROCESS)|' \
             $< > $@
 	touch $@
 
