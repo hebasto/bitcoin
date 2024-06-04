@@ -96,6 +96,9 @@ tristate_option(WITH_QRENCODE "Enable QR code support." "if libqrencode is found
 
 cmake_dependent_option(BUILD_GUI_TESTS "Build test_bitcoin-qt executable." ON "BUILD_TESTS" OFF)
 option(BUILD_BENCH "Build bench_bitcoin executable." OFF)
+option(BUILD_FUZZ_BINARY "Build fuzz binary." OFF)
+cmake_dependent_option(ENABLE_FUZZ "Build for fuzzing. Enabling this will disable all other targets and override BUILD_FUZZ_BINARY." OFF "NOT MSVC" OFF)
+
 option(INSTALL_MAN "Install man pages." ON)
 
 set(configure_warnings)
@@ -126,6 +129,30 @@ target_link_libraries(core_base_interface INTERFACE
   $<$<CONFIG:Debug>:core_depends_debug_interface>
 )
 target_link_libraries(core_interface INTERFACE core_base_interface)
+
+if(ENABLE_FUZZ)
+  message(WARNING "ENABLE_FUZZ=ON will disable all other targets and force BUILD_FUZZ_BINARY=ON.")
+  set(BUILD_DAEMON OFF)
+  set(BUILD_CLI OFF)
+  set(BUILD_TX OFF)
+  set(BUILD_UTIL OFF)
+  set(BUILD_UTIL_CHAINSTATE OFF)
+  set(BUILD_KERNEL_LIB OFF)
+  set(BUILD_WALLET_TOOL OFF)
+  set(WITH_GUI OFF)
+  set(ENABLE_EXTERNAL_SIGNER OFF)
+  set(WITH_NATPMP OFF)
+  set(WITH_MINIUPNPC OFF)
+  set(WITH_ZMQ OFF)
+  set(BUILD_TESTS OFF)
+  set(BUILD_GUI_TESTS OFF)
+  set(BUILD_BENCH OFF)
+  set(BUILD_FUZZ_BINARY ON)
+
+  target_compile_definitions(core_interface INTERFACE
+    ABORT_ON_FAILED_ASSUME
+  )
+endif()
 
 include(TryAppendCXXFlags)
 include(TryAppendLinkerFlag)
@@ -256,7 +283,7 @@ target_link_options(sanitizing_interface INTERFACE ${SANITIZER_LDFLAGS})
 include(AddBoostIfNeeded)
 add_boost_if_needed()
 
-if(BUILD_DAEMON OR WITH_GUI OR BUILD_CLI OR BUILD_TESTS OR BUILD_BENCH)
+if(BUILD_DAEMON OR WITH_GUI OR BUILD_CLI OR BUILD_TESTS OR BUILD_BENCH OR BUILD_FUZZ_BINARY)
   find_package(Libevent 2.1.8 MODULE REQUIRED)
 endif()
 
@@ -476,6 +503,7 @@ message("Tests:")
 message("  test_bitcoin ........................ ${BUILD_TESTS}")
 message("  test_bitcoin-qt ..................... ${BUILD_GUI_TESTS}")
 message("  bench_bitcoin ....................... ${BUILD_BENCH}")
+message("  fuzz binary ......................... ${BUILD_FUZZ_BINARY}")
 message("")
 if(CMAKE_CROSSCOMPILING)
   set(cross_status "TRUE, for ${CMAKE_SYSTEM_NAME}, ${CMAKE_SYSTEM_PROCESSOR}")
