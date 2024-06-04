@@ -86,6 +86,7 @@ tristate_option(WITH_USDT
   AUTO
 )
 
+option(BUILD_TESTS "Build test_bitcoin executable." ON)
 option(BUILD_BENCH "Build bench_bitcoin executable." OFF)
 
 set(configure_warnings)
@@ -193,7 +194,7 @@ add_threads_if_needed()
 include(AddBoostIfNeeded)
 add_boost_if_needed()
 
-if(BUILD_DAEMON OR BUILD_CLI OR BUILD_BENCH)
+if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TESTS OR BUILD_BENCH)
   find_package(Libevent 2.1.8 MODULE REQUIRED)
 endif()
 
@@ -240,6 +241,7 @@ message("   - using UPnP ....................... ${WITH_MINIUPNPC}")
 message("  ZeroMQ .............................. ${WITH_ZMQ}")
 message("  USDT tracing ........................ ${WITH_USDT}")
 message("Tests:")
+message("  test_bitcoin ........................ ${BUILD_TESTS}")
 message("  bench_bitcoin ....................... ${BUILD_BENCH}")
 message("")
 if(CMAKE_CROSSCOMPILING)
