@@ -2,6 +2,12 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
+if(TARGET bench_bitcoin)
+  add_test(NAME bench_sanity_check_high_priority
+    COMMAND bench_bitcoin -sanity-check -priority-level=high
+  )
+endif()
+
 if(TARGET test_bitcoin)
   function(add_boost_test source_file)
     if(NOT EXISTS ${source_file})
