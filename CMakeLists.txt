@@ -67,6 +67,7 @@ option(BUILD_DAEMON "Build bitcoind executable." ON)
 #       will become opt-in by default before merging into master.
 include(TristateOption)
 tristate_option(WITH_CCACHE "Use ccache for compiling." "if ccache is found." AUTO)
+tristate_option(WITH_NATPMP "Enable NAT-PMP." "if libnatpmp is found." AUTO)
 
 set(configure_warnings)
 
@@ -203,6 +204,9 @@ message("Configure summary")
 message("=================")
 message("Executables:")
 message("  bitcoind ............................ ${BUILD_DAEMON}")
+message("Optional features:")
+message("  port mapping:")
+message("   - using NAT-PMP .................... ${WITH_NATPMP}")
 message("")
 if(CMAKE_CROSSCOMPILING)
   set(cross_status "TRUE, for ${CMAKE_SYSTEM_NAME}, ${CMAKE_SYSTEM_PROCESSOR}")
