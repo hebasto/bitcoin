@@ -57,6 +57,9 @@ if(HAVE_CLMUL)
       core_base_interface
       minisketch_common
   )
+  set_target_properties(minisketch_clmul PROPERTIES
+    EXPORT_COMPILE_COMMANDS OFF
+  )
 endif()
 
 add_library(minisketch STATIC EXCLUDE_FROM_ALL
@@ -81,4 +84,8 @@ target_link_libraries(minisketch
     core_base_interface
     minisketch_common
     $<TARGET_NAME_IF_EXISTS:minisketch_clmul>
+)
+
+set_target_properties(minisketch PROPERTIES
+  EXPORT_COMPILE_COMMANDS OFF
 )
