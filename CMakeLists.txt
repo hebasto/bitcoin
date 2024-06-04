@@ -91,6 +91,7 @@ tristate_option(WITH_USDT
   "if sys/sdt.h is found."
   AUTO
 )
+cmake_dependent_option(ENABLE_EXTERNAL_SIGNER "Enable external signer support." ON "NOT WIN32" OFF)
 tristate_option(WITH_QRENCODE "Enable QR code support." "if libqrencode is found." AUTO)
 
 cmake_dependent_option(BUILD_GUI_TESTS "Build test_bitcoin-qt executable." ON "BUILD_TESTS" OFF)
@@ -464,6 +465,7 @@ if(ENABLE_WALLET)
   message("   - descriptor wallets (SQLite) ...... ${WITH_SQLITE}")
   message("   - legacy wallets (Berkeley DB) ..... ${WITH_BDB}")
 endif()
+message("  external signer ..................... ${ENABLE_EXTERNAL_SIGNER}")
 message("  port mapping:")
 message("   - using NAT-PMP .................... ${WITH_NATPMP}")
 message("   - using UPnP ....................... ${WITH_MINIUPNPC}")
