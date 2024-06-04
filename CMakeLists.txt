@@ -63,6 +63,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
 include(CMakeDependentOption)
 # When adding a new option, end the <help_text> with a full stop for consistency.
 option(BUILD_DAEMON "Build bitcoind executable." ON)
+option(WITH_GUI "Build bitcoin-qt executable." OFF)
 option(BUILD_CLI "Build bitcoin-cli executable." ON)
 
 option(BUILD_TESTS "Build test_bitcoin executable." ON)
@@ -144,7 +145,6 @@ endif()
 
 cmake_dependent_option(ENABLE_EXTERNAL_SIGNER "Enable external signer support." ON "NOT WIN32" OFF)
 
-include(cmake/optional_qt.cmake)
 cmake_dependent_option(WITH_QRENCODE "Enable QR code support." ON "WITH_GUI" OFF)
 if(WITH_QRENCODE)
   find_package(PkgConfig REQUIRED)
@@ -160,7 +160,7 @@ if(WITH_MULTIPROCESS)
   find_package(LibmultiprocessGen CONFIG REQUIRED)
 endif()
 
-cmake_dependent_option(BUILD_GUI_TESTS "Build test_bitcoin-qt executable." ON "BUILD_TESTS" OFF)
+cmake_dependent_option(BUILD_GUI_TESTS "Build test_bitcoin-qt executable." ON "WITH_GUI;BUILD_TESTS" OFF)
 option(BUILD_BENCH "Build bench_bitcoin executable." OFF)
 option(BUILD_FUZZ_BINARY "Build fuzz binary." OFF)
 cmake_dependent_option(ENABLE_FUZZ "Build for fuzzing. Enabling this will disable all other targets and override BUILD_FUZZ_BINARY." OFF "NOT MSVC" OFF)

@@ -127,11 +127,11 @@ unset(pkg_config_path)
 set(PKG_CONFIG_ARGN --static)
 
 
-# Ensure that the docstrings in the following `set(... CACHE ...)`
-# commands match those in the root CMakeLists.txt file.
-
-if(NOT WITH_GUI AND "@no_qt@" STREQUAL "1")
-  set(WITH_GUI OFF CACHE STRING "Build GUI.")
+# Set configuration options for the main build system.
+if("@no_qt@")
+  set(WITH_GUI OFF CACHE BOOL "")
+else()
+  set(WITH_GUI ON CACHE BOOL "")
 endif()
 
 if(NOT WITH_QRENCODE AND "@no_qr@" STREQUAL "1")

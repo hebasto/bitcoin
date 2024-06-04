@@ -15,7 +15,7 @@
       "toolchainFile": "$env{VCPKG_ROOT}\\scripts\\buildsystems\\vcpkg.cmake",
       "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "x64-windows",
-        "WITH_GUI": "Qt5",
+        "WITH_GUI": "ON",
         "WITH_QRENCODE": "OFF",
         "WITH_NATPMP": "OFF"
       }
@@ -33,7 +33,7 @@
       "toolchainFile": "$env{VCPKG_ROOT}\\scripts\\buildsystems\\vcpkg.cmake",
       "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "x64-windows-static",
-        "WITH_GUI": "Qt5",
+        "WITH_GUI": "ON",
         "WITH_QRENCODE": "OFF",
         "WITH_NATPMP": "OFF"
       }
