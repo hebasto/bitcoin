@@ -956,12 +956,58 @@ kernel_BlockIndex* kernel_get_block_index_from_tip(const kernel_Context* context
     return reinterpret_cast<kernel_BlockIndex*>(WITH_LOCK(::cs_main, return chainman->ActiveChain().Tip()));
 }
 
+kernel_BlockIndex* kernel_get_block_index_from_genesis(const kernel_Context* context_, kernel_ChainstateManager* chainman_)
+{
+    auto chainman{cast_chainstate_manager(chainman_)};
+    return reinterpret_cast<kernel_BlockIndex*>(WITH_LOCK(::cs_main, return chainman->ActiveChain().Genesis()));
+}
+
+kernel_BlockIndex* kernel_get_block_index_from_hash(const kernel_Context* context_, kernel_ChainstateManager* chainman_, kernel_BlockHash* block_hash)
+{
+    auto chainman{cast_chainstate_manager(chainman_)};
+
+    auto hash = uint256{std::span<const unsigned char>{(*block_hash).hash, 32}};
+    auto block_index = WITH_LOCK(::cs_main, return chainman->m_blockman.LookupBlockIndex(hash));
+    if (!block_index) {
+        LogDebug(BCLog::KERNEL, "A block with the given hash is not indexed.");
+        return nullptr;
+    }
+    return reinterpret_cast<kernel_BlockIndex*>(block_index);
+}
+
+kernel_BlockIndex* kernel_get_block_index_from_height(const kernel_Context* context_, kernel_ChainstateManager* chainman_, int height)
+{
+    auto chainman{cast_chainstate_manager(chainman_)};
+
+    LOCK(cs_main);
+
+    if (height < 0 || height > chainman->ActiveChain().Height()) {
+        LogDebug(BCLog::KERNEL, "Block height is out of range.");
+        return nullptr;
+    }
+    return reinterpret_cast<kernel_BlockIndex*>(chainman->ActiveChain()[height]);
+}
+
+kernel_BlockIndex* kernel_get_next_block_index(const kernel_Context* context_, kernel_ChainstateManager* chainman_, const kernel_BlockIndex* block_index_)
+{
+    const auto block_index{cast_const_block_index(block_index_)};
+    auto chainman{cast_chainstate_manager(chainman_)};
+
+    auto next_block_index{WITH_LOCK(::cs_main, return chainman->ActiveChain().Next(block_index))};
+
+    if (!next_block_index) {
+        LogTrace(BCLog::KERNEL, "The block index is the tip of the current chain, it does not have a next.");
+    }
+
+    return reinterpret_cast<kernel_BlockIndex*>(next_block_index);
+}
+
 kernel_BlockIndex* kernel_get_previous_block_index(const kernel_BlockIndex* block_index_)
 {
     const CBlockIndex* block_index{cast_const_block_index(block_index_)};
 
     if (!block_index->pprev) {
-        LogInfo("Genesis block has no previous.");
+        LogTrace(BCLog::KERNEL, "The block index is the genesis, it has no previous.");
         return nullptr;
     }
 
@@ -1047,6 +1093,28 @@ kernel_TransactionOutput* kernel_get_undo_output_by_index(const kernel_BlockUndo
 
     CTxOut* prevout{new CTxOut{tx_undo.vprevout.at(output_index).out}};
     return reinterpret_cast<kernel_TransactionOutput*>(prevout);
+}
+
+int32_t kernel_block_index_get_height(const kernel_BlockIndex* block_index_)
+{
+    auto block_index{cast_const_block_index(block_index_)};
+    return block_index->nHeight;
+}
+
+kernel_BlockHash* kernel_block_index_get_block_hash(const kernel_BlockIndex* block_index_)
+{
+    auto block_index{cast_const_block_index(block_index_)};
+    if (block_index->phashBlock == nullptr) {
+        return nullptr;
+    }
+    auto block_hash = new kernel_BlockHash{};
+    std::memcpy(block_hash->hash, block_index->phashBlock->begin(), sizeof(*block_index->phashBlock));
+    return block_hash;
+}
+
+void kernel_block_hash_destroy(kernel_BlockHash* hash)
+{
+    if (hash) delete hash;
 }
 
 kernel_ScriptPubkey* kernel_copy_script_pubkey_from_output(kernel_TransactionOutput* output_)

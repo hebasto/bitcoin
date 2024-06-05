@@ -483,6 +483,13 @@ public:
     }
 };
 
+struct BlockHashDeleter {
+    void operator()(kernel_BlockHash* ptr) const
+    {
+        kernel_block_hash_destroy(ptr);
+    }
+};
+
 class BlockIndex
 {
 private:
@@ -506,6 +513,22 @@ public:
         auto index{kernel_get_previous_block_index(m_block_index.get())};
         if (!index) return std::nullopt;
         return index;
+    }
+
+    int32_t GetHeight() const noexcept
+    {
+        if (!m_block_index) {
+            return -1;
+        }
+        return kernel_block_index_get_height(m_block_index.get());
+    }
+
+    std::unique_ptr<kernel_BlockHash, BlockHashDeleter> GetHash() const noexcept
+    {
+        if (!m_block_index) {
+            return nullptr;
+        }
+        return std::unique_ptr<kernel_BlockHash, BlockHashDeleter>(kernel_block_index_get_block_hash(m_block_index.get()));
     }
 
     operator bool() const noexcept
@@ -557,6 +580,30 @@ public:
     BlockIndex GetBlockIndexFromTip() const noexcept
     {
         return kernel_get_block_index_from_tip(m_context.m_context.get(), m_chainman);
+    }
+
+    BlockIndex GetBlockIndexFromGenesis() const noexcept
+    {
+        return kernel_get_block_index_from_genesis(m_context.m_context.get(), m_chainman);
+    }
+
+    BlockIndex GetBlockIndexByHash(kernel_BlockHash* block_hash) const noexcept
+    {
+        return kernel_get_block_index_from_hash(m_context.m_context.get(), m_chainman, block_hash);
+    }
+
+    std::optional<BlockIndex> GetBlockIndexByHeight(int height) const noexcept
+    {
+        auto index{kernel_get_block_index_from_height(m_context.m_context.get(), m_chainman, height)};
+        if (!index) return std::nullopt;
+        return index;
+    }
+
+    std::optional<BlockIndex> GetNextBlockIndex(BlockIndex& block_index) const noexcept
+    {
+        auto index{kernel_get_next_block_index(m_context.m_context.get(), m_chainman, block_index.m_block_index.get())};
+        if (!index) return std::nullopt;
+        return index;
     }
 
     std::optional<Block> ReadBlock(BlockIndex& block_index) const noexcept
