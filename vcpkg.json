@@ -1,10 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-  "builtin-baseline": "a34c873a9717a888f58dc05268dea15592c2f0ff",
+  "builtin-baseline": "8eb57355a4ffb410a2e94c07b4dca2dffbee8e50",
   "overrides":[
     {"name": "libevent", "version": "2.1.12#7"},
-    {"name": "liblzma", "version": "5.4.1#1"},
-    {"name": "harfbuzz", "version": "8.1.1"}
+    {"name": "liblzma", "version": "5.4.1#1"}
   ],
   "dependencies": [
     "boost-date-time",
