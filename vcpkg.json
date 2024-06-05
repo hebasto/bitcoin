@@ -3,7 +3,8 @@
   "builtin-baseline": "a34c873a9717a888f58dc05268dea15592c2f0ff",
   "overrides":[
     {"name": "libevent", "version": "2.1.12#7"},
-    {"name": "liblzma", "version": "5.4.1#1"}
+    {"name": "liblzma", "version": "5.4.1#1"},
+    {"name": "harfbuzz", "version": "8.1.1"}
   ],
   "dependencies": [
     "boost-date-time",
