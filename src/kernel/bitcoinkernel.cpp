@@ -593,6 +593,12 @@ kernel_Context* kernel_context_create(const kernel_ContextOptions* options_)
     return reinterpret_cast<kernel_Context*>(context);
 }
 
+bool kernel_context_interrupt(kernel_Context* context_)
+{
+    auto& context{*cast_context(context_)};
+    return (*context.m_interrupt)();
+}
+
 void kernel_context_destroy(kernel_Context* context)
 {
     if (context) {
