@@ -1,10 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
-  "builtin-baseline": "01f602195983451bc83e72f4214af2cbc495aa94",
+  "builtin-baseline": "a34c873a9717a888f58dc05268dea15592c2f0ff",
   "overrides":[
-    {"name": "boost-date-time", "version": "1.84.0"},
-    {"name": "boost-multi-index", "version": "1.84.0"},
-    {"name": "boost-signals2", "version": "1.84.0"},
     {"name": "libevent", "version": "2.1.12#7"},
     {"name": "liblzma", "version": "5.4.1#1"}
   ],
