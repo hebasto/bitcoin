@@ -123,6 +123,11 @@ jobs:
           # https://github.com/actions/cache/blob/main/tips-and-workarounds.md#update-a-cache
           key: ${{ github.job }}-ccache-${{ github.run_id }}
 
+      - name: Inspect build directory
+        run: |
+          dir build/src/Release
+          dir build/src/test/Release
+
       - name: Run test suite
         working-directory: build
         run: |
