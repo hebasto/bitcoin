@@ -85,3 +85,48 @@ jobs:
         with:
           path: ~/AppData/Local/vcpkg/archives
           key: ${{ matrix.conf.triplet }}-vcpkg-binary-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
+
+      - name: Restore Ccache cache
+        id: ccache-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/AppData/Local/ccache
+          key: ${{ matrix.conf.triplet }}-ccache-${{ github.run_id }}
+          restore-keys: ${{ matrix.conf.triplet }}-ccache-
+
+      - name: Build Release configuration
+        working-directory: build
+        run: |
+          ccache --zero-stats
+          cmake --build . -j $env:NUMBER_OF_PROCESSORS --config Release
+
+      - name: Ccache stats
+        run: |
+          ccache --version | head -n 1
+          ccache --show-stats --verbose
+
+      - name: Save Ccache cache
+        uses: actions/cache/save@v4
+        if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true'
+        with:
+          path: ~/AppData/Local/ccache
+          key: ${{ matrix.conf.triplet }}-ccache-${{ github.run_id }}
+
+      - name: Inspect build artifacts
+        working-directory: build
+        run: |
+          dumpbin /imports src\Release\bitcoind.exe | Select-String -Pattern "\.(?i:dll)" | Sort-Object
+          ""
+          (Get-Item src\Release\bitcoind.exe).Length
+
+      - name: Test Release configuration
+        working-directory: build
+        run: |
+          ctest -j $env:NUMBER_OF_PROCESSORS -C Release
+
+      - name: Install and run Release configuration
+        if: ${{ matrix.conf.skip_install_and_run != 'true' }}
+        run: |
+          cmake --install build --prefix install --config Release
+          tree /f install
+          .\install\bin\bitcoind.exe -version
