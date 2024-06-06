@@ -72,7 +72,6 @@ jobs:
           Set-Location "$env:VCPKG_INSTALLATION_ROOT"
           .\vcpkg.exe --vcpkg-root "$env:VCPKG_INSTALLATION_ROOT" integrate install
           Add-Content -Path "triplets\x64-windows.cmake" -Value "set(VCPKG_BUILD_TYPE release)"
-          Add-Content -Path "triplets\x64-windows.cmake" -Value "set(VCPKG_PLATFORM_TOOLSET_VERSION $env:VCToolsVersion)"
 
       - name: vcpkg tools cache
         uses: actions/cache@v4
@@ -128,6 +127,11 @@ jobs:
         run: |
           dir build/src/Release
           dir build/src/test/Release
+
+      - name: Run in build directory
+        run: |
+          build\src\Release\bitcoind.exe -version
+          build\src\test\Release\test_bitcoin.exe -version
 
       - name: Run test suite
         working-directory: build
