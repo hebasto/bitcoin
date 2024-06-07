@@ -136,6 +136,9 @@ jobs:
       - name: Inspect build artifacts (2)
         working-directory: build
         run: |
+          dumpbin /imports src\Release\bitcoind.exe | Select-String -Pattern "\.(?i:dll)" | Sort-Object
+          ""
+          (Get-Item src\Release\bitcoind.exe).Length
           Get-Command ADVAPI32.dll | Select-Object Name, Path, Version
           Get-Command api-ms-win-crt-environment-l1-1-0.dll | Select-Object Name, Path, Version
           Get-Command api-ms-win-crt-filesystem-l1-1-0.dll | Select-Object Name, Path, Version
