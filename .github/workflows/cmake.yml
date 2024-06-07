@@ -123,12 +123,9 @@ jobs:
           (Get-Command api-ms-win-crt-stdio-l1-1-0.dll).Path
           (Get-Command api-ms-win-crt-string-l1-1-0.dll).Path
           (Get-Command api-ms-win-crt-time-l1-1-0.dll).Path
-          (Get-Command event_core.dll).Path
-          (Get-Command event_extra.dll).Path
           (Get-Command KERNEL32.dll).Path
           (Get-Command MSVCP140.dll).Path
           (Get-Command SHELL32.dll).Path
-          (Get-Command sqlite3.dll).Path
           (Get-Command VCRUNTIME140_1.dll).Path
           (Get-Command VCRUNTIME140.dll).Path
           (Get-Command WS2_32.dll).Path
