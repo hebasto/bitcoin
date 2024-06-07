@@ -54,12 +54,7 @@ jobs:
           Get-Content -Path "msbuild_version"
           Write-Output "---"
           $env:VCToolsVersion | Out-File -FilePath "toolset_version"
-          Get-Content -Path "toolset_version"
-          # GHA Windows images have different versions of MSVC toolsets being installed
-          # side-by-side. Therefore, the VCPKG_PLATFORM_TOOLSET_VERSION must be set explicitly
-          # to avoid linker errors when using vcpkg in the manifest mode.
-          # See: https://github.com/bitcoin/bitcoin/pull/28934
-          Add-Content -Path "$env:VCPKG_INSTALLATION_ROOT\triplets\${{ matrix.conf.triplet }}.cmake" -Value "set(VCPKG_PLATFORM_TOOLSET_VERSION $env:VCToolsVersion)"
+          Write-Host "VCToolsVersion $(Get-Content -Path "toolset_version")"
           # Skip debug configuration to speed up build and minimize cache size.
           Add-Content -Path "$env:VCPKG_INSTALLATION_ROOT\triplets\x64-windows.cmake" -Value "set(VCPKG_BUILD_TYPE release)"
           Add-Content -Path "$env:VCPKG_INSTALLATION_ROOT\triplets\${{ matrix.conf.triplet }}.cmake" -Value "set(VCPKG_BUILD_TYPE release)"
@@ -118,6 +113,25 @@ jobs:
           dumpbin /imports src\Release\bitcoind.exe | Select-String -Pattern "\.(?i:dll)" | Sort-Object
           ""
           (Get-Item src\Release\bitcoind.exe).Length
+          (Get-Command ADVAPI32.dll).Path
+          (Get-Command api-ms-win-crt-environment-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-filesystem-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-heap-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-locale-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-math-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-runtime-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-stdio-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-string-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-time-l1-1-0.dll).Path
+          (Get-Command event_core.dll).Path
+          (Get-Command event_extra.dll).Path
+          (Get-Command KERNEL32.dll).Path
+          (Get-Command MSVCP140.dll).Path
+          (Get-Command SHELL32.dll).Path
+          (Get-Command sqlite3.dll).Path
+          (Get-Command VCRUNTIME140_1.dll).Path
+          (Get-Command VCRUNTIME140.dll).Path
+          (Get-Command WS2_32.dll).Path
 
       - name: Test Release configuration
         working-directory: build
