@@ -113,22 +113,22 @@ jobs:
           dumpbin /imports src\Release\bitcoind.exe | Select-String -Pattern "\.(?i:dll)" | Sort-Object
           ""
           (Get-Item src\Release\bitcoind.exe).Length
-          (Get-Command ADVAPI32.dll).Path
-          (Get-Command api-ms-win-crt-environment-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-filesystem-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-heap-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-locale-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-math-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-runtime-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-stdio-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-string-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-time-l1-1-0.dll).Path
-          (Get-Command KERNEL32.dll).Path
-          (Get-Command MSVCP140.dll).Path
-          (Get-Command SHELL32.dll).Path
-          (Get-Command VCRUNTIME140_1.dll).Path
-          (Get-Command VCRUNTIME140.dll).Path
-          (Get-Command WS2_32.dll).Path
+          Get-Command ADVAPI32.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-environment-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-filesystem-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-heap-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-locale-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-math-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-runtime-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-stdio-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-string-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-time-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command KERNEL32.dll | Select-Object Name, Path, Version
+          Get-Command MSVCP140.dll | Select-Object Name, Path, Version
+          Get-Command SHELL32.dll | Select-Object Name, Path, Version
+          Get-Command VCRUNTIME140_1.dll | Select-Object Name, Path, Version
+          Get-Command VCRUNTIME140.dll | Select-Object Name, Path, Version
+          Get-Command WS2_32.dll | Select-Object Name, Path, Version
 
       - run: |
           "Path=$env:DevEnvDir;$env:Path" | Out-File -FilePath $env:GITHUB_ENV -Append
@@ -136,22 +136,22 @@ jobs:
       - name: Inspect build artifacts (2)
         working-directory: build
         run: |
-          (Get-Command ADVAPI32.dll).Path
-          (Get-Command api-ms-win-crt-environment-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-filesystem-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-heap-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-locale-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-math-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-runtime-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-stdio-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-string-l1-1-0.dll).Path
-          (Get-Command api-ms-win-crt-time-l1-1-0.dll).Path
-          (Get-Command KERNEL32.dll).Path
-          (Get-Command MSVCP140.dll).Path
-          (Get-Command SHELL32.dll).Path
-          (Get-Command VCRUNTIME140_1.dll).Path
-          (Get-Command VCRUNTIME140.dll).Path
-          (Get-Command WS2_32.dll).Path
+          Get-Command ADVAPI32.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-environment-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-filesystem-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-heap-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-locale-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-math-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-runtime-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-stdio-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-string-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command api-ms-win-crt-time-l1-1-0.dll | Select-Object Name, Path, Version
+          Get-Command KERNEL32.dll | Select-Object Name, Path, Version
+          Get-Command MSVCP140.dll | Select-Object Name, Path, Version
+          Get-Command SHELL32.dll | Select-Object Name, Path, Version
+          Get-Command VCRUNTIME140_1.dll | Select-Object Name, Path, Version
+          Get-Command VCRUNTIME140.dll | Select-Object Name, Path, Version
+          Get-Command WS2_32.dll | Select-Object Name, Path, Version
 
       - name: Test Release configuration
         working-directory: build
