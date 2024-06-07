@@ -107,7 +107,7 @@ jobs:
           path: ~/AppData/Local/ccache
           key: ${{ matrix.conf.triplet }}-ccache-${{ github.run_id }}
 
-      - name: Inspect build artifacts
+      - name: Inspect build artifacts (1)
         working-directory: build
         run: |
           dumpbin /imports src\Release\bitcoind.exe | Select-String -Pattern "\.(?i:dll)" | Sort-Object
@@ -130,10 +130,33 @@ jobs:
           (Get-Command VCRUNTIME140.dll).Path
           (Get-Command WS2_32.dll).Path
           Write-Host "===================================="
-          dir "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64"
+          Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\\x64"
           Write-Host "===================================="
-          Remove-Item -Path "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\api-ms-win-crt-locale-l1-1-0.dll"
+          Remove-Item -Path "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\\x64\api-ms-win-crt-locale-l1-1-0.dll"
           (Get-Command api-ms-win-crt-locale-l1-1-0.dll).Path
+
+      - name: Inspect build artifacts (2)
+        working-directory: build
+        run: |
+          dumpbin /imports src\Release\bitcoind.exe | Select-String -Pattern "\.(?i:dll)" | Sort-Object
+          ""
+          (Get-Item src\Release\bitcoind.exe).Length
+          (Get-Command ADVAPI32.dll).Path
+          (Get-Command api-ms-win-crt-environment-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-filesystem-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-heap-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-locale-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-math-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-runtime-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-stdio-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-string-l1-1-0.dll).Path
+          (Get-Command api-ms-win-crt-time-l1-1-0.dll).Path
+          (Get-Command KERNEL32.dll).Path
+          (Get-Command MSVCP140.dll).Path
+          (Get-Command SHELL32.dll).Path
+          (Get-Command VCRUNTIME140_1.dll).Path
+          (Get-Command VCRUNTIME140.dll).Path
+          (Get-Command WS2_32.dll).Path
 
       - name: Test Release configuration
         working-directory: build
