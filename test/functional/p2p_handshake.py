@@ -90,4 +90,4 @@ class P2PHandshakeTest(BitcoinTestFramework):
 
 
 if __name__ == '__main__':
-    P2PHandshakeTest().main()
+    P2PHandshakeTest(__file__).main()
