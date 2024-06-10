@@ -27,8 +27,9 @@ jobs:
     - uses: vmactions/solaris-vm@v1
       with:
         prepare: |
-          uname -a
           pkg install cmake libevent pkg-config
+          cmake --version
+          which cmake
         run: |
           cmake -B build
         copyback: false
