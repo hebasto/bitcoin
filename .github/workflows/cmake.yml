@@ -26,6 +26,7 @@ jobs:
 
     - uses: vmactions/solaris-vm@v1
       with:
+        # cmake version 3.9.1
         prepare: |
           pkg install cmake libevent pkg-config
           cmake --version
