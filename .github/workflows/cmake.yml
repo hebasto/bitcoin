@@ -18,17 +18,17 @@ concurrency:
 
 jobs:
   solaris:
-    name: 'Solaris, no depends, sqlite only, no gui'
+    name: 'OmniOS, no depends, sqlite only, no gui'
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
 
-    - uses: vmactions/solaris-vm@v1
+    - uses: vmactions/omnios-vm@v1
       with:
         # cmake version 3.9.1
         prepare: |
-          pkg install cmake libevent pkg-config
+          pkg install cmake libevent
           cmake --version
           which cmake
         run: |
