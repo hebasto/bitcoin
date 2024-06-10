@@ -655,3 +655,20 @@ jobs:
         run: |
           cmake --build build --target deploy
           ls -l build/*.zip
+
+
+  solaris:
+    name: 'Solaris, no depends, sqlite only, no gui'
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: vmactions/solaris-vm@v1
+      with:
+        prepare: |
+          uname -a
+          pkg install -y cmake boost-libs libevent pkgconf sqlite3 libzmq4 python3
+        run: |
+          cmake -B build
+        copyback: false
