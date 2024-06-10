@@ -29,8 +29,8 @@ jobs:
         # cmake version 3.29.2
         prepare: |
           pkg install cmake clang-18
-          cmake --version
-          which cmake
+          pkg search boost
+          pkg install boost-headers
         run: |
           cmake -B build
         copyback: false
