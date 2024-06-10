@@ -28,7 +28,7 @@ jobs:
       with:
         prepare: |
           uname -a
-          pkg install cmake boost-libs libevent pkgconf sqlite3 libzmq4 python3
+          pkg install cmake libevent pkg-config
         run: |
           cmake -B build
         copyback: false
