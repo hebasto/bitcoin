@@ -28,7 +28,7 @@ jobs:
       with:
         # cmake version 3.9.1
         prepare: |
-          pkg install cmake libevent
+          pkg install cmake
           cmake --version
           which cmake
         run: |
