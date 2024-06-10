@@ -28,8 +28,9 @@ jobs:
       with:
         # cmake version 3.29.2
         prepare: |
+          pkg refresh
+          pkg list
           pkg install cmake clang-18
-          pkg list -u
         run: |
           cmake -B build
         copyback: false
