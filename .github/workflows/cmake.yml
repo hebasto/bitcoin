@@ -28,7 +28,7 @@ jobs:
       with:
         # cmake version 3.29.2
         prepare: |
-          pkg install cmake
+          pkg install cmake clang-18
           cmake --version
           which cmake
         run: |
