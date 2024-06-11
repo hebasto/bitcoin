@@ -28,9 +28,8 @@ jobs:
       with:
         # cmake version 3.29.2
         prepare: |
-          pkg refresh
-          pkg list
           pkg install cmake clang-18
         run: |
+          make -C depends NO_QT=1 NO_WALLET=1 NO_UPNP=1 NO_NATPMP=1 NO_ZMQ=1 NO_USDT=1
           cmake -B build
         copyback: false
