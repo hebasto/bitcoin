@@ -20,5 +20,5 @@ export GOAL="deploy"
 # Prior to 11.0.0, the mingw-w64 headers were missing noreturn attributes, causing warnings when
 # cross-compiling for Windows. https://sourceforge.net/p/mingw-w64/bugs/306/
 # https://github.com/mingw-w64/mingw-w64/commit/1690994f515910a31b9fb7c7bd3a52d4ba987abe
-export BITCOIN_CONFIG="-DREDUCE_EXPORTS=ON -DBUILD_GUI_TESTS=OFF -DBUILD_KERNEL_LIB=ON -DBUILD_KERNEL_TEST=ON \
+export BITCOIN_CONFIG="-DREDUCE_EXPORTS=ON -DBUILD_GUI_TESTS=OFF -DBUILD_KERNEL_LIB=ON -DBUILD_KERNEL_TEST=ON -DBUILD_UTIL_CHAINSTATE=ON \
 -DCMAKE_CXX_FLAGS='-Wno-error=maybe-uninitialized -Wno-error=array-bounds'"
