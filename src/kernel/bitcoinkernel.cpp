@@ -6,6 +6,7 @@
 
 #include <kernel/bitcoinkernel.h>
 
+#include <chain.h>
 #include <consensus/amount.h>
 #include <consensus/validation.h>
 #include <kernel/caches.h>
@@ -17,6 +18,7 @@
 #include <logging.h>
 #include <node/blockstorage.h>
 #include <node/chainstate.h>
+#include <primitives/block.h>
 #include <primitives/transaction.h>
 #include <script/interpreter.h>
 #include <script/script.h>
@@ -24,6 +26,7 @@
 #include <streams.h>
 #include <sync.h>
 #include <tinyformat.h>
+#include <uint256.h>
 #include <util/fs.h>
 #include <util/result.h>
 #include <util/signalinterrupt.h>
@@ -42,8 +45,6 @@
 #include <tuple>
 #include <utility>
 #include <vector>
-
-class CBlockIndex;
 
 // Define G_TRANSLATION_FUN symbol in libbitcoinkernel library so users of the
 // library aren't required to export this symbol
@@ -329,6 +330,12 @@ ChainstateManager* cast_chainstate_manager(kernel_ChainstateManager* chainman)
 {
     assert(chainman);
     return reinterpret_cast<ChainstateManager*>(chainman);
+}
+
+std::shared_ptr<CBlock>* cast_cblocksharedpointer(kernel_Block* block)
+{
+    assert(block);
+    return reinterpret_cast<std::shared_ptr<CBlock>*>(block);
 }
 
 } // namespace
@@ -690,4 +697,41 @@ void kernel_chainstate_manager_destroy(kernel_ChainstateManager* chainman_, cons
 
     delete chainman;
     return;
+}
+
+kernel_Block* kernel_block_create(const unsigned char* raw_block, size_t raw_block_length)
+{
+    auto block{new CBlock()};
+
+    DataStream stream{std::span{raw_block, raw_block_length}};
+
+    try {
+        stream >> TX_WITH_WITNESS(*block);
+    } catch (const std::exception&) {
+        delete block;
+        LogDebug(BCLog::KERNEL, "Block decode failed.");
+        return nullptr;
+    }
+
+    return reinterpret_cast<kernel_Block*>(new std::shared_ptr<CBlock>(block));
+}
+
+void kernel_block_destroy(kernel_Block* block)
+{
+    if (block) {
+        delete cast_cblocksharedpointer(block);
+    }
+}
+
+bool kernel_chainstate_manager_process_block(
+    const kernel_Context* context_,
+    kernel_ChainstateManager* chainman_,
+    kernel_Block* block_,
+    bool* new_block)
+{
+    auto& chainman{*cast_chainstate_manager(chainman_)};
+
+    auto blockptr{cast_cblocksharedpointer(block_)};
+
+    return chainman.ProcessNewBlock(*blockptr, /*force_processing=*/true, /*min_pow_checked=*/true, /*new_block=*/new_block);
 }

@@ -189,6 +189,11 @@ typedef struct kernel_ChainstateManagerOptions kernel_ChainstateManagerOptions;
  */
 typedef struct kernel_ChainstateManager kernel_ChainstateManager;
 
+/**
+ * Opaque data structure for holding a block.
+ */
+typedef struct kernel_Block kernel_Block;
+
 /** Current sync state passed to tip changed callbacks. */
 typedef enum {
     kernel_INIT_REINDEX,
@@ -656,9 +661,48 @@ BITCOINKERNEL_API kernel_ChainstateManager* BITCOINKERNEL_WARN_UNUSED_RESULT ker
 ) BITCOINKERNEL_ARG_NONNULL(1, 2);
 
 /**
+ * @brief Process and validate the passed in block with the chainstate manager.
+ *
+ * @param[in] context            Non-null.
+ * @param[in] chainstate_manager Non-null.
+ * @param[in] block              Non-null, block to be validated.
+ * @param[out] new_block         Nullable, will be set to true if this block was not processed before, and false otherwise.
+ * @return                       True if processing the block was successful. Will also return true for valid, but duplicate blocks.
+ */
+BITCOINKERNEL_API bool BITCOINKERNEL_WARN_UNUSED_RESULT kernel_chainstate_manager_process_block(
+    const kernel_Context* context,
+    kernel_ChainstateManager* chainstate_manager,
+    kernel_Block* block,
+    bool* new_block
+) BITCOINKERNEL_ARG_NONNULL(1, 2, 3);
+
+/**
  * Destroy the chainstate manager.
  */
 BITCOINKERNEL_API void kernel_chainstate_manager_destroy(kernel_ChainstateManager* chainstate_manager, const kernel_Context* context);
+
+///@}
+
+/** @name Block
+ * Functions for working with blocks.
+ */
+///@{
+
+/**
+ * @brief Parse a serialized raw block into a new block object.
+ *
+ * @param[in] raw_block     Non-null, serialized block.
+ * @param[in] raw_block_len Length of the serialized block.
+ * @return                  The allocated block, or null on error.
+ */
+BITCOINKERNEL_API kernel_Block* BITCOINKERNEL_WARN_UNUSED_RESULT kernel_block_create(
+    const unsigned char* raw_block, size_t raw_block_len
+) BITCOINKERNEL_ARG_NONNULL(1);
+
+/**
+ * Destroy the block.
+ */
+BITCOINKERNEL_API void kernel_block_destroy(kernel_Block* block);
 
 ///@}
 

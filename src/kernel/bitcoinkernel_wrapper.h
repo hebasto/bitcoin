@@ -290,6 +290,32 @@ public:
     friend class ChainMan;
 };
 
+class Block
+{
+private:
+    struct Deleter {
+        void operator()(kernel_Block* ptr) const
+        {
+            kernel_block_destroy(ptr);
+        }
+    };
+
+    const std::unique_ptr<kernel_Block, Deleter> m_block;
+
+public:
+    Block(const std::span<const unsigned char> raw_block) noexcept
+        : m_block{kernel_block_create(raw_block.data(), raw_block.size())}
+    {
+    }
+
+    /** Check whether this Block object is valid. */
+    explicit operator bool() const noexcept { return bool{m_block}; }
+
+    Block(kernel_Block* block) noexcept : m_block{block} {}
+
+    friend class ChainMan;
+};
+
 class ChainMan
 {
 private:
@@ -308,6 +334,12 @@ public:
 
     ChainMan(const ChainMan&) = delete;
     ChainMan& operator=(const ChainMan&) = delete;
+
+
+    bool ProcessBlock(const Block& block, bool* new_block) const noexcept
+    {
+        return kernel_chainstate_manager_process_block(m_context.m_context.get(), m_chainman, block.m_block.get(), new_block);
+    }
 
     ~ChainMan()
     {
