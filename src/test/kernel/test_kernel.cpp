@@ -332,28 +332,37 @@ void chainman_test()
     ChainstateManagerOptions chainman_opts{context, test_directory.m_directory.string(), (test_directory.m_directory / "blocks").string()};
     assert(chainman_opts);
     chainman_opts.SetWorkerThreads(4);
+    assert(chainman_opts.SetWipeDbs(/*wipe_block_tree=*/false, /*wipe_chainstate=*/false));
+    assert(!chainman_opts.SetWipeDbs(/*wipe_block_tree=*/true, /*wipe_chainstate=*/false));
     ChainMan chainman{context, chainman_opts};
     assert(chainman);
 }
 
 std::unique_ptr<ChainMan> create_chainman(TestDirectory& test_directory,
+                                          bool reindex,
+                                          bool wipe_chainstate,
                                           Context& context)
 {
     ChainstateManagerOptions chainman_opts{context, test_directory.m_directory.string(), (test_directory.m_directory / "blocks").string()};
     assert(chainman_opts);
+
+    if (reindex) {
+        chainman_opts.SetWipeDbs(/*wipe_block_tree=*/reindex, /*wipe_chainstate=*/reindex);
+    }
+    if (wipe_chainstate) {
+        chainman_opts.SetWipeDbs(/*wipe_block_tree=*/false, /*wipe_chainstate=*/wipe_chainstate);
+    }
+
     auto chainman{std::make_unique<ChainMan>(context, chainman_opts)};
     assert(chainman);
-
     return chainman;
 }
 
-void chainman_mainnet_validation_test()
+void chainman_mainnet_validation_test(TestDirectory& test_directory)
 {
-    auto mainnet_test_directory{TestDirectory{"mainnet_test_bitcoin_kernel"}};
-
     TestKernelNotifications notifications{};
     auto context{create_context(notifications, kernel_ChainType::kernel_CHAIN_TYPE_MAINNET)};
-    auto chainman{create_chainman(mainnet_test_directory, context)};
+    auto chainman{create_chainman(test_directory, false, false, context)};
 
     {
         // Process an invalid block
@@ -394,7 +403,7 @@ void chainman_regtest_validation_test()
     const size_t mid{REGTEST_BLOCK_DATA.size() / 2};
 
     {
-        auto chainman{create_chainman(test_directory, context)};
+        auto chainman{create_chainman(test_directory, false, false, context)};
         for (size_t i{0}; i < mid; i++) {
             Block block{REGTEST_BLOCK_DATA[i]};
             assert(block);
@@ -404,7 +413,7 @@ void chainman_regtest_validation_test()
         }
     }
 
-    auto chainman{create_chainman(test_directory, context)};
+    auto chainman{create_chainman(test_directory, false, false, context)};
 
     for (size_t i{mid}; i < REGTEST_BLOCK_DATA.size(); i++) {
         Block block{REGTEST_BLOCK_DATA[i]};
@@ -413,6 +422,20 @@ void chainman_regtest_validation_test()
         assert(chainman->ProcessBlock(block, &new_block));
         assert(new_block == true);
     }
+}
+
+void chainman_reindex_test(TestDirectory& test_directory)
+{
+    TestKernelNotifications notifications{};
+    auto context{create_context(notifications, kernel_ChainType::kernel_CHAIN_TYPE_MAINNET)};
+    auto chainman{create_chainman(test_directory, true, false, context)};
+}
+
+void chainman_reindex_chainstate_test(TestDirectory& test_directory)
+{
+    TestKernelNotifications notifications{};
+    auto context{create_context(notifications, kernel_ChainType::kernel_CHAIN_TYPE_MAINNET)};
+    auto chainman{create_chainman(test_directory, false, true, context)};
 }
 
 int main()
@@ -434,8 +457,12 @@ int main()
 
     chainman_test();
 
-    chainman_mainnet_validation_test();
+    auto mainnet_test_directory{TestDirectory{"mainnet_test_bitcoin_kernel"}};
+    chainman_mainnet_validation_test(mainnet_test_directory);
+
     chainman_regtest_validation_test();
+    chainman_reindex_test(mainnet_test_directory);
+    chainman_reindex_chainstate_test(mainnet_test_directory);
 
     std::cout << "Libbitcoinkernel test completed." << std::endl;
     return 0;

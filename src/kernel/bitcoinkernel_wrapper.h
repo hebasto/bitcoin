@@ -284,6 +284,11 @@ public:
         kernel_chainstate_manager_options_set_worker_threads_num(m_options.get(), worker_threads);
     }
 
+    bool SetWipeDbs(bool wipe_block_tree, bool wipe_chainstate) const noexcept
+    {
+        return kernel_chainstate_manager_options_set_wipe_dbs(m_options.get(), wipe_block_tree, wipe_chainstate);
+    }
+
     /** Check whether this ChainstateManagerOptions object is valid. */
     explicit operator bool() const noexcept { return bool{m_options}; }
 

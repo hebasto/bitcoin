@@ -629,6 +629,19 @@ void kernel_chainstate_manager_options_destroy(kernel_ChainstateManagerOptions* 
     }
 }
 
+bool kernel_chainstate_manager_options_set_wipe_dbs(kernel_ChainstateManagerOptions* chainman_opts_, bool wipe_block_tree_db, bool wipe_chainstate_db)
+{
+    if (wipe_block_tree_db && !wipe_chainstate_db) {
+        LogError("Wiping the block tree db without also wiping the chainstate db is currently unsupported.");
+        return false;
+    }
+    auto opts{cast_chainstate_manager_options(chainman_opts_)};
+    LOCK(opts->m_mutex);
+    opts->m_blockman_options.block_tree_db_params.wipe_data = wipe_block_tree_db;
+    opts->m_chainstate_load_options.wipe_chainstate_db = wipe_chainstate_db;
+    return true;
+}
+
 kernel_ChainstateManager* kernel_chainstate_manager_create(
     const kernel_Context* context_,
     const kernel_ChainstateManagerOptions* chainman_opts_)
