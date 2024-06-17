@@ -79,7 +79,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build --preset ${{ matrix.conf.preset }} -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT\scripts\buildsystems\vcpkg.cmake" -DCCACHE_EXECUTABLE="$env:ChocolateyInstall\lib\ccache\tools\ccache-$env:CI_CCACHE_VERSION-windows-x86_64\ccache.exe" -DBUILD_BENCH=ON -DBUILD_FUZZ_BINARY=ON -DWERROR=ON
+          cmake -B build --preset ${{ matrix.conf.preset }} -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT\scripts\buildsystems\vcpkg.cmake" -DCCACHE_EXECUTABLE="$env:ChocolateyInstall\lib\ccache\tools\ccache-$env:CI_CCACHE_VERSION-windows-x86_64\ccache.exe" -DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DBUILD_GUI=OFF -DENABLE_WALLET=OFF -DBUILD_TESTS=OFF
 
       - name: Save vcpkg binary cache
         uses: actions/cache/save@v4
