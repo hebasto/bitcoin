@@ -76,6 +76,7 @@ jobs:
       - name: Install Ccache
         run: |
           choco install --yes --no-progress ccache --version=$env:CI_CCACHE_VERSION
+          dir "$env:ChocolateyInstall\lib\ccache\tools"
 
       - name: Generate build system
         run: |
