@@ -107,11 +107,7 @@ cmake_dependent_option(BUILD_WALLET_TOOL "Build bitcoin-wallet tool." ${BUILD_TE
 option(ENABLE_HARDENING "Attempt to harden the resulting executables." ON)
 option(REDUCE_EXPORTS "Attempt to reduce exported symbols in the resulting executables." OFF)
 option(WERROR "Treat compiler warnings as errors." OFF)
-
-# TODO: These tri-state options will be removed and most features
-#       will become opt-in by default before merging into master.
-include(TristateOption)
-tristate_option(WITH_CCACHE "Use ccache for compiling." "if ccache is found." AUTO)
+option(WITH_CCACHE "Attempt to use ccache for compiling." ON)
 
 option(WITH_NATPMP "Enable NAT-PMP." OFF)
 if(WITH_NATPMP)
@@ -365,6 +361,8 @@ endif()
 
 include(cmake/introspection.cmake)
 
+include(cmake/ccache.cmake)
+
 include(cmake/crc32c.cmake)
 include(cmake/leveldb.cmake)
 include(cmake/minisketch.cmake)
@@ -497,8 +495,6 @@ configure_file(cmake/script/Coverage.cmake Coverage.cmake COPYONLY)
 configure_file(cmake/script/CoverageFuzz.cmake CoverageFuzz.cmake COPYONLY)
 configure_file(cmake/script/CoverageInclude.cmake.in CoverageInclude.cmake @ONLY)
 configure_file(contrib/filter-lcov.py filter-lcov.py COPYONLY)
-
-include(cmake/optional.cmake)
 
 # Don't allow extended (non-ASCII) symbols in identifiers. This is easier for code review.
 try_append_cxx_flags("-fno-extended-identifiers" TARGET core_base_interface SKIP_LINK)

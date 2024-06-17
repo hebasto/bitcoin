@@ -520,10 +520,6 @@ jobs:
           path: ~/AppData/Local/vcpkg/archives
           key: ${{ matrix.conf.triplet }}-vcpkg-binary-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
 
-      - name: Install Ccache
-        run: |
-          choco install --yes --no-progress ccache
-
       - name: Generate build system
         run: |
           cmake -B build --preset ${{ matrix.conf.preset }} -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT\scripts\buildsystems\vcpkg.cmake" -DBUILD_BENCH=ON -DBUILD_FUZZ_BINARY=ON -DWERROR=ON
@@ -535,31 +531,10 @@ jobs:
           path: ~/AppData/Local/vcpkg/archives
           key: ${{ matrix.conf.triplet }}-vcpkg-binary-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
 
-      - name: Restore Ccache cache
-        id: ccache-cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ~/AppData/Local/ccache
-          key: ${{ matrix.conf.triplet }}-ccache-${{ github.run_id }}
-          restore-keys: ${{ matrix.conf.triplet }}-ccache-
-
       - name: Build Release configuration
         working-directory: build
         run: |
-          ccache --zero-stats
           cmake --build . -j $env:NUMBER_OF_PROCESSORS --config Release
-
-      - name: Ccache stats
-        run: |
-          ccache --version | head -n 1
-          ccache --show-stats --verbose
-
-      - name: Save Ccache cache
-        uses: actions/cache/save@v4
-        if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true'
-        with:
-          path: ~/AppData/Local/ccache
-          key: ${{ matrix.conf.triplet }}-ccache-${{ github.run_id }}
 
       - name: Inspect build artifacts
         working-directory: build

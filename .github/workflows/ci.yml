@@ -133,7 +133,6 @@ jobs:
     if: github.repository != 'bitcoin-core/gui' || github.event_name == 'pull_request'
 
     env:
-      CCACHE_MAXSIZE: '200M'
       PYTHONUTF8: 1
       TEST_RUNNER_TIMEOUT_FACTOR: 40
 
@@ -159,10 +158,6 @@ jobs:
           $env:VCToolsVersion | Tee-Object -FilePath "toolset_version"
           py -3 --version
           Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
-
-      - name: Install Ccache
-        run: |
-          choco install --yes --no-progress ccache
 
       - name: Using vcpkg with MSBuild
         run: |
@@ -194,31 +189,10 @@ jobs:
           path: ~/AppData/Local/vcpkg/archives
           key: ${{ github.job }}-vcpkg-binary-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
 
-      - name: Restore Ccache cache
-        id: ccache-cache
-        uses: actions/cache/restore@v4
-        with:
-          path: ~/AppData/Local/ccache
-          key: ${{ github.job }}-ccache-
-
       - name: Build
         working-directory: build
         run: |
-          ccache --zero-stats
           cmake --build . -j $env:NUMBER_OF_PROCESSORS --config Release
-
-      - name: Ccache stats
-        run: |
-          ccache --version | head -n 1
-          ccache --show-stats --verbose
-
-      - name: Save Ccache cache
-        uses: actions/cache/save@v4
-        if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true'
-        with:
-          path: ~/AppData/Local/ccache
-          # https://github.com/actions/cache/blob/main/tips-and-workarounds.md#update-a-cache
-          key: ${{ github.job }}-ccache-${{ github.run_id }}
 
       - name: Run test suite
         working-directory: build
