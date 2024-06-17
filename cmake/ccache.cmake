@@ -5,7 +5,9 @@
 if(MSVC AND WITH_CCACHE)
   # For integration of ccache and MSVC, please refer to
   # https://github.com/ccache/ccache/wiki/MS-Visual-Studio
+  message("============ CCACHE_EXECUTABLE is ${CCACHE_EXECUTABLE}")
   find_program(CCACHE_EXECUTABLE ccache)
+  message("============ CCACHE_EXECUTABLE is ${CCACHE_EXECUTABLE}")
   if(CCACHE_EXECUTABLE)
     file(COPY_FILE ${CCACHE_EXECUTABLE} ${CMAKE_BINARY_DIR}/cl.exe ONLY_IF_DIFFERENT)
     list(APPEND CMAKE_VS_GLOBALS
