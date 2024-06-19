@@ -47,6 +47,5 @@ target_link_libraries(bitcoin_util
     core_interface
     bitcoin_clientversion
     bitcoin_crypto
-    Threads::Threads
     $<$<PLATFORM_ID:Windows>:ws2_32>
 )
