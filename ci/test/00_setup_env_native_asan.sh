@@ -26,3 +26,8 @@ export BITCOIN_CONFIG="--enable-usdt --enable-zmq --with-incompatible-bdb --with
 CPPFLAGS='-DARENA_DEBUG -DDEBUG_LOCKORDER' \
 --with-sanitizers=address,float-divide-by-zero,integer,undefined \
 CC='clang-18 -ftrivial-auto-var-init=pattern' CXX='clang++-18 -ftrivial-auto-var-init=pattern'"
+
+export CCACHE_MAXSIZE=1000M
+export RUN_UNIT_TESTS=false
+export RUN_FUNCTIONAL_TESTS=false
+export RUN_FUZZ_TESTS=false
