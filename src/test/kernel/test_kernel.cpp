@@ -341,6 +341,8 @@ void chainman_test()
 std::unique_ptr<ChainMan> create_chainman(TestDirectory& test_directory,
                                           bool reindex,
                                           bool wipe_chainstate,
+                                          bool block_tree_db_in_memory,
+                                          bool chainstate_db_in_memory,
                                           Context& context)
 {
     ChainstateManagerOptions chainman_opts{context, test_directory.m_directory.string(), (test_directory.m_directory / "blocks").string()};
@@ -352,17 +354,43 @@ std::unique_ptr<ChainMan> create_chainman(TestDirectory& test_directory,
     if (wipe_chainstate) {
         chainman_opts.SetWipeDbs(/*wipe_block_tree=*/false, /*wipe_chainstate=*/wipe_chainstate);
     }
+    if (block_tree_db_in_memory) {
+        chainman_opts.SetBlockTreeDbInMemory(block_tree_db_in_memory);
+    }
+    if (chainstate_db_in_memory) {
+        chainman_opts.SetChainstateDbInMemory(chainstate_db_in_memory);
+    }
 
     auto chainman{std::make_unique<ChainMan>(context, chainman_opts)};
     assert(chainman);
     return chainman;
 }
 
+void chainman_in_memory_test()
+{
+    auto in_memory_test_directory{TestDirectory{"in-memory_test_bitcoin_kernel"}};
+
+    TestKernelNotifications notifications{};
+    auto context{create_context(notifications, kernel_ChainType::kernel_CHAIN_TYPE_REGTEST)};
+    auto chainman{create_chainman(in_memory_test_directory, false, false, true, true, context)};
+
+    for (auto& raw_block : REGTEST_BLOCK_DATA) {
+        Block block{raw_block};
+        assert(block);
+        bool new_block{false};
+        chainman->ProcessBlock(block, &new_block);
+        assert(new_block == true);
+    }
+
+    assert(!std::filesystem::exists(in_memory_test_directory.m_directory / "blocks" / "index"));
+    assert(!std::filesystem::exists(in_memory_test_directory.m_directory / "chainstate"));
+}
+
 void chainman_mainnet_validation_test(TestDirectory& test_directory)
 {
     TestKernelNotifications notifications{};
     auto context{create_context(notifications, kernel_ChainType::kernel_CHAIN_TYPE_MAINNET)};
-    auto chainman{create_chainman(test_directory, false, false, context)};
+    auto chainman{create_chainman(test_directory, false, false, false, false, context)};
 
     {
         // Process an invalid block
@@ -403,7 +431,7 @@ void chainman_regtest_validation_test()
     const size_t mid{REGTEST_BLOCK_DATA.size() / 2};
 
     {
-        auto chainman{create_chainman(test_directory, false, false, context)};
+        auto chainman{create_chainman(test_directory, false, false, false, false, context)};
         for (size_t i{0}; i < mid; i++) {
             Block block{REGTEST_BLOCK_DATA[i]};
             assert(block);
@@ -413,7 +441,7 @@ void chainman_regtest_validation_test()
         }
     }
 
-    auto chainman{create_chainman(test_directory, false, false, context)};
+    auto chainman{create_chainman(test_directory, false, false, false, false, context)};
 
     for (size_t i{mid}; i < REGTEST_BLOCK_DATA.size(); i++) {
         Block block{REGTEST_BLOCK_DATA[i]};
@@ -428,14 +456,14 @@ void chainman_reindex_test(TestDirectory& test_directory)
 {
     TestKernelNotifications notifications{};
     auto context{create_context(notifications, kernel_ChainType::kernel_CHAIN_TYPE_MAINNET)};
-    auto chainman{create_chainman(test_directory, true, false, context)};
+    auto chainman{create_chainman(test_directory, true, false, false, false, context)};
 }
 
 void chainman_reindex_chainstate_test(TestDirectory& test_directory)
 {
     TestKernelNotifications notifications{};
     auto context{create_context(notifications, kernel_ChainType::kernel_CHAIN_TYPE_MAINNET)};
-    auto chainman{create_chainman(test_directory, false, true, context)};
+    auto chainman{create_chainman(test_directory, false, true, false, false, context)};
 }
 
 int main()
@@ -459,6 +487,7 @@ int main()
 
     auto mainnet_test_directory{TestDirectory{"mainnet_test_bitcoin_kernel"}};
     chainman_mainnet_validation_test(mainnet_test_directory);
+    chainman_in_memory_test();
 
     chainman_regtest_validation_test();
     chainman_reindex_test(mainnet_test_directory);

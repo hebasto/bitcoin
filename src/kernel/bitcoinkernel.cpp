@@ -642,6 +642,24 @@ bool kernel_chainstate_manager_options_set_wipe_dbs(kernel_ChainstateManagerOpti
     return true;
 }
 
+void kernel_chainstate_manager_options_set_block_tree_db_in_memory(
+    kernel_ChainstateManagerOptions* chainstate_load_opts_,
+    bool block_tree_db_in_memory)
+{
+    auto opts{cast_chainstate_manager_options(chainstate_load_opts_)};
+    LOCK(opts->m_mutex);
+    opts->m_blockman_options.block_tree_db_params.memory_only = block_tree_db_in_memory;
+}
+
+void kernel_chainstate_manager_options_set_chainstate_db_in_memory(
+    kernel_ChainstateManagerOptions* chainstate_load_opts_,
+    bool chainstate_db_in_memory)
+{
+    auto opts{cast_chainstate_manager_options(chainstate_load_opts_)};
+    LOCK(opts->m_mutex);
+    opts->m_chainstate_load_options.coins_db_in_memory = chainstate_db_in_memory;
+}
+
 kernel_ChainstateManager* kernel_chainstate_manager_create(
     const kernel_Context* context_,
     const kernel_ChainstateManagerOptions* chainman_opts_)
