@@ -15,16 +15,16 @@ include(GetTargetInterface)
 get_target_interface(core_sanitizer_cxx_flags "" sanitize_interface COMPILE_OPTIONS)
 set(SECP256K1_LATE_CFLAGS ${core_sanitizer_cxx_flags} CACHE STRING "" FORCE)
 unset(core_sanitizer_cxx_flags)
-# We want to build libsecp256k1 with the most tested configuration, which is:
-# - Release (/O2 /Ob2) for MSVC
-# - RelWithDebInfo (-O2 -g) for everything else
+# We want to build libsecp256k1 with the most tested RelWithDebInfo configuration, which is:
+# - for MSVC: /Zi /O2 /Ob1
+# - for everything else: -O2 -g
 foreach(config IN LISTS CMAKE_BUILD_TYPE CMAKE_CONFIGURATION_TYPES)
   if(config STREQUAL "")
     continue()
   endif()
   string(TOUPPER "${config}" config)
   if(MSVC)
-    set(CMAKE_C_FLAGS_${config} "/O2 /Ob2")
+    set(CMAKE_C_FLAGS_${config} "/Zi /O2 /Ob1")
   else()
     set(CMAKE_C_FLAGS_${config} "-O2 -g")
   endif()
