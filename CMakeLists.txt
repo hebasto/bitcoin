@@ -588,9 +588,10 @@ endif()
 # - https://github.com/bitcoin/bitcoin/pull/30312#issuecomment-2191235833
 set(CMAKE_SKIP_BUILD_RPATH TRUE)
 set(CMAKE_SKIP_INSTALL_RPATH TRUE)
-add_subdirectory(src)
 add_subdirectory(test)
 add_subdirectory(doc)
+
+add_subdirectory(src)
 
 include(cmake/tests.cmake)
 
