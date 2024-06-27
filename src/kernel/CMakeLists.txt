@@ -90,10 +90,6 @@ target_link_libraries(bitcoinkernel
   PUBLIC
     Boost::headers
 )
-target_link_options(bitcoinkernel
-  PRIVATE
-    LINKER:-no-undefined
-)
 
 # libbitcoinkernel requires default symbol visibility, explicitly
 # specify that here so that things still work even when user
