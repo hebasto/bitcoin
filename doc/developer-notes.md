@@ -488,7 +488,7 @@ on Debian/Ubuntu).
 To enable LCOV report generation during test runs:
 
 ```shell
-cmake -B build -DCMAKE_BUILD_TYPE=Coverage
+cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCOVERAGE=ON
 cmake --build build
 cmake -P build/Coverage.cmake
 
