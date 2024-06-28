@@ -44,7 +44,7 @@ jobs:
 
       - name: Clang version
         run: |
-          sudo xcode-select --switch /Applications/Xcode_15.4.app
+          sudo xcode-select --switch /Applications/Xcode_16.0.app
           clang --version
 
       - name: Install Homebrew packages
