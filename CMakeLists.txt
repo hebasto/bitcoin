@@ -369,7 +369,6 @@ include(cmake/ccache.cmake)
 include(cmake/crc32c.cmake)
 include(cmake/leveldb.cmake)
 include(cmake/minisketch.cmake)
-include(cmake/secp256k1.cmake)
 
 add_library(warn_interface INTERFACE)
 target_link_libraries(core_interface INTERFACE warn_interface)

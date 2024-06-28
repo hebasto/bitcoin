@@ -1,6 +1,6 @@
-# Copyright (c) 2023 The Bitcoin Core developers
+# Copyright (c) 2023-present The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
-# file COPYING or http://www.opensource.org/licenses/mit-license.php.
+# file COPYING or https://opensource.org/license/mit/.
 
 include(GNUInstallDirs)
 include(AddWindowsResources)
@@ -38,6 +38,22 @@ if(WITH_MULTIPROCESS)
   add_subdirectory(ipc)
 endif()
 
+#=============================
+# secp256k1 subtree
+#=============================
+message("")
+message("Configuring secp256k1 subtree...")
+set(SECP256K1_DISABLE_SHARED ON CACHE BOOL "" FORCE)
+set(SECP256K1_ENABLE_MODULE_ECDH OFF CACHE BOOL "" FORCE)
+set(SECP256K1_ENABLE_MODULE_RECOVERY ON CACHE BOOL "" FORCE)
+set(SECP256K1_ECMULT_GEN_KB 86 CACHE STRING "" FORCE)
+include(GetTargetInterface)
+get_target_interface(core_c_flags "" core_base_interface COMPILE_OPTIONS)
+set(SECP256K1_LATE_CFLAGS ${core_c_flags} CACHE STRING "" FORCE)
+unset(core_c_flags)
+add_subdirectory(secp256k1 EXCLUDE_FROM_ALL)
+set_target_properties(secp256k1 PROPERTIES EXPORT_COMPILE_COMMANDS OFF)
+string(APPEND CMAKE_C_COMPILE_OBJECT " ${APPEND_CPPFLAGS} ${APPEND_CFLAGS}")
 
 # Stable, backwards-compatible consensus functionality.
 add_library(bitcoin_consensus STATIC EXCLUDE_FROM_ALL
