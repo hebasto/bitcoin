@@ -408,6 +408,7 @@ else()
   try_append_cxx_flags("-Wunreachable-code" TARGET warn_interface SKIP_LINK)
   try_append_cxx_flags("-Wdocumentation" TARGET warn_interface SKIP_LINK)
   try_append_cxx_flags("-Wself-assign" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wundef" TARGET warn_interface SKIP_LINK)
 
   # Some compilers (gcc) ignore unknown -Wno-* options, but warn about all
   # unknown options if any other warning is produced. Test the -Wfoo case, and
