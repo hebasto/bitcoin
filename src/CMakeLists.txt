@@ -84,7 +84,6 @@ add_library(bitcoin_consensus STATIC EXCLUDE_FROM_ALL
   script/script.cpp
   script/script_error.cpp
   uint256.cpp
-  util/strencodings.cpp
 )
 target_link_libraries(bitcoin_consensus
   PRIVATE
@@ -103,6 +102,7 @@ add_library(bitcoin_common STATIC EXCLUDE_FROM_ALL
   addresstype.cpp
   base58.cpp
   bech32.cpp
+  chainparamsbase.cpp
   chainparams.cpp
   coins.cpp
   common/args.cpp
@@ -110,8 +110,10 @@ add_library(bitcoin_common STATIC EXCLUDE_FROM_ALL
   common/config.cpp
   common/init.cpp
   common/interfaces.cpp
+  common/messages.cpp
   common/run_command.cpp
   common/settings.cpp
+  common/signmessage.cpp
   common/system.cpp
   common/url.cpp
   compressor.cpp
@@ -140,10 +142,10 @@ add_library(bitcoin_common STATIC EXCLUDE_FROM_ALL
   scheduler.cpp
   script/descriptor.cpp
   script/miniscript.cpp
+  script/parsing.cpp
   script/sign.cpp
   script/signingprovider.cpp
   script/solver.cpp
-  warnings.cpp
 )
 target_link_libraries(bitcoin_common
   PRIVATE
@@ -242,6 +244,7 @@ add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL
   node/txreconciliation.cpp
   node/utxo_snapshot.cpp
   node/validation_cache_args.cpp
+  node/warnings.cpp
   noui.cpp
   policy/fees.cpp
   policy/fees_args.cpp

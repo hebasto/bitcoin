@@ -9,21 +9,17 @@ add_library(bitcoin_util STATIC EXCLUDE_FROM_ALL
   bytevectorhash.cpp
   chaintype.cpp
   check.cpp
-  error.cpp
   exception.cpp
   feefrac.cpp
-  fees.cpp
   fs.cpp
   fs_helpers.cpp
   hasher.cpp
-  message.cpp
   moneystr.cpp
   rbf.cpp
   readwritefile.cpp
   serfloat.cpp
   signalinterrupt.cpp
   sock.cpp
-  spanparsing.cpp
   strencodings.cpp
   string.cpp
   syserror.cpp
@@ -32,12 +28,10 @@ add_library(bitcoin_util STATIC EXCLUDE_FROM_ALL
   threadnames.cpp
   time.cpp
   tokenpipe.cpp
-  ../chainparamsbase.cpp
   ../logging.cpp
   ../random.cpp
   ../randomenv.cpp
   ../streams.cpp
-  ../support/cleanse.cpp
   ../support/lockedpool.cpp
   ../sync.cpp
 )

@@ -94,6 +94,7 @@ add_executable(fuzz
   script_format.cpp
   script_interpreter.cpp
   script_ops.cpp
+  script_parsing.cpp
   script_sigcache.cpp
   script_sign.cpp
   scriptnum_ops.cpp
@@ -103,7 +104,6 @@ add_executable(fuzz
   signet.cpp
   socks5.cpp
   span.cpp
-  spanparsing.cpp
   string.cpp
   strprintf.cpp
   system.cpp

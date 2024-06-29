@@ -53,7 +53,6 @@ add_library(bitcoinkernel EXCLUDE_FROM_ALL
   ../script/solver.cpp
   ../signet.cpp
   ../streams.cpp
-  ../support/cleanse.cpp
   ../support/lockedpool.cpp
   ../sync.cpp
   ../txdb.cpp
@@ -78,7 +77,6 @@ add_library(bitcoinkernel EXCLUDE_FROM_ALL
   ../validation.cpp
   ../validationinterface.cpp
   ../versionbits.cpp
-  ../warnings.cpp
 )
 target_link_libraries(bitcoinkernel
   PRIVATE
