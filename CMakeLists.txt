@@ -177,6 +177,53 @@ target_link_libraries(core_interface INTERFACE
 
 include(cmake/introspection.cmake)
 
+include(ProcessConfigurations)
+set_default_config(RelWithDebInfo)
+
+# Redefine/adjust per-configuration flags.
+target_compile_definitions(core_interface_debug INTERFACE
+  DEBUG
+  DEBUG_LOCKORDER
+  DEBUG_LOCKCONTENTION
+  RPC_DOC_CHECK
+  ABORT_ON_FAILED_ASSUME
+)
+# We leave assertions on.
+if(MSVC)
+  remove_cxx_flag_from_all_configs(/DNDEBUG)
+else()
+  remove_cxx_flag_from_all_configs(-DNDEBUG)
+
+  # Adjust flags used by the CXX compiler during RELEASE builds.
+  # Prefer -O2 optimization level. (-O3 is CMake's default for Release for many compilers.)
+  replace_cxx_flag_in_config(Release -O3 -O2)
+
+  are_flags_overridden(CMAKE_CXX_FLAGS_DEBUG cxx_flags_debug_overridden)
+  if(NOT cxx_flags_debug_overridden)
+    # Redefine flags used by the CXX compiler during DEBUG builds.
+    try_append_cxx_flags("-g3" RESULT_VAR compiler_supports_g3)
+    if(compiler_supports_g3)
+      replace_cxx_flag_in_config(Debug -g -g3)
+    endif()
+    unset(compiler_supports_g3)
+
+    try_append_cxx_flags("-ftrapv" RESULT_VAR compiler_supports_ftrapv)
+    if(compiler_supports_ftrapv)
+      string(PREPEND CMAKE_CXX_FLAGS_DEBUG "-ftrapv ")
+    endif()
+    unset(compiler_supports_ftrapv)
+
+    string(PREPEND CMAKE_CXX_FLAGS_DEBUG "-O0 ")
+
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}"
+      CACHE STRING
+      "Flags used by the CXX compiler during DEBUG builds."
+      FORCE
+    )
+  endif()
+  unset(cxx_flags_debug_overridden)
+endif()
+
 # Don't allow extended (non-ASCII) symbols in identifiers. This is easier for code review.
 try_append_cxx_flags("-fno-extended-identifiers" TARGET core_interface SKIP_LINK)
 
