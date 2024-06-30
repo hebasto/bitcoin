@@ -57,6 +57,12 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
 
+#=============================
+# Configurable options
+#=============================
+# When adding a new option, end the <help_text> with a full stop for consistency.
+option(WITH_CCACHE "Attempt to use ccache for compiling." ON)
+
 set(configure_warnings)
 
 include(CheckPIESupported)
@@ -182,6 +188,8 @@ target_link_libraries(core_base_interface INTERFACE
 
 include(cmake/introspection.cmake)
 
+include(cmake/ccache.cmake)
+
 include(ProcessConfigurations)
 set_default_config(RelWithDebInfo)
 
@@ -254,6 +262,7 @@ message("=================")
 message("C++ compiler .......................... ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}, ${CMAKE_CXX_COMPILER}")
 include(FlagsSummary)
 flags_summary()
+message("Use ccache for compiling .............. ${WITH_CCACHE}")
 message("\n")
 if(configure_warnings)
     message("  ******\n")
