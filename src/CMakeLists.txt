@@ -57,3 +57,24 @@ foreach(config IN LISTS CMAKE_BUILD_TYPE CMAKE_CONFIGURATION_TYPES)
 endforeach()
 add_subdirectory(secp256k1)
 set_target_properties(secp256k1 PROPERTIES EXPORT_COMPILE_COMMANDS OFF)
+
+# Stable, backwards-compatible consensus functionality.
+add_library(bitcoin_consensus STATIC EXCLUDE_FROM_ALL
+  arith_uint256.cpp
+  consensus/merkle.cpp
+  consensus/tx_check.cpp
+  hash.cpp
+  primitives/block.cpp
+  primitives/transaction.cpp
+  pubkey.cpp
+  script/interpreter.cpp
+  script/script.cpp
+  script/script_error.cpp
+  uint256.cpp
+)
+target_link_libraries(bitcoin_consensus
+  PRIVATE
+    core_interface
+    bitcoin_crypto
+    secp256k1
+)
