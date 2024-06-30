@@ -177,3 +177,7 @@ if(WITH_MULTIPROCESS)
   )
   target_link_libraries(test_bitcoin bitcoin_ipc_test)
 endif()
+
+install(TARGETS test_bitcoin
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
