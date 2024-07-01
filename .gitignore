@@ -127,6 +127,8 @@ qa-assets/
 linux-coverage-build
 linux-build
 win32-build
+test/functional/*.pyc
+test/functional/cache
 test/config.ini
 test/cache/*
 test/.mypy_cache/
