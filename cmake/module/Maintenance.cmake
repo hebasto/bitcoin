@@ -123,7 +123,7 @@ function(add_macos_deploy_target)
         VERBATIM
       )
       add_custom_target(deploydir
-        DEPENDS ${CMAKE_BINARY_DIR}/${osx_volname}.zip
+        DEPENDS ${CMAKE_BINARY_DIR}/${osx_volname}
       )
       add_custom_target(deploy
         DEPENDS ${CMAKE_BINARY_DIR}/${osx_volname}.zip
