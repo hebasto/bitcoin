@@ -55,6 +55,14 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# We enable C here to make all related details and flags
+# available in this scope because the `test-security-check.py`
+# and `test-symbol-check.py` scripts rely on them. Otherwise,
+# C compiler details and flags will only be available within
+# the `secp256k1` subtree.
+enable_language(C)
+
+
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
 
 #=============================
