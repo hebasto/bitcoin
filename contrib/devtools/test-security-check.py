@@ -43,13 +43,15 @@ def call_security_check(cc: str, source: str, executable: str, options) -> tuple
     print('=========================================================================================')
     print(f'cc is {cc}')
     print(f'env_flags are {ef}')
-    new_ef = [ '-O2', *ef]
+    new_ef = [*ef]
     print(f'env_flags are {new_ef}')
     print(f'options are {options}')
     print('=========================================================================================')
     subprocess.run([*cc,source,'-o',executable] + new_ef + options, check=True)
     p = subprocess.run([os.path.join(os.path.dirname(__file__), 'security-check.py'), executable], stdout=subprocess.PIPE, text=True)
-    return (p.returncode, p.stdout.rstrip())
+    result = p.stdout.rstrip()
+    print(f'result is {result}')
+    return (p.returncode, result)
 
 def get_arch(cc, source, executable):
     subprocess.run([*cc, source, '-o', executable] + env_flags(), check=True)
