@@ -43,7 +43,7 @@ def call_security_check(cc: str, source: str, executable: str, options) -> tuple
     print('=========================================================================================')
     print(f'cc is {cc}')
     print(f'env_flags are {ef}')
-    new_ef = [ '-O2', '-g', *ef]
+    new_ef = [ '-O2', *ef]
     print(f'env_flags are {new_ef}')
     print(f'options are {options}')
     print('=========================================================================================')
