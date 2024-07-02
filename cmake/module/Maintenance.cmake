@@ -39,6 +39,7 @@ function(add_maintenance_targets)
   list(JOIN CMAKE_C_COMPILER_LAUNCHER " " c_compiler_command)
   string(STRIP "${c_compiler_command} ${CMAKE_C_COMPILER}" c_compiler_command)
   string(STRIP "${c_compiler_command} ${CMAKE_C_COMPILER_ARG1}" c_compiler_command)
+  message("================= c_compiler_command is ${c_compiler_command}")
   add_custom_target(test-security-check
     COMMAND ${CMAKE_COMMAND} -E env CC=${c_compiler_command} CFLAGS=${CMAKE_C_FLAGS} LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/devtools/test-security-check.py TestSecurityChecks.test_${exe_format}
     COMMAND ${CMAKE_COMMAND} -E env CC=${c_compiler_command} CFLAGS=${CMAKE_C_FLAGS} LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/devtools/test-symbol-check.py TestSymbolChecks.test_${exe_format}
