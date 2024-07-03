@@ -135,6 +135,8 @@ endif()
 cmake_dependent_option(ENABLE_EXTERNAL_SIGNER "Enable external signer support." ON "NOT WIN32" OFF)
 
 option(BUILD_BENCH "Build bench_bitcoin executable." OFF)
+option(BUILD_FUZZ_BINARY "Build fuzz binary." OFF)
+cmake_dependent_option(ENABLE_FUZZ "Build for fuzzing. Enabling this will disable all other targets and override BUILD_FUZZ_BINARY." OFF "NOT MSVC" OFF)
 
 set(configure_warnings)
 
@@ -159,6 +161,26 @@ target_link_libraries(core_interface INTERFACE
   $<$<CONFIG:RelWithDebInfo>:core_interface_relwithdebinfo>
   $<$<CONFIG:Debug>:core_interface_debug>
 )
+
+if(ENABLE_FUZZ)
+  message(WARNING "ENABLE_FUZZ=ON will disable all other targets and force BUILD_FUZZ_BINARY=ON.")
+  set(BUILD_DAEMON OFF)
+  set(BUILD_CLI OFF)
+  set(BUILD_TX OFF)
+  set(BUILD_UTIL OFF)
+  set(BUILD_WALLET_TOOL OFF)
+  set(ENABLE_EXTERNAL_SIGNER OFF)
+  set(WITH_NATPMP OFF)
+  set(WITH_MINIUPNPC OFF)
+  set(WITH_ZMQ OFF)
+  set(BUILD_TESTS OFF)
+  set(BUILD_BENCH OFF)
+  set(BUILD_FUZZ_BINARY ON)
+
+  target_compile_definitions(core_interface INTERFACE
+    ABORT_ON_FAILED_ASSUME
+  )
+endif()
 
 include(TryAppendCXXFlags)
 include(TryAppendLinkerFlag)
@@ -289,10 +311,21 @@ if(SANITIZERS)
 endif()
 target_link_options(sanitize_interface INTERFACE ${SANITIZER_LDFLAGS})
 
+if(BUILD_FUZZ_BINARY)
+  include(CheckSourceCompilesAndLinks)
+  check_cxx_source_links_with_flags("${SANITIZER_LDFLAGS}" "
+      #include <cstdint>
+      #include <cstddef>
+      extern \"C\" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) { return 0; }
+      // No main() function.
+    " FUZZ_BINARY_LINKS_WITHOUT_MAIN_FUNCTION
+  )
+endif()
+
 include(AddBoostIfNeeded)
 add_boost_if_needed()
 
-if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TESTS OR BUILD_BENCH)
+if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TESTS OR BUILD_BENCH OR BUILD_FUZZ_BINARY)
   find_package(Libevent 2.1.8 MODULE REQUIRED)
 endif()
 
@@ -398,6 +431,7 @@ message("  USDT tracing ........................ ${WITH_USDT}")
 message("Tests:")
 message("  test_bitcoin ........................ ${BUILD_TESTS}")
 message("  bench_bitcoin ....................... ${BUILD_BENCH}")
+message("  fuzz binary ......................... ${BUILD_FUZZ_BINARY}")
 message("")
 message("C++ compiler .......................... ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}, ${CMAKE_CXX_COMPILER}")
 include(FlagsSummary)
