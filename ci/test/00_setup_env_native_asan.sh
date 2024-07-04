@@ -24,7 +24,6 @@ export NO_DEPENDS=1
 export GOAL="install"
 export BITCOIN_CONFIG="-DWITH_USDT=ON -DWITH_ZMQ=OFF -DENABLE_WALLET=OFF -DBUILD_GUI=OFF \
 -DBUILD_TESTS=OFF -DBUILD_BENCH=OFF -DBUILD_FUZZ_BINARY=OFF \
--DSANITIZERS=address,float-divide-by-zero,integer,undefined \
 -DCMAKE_C_COMPILER=clang-18 -DCMAKE_CXX_COMPILER=clang++-18 \
 -DCMAKE_C_FLAGS='-ftrivial-auto-var-init=pattern' \
 -DCMAKE_CXX_FLAGS='-DARENA_DEBUG -DDEBUG_LOCKORDER -ftrivial-auto-var-init=pattern'"
