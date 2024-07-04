@@ -23,6 +23,7 @@ export PACKAGES="systemtap-sdt-dev clang-18 llvm-18 libclang-rt-18-dev python3-z
 export NO_DEPENDS=1
 export GOAL="install"
 export BITCOIN_CONFIG="-DWITH_USDT=ON -DWITH_ZMQ=OFF -DWARN_INCOMPATIBLE_BDB=OFF -DBUILD_GUI=OFF \
+-DBUILD_TESTS=OFF -DBUILD_BENCH=OFF -DBUILD_FUZZ_BINARY=OFF \
 -DSANITIZERS=address,float-divide-by-zero,integer,undefined \
 -DCMAKE_C_COMPILER=clang-18 -DCMAKE_CXX_COMPILER=clang++-18 \
 -DCMAKE_C_FLAGS='-ftrivial-auto-var-init=pattern' \
