@@ -22,7 +22,7 @@ export CONTAINER_NAME=ci_native_asan
 export PACKAGES="systemtap-sdt-dev clang-18 llvm-18 libclang-rt-18-dev python3-zmq libevent-dev libboost-dev ${BPFCC_PACKAGE}"
 export NO_DEPENDS=1
 export GOAL="install"
-export BITCOIN_CONFIG="-DWITH_USDT=OFF -DWITH_ZMQ=OFF -DENABLE_WALLET=OFF -DBUILD_GUI=OFF \
+export BITCOIN_CONFIG="-DWITH_USDT=ON -DWITH_ZMQ=OFF -DENABLE_WALLET=OFF -DBUILD_GUI=OFF \
 -DBUILD_TESTS=OFF -DBUILD_BENCH=OFF -DBUILD_FUZZ_BINARY=OFF \
 -DSANITIZERS=address,float-divide-by-zero,integer,undefined \
 -DCMAKE_C_COMPILER=clang-18 -DCMAKE_CXX_COMPILER=clang++-18 \
