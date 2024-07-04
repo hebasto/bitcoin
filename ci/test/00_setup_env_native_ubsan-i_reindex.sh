@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#
+# Copyright (c) 2019-present The Bitcoin Core developers
+# Distributed under the MIT software license, see the accompanying
+# file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+export LC_ALL=C.UTF-8
+
+export CI_IMAGE_NAME_TAG="docker.io/ubuntu:24.04"
+
+export CONTAINER_NAME=ci_native_ubsan_reindex
+export PACKAGES="clang-18 llvm-18 libclang-rt-18-dev libevent-dev libboost-dev"
+export NO_DEPENDS=1
+export GOAL="install"
+export BITCOIN_CONFIG="-DENABLE_WALLET=OFF \
+-DBUILD_TESTS=OFF -DBUILD_BENCH=OFF -DBUILD_FUZZ_BINARY=OFF \
+-DSANITIZERS=integer \
+-DCMAKE_C_COMPILER=clang-18 -DCMAKE_CXX_COMPILER=clang++-18"
+export CCACHE_MAXSIZE=300M
+
+export RUN_UNIT_TESTS=false
+export TEST_RUNNER_EXTRA="--filter feature_reindex.py"
+export TEST_RUNNER_TIMEOUT_FACTOR=10
