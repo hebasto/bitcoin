@@ -17,6 +17,11 @@ function(add_boost_if_needed)
   directory and other added INTERFACE properties.
   ]=]
 
+  # We rely on the CMake's FindBoost module.
+  # See: https://cmake.org/cmake/help/latest/policy/CMP0167.html
+  if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 OLD)
+  endif()
   set(Boost_NO_BOOST_CMAKE ON)
   find_package(Boost 1.73.0 REQUIRED)
   mark_as_advanced(Boost_INCLUDE_DIR)
