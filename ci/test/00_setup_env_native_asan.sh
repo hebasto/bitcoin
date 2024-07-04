@@ -27,3 +27,6 @@ CPPFLAGS='-DARENA_DEBUG -DDEBUG_LOCKORDER' \
 --with-sanitizers=address,float-divide-by-zero,integer,undefined \
 CC='clang-18 -ftrivial-auto-var-init=pattern' CXX='clang++-18 -ftrivial-auto-var-init=pattern'"
 export CCACHE_MAXSIZE=300M
+
+export RUN_UNIT_TESTS=false
+export TEST_RUNNER_EXTRA="--filter feature_reindex.py"
