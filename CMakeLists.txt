@@ -215,6 +215,12 @@ target_link_libraries(core_interface INTERFACE
   $<$<CONFIG:Debug>:core_interface_debug>
 )
 
+if(WITH_USDT)
+  target_compile_definitions(core_interface INTERFACE
+    ENABLE_TRACING
+  )
+endif()
+
 if(ENABLE_FUZZ)
   message(WARNING "ENABLE_FUZZ=ON will disable all other targets and force BUILD_FUZZ_BINARY=ON.")
   set(BUILD_DAEMON OFF)
