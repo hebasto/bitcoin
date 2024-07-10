@@ -21,6 +21,9 @@ def call_symbol_check(cxx: list[str], source, executable, options):
     for var in ['CXXFLAGS', 'CPPFLAGS', 'LDFLAGS']:
         env_flags += filter(None, os.environ.get(var, '').split(' '))
 
+    print(f'============== cxx are {cxx}')
+    print(f'============== env_flags are {env_flags}')
+    print(f'============== options are {options}')
     subprocess.run([*cxx,source,'-o',executable] + env_flags + options, check=True)
     p = subprocess.run([os.path.join(os.path.dirname(__file__), 'symbol-check.py'), executable], stdout=subprocess.PIPE, text=True)
     os.remove(source)
