@@ -17,8 +17,13 @@ function(add_boost_if_needed)
   directory and other added INTERFACE properties.
   ]=]
 
-  set(Boost_NO_BOOST_CMAKE ON)
-  find_package(Boost 1.73.0 REQUIRED)
+  # set(Boost_NO_BOOST_CMAKE ON)
+
+  set(CMAKE_FIND_DEBUG_MODE TRUE)
+  find_package(boost_headers REQUIRED NO_MODULE)
+  set(CMAKE_FIND_DEBUG_MODE FALSE)
+
+
   mark_as_advanced(Boost_INCLUDE_DIR)
   set_target_properties(Boost::headers PROPERTIES IMPORTED_GLOBAL TRUE)
   target_compile_definitions(Boost::headers INTERFACE
