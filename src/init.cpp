@@ -301,8 +301,8 @@ void Shutdown(NodeContext& node)
 
     // After everything has been shut down, but before things get flushed, stop the
     // scheduler and load block thread.
-    if (node.scheduler) node.scheduler->stop();
     if (node.chainman && node.chainman->m_thread_load.joinable()) node.chainman->m_thread_load.join();
+    if (node.scheduler) node.scheduler->stop();
 
     // After the threads that potentially access these pointers have been stopped,
     // destruct and reset all to nullptr.
