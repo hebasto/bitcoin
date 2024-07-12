@@ -17,7 +17,6 @@ darwin_RANLIB:=$(shell xcrun -f ranlib)
 darwin_STRIP:=$(shell xcrun -f strip)
 darwin_OBJDUMP:=$(shell xcrun -f objdump)
 darwin_NM:=$(shell xcrun -f nm)
-darwin_DSYMUTIL:=$(shell xcrun -f dsymutil)
 
 x86_64_darwin_CFLAGS += -arch x86_64
 x86_64_darwin_CXXFLAGS += -arch x86_64
