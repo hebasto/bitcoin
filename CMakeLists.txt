@@ -64,6 +64,8 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
 option(BUILD_DAEMON "Build bitcoind executable." ON)
 option(BUILD_CLI "Build bitcoin-cli executable." ON)
 
+option(BUILD_TESTS "Build test_bitcoin executable." ON)
+
 option(WITH_CCACHE "Attempt to use ccache for compiling." ON)
 
 set(configure_warnings)
@@ -187,7 +189,7 @@ target_link_libraries(core_interface INTERFACE
 include(AddBoostIfNeeded)
 add_boost_if_needed()
 
-if(BUILD_DAEMON OR BUILD_CLI)
+if(BUILD_DAEMON OR BUILD_CLI OR BUILD_TESTS)
   find_package(Libevent 2.1.8 MODULE REQUIRED)
 endif()
 
@@ -270,6 +272,8 @@ message("=================")
 message("Executables:")
 message("  bitcoind ............................ ${BUILD_DAEMON}")
 message("  bitcoin-cli ......................... ${BUILD_CLI}")
+message("Tests:")
+message("  test_bitcoin ........................ ${BUILD_TESTS}")
 message("")
 message("C++ compiler .......................... ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}, ${CMAKE_CXX_COMPILER}")
 include(FlagsSummary)
