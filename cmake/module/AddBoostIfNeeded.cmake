@@ -17,6 +17,14 @@ function(add_boost_if_needed)
   directory and other added INTERFACE properties.
   ]=]
 
+  # We cannot rely on find_package(Boost ...) to work properly without
+  # Boost_NO_BOOST_CMAKE set until we require a more recent Boost because
+  # upstream did not ship proper CMake files until 1.82.0.
+  # Until then, we rely on CMake's FindBoost module.
+  # See: https://cmake.org/cmake/help/latest/policy/CMP0167.html
+  if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 OLD)
+  endif()
   set(Boost_NO_BOOST_CMAKE ON)
   find_package(Boost 1.73.0 REQUIRED)
   mark_as_advanced(Boost_INCLUDE_DIR)
