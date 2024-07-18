@@ -145,9 +145,7 @@ cmake_dependent_option(WITH_QRENCODE "Enable QR code support." ON "BUILD_GUI" OF
 if(WITH_QRENCODE)
   find_package(PkgConfig REQUIRED)
   pkg_check_modules(libqrencode REQUIRED IMPORTED_TARGET libqrencode)
-  target_compile_definitions(PkgConfig::libqrencode INTERFACE
-    USE_QRCODE
-  )
+  set(USE_QRCODE TRUE)
 endif()
 
 cmake_dependent_option(WITH_DBUS "Enable DBus support." ON "CMAKE_SYSTEM_NAME STREQUAL \"Linux\" AND BUILD_GUI" OFF)
