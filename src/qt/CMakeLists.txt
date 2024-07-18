@@ -212,7 +212,6 @@ if(ENABLE_WALLET)
 endif()
 
 if(WITH_DBUS)
-  target_compile_definitions(bitcoinqt PRIVATE USE_DBUS)
   target_link_libraries(bitcoinqt PRIVATE Qt5::DBus)
 endif()
 
