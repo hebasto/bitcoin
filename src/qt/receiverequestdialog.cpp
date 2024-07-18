@@ -14,6 +14,8 @@
 #include <QDialog>
 #include <QString>
 
+#include <config/bitcoin-config.h> // IWYU pragma: keep
+
 ReceiveRequestDialog::ReceiveRequestDialog(QWidget* parent)
     : QDialog(parent, GUIUtil::dialog_flags),
       ui(new Ui::ReceiveRequestDialog)
