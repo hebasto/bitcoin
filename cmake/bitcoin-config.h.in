@@ -29,6 +29,28 @@
 /* Copyright year */
 #define COPYRIGHT_YEAR @COPYRIGHT_YEAR@
 
+/* Define this symbol to build code that uses ARMv8 SHA-NI intrinsics */
+#cmakedefine ENABLE_ARM_SHANI 1
+
+/* Define this symbol to build code that uses AVX2 intrinsics */
+#cmakedefine ENABLE_AVX2 1
+
+/* Define if external signer support is enabled */
+#cmakedefine ENABLE_EXTERNAL_SIGNER 1
+
+/* Define this symbol to build code that uses SSE4.1 intrinsics */
+#cmakedefine ENABLE_SSE41 1
+
+/* Define to 1 to enable tracepoints for Userspace, Statically Defined Tracing
+   */
+#cmakedefine ENABLE_TRACING 1
+
+/* Define to 1 to enable wallet functions. */
+#cmakedefine ENABLE_WALLET 1
+
+/* Define this symbol to build code that uses x86 SHA-NI intrinsics */
+#cmakedefine ENABLE_X86_SHANI 1
+
 /* Define to 1 if you have the declaration of `fork', and to 0 if you don't.
    */
 #cmakedefine01 HAVE_DECL_FORK
@@ -54,6 +76,9 @@
 
 /* Define if the dllexport attribute is supported. */
 #cmakedefine HAVE_DLLEXPORT_ATTRIBUTE 1
+
+/* Define this symbol if evhttp_connection_get_peer expects const char** */
+#cmakedefine HAVE_EVHTTP_CONNECTION_GET_PEER_CONST_CHAR 1
 
 /* Define to 1 if fdatasync is available. */
 #cmakedefine HAVE_FDATASYNC 1
@@ -119,41 +144,16 @@
 /* Define to 1 if strerror_r returns char *. */
 #cmakedefine STRERROR_R_CHAR_P 1
 
-/* Define to 1 to enable wallet functions. */
-#cmakedefine ENABLE_WALLET 1
-
-/* Define if QR support should be compiled in */
-#cmakedefine USE_QRCODE 1
-
-/* Define if SQLite support should be compiled in. */
-#cmakedefine USE_SQLITE
-
-/* Define if Berkeley DB (BDB) support should be compiled in. */
-#cmakedefine USE_BDB
+/* Define if BDB support should be compiled in */
+#cmakedefine USE_BDB 1
 
 /* Define if dbus support should be compiled in */
 #cmakedefine USE_DBUS 1
 
-/* Define this symbol to build code that uses ARMv8 SHA-NI intrinsics */
-#cmakedefine ENABLE_ARM_SHANI 1
+/* Define if QR support should be compiled in */
+#cmakedefine USE_QRCODE 1
 
-/* Define this symbol to build code that uses AVX2 intrinsics */
-#cmakedefine ENABLE_AVX2 1
-
-/* Define if external signer support is enabled. */
-#cmakedefine ENABLE_EXTERNAL_SIGNER
-
-/* Define this symbol to build code that uses SSE4.1 intrinsics */
-#cmakedefine ENABLE_SSE41 1
-
-/* Define to 1 to enable tracepoints for Userspace, Statically Defined Tracing
-   */
-#cmakedefine ENABLE_TRACING 1
-
-/* Define this symbol to build code that uses x86 SHA-NI intrinsics */
-#cmakedefine ENABLE_X86_SHANI 1
-
-/* Define this symbol if evhttp_connection_get_peer expects const char** */
-#cmakedefine HAVE_EVHTTP_CONNECTION_GET_PEER_CONST_CHAR 1
+/* Define if sqlite support should be compiled in */
+#cmakedefine USE_SQLITE 1
 
 #endif //BITCOIN_CONFIG_H
