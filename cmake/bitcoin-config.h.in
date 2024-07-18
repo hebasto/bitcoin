@@ -143,4 +143,7 @@
 /* Define this symbol to build code that uses x86 SHA-NI intrinsics */
 #cmakedefine ENABLE_X86_SHANI 1
 
+/* Define this symbol if evhttp_connection_get_peer expects const char** */
+#cmakedefine HAVE_EVHTTP_CONNECTION_GET_PEER_CONST_CHAR 1
+
 #endif //BITCOIN_CONFIG_H
