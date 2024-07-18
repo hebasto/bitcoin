@@ -12,8 +12,10 @@ if(NOT MSVC)
 
     int main()
     {
-      __m128i l = _mm_set1_epi32(0);
-      return _mm_extract_epi32(l, 3);
+      __m128i a = _mm_set1_epi32(0);
+      __m128i b = _mm_set1_epi32(1);
+      __m128i r = _mm_blend_epi16(a, b, 0xFF);
+      return _mm_extract_epi32(r, 3);
     }
     " HAVE_SSE41
   )
@@ -108,11 +110,11 @@ if(HAVE_AVX2)
   target_link_libraries(bitcoin_crypto PRIVATE bitcoin_crypto_avx2)
 endif()
 
-if(HAVE_X86_SHANI)
+if(HAVE_SSE41 AND HAVE_X86_SHANI)
   add_library(bitcoin_crypto_x86_shani STATIC EXCLUDE_FROM_ALL
     sha256_x86_shani.cpp
   )
-  target_compile_definitions(bitcoin_crypto_x86_shani PUBLIC ENABLE_X86_SHANI)
+  target_compile_definitions(bitcoin_crypto_x86_shani PUBLIC ENABLE_SSE41 ENABLE_X86_SHANI)
   target_compile_options(bitcoin_crypto_x86_shani PRIVATE ${X86_SHANI_CXXFLAGS})
   target_link_libraries(bitcoin_crypto_x86_shani PRIVATE core_interface)
   target_link_libraries(bitcoin_crypto PRIVATE bitcoin_crypto_x86_shani)
