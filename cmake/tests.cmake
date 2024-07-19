@@ -39,6 +39,9 @@ if(TARGET test_bitcoin)
       add_test(NAME ${test_suite_name}
         COMMAND test_bitcoin --run_test=${test_suite_name} --catch_system_error=no
       )
+      set_property(TEST ${test_suite_name} PROPERTY
+        SKIP_REGULAR_EXPRESSION "no test cases matching filter" "Skipping"
+      )
     endif()
   endfunction()
 
