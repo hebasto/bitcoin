@@ -422,7 +422,7 @@ jobs:
       - name: Build depends
         working-directory: depends
         run: |
-          make -j$(nproc) HOST=${{ matrix.host.triplet }} CC="${{ matrix.host.c_compiler }}" CXX="${{ matrix.host.cxx_compiler }}" ${{ matrix.host.depends_options }} LOG=1 NO_UPNP=1
+          make -j$(nproc) HOST=${{ matrix.host.triplet }} CC="${{ matrix.host.c_compiler }}" CXX="${{ matrix.host.cxx_compiler }}" ${{ matrix.host.depends_options }} LOG=1
           echo "LD_LIBRARY_PATH=${PWD}/${{ matrix.host.triplet }}/lib" >> "$GITHUB_ENV"
 
       - name: Restore Ccache cache
