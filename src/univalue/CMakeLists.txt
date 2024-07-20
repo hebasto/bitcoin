@@ -25,11 +25,17 @@ if(BUILD_TESTS)
       core_interface
       univalue
   )
+  add_test(NAME univalue_test
+    COMMAND unitester
+  )
 
   add_executable(object test/object.cpp)
   target_link_libraries(object
     PRIVATE
       core_interface
       univalue
+  )
+  add_test(NAME univalue_object_test
+    COMMAND object
   )
 endif()
