@@ -561,6 +561,7 @@ if(REDUCE_EXPORTS)
   set(CMAKE_CXX_VISIBILITY_PRESET hidden)
   set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
   try_append_linker_flag("-Wl,--exclude-libs,ALL" TARGET core_interface)
+  try_append_linker_flag("-Wl,-no_exported_symbols" VAR CMAKE_EXE_LINKER_FLAGS)
 endif()
 
 if(WERROR)
