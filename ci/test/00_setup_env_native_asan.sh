@@ -25,6 +25,6 @@ export GOAL="install"
 export BITCOIN_CONFIG="-DWITH_USDT=ON -DWITH_ZMQ=ON -DWARN_INCOMPATIBLE_BDB=OFF -DBUILD_GUI=ON \
 -DSANITIZERS=address,float-divide-by-zero,integer,undefined \
 -DCMAKE_C_COMPILER=clang-18 -DCMAKE_CXX_COMPILER=clang++-18 \
--DCMAKE_C_FLAGS='-ftrivial-auto-var-init=pattern' \
--DCMAKE_CXX_FLAGS='-DARENA_DEBUG -DDEBUG_LOCKORDER -ftrivial-auto-var-init=pattern'"
+-DCMAKE_C_FLAGS='-ftrivial-auto-var-init=pattern' -DCMAKE_CXX_FLAGS='-ftrivial-auto-var-init=pattern' \
+-DAPPEND_CPPFLAGS='-DARENA_DEBUG -DDEBUG_LOCKORDER'"
 export CCACHE_MAXSIZE=300M
