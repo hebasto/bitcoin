@@ -40,6 +40,17 @@ if(NOT QT_IS_STATIC)
   )
 endif()
 
+add_test(NAME test_bitcoin-qt
+  COMMAND test_bitcoin-qt
+)
+if(WIN32 AND VCPKG_TARGET_TRIPLET)
+  # On Windows, vcpkg configures Qt with `-opengl dynamic`, which makes
+  # the "minimal" platform plugin unusable due to internal Qt bugs.
+  set_tests_properties(test_bitcoin-qt PROPERTIES
+    ENVIRONMENT "QT_QPA_PLATFORM=windows"
+  )
+endif()
+
 install(TARGETS test_bitcoin-qt
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   COMPONENT GUI
