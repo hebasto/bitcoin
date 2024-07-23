@@ -10,7 +10,7 @@ $ cd bitcoin/
 $ cmake -B build_fuzz \
    -DCMAKE_C_COMPILER="clang" \
    -DCMAKE_CXX_COMPILER="clang++" \
-   -DENABLE_FUZZ=ON \
+   -DBUILD_FOR_FUZZING=ON \
    -DSANITIZERS=undefined,address,fuzzer
 # macOS users: If you have problem with this step then make sure to read "macOS hints for
 # libFuzzer" on https://github.com/bitcoin/bitcoin/blob/master/doc/fuzzing.md#macos-hints-for-libfuzzer
@@ -148,7 +148,7 @@ Full configuration step that was tested on macOS with `brew` installed `llvm`:
 $ cmake -B build_fuzz \
    -DCMAKE_C_COMPILER="$(brew --prefix llvm)/bin/clang" \
    -DCMAKE_CXX_COMPILER="$(brew --prefix llvm)/bin/clang++" \
-   -DENABLE_FUZZ=ON \
+   -DBUILD_FOR_FUZZING=ON \
    -DSANITIZERS=undefined,address,fuzzer \
 ```
 
@@ -170,7 +170,7 @@ $ make -C AFLplusplus/ source-only
 $ cmake -B build_fuzz \
    -DCMAKE_C_COMPILER="$(pwd)/AFLplusplus/afl-clang-lto" \
    -DCMAKE_CXX_COMPILER="$(pwd)/AFLplusplus/afl-clang-lto++" \
-   -DENABLE_FUZZ=ON
+   -DBUILD_FOR_FUZZING=ON
 $ cmake --build build_fuzz -j$(nproc)
 # For macOS you may need to ignore x86 compilation checks when running "cmake --build". If so,
 # try compiling using: `AFL_NO_X86=1 cmake --build build_fuzz -j$(nproc)`
@@ -199,7 +199,7 @@ $ cd ..
 $ cmake -B build_fuzz \
    -DCMAKE_C_COMPILER="$(pwd)/honggfuzz/hfuzz_cc/hfuzz-clang" \
    -DCMAKE_CXX_COMPILER="$(pwd)/honggfuzz/hfuzz_cc/hfuzz-clang++" \
-   -DENABLE_FUZZ=ON \
+   -DBUILD_FOR_FUZZING=ON \
    -DSANITIZERS=address,undefined
 $ cmake --build build_fuzz -j$(nproc)
 $ mkdir -p inputs/
@@ -319,7 +319,7 @@ $ cd Eclipser
 $ git checkout v1.x
 $ make
 $ cd ..
-$ cmake -B build_fuzz -DENABLE_FUZZ=ON
+$ cmake -B build_fuzz -DBUILD_FOR_FUZZING=ON
 $ mkdir -p outputs/
 $ FUZZ=bech32 dotnet ./Eclipser/build/Eclipser.dll fuzz -p build_fuzz/src/test/fuzz/fuzz -t 36000 -o outputs --src stdin
 ```
