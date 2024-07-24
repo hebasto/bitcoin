@@ -189,7 +189,7 @@ endif()
 
 if("@multiprocess@" STREQUAL "1")
   set(WITH_MULTIPROCESS ON CACHE BOOL "")
-  set(LibmultiprocessGen_DIR "${CMAKE_FIND_ROOT_PATH}/native/lib/cmake/LibmultiprocessGen" CACHE PATH "")
+  set(LibmultiprocessNative_DIR "${CMAKE_FIND_ROOT_PATH}/native/lib/cmake/Libmultiprocess" CACHE PATH "")
 else()
   set(WITH_MULTIPROCESS OFF CACHE BOOL "")
 endif()
