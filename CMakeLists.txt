@@ -134,6 +134,8 @@ if(WITH_USDT)
   find_package(USDT MODULE REQUIRED)
 endif()
 
+cmake_dependent_option(ENABLE_EXTERNAL_SIGNER "Enable external signer support." ON "NOT WIN32" OFF)
+
 set(configure_warnings)
 
 include(CheckPIESupported)
@@ -306,6 +308,7 @@ if(ENABLE_WALLET)
   message("   - descriptor wallets (SQLite) ...... ${WITH_SQLITE}")
   message("   - legacy wallets (Berkeley DB) ..... ${WITH_BDB}")
 endif()
+message("  external signer ..................... ${ENABLE_EXTERNAL_SIGNER}")
 message("  port mapping:")
 message("   - using NAT-PMP .................... ${WITH_NATPMP}")
 message("   - using UPnP ....................... ${WITH_MINIUPNPC}")
