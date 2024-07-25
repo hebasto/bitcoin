@@ -2,7 +2,7 @@
 
 This guide describes how to build bitcoind, command-line utilities, and GUI on Windows using Micsrosoft Visual Studio.
 
-For cross-compiling options, please see [`build-windows-mingw.md`](./build-windows-mingw.md).
+For cross-compiling options, please see [`build-windows.md`](./build-windows.md).
 
 ## Preparation
 
