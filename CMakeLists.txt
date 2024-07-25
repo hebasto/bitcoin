@@ -259,6 +259,8 @@ if(BUILD_FOR_FUZZING)
   )
 endif()
 
+include(ProcessConfigurations)
+
 include(TryAppendCXXFlags)
 include(TryAppendLinkerFlag)
 
@@ -456,8 +458,6 @@ else()
     IF_CHECK_PASSED "-Wno-unused-parameter"
   )
 endif()
-
-include(ProcessConfigurations)
 
 configure_file(cmake/script/Coverage.cmake Coverage.cmake COPYONLY)
 configure_file(cmake/script/CoverageFuzz.cmake CoverageFuzz.cmake COPYONLY)
