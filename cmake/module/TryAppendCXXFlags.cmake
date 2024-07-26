@@ -52,7 +52,10 @@ function(try_append_cxx_flags flags)
     "IF_CHECK_PASSED;IF_CHECK_FAILED" # multi_value_keywords
   )
 
-  string(MAKE_C_IDENTIFIER "${flags}" result)
+  set(flags_as_string "${flags}")
+  separate_arguments(flags)
+
+  string(MAKE_C_IDENTIFIER "${flags_as_string}" result)
   string(TOUPPER "${result}" result)
   string(PREPEND result CXX_SUPPORTS_)
 
@@ -66,7 +69,7 @@ function(try_append_cxx_flags flags)
 
   # This avoids running a linker.
   set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-  set(CMAKE_REQUIRED_FLAGS "${flags} ${working_compiler_werror_flag}")
+  set(CMAKE_REQUIRED_FLAGS "${flags_as_string} ${working_compiler_werror_flag}")
   check_cxx_source_compiles("${source}" ${result})
 
   if(${result})
@@ -82,7 +85,7 @@ function(try_append_cxx_flags flags)
         target_compile_options(${TACXXF_TARGET} INTERFACE ${flags})
       endif()
       if(DEFINED TACXXF_VAR)
-        string(STRIP "${${TACXXF_VAR}} ${flags}" ${TACXXF_VAR})
+        string(STRIP "${${TACXXF_VAR}} ${flags_as_string}" ${TACXXF_VAR})
       endif()
     endif()
   elseif(DEFINED TACXXF_IF_CHECK_FAILED)
@@ -108,7 +111,7 @@ function(try_append_cxx_flags flags)
 
   # This forces running a linker.
   set(CMAKE_TRY_COMPILE_TARGET_TYPE EXECUTABLE)
-  set(CMAKE_REQUIRED_FLAGS "${flags} ${working_linker_werror_flag}")
+  set(CMAKE_REQUIRED_FLAGS "${flags_as_string} ${working_linker_werror_flag}")
   check_cxx_source_compiles("${source}" ${result})
 
   if(${result})
@@ -122,7 +125,7 @@ function(try_append_cxx_flags flags)
       endif()
     endif()
   else()
-    message(WARNING "The ${flags} fail(s) to link.")
+    message(WARNING "'${flags_as_string}' fail(s) to link.")
   endif()
 endfunction()
 
