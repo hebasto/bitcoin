@@ -413,7 +413,7 @@ else()
   try_append_cxx_flags("-Wextra" TARGET warn_interface SKIP_LINK)
   try_append_cxx_flags("-Wgnu" TARGET warn_interface SKIP_LINK)
   # Some compilers will ignore -Wformat-security without -Wformat, so just combine the two here.
-  try_append_cxx_flags("-Wformat;-Wformat-security" TARGET warn_interface SKIP_LINK)
+  try_append_cxx_flags("-Wformat -Wformat-security" TARGET warn_interface SKIP_LINK)
   try_append_cxx_flags("-Wvla" TARGET warn_interface SKIP_LINK)
   try_append_cxx_flags("-Wshadow-field" TARGET warn_interface SKIP_LINK)
   try_append_cxx_flags("-Wthread-safety" TARGET warn_interface SKIP_LINK)
