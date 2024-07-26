@@ -747,7 +747,7 @@ public:
  * Complexity: O(N * min(max_iterations + N, 2^N)) where N=depgraph.TxCount().
  */
 template<typename SetType>
-std::pair<std::vector<ClusterIndex>, bool> Linearize(const DepGraph<SetType>& depgraph, uint64_t max_iterations, uint64_t rng_seed, Span<const ClusterIndex> old_linearization = {}) noexcept
+std::pair<std::vector<ClusterIndex>, bool> Linearize(const DepGraph<SetType>& depgraph, uint64_t max_iterations, uint64_t rng_seed, Span<const ClusterIndex> old_linearization = {}, uint64_t *iterations_done=nullptr) noexcept
 {
     Assume(old_linearization.empty() || old_linearization.size() == depgraph.TxCount());
     if (depgraph.TxCount() == 0) return {{}, true};
@@ -800,6 +800,8 @@ std::pair<std::vector<ClusterIndex>, bool> Linearize(const DepGraph<SetType>& de
             old_chunking.MarkDone(best.transactions);
         }
     }
+
+    if (iterations_done) *iterations_done = max_iterations - iterations_left;
 
     return {std::move(linearization), optimal};
 }

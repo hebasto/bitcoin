@@ -164,6 +164,7 @@ std::vector<TxEntry::TxEntryRef> InvokeSort(size_t tx_count, const std::vector<T
         }
     }
     uint64_t iterations = MAX_ITERATIONS;
+    uint64_t iterations_done = 0;
 
     std::vector<unsigned int> orig_linearization;
     orig_linearization.reserve(tx_count);
@@ -171,7 +172,7 @@ std::vector<TxEntry::TxEntryRef> InvokeSort(size_t tx_count, const std::vector<T
         orig_linearization.push_back(i);
     }
     cluster_linearize::DepGraph dep_graph(cluster);
-    auto result = cluster_linearize::Linearize(dep_graph, iterations, 0, orig_linearization);
+    auto result = cluster_linearize::Linearize(dep_graph, iterations, 0, orig_linearization, &iterations_done);
     if (!result.second) {
         // We want to postlinearize non-optimal clusters, to ensure that chunks
         // are connected and to perform "easy" improvements.
@@ -185,13 +186,12 @@ std::vector<TxEntry::TxEntryRef> InvokeSort(size_t tx_count, const std::vector<T
     const auto time_2{SteadyClock::now()};
     if (tx_count >= 10) {
         double time_millis = Ticks<MillisecondsDouble>(time_2-time_1);
-        uint64_t iters_used = MAX_ITERATIONS - iterations;
 
         LogPrint(BCLog::BENCH, "InvokeSort linearize cluster: %zu txs, %.4fms, %u iter, %.1fns/iter\n",
                 tx_count,
                 time_millis,
-                iters_used,
-                time_millis * 1000000.0 / (iters_used > 0 ? iters_used : iters_used+1));
+                iterations_done,
+                time_millis * 1000000.0 / (iterations_done > 0 ? iterations_done : iterations_done+1));
     }
     return txs;
 }
