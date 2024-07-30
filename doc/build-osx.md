@@ -113,14 +113,14 @@ brew install qt@5
 Note: Building with Qt binaries downloaded from the Qt website is not officially supported.
 See the notes in [#7714](https://github.com/bitcoin/bitcoin/issues/7714).
 
-###### qrencode
+###### libqrencode
 
-The GUI can encode addresses in a QR Code. To build in QR support for the GUI, install `qrencode`.
-Skip if not using the GUI or don't want QR code functionality.
-
+The GUI can encode addresses in a QR code. To build in QR code support for the GUI, install libqrencode:
 ``` bash
 brew install qrencode
 ```
+Skip this step if not using the GUI or do not want QR code functionality. In the latter case, pass `-DWITH_QRENCODE=OFF`.
+
 ---
 
 #### Port Mapping Dependencies

@@ -71,10 +71,12 @@ pkg install qt5-buildtools qt5-core qt5-gui qt5-linguisttools qt5-testlib qt5-wi
 
 ###### libqrencode
 
-The GUI can encode addresses in a QR Code. To build in QR support for the GUI, install `libqrencode`. Skip if not using the GUI or don't want QR code functionality.
+The GUI can encode addresses in a QR code. To build in QR code support for the GUI, install libqrencode:
 ```bash
 pkg install libqrencode
 ```
+Skip this step if not using the GUI or do not want QR code functionality. In the latter case, pass `-DWITH_QRENCODE=OFF`.
+
 ---
 
 #### Notifications

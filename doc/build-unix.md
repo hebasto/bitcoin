@@ -86,9 +86,11 @@ Additionally, to support Wayland protocol for modern desktop environments:
 
     sudo apt install qtwayland5
 
-libqrencode (optional) can be installed with:
+The GUI can encode addresses in a QR code. To build in QR code support for the GUI, install libqrencode:
 
     sudo apt-get install libqrencode-dev
+
+Skip this step if not using the GUI or do not want QR code functionality. In the latter case, pass `-DWITH_QRENCODE=OFF`.
 
 
 ### Fedora
@@ -140,12 +142,11 @@ Additionally, to support Wayland protocol for modern desktop environments:
 
     sudo dnf install qt5-qtwayland
 
-libqrencode (optional) can be installed with:
+The GUI can encode addresses in a QR code. To build in QR code support for the GUI, install libqrencode:
 
     sudo dnf install qrencode-devel
 
-Once these are installed, they will be found by configure and a bitcoin-qt executable will be
-built by default.
+Skip this step if not using the GUI or do not want QR code functionality. In the latter case, pass `-DWITH_QRENCODE=OFF`.
 
 ## Dependencies
 
