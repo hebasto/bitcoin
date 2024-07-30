@@ -74,11 +74,8 @@ User-Space, Statically Defined Tracing (USDT) dependencies:
 
 GUI dependencies:
 
-If you want to build bitcoin-qt, make sure that the required packages for Qt development
-are installed. Qt 5 is necessary to build the GUI.
-To build with GUI pass `-DBUILD_GUI=ON`.
-
-To build with Qt 5 you need the following:
+Bitcoin Core includes a GUI built with the cross-platform Qt Framework. To compile the GUI, we need to install
+the necessary parts of Qt and libqrencode and pass `-DBUILD_GUI=ON`. Skip if you don't intend to use the GUI.
 
     sudo apt-get install qtbase5-dev qttools5-dev qttools5-dev-tools
 
@@ -86,9 +83,11 @@ Additionally, to support Wayland protocol for modern desktop environments:
 
     sudo apt install qtwayland5
 
-libqrencode (optional) can be installed with:
+The GUI will be able to encode addresses in QR codes unless this feature is explicitly disabled. To install libqrencode, run:
 
     sudo apt-get install libqrencode-dev
+
+Otherwise, If you don't need QR encoding support, use the `-DWITH_QRENCODE=OFF` option to disable this feature in order to compile the GUI.
 
 
 ### Fedora
@@ -128,11 +127,8 @@ User-Space, Statically Defined Tracing (USDT) dependencies:
 
 GUI dependencies:
 
-If you want to build bitcoin-qt, make sure that the required packages for Qt development
-are installed. Qt 5 is necessary to build the GUI.
-To build with GUI pass `-DBUILD_GUI=ON`.
-
-To build with Qt 5 you need the following:
+Bitcoin Core includes a GUI built with the cross-platform Qt Framework. To compile the GUI, we need to install
+the necessary parts of Qt and libqrencode and pass `-DBUILD_GUI=ON`. Skip if you don't intend to use the GUI.
 
     sudo dnf install qt5-qttools-devel qt5-qtbase-devel
 
@@ -140,12 +136,11 @@ Additionally, to support Wayland protocol for modern desktop environments:
 
     sudo dnf install qt5-qtwayland
 
-libqrencode (optional) can be installed with:
+The GUI will be able to encode addresses in QR codes unless this feature is explicitly disabled. To install libqrencode, run:
 
     sudo dnf install qrencode-devel
 
-Once these are installed, they will be found by configure and a bitcoin-qt executable will be
-built by default.
+Otherwise, If you don't need QR encoding support, use the `-DWITH_QRENCODE=OFF` option to disable this feature in order to compile the GUI.
 
 ## Dependencies
 
