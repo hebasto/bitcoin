@@ -46,7 +46,7 @@ class SignetMinerTest(BitcoinTestFramework):
         node.importprivkey(bytes_to_wif(CHALLENGE_PRIVATE_KEY))
 
         # generate block with signet miner tool
-        base_dir = self.config["environment"]["SRCDIR"]
+        base_dir = self.config["environment"]["BUILDDIR"]
         signet_miner_path = os.path.join(base_dir, "contrib", "signet", "miner")
         subprocess.run([
                 sys.executable,
