@@ -74,6 +74,8 @@ function(set_default_config config)
   if(is_multi_config)
     get_property(help_string CACHE CMAKE_CONFIGURATION_TYPES PROPERTY HELPSTRING)
     set(CMAKE_CONFIGURATION_TYPES "${all_configs}" CACHE STRING "${help_string}" FORCE)
+    # Also see https://gitlab.kitware.com/cmake/cmake/-/issues/19512.
+    set(CMAKE_TRY_COMPILE_CONFIGURATION "${config}" PARENT_SCOPE)
   else()
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
       STRINGS "${all_configs}"
@@ -83,6 +85,7 @@ function(set_default_config config)
       get_property(help_string CACHE CMAKE_BUILD_TYPE PROPERTY HELPSTRING)
       set(CMAKE_BUILD_TYPE "${config}" CACHE STRING "${help_string}" FORCE)
     endif()
+    set(CMAKE_TRY_COMPILE_CONFIGURATION "${CMAKE_BUILD_TYPE}" PARENT_SCOPE)
   endif()
 endfunction()
 
