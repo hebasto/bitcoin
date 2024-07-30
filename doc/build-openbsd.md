@@ -58,7 +58,8 @@ export BDB_PREFIX="[path displayed above]"
 #### GUI Dependencies
 ###### Qt5
 
-Bitcoin Core includes a GUI built with the cross-platform Qt Framework. To compile the GUI, Qt 5 is required.
+Bitcoin Core includes a GUI built with the cross-platform Qt Framework. To compile the GUI, we need to install
+the necessary parts of Qt and libqrencode and pass `-DBUILD_GUI=ON`. Skip if you don't intend to use the GUI.
 
 ```bash
 pkg_add qtbase qttools
@@ -66,10 +67,14 @@ pkg_add qtbase qttools
 
 ###### libqrencode
 
-The GUI can encode addresses in a QR Code. To build in QR support for the GUI, install `libqrencode`. Skip if not using the GUI or don't want QR code functionality.
+The GUI will be able to encode addresses in QR codes unless this feature is explicitly disabled. To install libqrencode, run:
+
 ```bash
 pkg_add libqrencode
 ```
+
+Otherwise, if you don't need QR encoding support, use the `-DWITH_QRENCODE=OFF` option to disable this feature in order to compile the GUI.
+
 ---
 
 #### Notifications
