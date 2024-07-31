@@ -283,14 +283,14 @@ $(host_prefix)/toolchain.cmake : toolchain.cmake.in $(host_prefix)/.stamp_$(fina
             -e 's|@LDFLAGS@|$(strip $(host_LDFLAGS))|' \
             -e 's|@LDFLAGS_RELEASE@|$(strip $(host_release_LDFLAGS))|' \
             -e 's|@LDFLAGS_DEBUG@|$(strip $(host_debug_LDFLAGS))|' \
-            -e 's|@no_qt@|$(NO_QT)|' \
-            -e 's|@no_qr@|$(NO_QR)|' \
-            -e 's|@no_zmq@|$(NO_ZMQ)|' \
-            -e 's|@no_wallet@|$(NO_WALLET)|' \
-            -e 's|@no_bdb@|$(NO_BDB)|' \
-            -e 's|@no_sqlite@|$(NO_SQLITE)|' \
-            -e 's|@no_upnp@|$(NO_UPNP)|' \
-            -e 's|@no_natpmp@|$(NO_NATPMP)|' \
+            -e 's|@qt_packages@|$(qt_packages_)|' \
+            -e 's|@qrencode_packages@|$(qrencode_packages_)|' \
+            -e 's|@zmq_packages@|$(zmq_packages_)|' \
+            -e 's|@wallet_packages@|$(wallet_packages_)|' \
+            -e 's|@bdb_packages@|$(bdb_packages_)|' \
+            -e 's|@sqlite_packages@|$(sqlite_packages_)|' \
+            -e 's|@upnp_packages@|$(upnp_packages_)|' \
+            -e 's|@natpmp_packages@|$(natpmp_packages_)|' \
             -e 's|@usdt_packages@|$(usdt_packages_)|' \
             -e 's|@no_harden@|$(NO_HARDEN)|' \
             -e 's|@multiprocess@|$(MULTIPROCESS)|' \
