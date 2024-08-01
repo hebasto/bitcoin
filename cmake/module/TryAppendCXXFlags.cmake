@@ -111,7 +111,8 @@ function(try_append_cxx_flags flags)
 
   # This forces running a linker.
   set(CMAKE_TRY_COMPILE_TARGET_TYPE EXECUTABLE)
-  set(CMAKE_REQUIRED_FLAGS "${flags_as_string} ${working_linker_werror_flag}")
+  set(CMAKE_REQUIRED_FLAGS "${flags_as_string}")
+  set(CMAKE_REQUIRED_LINK_OPTIONS ${working_linker_werror_flag})
   set(linker_result LINKER_SUPPORTS_${id_string})
   check_cxx_source_compiles("${source}" ${linker_result})
 
