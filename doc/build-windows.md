@@ -13,6 +13,8 @@ Other options which may work, but which have not been extensively tested are (pl
 
 * On Windows, using a POSIX compatibility layer application such as [cygwin](https://www.cygwin.com/) or [msys2](https://www.msys2.org/).
 
+Currently only building on Ubuntu 24.04 or later and Debian 12 or later is supported.
+
 Installing Windows Subsystem for Linux
 ---------------------------------------
 
