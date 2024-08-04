@@ -61,11 +61,6 @@ DOWNLOAD_RETRIES:=3
 HOST_ID_SALT ?= salt
 BUILD_ID_SALT ?= salt
 
-host:=$(BUILD)
-ifneq ($(HOST),)
-host:=$(HOST)
-endif
-
 ifneq ($(DEBUG),)
 release_type=debug
 else
@@ -77,6 +72,11 @@ base_staging_dir=$(WORK_PATH)/staging
 base_download_dir=$(WORK_PATH)/download
 canonical_host:=$(shell ./config.sub $(HOST))
 build:=$(shell ./config.sub $(BUILD))
+
+host:=$(build)
+ifneq ($(HOST),)
+host:=$(HOST)
+endif
 
 build_arch =$(firstword $(subst -, ,$(build)))
 build_vendor=$(word 2,$(subst -, ,$(build)))
