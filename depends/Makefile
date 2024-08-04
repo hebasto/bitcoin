@@ -250,7 +250,7 @@ $(host_prefix)/share/config.site : config.site.in $(host_prefix)/.stamp_$(final_
             $< > $@
 	touch $@
 
-ifeq ($(host),$(build))
+ifeq ($(canonical_host),$(build))
   crosscompiling=FALSE
 else
   crosscompiling=TRUE
