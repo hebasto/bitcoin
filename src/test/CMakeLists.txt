@@ -161,7 +161,7 @@ if(WITH_MULTIPROCESS)
     ipc_test.cpp
   )
 
-  target_capnp_sources(bitcoin_ipc_test ${CMAKE_SOURCE_DIR}
+  target_capnp_sources(bitcoin_ipc_test ${PROJECT_SOURCE_DIR}
     ipc_test.capnp
   )
 

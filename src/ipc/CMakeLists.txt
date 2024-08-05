@@ -8,7 +8,7 @@ add_library(bitcoin_ipc STATIC EXCLUDE_FROM_ALL
   process.cpp
 )
 
-target_capnp_sources(bitcoin_ipc ${CMAKE_SOURCE_DIR}
+target_capnp_sources(bitcoin_ipc ${PROJECT_SOURCE_DIR}
   capnp/echo.capnp capnp/init.capnp
 )
 
