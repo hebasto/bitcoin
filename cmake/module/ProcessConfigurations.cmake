@@ -4,6 +4,8 @@
 
 include_guard(GLOBAL)
 
+include(TryAppendCXXFlags)
+
 macro(normalize_string string)
   string(REGEX REPLACE " +" " " ${string} "${${string}}")
   string(STRIP "${${string}}" ${string})
@@ -72,6 +74,8 @@ function(set_default_config config)
   if(is_multi_config)
     get_property(help_string CACHE CMAKE_CONFIGURATION_TYPES PROPERTY HELPSTRING)
     set(CMAKE_CONFIGURATION_TYPES "${all_configs}" CACHE STRING "${help_string}" FORCE)
+    # Also see https://gitlab.kitware.com/cmake/cmake/-/issues/19512.
+    set(CMAKE_TRY_COMPILE_CONFIGURATION "${config}" PARENT_SCOPE)
   else()
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
       STRINGS "${all_configs}"
@@ -81,6 +85,7 @@ function(set_default_config config)
       get_property(help_string CACHE CMAKE_BUILD_TYPE PROPERTY HELPSTRING)
       set(CMAKE_BUILD_TYPE "${config}" CACHE STRING "${help_string}" FORCE)
     endif()
+    set(CMAKE_TRY_COMPILE_CONFIGURATION "${CMAKE_BUILD_TYPE}" PARENT_SCOPE)
   endif()
 endfunction()
 
@@ -111,3 +116,60 @@ function(replace_cxx_flag_in_config config old_flag new_flag)
     FORCE
   )
 endfunction()
+
+set_default_config(RelWithDebInfo)
+
+# Redefine/adjust per-configuration flags.
+target_compile_definitions(core_interface_debug INTERFACE
+  DEBUG
+  DEBUG_LOCKORDER
+  DEBUG_LOCKCONTENTION
+  RPC_DOC_CHECK
+  ABORT_ON_FAILED_ASSUME
+)
+# We leave assertions on.
+if(MSVC)
+  remove_cxx_flag_from_all_configs(/DNDEBUG)
+else()
+  remove_cxx_flag_from_all_configs(-DNDEBUG)
+
+  # Adjust flags used by the CXX compiler during RELEASE builds.
+  # Prefer -O2 optimization level. (-O3 is CMake's default for Release for many compilers.)
+  replace_cxx_flag_in_config(Release -O3 -O2)
+
+  are_flags_overridden(CMAKE_CXX_FLAGS_DEBUG cxx_flags_debug_overridden)
+  if(NOT cxx_flags_debug_overridden)
+    # Redefine flags used by the CXX compiler during DEBUG builds.
+    try_append_cxx_flags("-g3" RESULT_VAR compiler_supports_g3)
+    if(compiler_supports_g3)
+      replace_cxx_flag_in_config(Debug -g -g3)
+    endif()
+    unset(compiler_supports_g3)
+
+    try_append_cxx_flags("-ftrapv" RESULT_VAR compiler_supports_ftrapv)
+    if(compiler_supports_ftrapv)
+      string(PREPEND CMAKE_CXX_FLAGS_DEBUG "-ftrapv ")
+    endif()
+    unset(compiler_supports_ftrapv)
+
+    string(PREPEND CMAKE_CXX_FLAGS_DEBUG "-O0 ")
+
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}"
+      CACHE STRING
+      "Flags used by the CXX compiler during DEBUG builds."
+      FORCE
+    )
+  endif()
+  unset(cxx_flags_debug_overridden)
+endif()
+
+set(CMAKE_CXX_FLAGS_COVERAGE "-Og --coverage")
+set(CMAKE_OBJCXX_FLAGS_COVERAGE "-Og --coverage")
+set(CMAKE_EXE_LINKER_FLAGS_COVERAGE "--coverage")
+set(CMAKE_SHARED_LINKER_FLAGS_COVERAGE "--coverage")
+get_property(is_multi_config GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(is_multi_config)
+  if(NOT "Coverage" IN_LIST CMAKE_CONFIGURATION_TYPES)
+    list(APPEND CMAKE_CONFIGURATION_TYPES Coverage)
+  endif()
+endif()
