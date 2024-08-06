@@ -37,8 +37,8 @@ function(add_maintenance_targets)
   # By concatenating these variables, we form the complete command line to be passed to a Python script via the CXX environment variable.
   string(STRIP "${CMAKE_CXX_COMPILER} ${CMAKE_CXX_COMPILER_ARG1}" cxx_compiler_command)
   add_custom_target(test-security-check
-    COMMAND ${CMAKE_COMMAND} -E env CXX=${cxx_compiler_command} CXXFLAGS=${CMAKE_CXX_FLAGS} LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/devtools/test-security-check.py TestSecurityChecks.test_${exe_format}
-    COMMAND ${CMAKE_COMMAND} -E env CXX=${cxx_compiler_command} CXXFLAGS=${CMAKE_CXX_FLAGS} LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/devtools/test-symbol-check.py TestSymbolChecks.test_${exe_format}
+    COMMAND ${CMAKE_COMMAND} -E env CXX=${cxx_compiler_command} CXXFLAGS=${CMAKE_CXX_FLAGS} LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/contrib/devtools/test-security-check.py TestSecurityChecks.test_${exe_format}
+    COMMAND ${CMAKE_COMMAND} -E env CXX=${cxx_compiler_command} CXXFLAGS=${CMAKE_CXX_FLAGS} LDFLAGS=${CMAKE_EXE_LINKER_FLAGS} ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/contrib/devtools/test-symbol-check.py TestSymbolChecks.test_${exe_format}
     VERBATIM
   )
 
@@ -52,14 +52,14 @@ function(add_maintenance_targets)
 
   add_custom_target(check-symbols
     COMMAND ${CMAKE_COMMAND} -E echo "Running symbol and dynamic library checks..."
-    COMMAND ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/devtools/symbol-check.py ${executables}
+    COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/contrib/devtools/symbol-check.py ${executables}
     VERBATIM
   )
 
   if(ENABLE_HARDENING)
     add_custom_target(check-security
       COMMAND ${CMAKE_COMMAND} -E echo "Checking binary security..."
-      COMMAND ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/devtools/security-check.py ${executables}
+      COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/contrib/devtools/security-check.py ${executables}
       VERBATIM
     )
   else()
@@ -74,19 +74,19 @@ function(add_windows_deploy_target)
     include(GenerateSetupNsi)
     generate_setup_nsi()
     add_custom_command(
-      OUTPUT ${CMAKE_BINARY_DIR}/bitcoin-win64-setup.exe
-      COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/release
-      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:bitcoin-qt> -o ${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-qt>
-      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:bitcoind> -o ${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoind>
-      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:bitcoin-cli> -o ${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-cli>
-      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:bitcoin-tx> -o ${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-tx>
-      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:bitcoin-wallet> -o ${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-wallet>
-      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:bitcoin-util> -o ${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-util>
-      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:test_bitcoin> -o ${CMAKE_BINARY_DIR}/release/$<TARGET_FILE_NAME:test_bitcoin>
-      COMMAND makensis -V2 ${CMAKE_BINARY_DIR}/bitcoin-win64-setup.nsi
+      OUTPUT ${PROJECT_BINARY_DIR}/bitcoin-win64-setup.exe
+      COMMAND ${CMAKE_COMMAND} -E make_directory ${PROJECT_BINARY_DIR}/release
+      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:bitcoin-qt> -o ${PROJECT_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-qt>
+      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:bitcoind> -o ${PROJECT_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoind>
+      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:bitcoin-cli> -o ${PROJECT_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-cli>
+      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:bitcoin-tx> -o ${PROJECT_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-tx>
+      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:bitcoin-wallet> -o ${PROJECT_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-wallet>
+      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:bitcoin-util> -o ${PROJECT_BINARY_DIR}/release/$<TARGET_FILE_NAME:bitcoin-util>
+      COMMAND ${CMAKE_STRIP} $<TARGET_FILE:test_bitcoin> -o ${PROJECT_BINARY_DIR}/release/$<TARGET_FILE_NAME:test_bitcoin>
+      COMMAND makensis -V2 ${PROJECT_BINARY_DIR}/bitcoin-win64-setup.nsi
       VERBATIM
     )
-    add_custom_target(deploy DEPENDS ${CMAKE_BINARY_DIR}/bitcoin-win64-setup.exe)
+    add_custom_target(deploy DEPENDS ${PROJECT_BINARY_DIR}/bitcoin-win64-setup.exe)
   endif()
 endfunction()
 
@@ -104,8 +104,8 @@ function(add_macos_deploy_target)
     )
 
     add_custom_command(
-      OUTPUT ${CMAKE_BINARY_DIR}/${macos_app}/Contents/MacOS/Bitcoin-Qt
-      COMMAND ${CMAKE_COMMAND} --install ${CMAKE_BINARY_DIR} --config $<CONFIG> --component GUI --prefix ${macos_app}/Contents/MacOS --strip
+      OUTPUT ${PROJECT_BINARY_DIR}/${macos_app}/Contents/MacOS/Bitcoin-Qt
+      COMMAND ${CMAKE_COMMAND} --install ${PROJECT_BINARY_DIR} --config $<CONFIG> --component GUI --prefix ${macos_app}/Contents/MacOS --strip
       COMMAND ${CMAKE_COMMAND} -E rename ${macos_app}/Contents/MacOS/bin/$<TARGET_FILE_NAME:bitcoin-qt> ${macos_app}/Contents/MacOS/Bitcoin-Qt
       COMMAND ${CMAKE_COMMAND} -E rm -rf ${macos_app}/Contents/MacOS/bin
       VERBATIM
@@ -114,37 +114,37 @@ function(add_macos_deploy_target)
     string(REPLACE " " "-" osx_volname ${PACKAGE_NAME})
     if(CMAKE_HOST_APPLE)
       add_custom_command(
-        OUTPUT ${CMAKE_BINARY_DIR}/${osx_volname}.zip
-        COMMAND ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/macdeploy/macdeployqtplus ${macos_app} ${osx_volname} -translations-dir=${QT_TRANSLATIONS_DIR} -zip
-        DEPENDS ${CMAKE_BINARY_DIR}/${macos_app}/Contents/MacOS/Bitcoin-Qt
+        OUTPUT ${PROJECT_BINARY_DIR}/${osx_volname}.zip
+        COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/contrib/macdeploy/macdeployqtplus ${macos_app} ${osx_volname} -translations-dir=${QT_TRANSLATIONS_DIR} -zip
+        DEPENDS ${PROJECT_BINARY_DIR}/${macos_app}/Contents/MacOS/Bitcoin-Qt
         VERBATIM
       )
       add_custom_target(deploydir
-        DEPENDS ${CMAKE_BINARY_DIR}/${osx_volname}.zip
+        DEPENDS ${PROJECT_BINARY_DIR}/${osx_volname}.zip
       )
       add_custom_target(deploy
-        DEPENDS ${CMAKE_BINARY_DIR}/${osx_volname}.zip
+        DEPENDS ${PROJECT_BINARY_DIR}/${osx_volname}.zip
       )
     else()
       add_custom_command(
-        OUTPUT ${CMAKE_BINARY_DIR}/dist/${macos_app}/Contents/MacOS/Bitcoin-Qt
-        COMMAND OBJDUMP=${CMAKE_OBJDUMP} ${PYTHON_COMMAND} ${CMAKE_SOURCE_DIR}/contrib/macdeploy/macdeployqtplus ${macos_app} ${osx_volname} -translations-dir=${QT_TRANSLATIONS_DIR}
-        DEPENDS ${CMAKE_BINARY_DIR}/${macos_app}/Contents/MacOS/Bitcoin-Qt
+        OUTPUT ${PROJECT_BINARY_DIR}/dist/${macos_app}/Contents/MacOS/Bitcoin-Qt
+        COMMAND OBJDUMP=${CMAKE_OBJDUMP} ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/contrib/macdeploy/macdeployqtplus ${macos_app} ${osx_volname} -translations-dir=${QT_TRANSLATIONS_DIR}
+        DEPENDS ${PROJECT_BINARY_DIR}/${macos_app}/Contents/MacOS/Bitcoin-Qt
         VERBATIM
       )
       add_custom_target(deploydir
-        DEPENDS ${CMAKE_BINARY_DIR}/dist/${macos_app}/Contents/MacOS/Bitcoin-Qt
+        DEPENDS ${PROJECT_BINARY_DIR}/dist/${macos_app}/Contents/MacOS/Bitcoin-Qt
       )
 
       find_program(ZIP_COMMAND zip REQUIRED)
       add_custom_command(
-        OUTPUT ${CMAKE_BINARY_DIR}/dist/${osx_volname}.zip
+        OUTPUT ${PROJECT_BINARY_DIR}/dist/${osx_volname}.zip
         WORKING_DIRECTORY dist
         COMMAND ${PROJECT_SOURCE_DIR}/cmake/script/macos_zip.sh ${ZIP_COMMAND} ${osx_volname}.zip
         VERBATIM
       )
       add_custom_target(deploy
-        DEPENDS ${CMAKE_BINARY_DIR}/dist/${osx_volname}.zip
+        DEPENDS ${PROJECT_BINARY_DIR}/dist/${osx_volname}.zip
       )
       add_dependencies(deploy deploydir)
     endif()
