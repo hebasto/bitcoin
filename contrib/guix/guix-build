@@ -128,7 +128,7 @@ fi
 for host in $HOSTS; do
     case "$host" in
         *darwin*)
-            OSX_SDK="$(make -C "${PWD}/depends" --no-print-directory HOST="$host" print-OSX_SDK | sed 's@^[^=]\+=@@g')"
+            OSX_SDK="$(gmake -C "${PWD}/depends" --no-print-directory HOST="$host" print-OSX_SDK | sed 's@^[^=]\+=@@g')"
             if [ -e "$OSX_SDK" ]; then
                 echo "Found macOS SDK at '${OSX_SDK}', using..."
                 break
@@ -276,7 +276,7 @@ mkdir -p "$VAR_BASE"
 # shellcheck disable=SC2046,SC2086
 {
     # Get depends precious dir definitions from depends
-    make -C "${PWD}/depends" \
+    gmake -C "${PWD}/depends" \
          --no-print-directory \
          -- $(printf "print-%s\n" $depends_precious_dir_names)
 
@@ -296,7 +296,7 @@ mkdir -p "$OUTDIR_BASE"
 # Download the depends sources now as we won't have internet access in the build
 # container
 for host in $HOSTS; do
-    make -C "${PWD}/depends" -j"$JOBS" download-"$(host_to_commonname "$host")" ${V:+V=1} ${SOURCES_PATH:+SOURCES_PATH="$SOURCES_PATH"}
+    gmake -C "${PWD}/depends" -j"$JOBS" download-"$(host_to_commonname "$host")" ${V:+V=1} ${SOURCES_PATH:+SOURCES_PATH="$SOURCES_PATH"}
 done
 
 # Usage: outdir_for_host HOST SUFFIX

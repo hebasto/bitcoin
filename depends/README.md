@@ -2,15 +2,15 @@
 
 To build dependencies for the current arch+OS:
 
-    make
+    gmake
 
 To build for another arch/OS:
 
-    make HOST=host-platform-triplet
+    gmake HOST=host-platform-triplet
 
 For example:
 
-    make HOST=x86_64-w64-mingw32 -j4
+    gmake HOST=x86_64-w64-mingw32 -j4
 
 **Bitcoin Core's `configure` script by default will ignore the depends output.** In
 order for it to pick up libraries, tools, and settings from the depends build,
@@ -96,7 +96,7 @@ For linux S390X cross compilation:
 
 ### Dependency Options
 
-The following can be set when running make: `make FOO=bar`
+The following can be set when running GNU Make: `gmake FOO=bar`
 
 - `SOURCES_PATH`: Downloaded sources will be placed here
 - `BASE_CACHE`: Built packages will be placed here
@@ -125,15 +125,15 @@ The following can be set when running make: `make FOO=bar`
 - `LTO`: Enable options needed for LTO. Does not add `-flto` related options to *FLAGS.
 - `NO_HARDEN=1`: Don't use hardening options when building packages
 
-If some packages are not built, for example `make NO_WALLET=1`, the appropriate
+If some packages are not built, for example `gmake NO_WALLET=1`, the appropriate
 options will be passed to bitcoin's configure. In this case, `--disable-wallet`.
 
 ### Additional targets
 
-    download: run 'make download' to fetch all sources without building them
-    download-osx: run 'make download-osx' to fetch all sources needed for macOS builds
-    download-win: run 'make download-win' to fetch all sources needed for win builds
-    download-linux: run 'make download-linux' to fetch all sources needed for linux builds
+    download: run 'gmake download' to fetch all sources without building them
+    download-osx: run 'gmake download-osx' to fetch all sources needed for macOS builds
+    download-win: run 'gmake download-win' to fetch all sources needed for win builds
+    download-linux: run 'gmake download-linux' to fetch all sources needed for linux builds
 
 
 ### Other documentation
