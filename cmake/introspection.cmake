@@ -13,14 +13,10 @@ check_include_file_cxx(sys/vmmeter.h HAVE_SYS_VMMETER_H)
 check_include_file_cxx(vm/vm_param.h HAVE_VM_VM_PARAM_H)
 
 check_cxx_symbol_exists(O_CLOEXEC "fcntl.h" HAVE_O_CLOEXEC)
-
-check_include_file_cxx(unistd.h HAVE_UNISTD_H)
-if(HAVE_UNISTD_H)
-  check_cxx_symbol_exists(fdatasync "unistd.h" HAVE_FDATASYNC)
-  check_cxx_symbol_exists(fork "unistd.h" HAVE_DECL_FORK)
-  check_cxx_symbol_exists(pipe2 "unistd.h" HAVE_DECL_PIPE2)
-  check_cxx_symbol_exists(setsid "unistd.h" HAVE_DECL_SETSID)
-endif()
+check_cxx_symbol_exists(fdatasync "unistd.h" HAVE_FDATASYNC)
+check_cxx_symbol_exists(fork "unistd.h" HAVE_DECL_FORK)
+check_cxx_symbol_exists(pipe2 "unistd.h" HAVE_DECL_PIPE2)
+check_cxx_symbol_exists(setsid "unistd.h" HAVE_DECL_SETSID)
 
 check_include_file_cxx(sys/types.h HAVE_SYS_TYPES_H)
 check_include_file_cxx(ifaddrs.h HAVE_IFADDRS_H)
