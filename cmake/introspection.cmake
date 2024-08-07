@@ -13,14 +13,10 @@ check_include_file_cxx(sys/vmmeter.h HAVE_SYS_VMMETER_H)
 check_include_file_cxx(vm/vm_param.h HAVE_VM_VM_PARAM_H)
 
 check_cxx_symbol_exists(O_CLOEXEC "fcntl.h" HAVE_O_CLOEXEC)
-
-check_include_file_cxx(unistd.h HAVE_UNISTD_H)
-if(HAVE_UNISTD_H)
-  check_cxx_symbol_exists(fdatasync "unistd.h" HAVE_FDATASYNC)
-  check_cxx_symbol_exists(fork "unistd.h" HAVE_DECL_FORK)
-  check_cxx_symbol_exists(pipe2 "unistd.h" HAVE_DECL_PIPE2)
-  check_cxx_symbol_exists(setsid "unistd.h" HAVE_DECL_SETSID)
-endif()
+check_cxx_symbol_exists(fdatasync "unistd.h" HAVE_FDATASYNC)
+check_cxx_symbol_exists(fork "unistd.h" HAVE_DECL_FORK)
+check_cxx_symbol_exists(pipe2 "unistd.h" HAVE_DECL_PIPE2)
+check_cxx_symbol_exists(setsid "unistd.h" HAVE_DECL_SETSID)
 
 check_include_file_cxx(sys/types.h HAVE_SYS_TYPES_H)
 check_include_file_cxx(ifaddrs.h HAVE_IFADDRS_H)
@@ -38,20 +34,17 @@ if(HAVE_STD_SYSTEM OR HAVE__WSYSTEM)
   set(HAVE_SYSTEM 1)
 endif()
 
-check_include_file_cxx(string.h HAVE_STRING_H)
-if(HAVE_STRING_H)
-  check_cxx_source_compiles("
-    #include <string.h>
+check_cxx_source_compiles("
+  #include <string.h>
 
-    int main()
-    {
-      char buf[100];
-      char* p{strerror_r(0, buf, sizeof buf)};
-      (void)p;
-    }
-    " STRERROR_R_CHAR_P
-  )
-endif()
+  int main()
+  {
+    char buf[100];
+    char* p{strerror_r(0, buf, sizeof buf)};
+    (void)p;
+  }
+  " STRERROR_R_CHAR_P
+)
 
 # Check for malloc_info (for memory statistics information in getmemoryinfo).
 check_cxx_symbol_exists(malloc_info "malloc.h" HAVE_MALLOC_INFO)
