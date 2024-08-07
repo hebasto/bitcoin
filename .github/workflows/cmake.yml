@@ -618,7 +618,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build --preset ci-darwin ${{ matrix.conf.build_options }}
+          cmake -B build --preset ci-darwin ${{ matrix.conf.build_options }} || cat build/CMakeFiles/CMakeConfigureLog.yaml
 
       - name: Build
         env:
