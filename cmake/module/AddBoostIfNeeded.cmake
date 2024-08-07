@@ -40,14 +40,14 @@ function(add_boost_if_needed)
     )
   endif()
 
+  set(CMAKE_REQUIRED_INCLUDES ${Boost_INCLUDE_DIR})
+  include(CMakePushCheckState)
+  cmake_push_check_state()
   # Prevent use of std::unary_function, which was removed in C++17,
   # and will generate warnings with newer compilers for Boost
   # older than 1.80.
   # See: https://github.com/boostorg/config/pull/430.
   set(CMAKE_REQUIRED_DEFINITIONS -DBOOST_NO_CXX98_FUNCTION_BASE)
-  set(CMAKE_REQUIRED_INCLUDES ${Boost_INCLUDE_DIR})
-  include(CMakePushCheckState)
-  cmake_push_check_state()
   include(TryAppendCXXFlags)
   set(CMAKE_REQUIRED_FLAGS ${working_compiler_werror_flag})
   set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
