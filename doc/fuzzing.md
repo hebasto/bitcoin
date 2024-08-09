@@ -14,7 +14,7 @@ $ cmake -B build_fuzz \
    -DSANITIZERS=undefined,address,fuzzer
 # macOS users: If you have problem with this step then make sure to read "macOS hints for
 # libFuzzer" on https://github.com/bitcoin/bitcoin/blob/master/doc/fuzzing.md#macos-hints-for-libfuzzer
-$ cmake --build build_fuzz -j$(nproc)
+$ cmake --build build_fuzz
 $ FUZZ=process_message build_fuzz/src/test/fuzz/fuzz
 # abort fuzzing using ctrl-c
 ```
@@ -150,6 +150,7 @@ $ cmake -B build_fuzz \
    -DCMAKE_CXX_COMPILER="$(brew --prefix llvm)/bin/clang++" \
    -DBUILD_FOR_FUZZING=ON \
    -DSANITIZERS=undefined,address,fuzzer \
+   -DAPPEND_LDFLAGS=-Wl,-no_warn_duplicate_libraries
 ```
 
 Read the [libFuzzer documentation](https://llvm.org/docs/LibFuzzer.html) for more information. This [libFuzzer tutorial](https://github.com/google/fuzzing/blob/master/tutorial/libFuzzerTutorial.md) might also be of interest.
@@ -171,9 +172,9 @@ $ cmake -B build_fuzz \
    -DCMAKE_C_COMPILER="$(pwd)/AFLplusplus/afl-clang-lto" \
    -DCMAKE_CXX_COMPILER="$(pwd)/AFLplusplus/afl-clang-lto++" \
    -DBUILD_FOR_FUZZING=ON
-$ cmake --build build_fuzz -j$(nproc)
+$ cmake --build build_fuzz
 # For macOS you may need to ignore x86 compilation checks when running "cmake --build". If so,
-# try compiling using: `AFL_NO_X86=1 cmake --build build_fuzz -j$(nproc)`
+# try compiling using: AFL_NO_X86=1 cmake --build build_fuzz
 $ mkdir -p inputs/ outputs/
 $ echo A > inputs/thin-air-input
 $ FUZZ=bech32 ./AFLplusplus/afl-fuzz -i inputs/ -o outputs/ -- build_fuzz/src/test/fuzz/fuzz
@@ -201,7 +202,7 @@ $ cmake -B build_fuzz \
    -DCMAKE_CXX_COMPILER="$(pwd)/honggfuzz/hfuzz_cc/hfuzz-clang++" \
    -DBUILD_FOR_FUZZING=ON \
    -DSANITIZERS=address,undefined
-$ cmake --build build_fuzz -j$(nproc)
+$ cmake --build build_fuzz
 $ mkdir -p inputs/
 $ FUZZ=process_message ./honggfuzz/honggfuzz -i inputs/ -- build_fuzz/src/test/fuzz/fuzz
 ```
@@ -275,7 +276,7 @@ $ cmake -B build_fuzz \
    -DENABLE_WALLET=OFF \
    -DBUILD_GUI=OFF \
    -DSANITIZERS=address,undefined
-$ cmake --build build_fuzz --target bitcoind -j$(nproc)
+$ cmake --build build_fuzz --target bitcoind
 $ mkdir -p inputs/
 $ ./honggfuzz/honggfuzz --exit_upon_crash --quiet --timeout 4 -n 1 -Q \
       -E HFND_TCP_PORT=18444 -f inputs/ -- \
