@@ -12,22 +12,21 @@ that runs all of the unit tests. The main source file for the test library is fo
 
 ### Compiling/running unit tests
 
-Unit tests will be automatically compiled if dependencies were met in `./configure`
+Unit tests will be automatically compiled if dependencies were met
+during the generation of the Bitcoin Core build system
 and tests weren't explicitly disabled.
 
-After configuring, they can be run with `make check`, which includes unit tests from
+Assuming the build directory is named `build`, the unit tests
+can be run with `ctests --test-dir build`, which includes unit tests from
 subtrees, or `make && make -C src check-unit` for just the unit tests.
 
-To run the unit tests manually, launch `src/test/test_bitcoin`. To recompile
-after a test file was modified, run `make` and then run the test again. If you
-modify a non-test file, use `make -C src/test` to recompile only what's needed
-to run the unit tests.
+To run the unit tests manually, launch `build/src/test/test_bitcoin`.
 
 To add more unit tests, add `BOOST_AUTO_TEST_CASE` functions to the existing
 .cpp files in the `test/` directory or add new .cpp files that
 implement new `BOOST_AUTO_TEST_SUITE` sections.
 
-To run the GUI unit tests manually, launch `src/qt/test/test_bitcoin-qt`
+To run the GUI unit tests manually, launch `build/src/qt/test/test_bitcoin-qt`
 
 To add more GUI unit tests, add them to the `src/qt/test/` directory and
 the `src/qt/test/test_main.cpp` file.
@@ -38,7 +37,7 @@ the `src/qt/test/test_main.cpp` file.
 For example, to run just the `getarg_tests` suite of tests:
 
 ```bash
-test_bitcoin --log_level=all --run_test=getarg_tests
+build/src/test/test_bitcoin --log_level=all --run_test=getarg_tests
 ```
 
 `log_level` controls the verbosity of the test framework, which logs when a
@@ -48,7 +47,7 @@ test case is entered, for example.
 `bitcoind`. Use `--` to separate these sets of arguments:
 
 ```bash
-test_bitcoin --log_level=all --run_test=getarg_tests -- -printtoconsole=1
+build/src/test/test_bitcoin --log_level=all --run_test=getarg_tests -- -printtoconsole=1
 ```
 
 The `-printtoconsole=1` after the two dashes sends debug logging, which
@@ -58,7 +57,7 @@ standard terminal output.
 ... or to run just the doubledash test:
 
 ```bash
-test_bitcoin --run_test=getarg_tests/doubledash
+build/src/test/test_bitcoin --run_test=getarg_tests/doubledash
 ```
 
 `test_bitcoin` creates a temporary working (data) directory with a randomly
@@ -81,7 +80,7 @@ what the test wrote to `debug.log` after it completes, for example.
 so no leftover state is used.)
 
 ```bash
-$ test_bitcoin --run_test=getarg_tests/doubledash -- -testdatadir=/somewhere/mydatadir
+$ build/src/test/test_bitcoin --run_test=getarg_tests/doubledash -- -testdatadir=/somewhere/mydatadir
 Test directory (will not be deleted): "/somewhere/mydatadir/test_common_Bitcoin Core/getarg_tests/doubledash/datadir
 Running 1 test case...
 
@@ -121,13 +120,13 @@ For debugging you can launch the `test_bitcoin` executable with `gdb` or `lldb` 
 start debugging, just like you would with any other program:
 
 ```bash
-gdb src/test/test_bitcoin
+gdb build/src/test/test_bitcoin
 ```
 
 #### Segmentation faults
 
 If you hit a segmentation fault during a test run, you can diagnose where the fault
-is happening by running `gdb ./src/test/test_bitcoin` and then using the `bt` command
+is happening by running `gdb ./build/src/test/test_bitcoin` and then using the `bt` command
 within gdb.
 
 Another tool that can be used to resolve segmentation faults is
@@ -145,7 +144,7 @@ Running the tests and hitting a segmentation fault should now produce a file cal
 
 You can then explore the core dump using
 ```bash
-gdb src/test/test_bitcoin core
+gdb build/src/test/test_bitcoin core
 
 (gbd) bt  # produce a backtrace for where a segfault occurred
 ```
