@@ -60,6 +60,8 @@ function(add_boost_if_needed)
     target_compile_definitions(Boost::headers INTERFACE
       BOOST_NO_CXX98_FUNCTION_BASE
     )
+  else()
+    set(CMAKE_REQUIRED_DEFINITIONS)
   endif()
 
   if(BUILD_TESTS)
