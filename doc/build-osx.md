@@ -189,22 +189,19 @@ There are many ways to configure Bitcoin Core, here are a few common examples:
 
 ##### Wallet (BDB + SQlite) Support, No GUI:
 
-If `berkeley-db@4` is installed, then legacy wallet support will be built.
-If `sqlite` is installed, then descriptor wallet support will also be built.
+If `berkeley-db@4` or `sqlite` are not installed, this will throw an error.
 
 ``` bash
-cmake -B build
+cmake -B build -DWITH_BDB=ON
 ```
 
 ##### Wallet (only SQlite) and GUI Support:
 
-This enables the GUI and disables legacy wallet support.
-If `qt` is not installed, this will throw an error.
-If `sqlite` is installed then descriptor wallet functionality will be built.
-If `sqlite` is not installed, then wallet functionality will be disabled.
+This enables the GUI.
+If `sqlite` or `qt` are not installed, this will throw an error.
 
 ``` bash
-cmake -B build -DWITH_BDB=OFF -DBUILD_GUI=ON
+cmake -B build -DBUILD_GUI=ON
 ```
 
 ##### No Wallet or GUI
