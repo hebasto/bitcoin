@@ -53,5 +53,4 @@ endif()
 
 install(TARGETS test_bitcoin-qt
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-  COMPONENT GUI
 )
