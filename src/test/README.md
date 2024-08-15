@@ -112,7 +112,8 @@ see `uint256_tests.cpp`.
 
 ### Logging and debugging in unit tests
 
-`make check` will write to a log file `foo_tests.cpp.log` and display this file
+`ctest --test-dir build` will write to a log file `build/Testing/Temporary/LastTest.log`. You can
+additionaly use the `--output-on-failure` option to display logs of the failed tests automatically
 on failure. For running individual tests verbosely, refer to the section
 [above](#running-individual-tests).
 
