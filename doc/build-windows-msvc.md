@@ -28,7 +28,6 @@ Clone the Bitcoin Core repository to a directory. All build scripts and commands
 git clone https://github.com/bitcoin/bitcoin.git
 ```
 
-
 ## Triplets and Presets
 
 The Bitcoin Core project supports the following vcpkg triplets:
@@ -46,7 +45,7 @@ cmake --list-presets
 
 CMake will put the resulting object files, libraries, and executables into a dedicated build directory.
 
-In following istructions, the "Debug" configuration can be specified instead of the "Release" one.
+In following instructions, the "Debug" configuration can be specified instead of the "Release" one.
 
 ### 4. Building with Dynamic Linking with GUI
 
