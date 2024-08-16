@@ -44,9 +44,7 @@ function(add_maintenance_targets)
 
   foreach(target IN ITEMS bitcoind bitcoin-qt bitcoin-cli bitcoin-tx bitcoin-util bitcoin-wallet test_bitcoin bench_bitcoin)
     if(TARGET ${target})
-      # Not using the TARGET_FILE generator expression because it creates excessive
-      # target-level dependencies in the following custom targets.
-      list(APPEND executables $<TARGET_FILE_DIR:${target}>/$<TARGET_FILE_NAME:${target}>)
+      list(APPEND executables $<TARGET_FILE:${target}>)
     endif()
   endforeach()
 
