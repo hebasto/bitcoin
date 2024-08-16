@@ -102,14 +102,14 @@ if(NOT "$ENV{BITCOIN_GENBUILD_NO_GIT}" STREQUAL "1")
 endif()
 
 if(GIT_TAG)
-  set(NEWINFO "#define BUILD_GIT_TAG \"${GIT_TAG}\"\n")
+  set(NEWINFO "#define BUILD_GIT_TAG \"${GIT_TAG}\"")
 elseif(GIT_COMMIT)
-  set(NEWINFO "#define BUILD_GIT_COMMIT \"${GIT_COMMIT}\"\n")
+  set(NEWINFO "#define BUILD_GIT_COMMIT \"${GIT_COMMIT}\"")
 else()
-  set(NEWINFO "// No build information available\n")
+  set(NEWINFO "// No build information available")
 endif()
 
 # Only update the header if necessary.
 if(NOT "${INFO}" STREQUAL "${NEWINFO}")
-  file(WRITE ${BUILD_INFO_HEADER_PATH} ${NEWINFO})
+  file(WRITE ${BUILD_INFO_HEADER_PATH} "${NEWINFO}\n")
 endif()
