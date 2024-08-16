@@ -6,7 +6,7 @@
 #       library, as more and more modules are decoupled from the
 #       consensus engine, this list will shrink to only those
 #       which are absolutely necessary.
-add_library(bitcoinkernel EXCLUDE_FROM_ALL
+add_library(bitcoinkernel
   bitcoinkernel.cpp
   chain.cpp
   checks.cpp
