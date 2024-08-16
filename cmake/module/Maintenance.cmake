@@ -146,7 +146,8 @@ function(add_macos_deploy_target)
       add_custom_target(deploy
         DEPENDS ${PROJECT_BINARY_DIR}/dist/${osx_volname}.zip
       )
-      add_dependencies(deploy deploydir)
     endif()
+    add_dependencies(deploydir bitcoin-qt)
+    add_dependencies(deploy deploydir)
   endif()
 endfunction()
