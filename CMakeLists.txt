@@ -365,7 +365,7 @@ target_link_libraries(core_interface INTERFACE sanitize_interface)
 if(SANITIZERS)
   # First check if the compiler accepts flags. If an incompatible pair like
   # -fsanitize=address,thread is used here, this check will fail. This will also
-  # fail if a bad argument is passed, e.g. -fsanitize=undfeined
+  # fail if a bad argument is passed, e.g. -fsanitize=undefined
   try_append_cxx_flags("-fsanitize=${SANITIZERS}" TARGET sanitize_interface
     RESULT_VAR cxx_supports_sanitizers
     SKIP_LINK
