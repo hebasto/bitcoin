@@ -161,6 +161,8 @@ $(package)_config_opts_linux += -dbus-runtime
 ifneq ($(LTO),)
 $(package)_config_opts_linux += -ltcg
 endif
+$(package)_cflags += -fcf-protection=none -fcf-protection=full
+$(package)_cxxflags += -fcf-protection=none -fcf-protection=full
 
 ifneq (,$(findstring clang,$($(package)_cxx)))
   ifneq (,$(findstring -stdlib=libc++,$($(package)_cxx)))
