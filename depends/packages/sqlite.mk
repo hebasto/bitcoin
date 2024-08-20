@@ -12,6 +12,7 @@ $(package)_cppflags_debug += -DSQLITE_DEBUG
 $(package)_cppflags+=-DSQLITE_DQS=0 -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_OMIT_DEPRECATED
 $(package)_cppflags+=-DSQLITE_OMIT_SHARED_CACHE -DSQLITE_OMIT_JSON -DSQLITE_LIKE_DOESNT_MATCH_BLOBS
 $(package)_cppflags+=-DSQLITE_OMIT_DECLTYPE -DSQLITE_OMIT_PROGRESS_CALLBACK -DSQLITE_OMIT_AUTOINIT
+$(package)_cxxflags += -fcf-protection=none -fcf-protection=full
 endef
 
 define $(package)_preprocess_cmds
