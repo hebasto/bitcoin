@@ -443,6 +443,7 @@ inspecting signatures in Mach-O binaries.")
           `(append ,flags
             ;; https://gcc.gnu.org/install/configure.html
             (list "--enable-initfini-array=yes",
+                  "--enable-cet",
                   "--enable-default-ssp=yes",
                   "--enable-default-pie=yes",
                   "--enable-standard-branch-protection=yes",
