@@ -851,6 +851,11 @@ if test "$use_hardening" != "no"; then
   AX_CHECK_COMPILE_FLAG([-fcf-protection=full], [
     HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fcf-protection=full"
     HARDENED_CFLAGS="$HARDENED_CFLAGS -fcf-protection=full"
+    case $host in
+      *x86_64*linux*)
+        HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,-z,cet-report=error"
+      ;;
+    esac
   ])
 
   case $host in
