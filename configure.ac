@@ -848,7 +848,14 @@ if test "$use_hardening" != "no"; then
   AX_CHECK_COMPILE_FLAG([-Wstack-protector], [HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -Wstack-protector"])
   AX_CHECK_COMPILE_FLAG([-fstack-protector-all], [HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fstack-protector-all"])
 
-  AX_CHECK_COMPILE_FLAG([-fcf-protection=full], [HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fcf-protection=full"])
+  AX_CHECK_COMPILE_FLAG([-fcf-protection=full], [
+    HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fcf-protection=full"
+    case $host in
+      *x86_64*linux*)
+        HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,-z,cet-report=error"
+      ;;
+    esac
+  ])
 
   case $host in
     *mingw*)
