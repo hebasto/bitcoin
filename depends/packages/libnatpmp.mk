@@ -5,6 +5,10 @@ $(package)_file_name=$($(package)_version).tar.gz
 $(package)_sha256_hash=ef84979950dfb3556705b63c9cd6c95501b75e887fba466234b187f3c9029669
 $(package)_build_subdir=build
 
+define $(package)_set_vars
+  $(package)_cflags = -fcf-protection=none -fcf-protection=full
+endef
+
 define $(package)_config_cmds
   $($(package)_cmake) -S .. -B .
 endef

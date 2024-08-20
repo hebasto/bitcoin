@@ -10,6 +10,7 @@ define $(package)_set_vars
 $(package)_config_opts = -DUPNPC_BUILD_SAMPLE=OFF -DUPNPC_BUILD_SHARED=OFF
 $(package)_config_opts += -DUPNPC_BUILD_STATIC=ON -DUPNPC_BUILD_TESTS=OFF
 $(package)_config_opts_mingw32 += -DMINIUPNPC_TARGET_WINDOWS_VERSION=0x0601
+$(package)_cflags = -fcf-protection=none -fcf-protection=full
 endef
 
 define $(package)_preprocess_cmds
