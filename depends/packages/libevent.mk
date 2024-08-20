@@ -18,6 +18,7 @@ define $(package)_set_vars
 
   ifeq ($(NO_HARDEN),)
   $(package)_cppflags+=-D_FORTIFY_SOURCE=3
+  $(package)_cflags += -fcf-protection=full
   endif
 endef
 
