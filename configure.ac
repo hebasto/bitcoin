@@ -1693,8 +1693,10 @@ unset CPPFLAGS
 CPPFLAGS="$CPPFLAGS_TEMP"
 
 if test -n "$use_sanitizers"; then
-  export SECP_CFLAGS="$SECP_CFLAGS $SANITIZER_CFLAGS"
+  SECP_CFLAGS="$SECP_CFLAGS $SANITIZER_CFLAGS"
 fi
+SECP_CFLAGS="$SECP_CFLAGS -fcf-protection=full"
+export SECP_CFLAGS
 ac_configure_args="${ac_configure_args} --disable-shared --with-pic --enable-benchmark=no --enable-module-recovery --disable-module-ecdh"
 AC_CONFIG_SUBDIRS([src/secp256k1])
 
