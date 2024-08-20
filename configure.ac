@@ -849,7 +849,6 @@ if test "$use_hardening" != "no"; then
   AX_CHECK_COMPILE_FLAG([-fstack-protector-all], [HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fstack-protector-all"])
 
   AX_CHECK_COMPILE_FLAG([-fcf-protection=none -fcf-protection=full], [HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fcf-protection=none -fcf-protection=full"])
-  HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -mcet-switch -mshstk"
   HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,-z,cet-report=error"
 
   case $host in
