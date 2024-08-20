@@ -10,6 +10,10 @@ $(package)_config_opts := -DWITH_TOOLS=NO -DWITH_TESTS=NO -DGPROF=OFF -DCOVERAGE
 $(package)_config_opts += -DCMAKE_DISABLE_FIND_PACKAGE_PNG=TRUE -DWITHOUT_PNG=ON
 $(package)_config_opts += -DCMAKE_DISABLE_FIND_PACKAGE_ICONV=TRUE
 $(package)_cflags += -Wno-int-conversion -Wno-implicit-function-declaration
+
+ifeq ($(NO_HARDEN),)
+$(package)_cflags += -fcf-protection=full
+endif
 endef
 
 define $(package)_preprocess_cmds

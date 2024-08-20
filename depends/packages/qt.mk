@@ -187,6 +187,11 @@ $(package)_config_opts_mingw32 += -pch
 ifneq ($(LTO),)
 $(package)_config_opts_mingw32 += -ltcg
 endif
+
+ifeq ($(NO_HARDEN),)
+$(package)_cflags += -fcf-protection=full
+$(package)_cxxflags += -fcf-protection=full
+endif
 endef
 
 define $(package)_fetch_cmds

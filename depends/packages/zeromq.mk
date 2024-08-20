@@ -20,6 +20,10 @@ define $(package)_set_vars
   $(package)_config_opts += -DENABLE_DRAFTS=OFF -DZMQ_BUILD_TESTS=OFF
   $(package)_cxxflags += -ffile-prefix-map=$($(package)_extract_dir)=/usr
   $(package)_config_opts_mingw32 += -DZMQ_WIN32_WINNT=0x0601 -DZMQ_HAVE_IPC=OFF
+
+  ifeq ($(NO_HARDEN),)
+  $(package)_cxxflags += -fcf-protection=full
+  endif
 endef
 
 define $(package)_preprocess_cmds

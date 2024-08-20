@@ -13,6 +13,11 @@ $(package)_cflags+=-Wno-error=implicit-function-declaration -Wno-error=format-se
 $(package)_cppflags_freebsd=-D_XOPEN_SOURCE=600 -D__BSD_VISIBLE=1
 $(package)_cppflags_netbsd=-D_XOPEN_SOURCE=600
 $(package)_cppflags_mingw32=-DUNICODE -D_UNICODE
+
+ifeq ($(NO_HARDEN),)
+$(package)_cflags += -fcf-protection=full
+$(package)_cxxflags += -fcf-protection=full
+endif
 endef
 
 define $(package)_preprocess_cmds
