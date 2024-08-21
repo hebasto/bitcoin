@@ -33,6 +33,11 @@ x86_64_linux_AR=ar
 x86_64_linux_RANLIB=ranlib
 x86_64_linux_NM=nm
 x86_64_linux_STRIP=strip
+
+ifeq ($(NO_HARDEN),)
+linux_CFLAGS += -fcf-protection=full
+linux_CXXFLAGS += -fcf-protection=full
+endif
 else
 i686_linux_CC=$(default_host_CC) -m32
 i686_linux_CXX=$(default_host_CXX) -m32
