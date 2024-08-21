@@ -47,7 +47,7 @@ FILE-NAME found in ./patches relative to the current file."
                               base-libc
                               base-gcc)
   "Create a cross-compilation toolchain package for TARGET"
-  (let* ((xbinutils (cross-binutils target))
+  (let* ((xbinutils (package-with-extra-configure-variable (cross-binutils target) "--enable-cet" "yes"))
          ;; 1. Build a cross-compiling gcc without targeting any libc, derived
          ;; from BASE-GCC-FOR-LIBC
          (xgcc-sans-libc (cross-gcc target
