@@ -848,10 +848,7 @@ if test "$use_hardening" != "no"; then
   AX_CHECK_COMPILE_FLAG([-Wstack-protector], [HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -Wstack-protector"])
   AX_CHECK_COMPILE_FLAG([-fstack-protector-all], [HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fstack-protector-all"])
 
-  AX_CHECK_COMPILE_FLAG([-fcf-protection=full], [
-    HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fcf-protection=full"
-    HARDENED_CFLAGS="$HARDENED_CFLAGS -fcf-protection=full"
-  ])
+  AX_CHECK_COMPILE_FLAG([-fcf-protection=full], [HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fcf-protection=full"])
 
   case $host in
     *mingw*)
@@ -1695,9 +1692,6 @@ CPPFLAGS="$CPPFLAGS_TEMP"
 
 if test -n "$use_sanitizers"; then
   export SECP_CFLAGS="$SECP_CFLAGS $SANITIZER_CFLAGS"
-fi
-if test "$use_hardening" != "no"; then
-  export SECP_CFLAGS="$SECP_CFLAGS $HARDENED_CFLAGS"
 fi
 ac_configure_args="${ac_configure_args} --disable-shared --with-pic --enable-benchmark=no --enable-module-recovery --disable-module-ecdh"
 AC_CONFIG_SUBDIRS([src/secp256k1])
