@@ -169,7 +169,7 @@ chain for " target " development."))
 (define-public python-lief
   (package
     (name "python-lief")
-    (version "0.13.2")
+    (version "0.15.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -187,7 +187,7 @@ chain for " target " development."))
                      (string-append m (number->string (parallel-job-count)))))))
               (sha256
                (base32
-                "0y48x358ppig5xp97ahcphfipx7cg9chldj2q5zrmn610fmi4zll"))))
+                "00p6apkzawbqava4cn0ha82mn21d4zqchg2vd66s8pnqkvmfjvyr"))))
     (build-system python-build-system)
     (native-inputs (list cmake-minimal python-tomli))
     (arguments
@@ -196,7 +196,7 @@ chain for " target " development."))
       #:phases #~(modify-phases %standard-phases
                    (add-before 'build 'change-directory
                      (lambda _
-                       (chdir "api/python")))
+                       (chdir "api/python/backend")))
                    (replace 'build
                      (lambda _
                        (invoke "python" "setup.py" "build"))))))
