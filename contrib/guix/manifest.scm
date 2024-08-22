@@ -195,6 +195,7 @@ chain for " target " development."))
        #:configure-flags
        '("-DCMAKE_BUILD_TYPE=Release"
          "-DLIEF_PYTHON_API=ON"
+         "-DLIEF_PYTHON_EDITABLE=ON"
          "-DLIEF_C_API=OFF"
          "-DLIEF_EXAMPLES=OFF"
          "-DLIEF_USE_CCACHE=OFF")))
