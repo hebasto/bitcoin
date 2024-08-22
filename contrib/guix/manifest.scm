@@ -192,7 +192,13 @@ chain for " target " development."))
     (native-inputs (list cmake-minimal python-tomli))
     (arguments
      (list
-      #:tests? #f))
+      #:tests? #f  ; Tests are disabled.
+      '(#:configure-flags
+       '("-DCMAKE_BUILD_TYPE=Release"
+         "-DLIEF_PYTHON_API=ON"
+         "-DLIEF_C_API=OFF"
+         "-DLIEF_EXAMPLES=OFF"
+         "-DLIEF_USE_CCACHE=OFF"))))
     (home-page "https://github.com/lief-project/LIEF")
     (synopsis "Library to instrument executable formats")
     (description
