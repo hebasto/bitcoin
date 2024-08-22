@@ -194,12 +194,9 @@ chain for " target " development."))
      (list
       #:tests? #f                  ;needs network
       #:phases #~(modify-phases %standard-phases
-                   (add-before 'build 'change-directory
-                     (lambda _
-                       (chdir "api/python/backend")))
                    (replace 'build
                      (lambda _
-                       (invoke "python" "setup.py" "build"))))))
+                       (invoke "python" "-m" "pip" "install" "api/python"))))))
     (home-page "https://github.com/lief-project/LIEF")
     (synopsis "Library to instrument executable formats")
     (description
