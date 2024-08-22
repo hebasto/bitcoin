@@ -196,7 +196,7 @@ chain for " target " development."))
       #:phases #~(modify-phases %standard-phases
                    (replace 'build
                      (lambda _
-                       (invoke "python" "-m" "pip" "install" "api/python"))))))
+                       (invoke "python" "-m" "pip" "install" "--user" "api/python"))))))
     (home-page "https://github.com/lief-project/LIEF")
     (synopsis "Library to instrument executable formats")
     (description
