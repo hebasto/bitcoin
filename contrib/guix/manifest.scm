@@ -189,7 +189,9 @@ chain for " target " development."))
                (base32
                 "00p6apkzawbqava4cn0ha82mn21d4zqchg2vd66s8pnqkvmfjvyr"))))
     (build-system python-build-system)
-    (native-inputs (list cmake-minimal python-tomli))
+    (propagated-inputs
+      (list python-tomli))
+    (native-inputs (list cmake-minimal))
     (arguments
      (list
       #:tests? #f                  ;needs network
