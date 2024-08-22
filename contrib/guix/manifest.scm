@@ -190,6 +190,9 @@ chain for " target " development."))
                 "00p6apkzawbqava4cn0ha82mn21d4zqchg2vd66s8pnqkvmfjvyr"))))
     (build-system cmake-build-system)
     (native-inputs (list cmake-minimal python-tomli))
+    (arguments
+     (list
+      #:tests? #f))
     (home-page "https://github.com/lief-project/LIEF")
     (synopsis "Library to instrument executable formats")
     (description
