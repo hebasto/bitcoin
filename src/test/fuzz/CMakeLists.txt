@@ -127,6 +127,14 @@ add_executable(fuzz
   vecdeque.cpp
   versionbits.cpp
 )
+
+get_target_property(fuzz_target_sources fuzz SOURCES)
+file(GLOB fuzz_directory_sources RELATIVE ${CMAKE_CURRENT_LIST_DIR} *.cpp)
+list(REMOVE_ITEM fuzz_directory_sources ${fuzz_target_sources})
+if(fuzz_directory_sources)
+  message(FATAL_ERROR "The following source files in ${CMAKE_CURRENT_LIST_DIR} are not added to the 'fuzz' target: ${fuzz_directory_sources}")
+endif()
+
 target_link_libraries(fuzz
   core_interface
   test_fuzz
