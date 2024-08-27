@@ -4,10 +4,10 @@
 
 add_library(test_fuzz STATIC EXCLUDE_FROM_ALL
   descriptor.cpp
+  fuzz.cpp
   mempool.cpp
   net.cpp
-  ../fuzz.cpp
-  ../util.cpp
+  util.cpp
 )
 
 target_link_libraries(test_fuzz
