@@ -239,8 +239,8 @@ cmake --build build --target deploy
 
 ## Running Bitcoin Core
 
-Bitcoin Core should now be available at `./src/bitcoind`.
-If you compiled support for the GUI, it should be available at `./src/qt/bitcoin-qt`.
+Bitcoin Core should now be available at `./build/src/bitcoind`.
+If you compiled support for the GUI, it should be available at `./build/src/qt/bitcoin-qt`.
 
 The first time you run `bitcoind` or `bitcoin-qt`, it will start downloading the blockchain.
 This process could take many hours, or even days on slower than average systems.

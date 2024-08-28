@@ -229,13 +229,13 @@ The output is denoised of errors from external dependencies.
 To run clang-tidy on all source files:
 
 ```sh
-( cd ./src/ && run-clang-tidy  -j $(nproc) )
+( cd ./build && run-clang-tidy -p . -j $(nproc) )
 ```
 
 To run clang-tidy on the changed source lines:
 
 ```sh
-git diff | ( cd ./src/ && clang-tidy-diff -p2 -j $(nproc) )
+git diff | ( cd ./build && clang-tidy-diff -p1 -j $(nproc) )
 ```
 
 Coding Style (Python)
@@ -471,7 +471,7 @@ in-tree. Example use:
 $ valgrind --suppressions=contrib/valgrind.supp src/test/test_bitcoin
 $ valgrind --suppressions=contrib/valgrind.supp --leak-check=full \
       --show-leak-kinds=all src/test/test_bitcoin --log_level=test_suite
-$ valgrind -v --leak-check=full src/bitcoind -printtoconsole
+$ valgrind -v --leak-check=full build/src/bitcoind -printtoconsole
 $ ./test/functional/test_runner.py --valgrind
 ```
 

@@ -18,8 +18,8 @@ if (( $# < 3 )); then
   echo
   echo 'Examples:'
   echo
-  echo "  ./contrib/devtools/utxo_snapshot.sh 570000 utxo.dat ./src/bitcoin-cli -datadir=\$(pwd)/testdata"
-  echo '  ./contrib/devtools/utxo_snapshot.sh 570000 - ./src/bitcoin-cli'
+  echo "  ./contrib/devtools/utxo_snapshot.sh 570000 utxo.dat ./build/src/bitcoin-cli -datadir=\$(pwd)/testdata"
+  echo '  ./contrib/devtools/utxo_snapshot.sh 570000 - ./build/src/bitcoin-cli'
   exit 1
 fi
 
