@@ -1,5 +1,4 @@
 (use-modules (gnu packages)
-             (gnu packages autotools)
              ((gnu packages bash) #:select (bash-minimal))
              (gnu packages bison)
              ((gnu packages certs) #:select (nss-certs))
@@ -521,9 +520,6 @@ inspecting signatures in Mach-O binaries.")
         gcc-toolchain-12
         cmake-minimal
         gnu-make
-        libtool
-        autoconf-2.71
-        automake
         pkg-config
         ;; Scripting
         python-minimal ;; (3.10)
