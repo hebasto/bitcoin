@@ -21,4 +21,5 @@ target_link_libraries(bitcoin_zmq
     univalue
     $<TARGET_NAME_IF_EXISTS:libzmq>
     $<TARGET_NAME_IF_EXISTS:PkgConfig::libzmq>
+    Boost::headers
 )
