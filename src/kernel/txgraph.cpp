@@ -2,7 +2,6 @@
 #include <cluster_linearize.h>
 #include <util/time.h>
 #include <logging.h>
-#include <reverse_iterator.h>
 #include <util/strencodings.h>
 #include <util/bitset.h>
 
