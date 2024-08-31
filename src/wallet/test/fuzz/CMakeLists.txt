@@ -11,6 +11,14 @@ target_sources(fuzz
     $<$<BOOL:${USE_SQLITE}>:${CMAKE_CURRENT_LIST_DIR}/notifications.cpp>
     parse_iso8601.cpp
     $<$<BOOL:${USE_SQLITE}>:${CMAKE_CURRENT_LIST_DIR}/scriptpubkeyman.cpp>
-    wallet_bdb_parser.cpp
 )
+if(NOT MSVC OR NOT USE_BDB)
+  # There is an inconsistency in BDB on Windows.
+  # See: https://github.com/bitcoin/bitcoin/pull/26606#issuecomment-2322763212
+  target_sources(fuzz
+    PRIVATE
+      wallet_bdb_parser.cpp
+  )
+endif()
+
 target_link_libraries(fuzz bitcoin_wallet)
