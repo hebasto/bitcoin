@@ -123,7 +123,7 @@ fi
 
 bash -c "cmake -S $BASE_ROOT_DIR $BITCOIN_CONFIG_ALL $BITCOIN_CONFIG || ( (cat CMakeFiles/CMakeOutput.log CMakeFiles/CMakeError.log) && false)"
 
-bash -c "make $MAKEJOBS all $GOAL" || ( echo "Build failure. Verbose build follows." && make all "$GOAL" V=1 ; false )
+bash -c "cmake --build . -j 1 --verbose" || ( echo "Build failure. Verbose build follows." && make all "$GOAL" V=1 ; false )
 
 bash -c "${PRINT_CCACHE_STATISTICS}"
 du -sh "${DEPENDS_DIR}"/*/
