@@ -388,11 +388,15 @@ if(SANITIZERS)
     message(FATAL_ERROR "Linker did not accept requested flags, you are missing required libraries.")
   endif()
 endif()
+set(sanitizer_cxxflags_as_string "${SANITIZER_CXXFLAGS}")
+separate_arguments(SANITIZER_CXXFLAGS)
+target_compile_options(sanitize_interface INTERFACE ${SANITIZER_CXXFLAGS})
+target_link_options(sanitize_interface INTERFACE ${SANITIZER_CXXFLAGS})
 target_link_options(sanitize_interface INTERFACE ${SANITIZER_LDFLAGS})
 
 if(BUILD_FUZZ_BINARY)
   include(CheckSourceCompilesAndLinks)
-  check_cxx_source_links_with_flags("${SANITIZER_LDFLAGS}" "
+  check_cxx_source_links_with_flags("${sanitizer_cxxflags_as_string} ${SANITIZER_LDFLAGS}" "
       #include <cstdint>
       #include <cstddef>
       extern \"C\" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) { return 0; }
