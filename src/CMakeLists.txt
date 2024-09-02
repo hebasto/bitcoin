@@ -54,7 +54,7 @@ include(GetTargetInterface)
 # -fsanitize and related flags apply to both C++ and C,
 # so we can pass them down to libsecp256k1 as CFLAGS.
 get_target_interface(core_sanitizer_cxx_flags "" sanitize_interface COMPILE_OPTIONS)
-set(SECP256K1_LATE_CFLAGS ${core_sanitizer_cxx_flags} CACHE STRING "" FORCE)
+set(SECP256K1_APPEND_CFLAGS ${core_sanitizer_cxx_flags} CACHE STRING "" FORCE)
 unset(core_sanitizer_cxx_flags)
 # We want to build libsecp256k1 with the most tested RelWithDebInfo configuration.
 enable_language(C)
