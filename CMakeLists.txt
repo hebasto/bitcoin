@@ -146,6 +146,8 @@ if(WITH_ZMQ)
   else()
     # The ZeroMQ project has provided config files since v4.2.2.
     # TODO: Switch to find_package(ZeroMQ) at some point in the future.
+    # Note: As of 2024, mainstream distributions do not yet provide
+    # CMake config files for ZeroMQ packages.
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(libzmq REQUIRED IMPORTED_TARGET libzmq>=4)
   endif()
