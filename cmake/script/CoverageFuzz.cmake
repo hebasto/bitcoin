@@ -8,8 +8,13 @@ if(NOT DEFINED FUZZ_SEED_CORPUS_DIR)
   set(FUZZ_SEED_CORPUS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/qa-assets/fuzz_seed_corpus)
 endif()
 
+set(fuzz_test_runner test/fuzz/test_runner.py ${FUZZ_SEED_CORPUS_DIR})
+if(DEFINED JOBS)
+  list(APPEND fuzz_test_runner -j ${JOBS})
+endif()
+
 execute_process(
-  COMMAND test/fuzz/test_runner.py ${FUZZ_SEED_CORPUS_DIR} --loglevel DEBUG
+  COMMAND ${fuzz_test_runner} --loglevel DEBUG
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
   COMMAND_ERROR_IS_FATAL ANY
 )
