@@ -462,7 +462,7 @@ EOF
                                         DISTSRC="$(DISTSRC_BASE=/distsrc-base && distsrc_for_host "$HOST")" \
                                         OUTDIR="$(OUTDIR_BASE=/outdir-base && outdir_for_host "$HOST")" \
                                         DIST_ARCHIVE_BASE=/outdir-base/dist-archive \
-                                      bash -c "cd /bitcoin && bash contrib/guix/libexec/build.sh"
+                                      bash -c "printenv && pwd && touch DIRTY_MARKER"
     )
 
 done
