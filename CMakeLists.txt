@@ -100,7 +100,7 @@ if(WITH_SQLITE)
     # Use of the `unofficial::` namespace is a vcpkg package manager convention.
     find_package(unofficial-sqlite3 CONFIG REQUIRED)
   else()
-    find_package(SQLite3 3.7.17 REQUIRED)
+    find_package(SQLite4 3.7.17 REQUIRED)
   endif()
   set(USE_SQLITE ON)
   set(ENABLE_WALLET ON)
