@@ -44,7 +44,7 @@ void AES256Decrypt::Decrypt(unsigned char plaintext[16], const unsigned char cip
 template <typename T>
 static int CBCEncrypt(const T& enc, const unsigned char iv[AES_BLOCKSIZE], const unsigned char* data, int size, bool pad, unsigned char* out)
 {
-    int written = 0;
+    int written = 0
     int padsize = size % AES_BLOCKSIZE;
     unsigned char mixed[AES_BLOCKSIZE];
 
