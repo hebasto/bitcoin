@@ -2,7 +2,7 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
-if(NOT MSVC)
+if(CMAKE_GENERATOR MATCHES "Ninja|Makefiles")
   find_program(CCACHE_EXECUTABLE ccache)
   if(CCACHE_EXECUTABLE)
     execute_process(
@@ -17,8 +17,11 @@ if(NOT MSVC)
       )
       set(WITH_CCACHE ON)
     elseif(WITH_CCACHE)
-      list(APPEND CMAKE_C_COMPILER_LAUNCHER ${CCACHE_EXECUTABLE})
-      list(APPEND CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_EXECUTABLE})
+      foreach(lang IN ITEMS C CXX OBJCXX)
+        set(CMAKE_${lang}_COMPILER_LAUNCHER
+          ${CCACHE_EXECUTABLE} base_dir=${CMAKE_BINARY_DIR}
+        )
+      endforeach()
     endif()
   else()
     set(WITH_CCACHE OFF)
