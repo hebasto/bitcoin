@@ -19,7 +19,7 @@ if(CMAKE_GENERATOR MATCHES "Ninja|Makefiles")
     elseif(WITH_CCACHE)
       foreach(lang IN ITEMS C CXX OBJCXX)
         set(CMAKE_${lang}_COMPILER_LAUNCHER
-          ${CCACHE_EXECUTABLE} base_dir=${CMAKE_BINARY_DIR}
+          ${CCACHE_EXECUTABLE} base_dir=${CMAKE_BINARY_DIR} hash_dir=false
         )
       endforeach()
     endif()
