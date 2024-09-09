@@ -2,7 +2,9 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
-if(NOT MSVC)
+# The <LANG>_COMPILER_LAUNCHER target property, used to integrate
+# Ccache, is supported only by the Makefiles and Ninja generators.
+if(CMAKE_GENERATOR MATCHES "Makefiles|Ninja")
   find_program(CCACHE_EXECUTABLE ccache)
   if(CCACHE_EXECUTABLE)
     execute_process(
@@ -17,8 +19,11 @@ if(NOT MSVC)
       )
       set(WITH_CCACHE ON)
     elseif(WITH_CCACHE)
-      list(APPEND CMAKE_C_COMPILER_LAUNCHER ${CCACHE_EXECUTABLE})
-      list(APPEND CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_EXECUTABLE})
+      foreach(lang IN ITEMS C CXX OBJCXX)
+        set(CMAKE_${lang}_COMPILER_LAUNCHER
+          ${CMAKE_COMMAND} -E env CCACHE_NOHASHDIR=1 ${CCACHE_EXECUTABLE}
+        )
+      endforeach()
     endif()
   else()
     set(WITH_CCACHE OFF)
