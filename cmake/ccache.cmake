@@ -24,7 +24,10 @@ if(NOT MSVC)
     set(WITH_CCACHE OFF)
   endif()
   if(WITH_CCACHE)
-    try_append_cxx_flags("-fdebug-prefix-map=A=B" TARGET core_interface SKIP_LINK
+    try_append_cxx_flags("-fdebug-prefix-map=A=B" SKIP_LINK
+      TARGET core_interface
+      # Propagate these flags, which apply to both C++ and C, to the secp256k1 subtree.
+      VAR SECP256K1_APPEND_CFLAGS
       IF_CHECK_PASSED "-fdebug-prefix-map=${PROJECT_SOURCE_DIR}=." "-fdebug-prefix-map=${CMAKE_BINARY_DIR}=."
     )
     try_append_cxx_flags("-fmacro-prefix-map=A=B" TARGET core_interface SKIP_LINK
