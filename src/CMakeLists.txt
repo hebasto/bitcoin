@@ -8,6 +8,18 @@ include(AddWindowsResources)
 configure_file(${PROJECT_SOURCE_DIR}/cmake/bitcoin-config.h.in config/bitcoin-config.h USE_SOURCE_PERMISSIONS @ONLY)
 include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
+#=============================
+# crc32c subtree
+#=============================
+message("")
+message("Configuring crc32c subtree...")
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+set(CRC32C_BUILD_TESTS OFF)
+set(CRC32C_BUILD_BENCHMARKS OFF)
+set(CRC32C_USE_GLOG OFF)
+set(CRC32C_INSTALL OFF)
+add_subdirectory(crc32c)
+
 # TODO: After the transition from Autotools to CMake, the obj/ subdirectory
 #       could be dropped as its only purpose was to separate a generated header
 #       from source files.
