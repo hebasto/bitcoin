@@ -16,6 +16,7 @@ $(package)_patches += rcc_hardcode_timestamp.patch
 $(package)_patches += guix_cross_lib_path.patch
 $(package)_patches += utc_from_string_no_optimize.patch
 $(package)_patches += windows_lto.patch
+$(package)_build_subdir=build
 
 $(package)_qttranslations_file_name=qttranslations-$($(package)_suffix)
 $(package)_qttranslations_sha256_hash=9845780b5dc1b7279d57836db51aeaf2e4a1160c42be09750616f39157582ca9
@@ -35,8 +36,6 @@ $(package)_config_opts_debug += -optimized-tools
 $(package)_config_opts += -bindir $(build_prefix)/bin
 $(package)_config_opts += -c++std c++2a
 $(package)_config_opts += -confirm-license
-$(package)_config_opts += -hostprefix $(build_prefix)
-$(package)_config_opts += -no-compile-examples
 $(package)_config_opts += -no-cups
 $(package)_config_opts += -no-egl
 $(package)_config_opts += -no-eglfs
@@ -45,7 +44,6 @@ $(package)_config_opts += -no-gif
 $(package)_config_opts += -no-glib
 $(package)_config_opts += -no-icu
 $(package)_config_opts += -no-ico
-$(package)_config_opts += -no-iconv
 $(package)_config_opts += -no-kms
 $(package)_config_opts += -no-linuxfb
 $(package)_config_opts += -no-libjpeg
@@ -62,18 +60,15 @@ $(package)_config_opts += -no-securetransport
 $(package)_config_opts += -no-sql-db2
 $(package)_config_opts += -no-sql-ibase
 $(package)_config_opts += -no-sql-oci
-$(package)_config_opts += -no-sql-tds
 $(package)_config_opts += -no-sql-mysql
 $(package)_config_opts += -no-sql-odbc
 $(package)_config_opts += -no-sql-psql
 $(package)_config_opts += -no-sql-sqlite
-$(package)_config_opts += -no-sql-sqlite2
 $(package)_config_opts += -no-system-proxies
 $(package)_config_opts += -no-use-gold-linker
 $(package)_config_opts += -no-zstd
 $(package)_config_opts += -nomake examples
 $(package)_config_opts += -nomake tests
-$(package)_config_opts += -nomake tools
 $(package)_config_opts += -opensource
 $(package)_config_opts += -pkg-config
 $(package)_config_opts += -prefix $(host_prefix)
@@ -82,14 +77,11 @@ $(package)_config_opts += -qt-pcre
 $(package)_config_opts += -qt-harfbuzz
 $(package)_config_opts += -qt-zlib
 $(package)_config_opts += -static
-$(package)_config_opts += -v
-$(package)_config_opts += -no-feature-bearermanagement
 $(package)_config_opts += -no-feature-colordialog
 $(package)_config_opts += -no-feature-commandlineparser
 $(package)_config_opts += -no-feature-concurrent
 $(package)_config_opts += -no-feature-dial
 $(package)_config_opts += -no-feature-fontcombobox
-$(package)_config_opts += -no-feature-ftp
 $(package)_config_opts += -no-feature-http
 $(package)_config_opts += -no-feature-image_heuristic_mask
 $(package)_config_opts += -no-feature-keysequenceedit
@@ -105,7 +97,6 @@ $(package)_config_opts += -no-feature-sessionmanager
 $(package)_config_opts += -no-feature-socks5
 $(package)_config_opts += -no-feature-sql
 $(package)_config_opts += -no-feature-sqlmodel
-$(package)_config_opts += -no-feature-statemachine
 $(package)_config_opts += -no-feature-syntaxhighlighter
 $(package)_config_opts += -no-feature-textbrowser
 $(package)_config_opts += -no-feature-textmarkdownwriter
@@ -239,8 +230,7 @@ define $(package)_preprocess_cmds
 endef
 
 define $(package)_config_cmds
-  cd qtbase && \
-  ./configure -top-level $($(package)_config_opts)
+  ../qtbase/configure $($(package)_config_opts)
 endef
 
 define $(package)_build_cmds
