@@ -13,15 +13,15 @@ diff --git a/qtbase/configure b/qtbase/configure
 index 08b49a8d..faea5b55 100755
 --- a/qtbase/configure
 +++ b/qtbase/configure
-@@ -36,9 +36,9 @@
- relconf=`basename $0`
+@@ -9,9 +9,9 @@
+ 
  # the directory of this script is the "source tree"
- relpath=`dirname $0`
+ relpath=`dirname "$0"`
 -relpath=`(cd "$relpath"; /bin/pwd)`
 +relpath=`(cd "$relpath"; pwd)`
  # the current directory is the "build tree" or "object tree"
 -outpath=`/bin/pwd`
 +outpath=`pwd`
-
- WHICH="which"
-
+ outpathPrefix=$outpath
+ 
+ # do this early so we don't store it in config.status
