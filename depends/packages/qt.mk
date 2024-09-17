@@ -220,7 +220,7 @@ define $(package)_preprocess_cmds
 endef
 
 define $(package)_config_cmds
-  ../qtbase/configure $($(package)_config_opts)
+  ../qtbase/configure $($(package)_config_opts) -- -DCMAKE_CXX_STANDARD=20 --log-level=STATUS
 endef
 
 define $(package)_build_cmds
