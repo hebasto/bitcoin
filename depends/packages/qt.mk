@@ -10,7 +10,6 @@ $(package)_linguist_tools = lrelease lupdate lconvert
 $(package)_patches = qt.pro
 $(package)_patches += qttools_src.pro
 $(package)_patches += mac-qmake.conf
-$(package)_patches += no-xlib.patch
 $(package)_patches += dont_hardcode_pwd.patch
 $(package)_patches += qtbase-moc-ignore-gcc-macro.patch
 $(package)_patches += no_warnings_for_symbols.patch
@@ -223,7 +222,6 @@ define $(package)_preprocess_cmds
   cp $($(package)_patch_dir)/qt.pro qt.pro && \
   cp $($(package)_patch_dir)/qttools_src.pro qttools/src/src.pro && \
   patch -p1 -i $($(package)_patch_dir)/dont_hardcode_pwd.patch && \
-  patch -p1 -i $($(package)_patch_dir)/no-xlib.patch && \
   patch -p1 -i $($(package)_patch_dir)/qtbase-moc-ignore-gcc-macro.patch && \
   patch -p1 -i $($(package)_patch_dir)/memory_resource.patch && \
   patch -p1 -i $($(package)_patch_dir)/no_warnings_for_symbols.patch && \
