@@ -69,7 +69,6 @@ $(package)_config_opts += -qt-harfbuzz
 $(package)_config_opts += -qt-zlib
 $(package)_config_opts += -static
 $(package)_config_opts += -no-feature-colordialog
-$(package)_config_opts += -no-feature-commandlineparser
 $(package)_config_opts += -no-feature-concurrent
 $(package)_config_opts += -no-feature-dial
 $(package)_config_opts += -no-feature-fontcombobox
@@ -224,7 +223,7 @@ define $(package)_config_cmds
 endef
 
 define $(package)_build_cmds
-  $(MAKE)
+  cmake --build . --parallel
 endef
 
 # TODO: Investigate whether specific targets can be used here to minimize the amount of files/components installed.
