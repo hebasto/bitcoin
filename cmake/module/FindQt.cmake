@@ -40,7 +40,7 @@ endif()
 # /usr/x86_64-w64-mingw32/lib/libm.a or /usr/arm-linux-gnueabihf/lib/libm.a.
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
 
-find_package(Qt6 ${Qt_FIND_VERSION}
+find_package(Qt6 ${Qt_FIND_VERSION} NO_MODULE QUIET
   COMPONENTS ${Qt_FIND_COMPONENTS}
   HINTS ${_qt_homebrew_prefix}
   PATH_SUFFIXES Qt5  # Required on OpenBSD systems.
