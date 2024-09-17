@@ -68,6 +68,7 @@ $(package)_config_opts += -qt-pcre
 $(package)_config_opts += -qt-harfbuzz
 $(package)_config_opts += -qt-zlib
 $(package)_config_opts += -static
+$(package)_config_opts += -no-feature-backtrace
 $(package)_config_opts += -no-feature-colordialog
 $(package)_config_opts += -no-feature-concurrent
 $(package)_config_opts += -no-feature-dial
