@@ -3,8 +3,8 @@
 # file COPYING or https://opensource.org/license/mit/.
 
 #[=======================================================================[
-FindQt5
--------
+FindQt
+------
 
 Finds the Qt 5 headers and libraries.
 
@@ -40,8 +40,8 @@ endif()
 # /usr/x86_64-w64-mingw32/lib/libm.a or /usr/arm-linux-gnueabihf/lib/libm.a.
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
 
-find_package(Qt5 ${Qt5_FIND_VERSION}
-  COMPONENTS ${Qt5_FIND_COMPONENTS}
+find_package(Qt5 ${Qt_FIND_VERSION} NO_MODULE QUIET
+  COMPONENTS ${Qt_FIND_COMPONENTS}
   HINTS ${_qt_homebrew_prefix}
   PATH_SUFFIXES Qt5  # Required on OpenBSD systems.
 )
@@ -56,11 +56,11 @@ else()
 endif()
 
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Qt5
+find_package_handle_standard_args(Qt
   REQUIRED_VARS Qt5_DIR
   VERSION_VAR Qt5_VERSION
 )
 
-foreach(component IN LISTS Qt5_FIND_COMPONENTS ITEMS "")
+foreach(component IN LISTS Qt_FIND_COMPONENTS ITEMS "")
   mark_as_advanced(Qt5${component}_DIR)
 endforeach()
