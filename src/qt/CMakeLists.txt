@@ -110,7 +110,7 @@ add_library(bitcoinqt STATIC EXCLUDE_FROM_ALL
   $<$<PLATFORM_ID:Windows>:winshutdownmonitor.cpp>
   $<$<PLATFORM_ID:Windows>:winshutdownmonitor.h>
   bitcoin.qrc
-  ${CMAKE_CURRENT_BINARY_DIR}/bitcoin_locale.qrc
+  # ${CMAKE_CURRENT_BINARY_DIR}/bitcoin_locale.qrc
 )
 target_compile_definitions(bitcoinqt
   PUBLIC
