@@ -226,14 +226,10 @@ define $(package)_build_cmds
   cmake --build . --parallel
 endef
 
-# TODO: Investigate whether specific targets can be used here to minimize the amount of files/components installed.
 define $(package)_stage_cmds
-  $(MAKE) -C qtbase INSTALL_ROOT=$($(package)_staging_dir) install && \
-  $(MAKE) -C qttools INSTALL_ROOT=$($(package)_staging_dir) install && \
-  $(MAKE) -C qttranslations INSTALL_ROOT=$($(package)_staging_dir) install_subtargets
+  cmake --install . --prefix $($(package)_staging_prefix_dir)
 endef
 
 define $(package)_postprocess_cmds
-  rm -rf doc/ native/lib/ && \
-  rm -f lib/lib*.la
+  rm -rf doc/
 endef
