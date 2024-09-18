@@ -57,9 +57,15 @@ endif()
 
 set(qt_required_vars "")
 foreach(component IN ITEMS "" LISTS Qt_FIND_COMPONENTS)
-  mark_as_advanced(Qt6${component}_DIR)
   list(APPEND qt_required_vars Qt6${component}_DIR)
+  mark_as_advanced(Qt6${component}_DIR)
+  mark_as_advanced(Qt6${component}Tools_DIR)
 endforeach()
+
+mark_as_advanced(QT_ADDITIONAL_HOST_PACKAGES_PREFIX_PATH)
+mark_as_advanced(QT_ADDITIONAL_PACKAGES_PREFIX_PATH)
+mark_as_advanced(XKB_INCLUDE_DIR)
+mark_as_advanced(XKB_LIBRARY)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Qt
