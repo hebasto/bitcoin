@@ -19,7 +19,7 @@ if(CMAKE_HOST_APPLE)
   find_program(HOMEBREW_EXECUTABLE brew)
   if(HOMEBREW_EXECUTABLE)
     execute_process(
-      COMMAND ${HOMEBREW_EXECUTABLE} --prefix qt@5
+      COMMAND ${HOMEBREW_EXECUTABLE} --prefix qt
       OUTPUT_VARIABLE _qt_homebrew_prefix
       ERROR_QUIET
       OUTPUT_STRIP_TRAILING_WHITESPACE
@@ -40,10 +40,10 @@ endif()
 # /usr/x86_64-w64-mingw32/lib/libm.a or /usr/arm-linux-gnueabihf/lib/libm.a.
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
 
-find_package(Qt5 ${Qt_FIND_VERSION} NO_MODULE QUIET
+find_package(Qt6 ${Qt_FIND_VERSION} NO_MODULE QUIET
   COMPONENTS ${Qt_FIND_COMPONENTS}
   HINTS ${_qt_homebrew_prefix}
-  PATH_SUFFIXES Qt5  # Required on OpenBSD systems.
+  PATH_SUFFIXES Qt6  # Required on OpenBSD systems.
 )
 unset(_qt_homebrew_prefix)
 
@@ -57,10 +57,10 @@ endif()
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Qt
-  REQUIRED_VARS Qt5_DIR
-  VERSION_VAR Qt5_VERSION
+  REQUIRED_VARS Qt6_DIR
+  VERSION_VAR Qt6_VERSION
 )
 
 foreach(component IN LISTS Qt_FIND_COMPONENTS ITEMS "")
-  mark_as_advanced(Qt5${component}_DIR)
+  mark_as_advanced(Qt6${component}_DIR)
 endforeach()

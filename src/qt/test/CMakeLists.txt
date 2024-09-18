@@ -18,7 +18,7 @@ target_link_libraries(test_bitcoin-qt
   test_util
   bitcoin_node
   Boost::headers
-  Qt5::Test
+  Qt6::Test
 )
 
 import_plugins(test_bitcoin-qt)
@@ -36,7 +36,7 @@ if(NOT qt_lib_type STREQUAL "STATIC_LIBRARY")
   add_custom_command(
     TARGET test_bitcoin-qt POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:test_bitcoin-qt>/plugins/platforms
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_PROPERTY:Qt5::QMinimalIntegrationPlugin,LOCATION_$<UPPER_CASE:$<CONFIG>>> $<TARGET_FILE_DIR:test_bitcoin-qt>/plugins/platforms/
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_PROPERTY:Qt6::QMinimalIntegrationPlugin,LOCATION_$<UPPER_CASE:$<CONFIG>>> $<TARGET_FILE_DIR:test_bitcoin-qt>/plugins/platforms/
     VERBATIM
   )
 endif()
