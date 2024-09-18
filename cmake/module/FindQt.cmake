@@ -55,12 +55,14 @@ else()
   unset(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY)
 endif()
 
+set(qt_required_vars "")
+foreach(component IN ITEMS "" LISTS Qt_FIND_COMPONENTS)
+  mark_as_advanced(Qt6${component}_DIR)
+  list(APPEND qt_required_vars Qt6${component}_DIR)
+endforeach()
+
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Qt
-  REQUIRED_VARS Qt6_DIR
+  REQUIRED_VARS ${qt_required_vars}
   VERSION_VAR Qt6_VERSION
 )
-
-foreach(component IN LISTS Qt_FIND_COMPONENTS ITEMS "")
-  mark_as_advanced(Qt6${component}_DIR)
-endforeach()
