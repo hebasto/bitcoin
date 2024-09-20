@@ -112,6 +112,7 @@ $(package)_config_opts_linux += -fontconfig
 $(package)_config_opts_linux += -no-opengl
 $(package)_config_opts_linux += -no-feature-vulkan
 $(package)_config_opts_linux += -dbus-runtime
+$(package)_config_opts_linux += -no-pch
 ifneq ($(LTO),)
 $(package)_config_opts_linux += -ltcg
 endif
