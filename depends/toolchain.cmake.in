@@ -70,7 +70,8 @@ set(CMAKE_OBJDUMP "@OBJDUMP@")
 
 # Using our own built dependencies should not be
 # affected by a potentially random environment.
-set(CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH OFF)
+set(CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH FALSE)
+set(CMAKE_FIND_USE_CMAKE_SYSTEM_PATH FALSE)
 
 set(CMAKE_FIND_ROOT_PATH "@depends_prefix@")
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
