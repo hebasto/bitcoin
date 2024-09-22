@@ -64,6 +64,7 @@ $(package)_config_opts += -no-feature-http
 $(package)_config_opts += -no-feature-image_heuristic_mask
 $(package)_config_opts += -no-feature-keysequenceedit
 $(package)_config_opts += -no-feature-lcdnumber
+$(package)_config_opts += -no-feature-libresolv
 $(package)_config_opts += -no-feature-networkdiskcache
 $(package)_config_opts += -no-feature-networkproxy
 $(package)_config_opts += -no-feature-printpreviewdialog
