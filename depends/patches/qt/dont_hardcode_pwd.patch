@@ -26,6 +26,18 @@ index 08b49a8d..faea5b55 100755
  
  # do this early so we don't store it in config.status
 
+--- a/qtbase/bin/qt-cmake.in
++++ b/qtbase/bin/qt-cmake.in
+@@ -2,7 +2,7 @@
+ 
+ # The directory of this script is the expanded absolute path of the "$qt_prefix/bin" directory.
+ script_dir_path=`dirname $0`
+-script_dir_path=`(cd "$script_dir_path"; /bin/pwd)`
++script_dir_path=`(cd "$script_dir_path"; pwd)`
+ 
+ # Try to use original cmake, otherwise to make it relocatable, use any cmake found in PATH.
+ original_cmake_path="@CMAKE_COMMAND@"
+
 --- a/qtbase/bin/qt-configure-module.in
 +++ b/qtbase/bin/qt-configure-module.in
 @@ -2,7 +2,7 @@
