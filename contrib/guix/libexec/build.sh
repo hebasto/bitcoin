@@ -178,6 +178,13 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    x86_64_linux_NM=x86_64-linux-gnu-gcc-nm \
                                    x86_64_linux_STRIP=x86_64-linux-gnu-strip
 
+
+echo ===================================================================================================
+objdump -t ${BASEPREFIX}/${HOST}/lib/libQt6Core.a | grep __libc_single_threaded
+objdump -t ${BASEPREFIX}/${HOST}/lib/libQt6Gui.a | grep __libc_single_threaded
+echo ===================================================================================================
+
+
 case "$HOST" in
     *darwin*)
         # Unset now that Qt is built
