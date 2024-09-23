@@ -10,20 +10,14 @@ $(package)_build_subdir=build
 define $(package)_set_vars
 $(package)_config_opts += -make tools
 $(package)_config_opts += -no-gui
-$(package)_config_opts += -nomake examples
-$(package)_config_opts += -nomake tests
+$(package)_config_opts += -no-feature-network
 
 $(package)_config_opts += -no-glib
 $(package)_config_opts += -no-icu
-$(package)_config_opts += -no-libproxy
 $(package)_config_opts += -no-libudev
 $(package)_config_opts += -no-mimetype-database
 $(package)_config_opts += -no-openssl
 $(package)_config_opts += -no-reduce-relocations
-$(package)_config_opts += -no-schannel
-$(package)_config_opts += -no-sctp
-$(package)_config_opts += -no-securetransport
-$(package)_config_opts += -no-system-proxies
 $(package)_config_opts += -no-use-gold-linker
 $(package)_config_opts += -no-zstd
 $(package)_config_opts += -pkg-config
@@ -34,15 +28,7 @@ $(package)_config_opts += -static
 
 $(package)_config_opts += -no-feature-backtrace
 $(package)_config_opts += -no-feature-concurrent
-$(package)_config_opts += -no-feature-gssapi
-$(package)_config_opts += -no-feature-http
-$(package)_config_opts += -no-feature-libresolv
-$(package)_config_opts += -no-feature-networkdiskcache
-$(package)_config_opts += -no-feature-networkproxy
-$(package)_config_opts += -no-feature-socks5
 $(package)_config_opts += -no-feature-sql
-$(package)_config_opts += -no-feature-topleveldomain
-$(package)_config_opts += -no-feature-udpsocket
 $(package)_config_opts += -no-feature-xml
 
 $(package)_config_opts_linux += -no-xcb-xlib
