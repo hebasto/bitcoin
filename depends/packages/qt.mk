@@ -4,6 +4,9 @@ $(package)_version=$(qt_details_version)
 $(package)_download_path=$(qt_details_download_path)
 $(package)_file_name=$(qt_details_qtbase_file_name)
 $(package)_sha256_hash=$(qt_details_qtbase_sha256_hash)
+ifneq ($(host),$(build))
+$(package)_dependencies := native_$(package)
+endif
 $(package)_linux_dependencies=freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
 $(package)_patches := top_level_CMakeLists.txt
 $(package)_patches += top_level_ECMOptionalAddSubdirectory.cmake
@@ -29,6 +32,9 @@ define $(package)_set_vars
 $(package)_config_opts_release = -release
 $(package)_config_opts_debug = -debug
 $(package)_config_opts_debug += -optimized-tools
+ifneq ($(host),$(build))
+$(package)_config_opts += -qt-host-path $(build_prefix)
+endif
 $(package)_config_opts += -no-cups
 $(package)_config_opts += -no-egl
 $(package)_config_opts += -no-eglfs
@@ -124,6 +130,7 @@ endif
 $(package)_config_opts_linux = -xcb
 $(package)_config_opts_linux += -no-xcb-xlib
 $(package)_config_opts_linux += -no-feature-xlib
+$(package)_config_opts_linux += -no-feature-process
 $(package)_config_opts_linux += -system-freetype
 $(package)_config_opts_linux += -fontconfig
 $(package)_config_opts_linux += -no-opengl
@@ -148,7 +155,7 @@ $(package)_config_opts_mingw32 += -no-dbus
 $(package)_config_opts_mingw32 += -no-freetype
 $(package)_config_opts_mingw32 += -xplatform win32-g++
 $(package)_config_opts_mingw32 += -device-option CROSS_COMPILE="$(host)-"
-$(package)_config_opts_mingw32 += -pch
+$(package)_config_opts_mingw32 += -no-pch
 ifneq ($(LTO),)
 $(package)_config_opts_mingw32 += -ltcg
 endif
@@ -157,6 +164,9 @@ $(package)_cmake_opts := -DCMAKE_PREFIX_PATH=$(host_prefix)
 $(package)_cmake_opts += -DQT_FEATURE_cxx20=ON
 $(package)_cmake_opts += -DQT_ENABLE_CXX_EXTENSIONS=OFF
 $(package)_cmake_opts += --log-level=STATUS
+ifneq ($(host),$(build))
+$(package)_cmake_opts += -DCMAKE_SYSTEM_NAME=$($(host_os)_cmake_system_name)
+endif
 
 $(package)_config_env := CC="$$($(package)_cc)"
 $(package)_config_env += CFLAGS="$$($(package)_cppflags) $$($(package)_cflags)"
