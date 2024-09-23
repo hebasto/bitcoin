@@ -11,6 +11,11 @@ define $(package)_set_vars
 # Build options:
 $(package)_config_opts += -release
 $(package)_config_opts += -make tools
+$(package)_config_opts += -static
+$(package)_config_opts += -prefix $(host_prefix)
+$(package)_config_opts += -no-reduce-relocations
+$(package)_config_opts += -no-use-gold-linker
+$(package)_config_opts += -pkg-config
 # Modules:
 $(package)_config_opts += -no-feature-concurrent
 $(package)_config_opts += -no-dbus
@@ -23,14 +28,9 @@ $(package)_config_opts += -no-icu
 $(package)_config_opts += -no-libudev
 $(package)_config_opts += -no-mimetype-database
 $(package)_config_opts += -no-openssl
-$(package)_config_opts += -no-reduce-relocations
-$(package)_config_opts += -no-use-gold-linker
 $(package)_config_opts += -no-zstd
-$(package)_config_opts += -pkg-config
-$(package)_config_opts += -prefix $(host_prefix)
 $(package)_config_opts += -qt-pcre
 $(package)_config_opts += -qt-zlib
-$(package)_config_opts += -static
 
 $(package)_config_opts += -no-feature-backtrace
 $(package)_config_opts += -no-feature-sql
