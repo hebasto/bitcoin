@@ -7,6 +7,7 @@ $(package)_dependencies=qt
 $(package)_build_subdir=build
 
 define $(package)_set_vars
+$(package)_config_opts += -qt-host-path $(build_prefix)
 $(package)_config_opts += -no-feature-assistant
 $(package)_config_opts += -no-feature-clang
 $(package)_config_opts += -no-feature-qdoc

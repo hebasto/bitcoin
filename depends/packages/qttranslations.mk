@@ -6,6 +6,10 @@ $(package)_sha256_hash=9845780b5dc1b7279d57836db51aeaf2e4a1160c42be09750616f3915
 $(package)_dependencies=qt qttools
 $(package)_build_subdir=$(package)/build
 
+define $(package)_set_vars
+$(package)_config_opts += -qt-host-path $(build_prefix)
+endef
+
 define $(package)_extract_cmds
   mkdir -p $($(package)_extract_dir) && \
   echo "$($(package)_sha256_hash)  $($(package)_source)" > $($(package)_extract_dir)/.$($(package)_file_name).hash && \
@@ -17,7 +21,7 @@ define $(package)_extract_cmds
 endef
 
 define $(package)_config_cmds
-  $(host_prefix)/bin/qt-configure-module .. -- -DCMAKE_CXX_STANDARD=20 --log-level=STATUS
+  $(host_prefix)/bin/qt-configure-module .. $($(package)_config_opts) -- -DCMAKE_CXX_STANDARD=20 --log-level=STATUS
 endef
 
 define $(package)_build_cmds
