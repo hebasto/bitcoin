@@ -8,9 +8,15 @@ $(package)_patches += qtbase-moc-ignore-gcc-macro.patch
 $(package)_build_subdir=build
 
 define $(package)_set_vars
+# Build options:
+$(package)_config_opts += -release
 $(package)_config_opts += -make tools
+# Modules:
+$(package)_config_opts += -no-feature-concurrent
+$(package)_config_opts += -no-dbus
 $(package)_config_opts += -no-gui
 $(package)_config_opts += -no-feature-network
+$(package)_config_opts += -no-feature-testlib
 
 $(package)_config_opts += -no-glib
 $(package)_config_opts += -no-icu
@@ -27,7 +33,6 @@ $(package)_config_opts += -qt-zlib
 $(package)_config_opts += -static
 
 $(package)_config_opts += -no-feature-backtrace
-$(package)_config_opts += -no-feature-concurrent
 $(package)_config_opts += -no-feature-sql
 $(package)_config_opts += -no-feature-xml
 
@@ -65,24 +70,12 @@ endef
 #
 # 1. Apply our patches to the extracted source. See each patch for more info.
 #
-# 3. After making a copy of the mkspec for the linux-arm-gnueabi host, named
-#    bitcoin-linux-g++, replace tool names with $($($(package)_type)_TOOL).
-#
 # 4. Put our C, CXX and LD FLAGS into gcc-base.conf. Only used for non-host builds.
 #
 # 5. In clang.conf, swap out clang & clang++, for our compiler + flags. See #17466.
 define $(package)_preprocess_cmds
   patch -p1 -i $($(package)_patch_dir)/dont_hardcode_pwd.patch && \
   patch -p1 -i $($(package)_patch_dir)/qtbase-moc-ignore-gcc-macro.patch && \
-  mkdir -p qtbase/mkspecs/macx-clang-linux &&\
-  cp -f qtbase/mkspecs/macx-clang/qplatformdefs.h qtbase/mkspecs/macx-clang-linux/ &&\
-  cp -r qtbase/mkspecs/linux-arm-gnueabi-g++ qtbase/mkspecs/bitcoin-linux-g++ && \
-  sed -i.old "s|arm-linux-gnueabi-gcc|$($($(package)_type)_CC)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
-  sed -i.old "s|arm-linux-gnueabi-g++|$($($(package)_type)_CXX)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
-  sed -i.old "s|arm-linux-gnueabi-ar|$($($(package)_type)_AR)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
-  sed -i.old "s|arm-linux-gnueabi-objcopy|$($($(package)_type)_OBJCOPY)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
-  sed -i.old "s|arm-linux-gnueabi-nm|$($($(package)_type)_NM)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
-  sed -i.old "s|arm-linux-gnueabi-strip|$($($(package)_type)_STRIP)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
   echo "!host_build: QMAKE_CFLAGS     += $($(package)_cflags) $($(package)_cppflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
   echo "!host_build: QMAKE_CXXFLAGS   += $($(package)_cxxflags) $($(package)_cppflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
   echo "!host_build: QMAKE_LFLAGS     += $($(package)_ldflags)" >> qtbase/mkspecs/common/gcc-base.conf && \
