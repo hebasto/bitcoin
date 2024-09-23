@@ -21,7 +21,7 @@ define $(package)_extract_cmds
 endef
 
 define $(package)_config_cmds
-  $(host_prefix)/bin/qt-configure-module .. $($(package)_config_opts) -- -DCMAKE_CXX_STANDARD=20 --log-level=STATUS
+  env CC="$$($(package)_cc)" CXX="$$($(package)_cxx)" $(host_prefix)/bin/qt-configure-module .. $($(package)_config_opts) -- -DCMAKE_SYSTEM_NAME=$($(host_os)_cmake_system_name) -DCMAKE_CXX_STANDARD=20 --log-level=STATUS
 endef
 
 define $(package)_build_cmds
