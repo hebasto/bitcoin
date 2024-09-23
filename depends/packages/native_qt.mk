@@ -1,9 +1,8 @@
-package=qt
-$(package)_version=$(native_$(package)_version)
-$(package)_download_path=$(native_$(package)_download_path)
-$(package)_file_name=$(native_$(package)_file_name)
-$(package)_sha256_hash=$(native_$(package)_sha256_hash)
-$(package)_dependencies=native_$(package)
+package=native_qt
+$(package)_version=6.7.2
+$(package)_download_path=https://download.qt.io/official_releases/qt/6.7/$($(package)_version)/submodules
+$(package)_file_name=qtbase-everywhere-src-$($(package)_version).tar.xz
+$(package)_sha256_hash=c5f22a5e10fb162895ded7de0963328e7307611c688487b5d152c9ee64767599
 $(package)_linux_dependencies=freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
 $(package)_patches += mac-qmake.conf
 $(package)_patches += dont_hardcode_pwd.patch
