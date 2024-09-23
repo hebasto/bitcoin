@@ -36,24 +36,18 @@ $(package)_config_opts += -no-feature-backtrace
 $(package)_config_opts += -no-feature-sql
 $(package)_config_opts += -no-feature-xml
 
-$(package)_config_opts_linux += -no-xcb-xlib
-$(package)_config_opts_linux += -no-feature-xlib
-$(package)_config_opts_linux += -no-feature-process
-$(package)_config_opts_linux += -system-freetype
-$(package)_config_opts_linux += -no-opengl
-$(package)_config_opts_linux += -no-feature-vulkan
-$(package)_config_opts_linux += -dbus-runtime
-# A workaround for https://bugreports.qt.io/browse/QTBUG-99957.
-$(package)_config_opts_linux += -no-pch
+$(package)_config_opts += -no-feature-permissions
+$(package)_config_opts += -no-feature-process
+$(package)_config_opts += -no-feature-settings
 
 ifneq (,$(findstring clang,$($(package)_cxx)))
   ifneq (,$(findstring -stdlib=libc++,$($(package)_cxx)))
-    $(package)_config_opts_linux += -platform linux-clang-libc++
+    $(package)_config_opts += -platform linux-clang-libc++
   else
-    $(package)_config_opts_linux += -platform linux-clang
+    $(package)_config_opts += -platform linux-clang
   endif
 else
-  $(package)_config_opts_linux += -platform linux-g++
+  $(package)_config_opts += -platform linux-g++
 endif
 
 endef
