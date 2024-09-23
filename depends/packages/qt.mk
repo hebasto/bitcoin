@@ -1,10 +1,10 @@
-package=qt
-$(package)_version=$(native_$(package)_version)
-$(package)_download_path=$(native_$(package)_download_path)
-$(package)_file_name=$(native_$(package)_file_name)
-$(package)_sha256_hash=$(native_$(package)_sha256_hash)
-$(package)_dependencies=native_$(package)
-$(package)_linux_dependencies=freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
+package := qt
+$(package)_version := $(native_$(package)_version)
+$(package)_download_path := $(native_$(package)_download_path)
+$(package)_file_name := $(native_$(package)_file_name)
+$(package)_sha256_hash := $(native_$(package)_sha256_hash)
+$(package)_dependencies := native_$(package)
+$(package)_linux_dependencies := freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
 $(package)_patches += mac-qmake.conf
 $(package)_patches += dont_hardcode_pwd.patch
 $(package)_patches += qtbase-moc-ignore-gcc-macro.patch

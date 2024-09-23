@@ -1,8 +1,8 @@
-package=native_qt
-$(package)_version=6.7.2
-$(package)_download_path=https://download.qt.io/official_releases/qt/6.7/$($(package)_version)/submodules
-$(package)_file_name=qtbase-everywhere-src-$($(package)_version).tar.xz
-$(package)_sha256_hash=c5f22a5e10fb162895ded7de0963328e7307611c688487b5d152c9ee64767599
+package := native_qt
+$(package)_version := 6.7.2
+$(package)_download_path := https://download.qt.io/official_releases/qt/6.7/$($(package)_version)/submodules
+$(package)_file_name := qtbase-everywhere-src-$($(package)_version).tar.xz
+$(package)_sha256_hash := c5f22a5e10fb162895ded7de0963328e7307611c688487b5d152c9ee64767599
 $(package)_patches += dont_hardcode_pwd.patch
 $(package)_patches += qtbase-moc-ignore-gcc-macro.patch
 $(package)_build_subdir=build
