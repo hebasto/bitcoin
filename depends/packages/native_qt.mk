@@ -3,7 +3,6 @@ $(package)_version=6.7.2
 $(package)_download_path=https://download.qt.io/official_releases/qt/6.7/$($(package)_version)/submodules
 $(package)_file_name=qtbase-everywhere-src-$($(package)_version).tar.xz
 $(package)_sha256_hash=c5f22a5e10fb162895ded7de0963328e7307611c688487b5d152c9ee64767599
-$(package)_linux_dependencies=freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
 $(package)_patches += mac-qmake.conf
 $(package)_patches += dont_hardcode_pwd.patch
 $(package)_patches += qtbase-moc-ignore-gcc-macro.patch
@@ -52,6 +51,10 @@ $(package)_config_opts += -qt-pcre
 $(package)_config_opts += -qt-harfbuzz
 $(package)_config_opts += -qt-zlib
 $(package)_config_opts += -static
+
+$(package)_config_opts += -no-feature-fontconfig
+$(package)_config_opts += -no-feature-xcb
+
 $(package)_config_opts += -no-feature-backtrace
 $(package)_config_opts += -no-feature-colordialog
 $(package)_config_opts += -no-feature-concurrent
@@ -102,12 +105,10 @@ $(package)_config_opts_aarch64_darwin += -device-option QMAKE_APPLE_DEVICE_ARCHS
 $(package)_config_opts_x86_64_darwin += -device-option QMAKE_APPLE_DEVICE_ARCHS=x86_64
 endif
 
-$(package)_config_opts_linux = -xcb
 $(package)_config_opts_linux += -no-xcb-xlib
 $(package)_config_opts_linux += -no-feature-xlib
 $(package)_config_opts_linux += -no-feature-process
 $(package)_config_opts_linux += -system-freetype
-$(package)_config_opts_linux += -fontconfig
 $(package)_config_opts_linux += -no-opengl
 $(package)_config_opts_linux += -no-feature-vulkan
 $(package)_config_opts_linux += -dbus-runtime
