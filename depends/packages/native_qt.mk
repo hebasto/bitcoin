@@ -8,10 +8,6 @@ $(package)_patches += qtbase-moc-ignore-gcc-macro.patch
 $(package)_build_subdir=build
 
 define $(package)_set_vars
-$(package)_config_env = QT_MAC_SDK_NO_VERSION_CHECK=1
-$(package)_config_opts_release = -release
-$(package)_config_opts_debug = -debug
-$(package)_config_opts_debug += -optimized-tools
 $(package)_config_opts += -no-cups
 $(package)_config_opts += -no-egl
 $(package)_config_opts += -no-eglfs
@@ -78,27 +74,6 @@ $(package)_config_opts += -no-feature-undoview
 $(package)_config_opts += -no-feature-vnc
 $(package)_config_opts += -no-feature-xml
 
-$(package)_config_opts_darwin = -no-dbus
-$(package)_config_opts_darwin += -no-opengl
-$(package)_config_opts_darwin += -pch
-$(package)_config_opts_darwin += -no-feature-corewlan
-$(package)_config_opts_darwin += -no-freetype
-$(package)_config_opts_darwin += QMAKE_MACOSX_DEPLOYMENT_TARGET=$(OSX_MIN_VERSION)
-
-ifneq ($(build_os),darwin)
-$(package)_config_opts_darwin += -xplatform macx-clang-linux
-$(package)_config_opts_darwin += -device-option MAC_SDK_PATH=$(OSX_SDK)
-$(package)_config_opts_darwin += -device-option MAC_SDK_VERSION=$(OSX_SDK_VERSION)
-$(package)_config_opts_darwin += -device-option CROSS_COMPILE="llvm-"
-$(package)_config_opts_darwin += -device-option MAC_TARGET=$(host)
-$(package)_config_opts_darwin += -device-option XCODE_VERSION=$(XCODE_VERSION)
-endif
-
-ifneq ($(build_arch),$(host_arch))
-$(package)_config_opts_aarch64_darwin += -device-option QMAKE_APPLE_DEVICE_ARCHS=arm64
-$(package)_config_opts_x86_64_darwin += -device-option QMAKE_APPLE_DEVICE_ARCHS=x86_64
-endif
-
 $(package)_config_opts_linux += -no-xcb-xlib
 $(package)_config_opts_linux += -no-feature-xlib
 $(package)_config_opts_linux += -no-feature-process
@@ -108,35 +83,17 @@ $(package)_config_opts_linux += -no-feature-vulkan
 $(package)_config_opts_linux += -dbus-runtime
 # A workaround for https://bugreports.qt.io/browse/QTBUG-99957.
 $(package)_config_opts_linux += -no-pch
-ifneq ($(LTO),)
-$(package)_config_opts_linux += -ltcg
-endif
 
 ifneq (,$(findstring clang,$($(package)_cxx)))
   ifneq (,$(findstring -stdlib=libc++,$($(package)_cxx)))
-    $(package)_config_opts_linux += -platform linux-clang-libc++ -xplatform linux-clang-libc++
+    $(package)_config_opts_linux += -platform linux-clang-libc++
   else
-    $(package)_config_opts_linux += -platform linux-clang -xplatform linux-clang
+    $(package)_config_opts_linux += -platform linux-clang
   endif
 else
-  $(package)_config_opts_linux += -platform linux-g++ -xplatform bitcoin-linux-g++
+  $(package)_config_opts_linux += -platform linux-g++
 endif
 
-$(package)_config_opts_mingw32 = -no-opengl
-$(package)_config_opts_mingw32 += -no-dbus
-$(package)_config_opts_mingw32 += -no-freetype
-$(package)_config_opts_mingw32 += -xplatform win32-g++
-$(package)_config_opts_mingw32 += "QMAKE_CFLAGS = '$($(package)_cflags) $($(package)_cppflags)'"
-$(package)_config_opts_mingw32 += "QMAKE_CXX = '$($(package)_cxx)'"
-$(package)_config_opts_mingw32 += "QMAKE_CXXFLAGS = '$($(package)_cxxflags) $($(package)_cppflags)'"
-$(package)_config_opts_mingw32 += "QMAKE_LINK = '$($(package)_cxx)'"
-$(package)_config_opts_mingw32 += "QMAKE_LFLAGS = '$($(package)_ldflags)'"
-$(package)_config_opts_mingw32 += "QMAKE_LIB = '$($(package)_ar) rc'"
-$(package)_config_opts_mingw32 += -device-option CROSS_COMPILE="$(host)-"
-$(package)_config_opts_mingw32 += -pch
-ifneq ($(LTO),)
-$(package)_config_opts_mingw32 += -ltcg
-endif
 endef
 
 define $(package)_extract_cmds
