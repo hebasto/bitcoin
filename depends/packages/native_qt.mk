@@ -18,7 +18,6 @@ $(package)_config_opts += -no-use-gold-linker
 $(package)_config_opts += -pkg-config
 # Modules:
 $(package)_config_opts += -no-feature-concurrent
-$(package)_config_opts += -no-dbus
 $(package)_config_opts += -no-gui
 $(package)_config_opts += -no-feature-network
 $(package)_config_opts += -no-feature-testlib
