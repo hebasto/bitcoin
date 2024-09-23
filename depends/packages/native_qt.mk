@@ -3,14 +3,8 @@ $(package)_version=6.7.2
 $(package)_download_path=https://download.qt.io/official_releases/qt/6.7/$($(package)_version)/submodules
 $(package)_file_name=qtbase-everywhere-src-$($(package)_version).tar.xz
 $(package)_sha256_hash=c5f22a5e10fb162895ded7de0963328e7307611c688487b5d152c9ee64767599
-$(package)_patches += mac-qmake.conf
 $(package)_patches += dont_hardcode_pwd.patch
 $(package)_patches += qtbase-moc-ignore-gcc-macro.patch
-$(package)_patches += no_warnings_for_symbols.patch
-$(package)_patches += rcc_hardcode_timestamp.patch
-$(package)_patches += guix_cross_lib_path.patch
-$(package)_patches += utc_from_string_no_optimize.patch
-$(package)_patches += windows_lto.patch
 $(package)_build_subdir=build
 
 define $(package)_set_vars
@@ -157,8 +151,6 @@ endef
 #
 # 1. Apply our patches to the extracted source. See each patch for more info.
 #
-# 2. Create a macOS-Clang-Linux mkspec using our mac-qmake.conf.
-#
 # 3. After making a copy of the mkspec for the linux-arm-gnueabi host, named
 #    bitcoin-linux-g++, replace tool names with $($($(package)_type)_TOOL).
 #
@@ -168,14 +160,8 @@ endef
 define $(package)_preprocess_cmds
   patch -p1 -i $($(package)_patch_dir)/dont_hardcode_pwd.patch && \
   patch -p1 -i $($(package)_patch_dir)/qtbase-moc-ignore-gcc-macro.patch && \
-  patch -p1 -i $($(package)_patch_dir)/no_warnings_for_symbols.patch && \
-  patch -p1 -i $($(package)_patch_dir)/rcc_hardcode_timestamp.patch && \
-  patch -p1 -i $($(package)_patch_dir)/utc_from_string_no_optimize.patch && \
-  patch -p1 -i $($(package)_patch_dir)/guix_cross_lib_path.patch && \
-  patch -p1 -i $($(package)_patch_dir)/windows_lto.patch && \
   mkdir -p qtbase/mkspecs/macx-clang-linux &&\
   cp -f qtbase/mkspecs/macx-clang/qplatformdefs.h qtbase/mkspecs/macx-clang-linux/ &&\
-  cp -f $($(package)_patch_dir)/mac-qmake.conf qtbase/mkspecs/macx-clang-linux/qmake.conf && \
   cp -r qtbase/mkspecs/linux-arm-gnueabi-g++ qtbase/mkspecs/bitcoin-linux-g++ && \
   sed -i.old "s|arm-linux-gnueabi-gcc|$($($(package)_type)_CC)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
   sed -i.old "s|arm-linux-gnueabi-g++|$($($(package)_type)_CXX)|" qtbase/mkspecs/bitcoin-linux-g++/qmake.conf && \
