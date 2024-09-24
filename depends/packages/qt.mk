@@ -7,6 +7,10 @@ $(package)_sha256_hash=c5f22a5e10fb162895ded7de0963328e7307611c688487b5d152c9ee6
 $(package)_linux_dependencies=freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
 $(package)_qt_libs=corelib network widgets gui plugins testlib
 $(package)_linguist_tools = lrelease lupdate lconvert
+$(package)_patches += top_level_configure
+$(package)_patches += top_level_CMakeLists.txt
+$(package)_patches += top_level_ECMOptionalAddSubdirectory.cmake
+$(package)_patches += top_level_QtTopLevelHelpers.cmake
 $(package)_patches += mac-qmake.conf
 $(package)_patches += dont_hardcode_pwd.patch
 $(package)_patches += qtbase-moc-ignore-gcc-macro.patch
@@ -15,7 +19,6 @@ $(package)_patches += rcc_hardcode_timestamp.patch
 $(package)_patches += guix_cross_lib_path.patch
 $(package)_patches += utc_from_string_no_optimize.patch
 $(package)_patches += windows_lto.patch
-$(package)_build_subdir=build
 
 $(package)_qttools_file_name=qttools-$($(package)_suffix)
 $(package)_qttools_sha256_hash=58e855ad1b2533094726c8a425766b63a04a0eede2ed85086860e54593aa4b2a
@@ -86,7 +89,6 @@ $(package)_config_opts += -no-feature-undogroup
 $(package)_config_opts += -no-feature-undostack
 $(package)_config_opts += -no-feature-undoview
 $(package)_config_opts += -no-feature-vnc
-$(package)_config_opts += -no-feature-xml
 
 $(package)_config_opts_darwin = -no-dbus
 $(package)_config_opts_darwin += -no-opengl
@@ -149,6 +151,20 @@ $(package)_config_opts_mingw32 += -pch
 ifneq ($(LTO),)
 $(package)_config_opts_mingw32 += -ltcg
 endif
+
+# QtTools module.
+$(package)_config_opts += -no-feature-assistant
+$(package)_config_opts += -no-feature-clang
+$(package)_config_opts += -no-feature-qdoc
+$(package)_config_opts += -no-feature-clangcpp
+$(package)_config_opts += -no-feature-designer
+$(package)_config_opts += -no-feature-pixeltool
+$(package)_config_opts += -no-feature-qdbus
+$(package)_config_opts += -no-feature-qtattributionsscanner
+$(package)_config_opts += -no-feature-qtdiag
+$(package)_config_opts += -no-feature-qtplugininfo
+
+
 endef
 
 define $(package)_fetch_cmds
@@ -181,6 +197,12 @@ endef
 #
 # 5. In clang.conf, swap out clang & clang++, for our compiler + flags. See #17466.
 define $(package)_preprocess_cmds
+  cp $($(package)_patch_dir)/top_level_configure configure && \
+  chmod +x configure && \
+  cp $($(package)_patch_dir)/top_level_CMakeLists.txt CMakeLists.txt && \
+  mkdir -p cmake && \
+  cp $($(package)_patch_dir)/top_level_ECMOptionalAddSubdirectory.cmake cmake/ECMOptionalAddSubdirectory.cmake && \
+  cp $($(package)_patch_dir)/top_level_QtTopLevelHelpers.cmake cmake/QtTopLevelHelpers.cmake && \
   patch -p1 -i $($(package)_patch_dir)/dont_hardcode_pwd.patch && \
   patch -p1 -i $($(package)_patch_dir)/qtbase-moc-ignore-gcc-macro.patch && \
   patch -p1 -i $($(package)_patch_dir)/no_warnings_for_symbols.patch && \
@@ -206,7 +228,8 @@ define $(package)_preprocess_cmds
 endef
 
 define $(package)_config_cmds
-  ../qtbase/configure $($(package)_config_opts) -- -DCMAKE_CXX_STANDARD=20 --log-level=STATUS
+  ls -l && \
+  ./configure $($(package)_config_opts) -- -DCMAKE_CXX_STANDARD=20 --log-level=STATUS
 endef
 
 define $(package)_build_cmds
