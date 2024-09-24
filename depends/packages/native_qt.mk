@@ -77,6 +77,7 @@ else
 endif
 
 # Qt Tools module.
+$(package)_config_opts += -feature-linguist
 $(package)_config_opts += -no-feature-assistant
 $(package)_config_opts += -no-feature-clang
 $(package)_config_opts += -no-feature-qdoc
