@@ -24,104 +24,35 @@ $(package)_qttools_sha256_hash=58e855ad1b2533094726c8a425766b63a04a0eede2ed85086
 $(package)_extra_sources += $($(package)_qttools_file_name)
 
 define $(package)_set_vars
-$(package)_config_env = QT_MAC_SDK_NO_VERSION_CHECK=1
-$(package)_config_opts_release = -release
-$(package)_config_opts_debug = -debug
-$(package)_config_opts_debug += -optimized-tools
-$(package)_config_opts += -no-cups
-$(package)_config_opts += -no-egl
-$(package)_config_opts += -no-eglfs
-$(package)_config_opts += -no-evdev
-$(package)_config_opts += -no-gif
+# Build options:
+$(package)_config_opts += -release
+$(package)_config_opts += -make tools
+$(package)_config_opts += -static
+$(package)_config_opts += -prefix $(host_prefix)
+$(package)_config_opts += -no-reduce-relocations
+$(package)_config_opts += -no-use-gold-linker
+$(package)_config_opts += -pkg-config
+# Modules:
+$(package)_config_opts += -no-feature-concurrent
+$(package)_config_opts += -no-gui
+$(package)_config_opts += -no-feature-network
+$(package)_config_opts += -no-feature-testlib
+
 $(package)_config_opts += -no-glib
 $(package)_config_opts += -no-icu
-$(package)_config_opts += -no-ico
-$(package)_config_opts += -no-kms
-$(package)_config_opts += -no-linuxfb
-$(package)_config_opts += -no-libjpeg
-$(package)_config_opts += -no-libproxy
 $(package)_config_opts += -no-libudev
 $(package)_config_opts += -no-mimetype-database
-$(package)_config_opts += -no-mtdev
 $(package)_config_opts += -no-openssl
-$(package)_config_opts += -no-openvg
-$(package)_config_opts += -no-reduce-relocations
-$(package)_config_opts += -no-schannel
-$(package)_config_opts += -no-sctp
-$(package)_config_opts += -no-securetransport
-$(package)_config_opts += -no-system-proxies
-$(package)_config_opts += -no-use-gold-linker
 $(package)_config_opts += -no-zstd
-$(package)_config_opts += -nomake examples
-$(package)_config_opts += -nomake tests
-$(package)_config_opts += -pkg-config
-$(package)_config_opts += -prefix $(host_prefix)
-$(package)_config_opts += -qt-libpng
 $(package)_config_opts += -qt-pcre
-$(package)_config_opts += -qt-harfbuzz
 $(package)_config_opts += -qt-zlib
-$(package)_config_opts += -static
+
 $(package)_config_opts += -no-feature-backtrace
-$(package)_config_opts += -no-feature-colordialog
-$(package)_config_opts += -no-feature-concurrent
-$(package)_config_opts += -no-feature-dial
-$(package)_config_opts += -no-feature-gssapi
-$(package)_config_opts += -no-feature-http
-$(package)_config_opts += -no-feature-image_heuristic_mask
-$(package)_config_opts += -no-feature-keysequenceedit
-$(package)_config_opts += -no-feature-lcdnumber
-$(package)_config_opts += -no-feature-libresolv
-$(package)_config_opts += -no-feature-networkdiskcache
-$(package)_config_opts += -no-feature-networkproxy
-$(package)_config_opts += -no-feature-printpreviewdialog
-$(package)_config_opts += -no-feature-printpreviewwidget
-$(package)_config_opts += -no-feature-sessionmanager
-$(package)_config_opts += -no-feature-socks5
 $(package)_config_opts += -no-feature-sql
-$(package)_config_opts += -no-feature-textmarkdownwriter
-$(package)_config_opts += -no-feature-textodfwriter
-$(package)_config_opts += -no-feature-topleveldomain
-$(package)_config_opts += -no-feature-udpsocket
-$(package)_config_opts += -no-feature-undocommand
-$(package)_config_opts += -no-feature-undogroup
-$(package)_config_opts += -no-feature-undostack
-$(package)_config_opts += -no-feature-undoview
-$(package)_config_opts += -no-feature-vnc
 
-$(package)_config_opts_darwin = -no-dbus
-$(package)_config_opts_darwin += -no-opengl
-$(package)_config_opts_darwin += -pch
-$(package)_config_opts_darwin += -no-feature-corewlan
-$(package)_config_opts_darwin += -no-freetype
-$(package)_config_opts_darwin += QMAKE_MACOSX_DEPLOYMENT_TARGET=$(OSX_MIN_VERSION)
-
-ifneq ($(build_os),darwin)
-$(package)_config_opts_darwin += -xplatform macx-clang-linux
-$(package)_config_opts_darwin += -device-option MAC_SDK_PATH=$(OSX_SDK)
-$(package)_config_opts_darwin += -device-option MAC_SDK_VERSION=$(OSX_SDK_VERSION)
-$(package)_config_opts_darwin += -device-option CROSS_COMPILE="llvm-"
-$(package)_config_opts_darwin += -device-option MAC_TARGET=$(host)
-$(package)_config_opts_darwin += -device-option XCODE_VERSION=$(XCODE_VERSION)
-endif
-
-ifneq ($(build_arch),$(host_arch))
-$(package)_config_opts_aarch64_darwin += -device-option QMAKE_APPLE_DEVICE_ARCHS=arm64
-$(package)_config_opts_x86_64_darwin += -device-option QMAKE_APPLE_DEVICE_ARCHS=x86_64
-endif
-
-$(package)_config_opts_linux += -no-xcb-xlib
-$(package)_config_opts_linux += -no-feature-xlib
-$(package)_config_opts_linux += -no-feature-process
-$(package)_config_opts_linux += -system-freetype
-$(package)_config_opts_linux += -fontconfig
-$(package)_config_opts_linux += -no-opengl
-$(package)_config_opts_linux += -no-feature-vulkan
-$(package)_config_opts_linux += -dbus-runtime
-# A workaround for https://bugreports.qt.io/browse/QTBUG-99957.
-$(package)_config_opts_linux += -no-pch
-ifneq ($(LTO),)
-$(package)_config_opts_linux += -ltcg
-endif
+$(package)_config_opts += -no-feature-permissions
+$(package)_config_opts += -no-feature-process
+$(package)_config_opts += -no-feature-settings
 
 ifneq (,$(findstring clang,$($(package)_cxx)))
   ifneq (,$(findstring -stdlib=libc++,$($(package)_cxx)))
@@ -131,22 +62,6 @@ ifneq (,$(findstring clang,$($(package)_cxx)))
   endif
 else
   $(package)_config_opts_linux += -platform linux-g++ -xplatform bitcoin-linux-g++
-endif
-
-$(package)_config_opts_mingw32 = -no-opengl
-$(package)_config_opts_mingw32 += -no-dbus
-$(package)_config_opts_mingw32 += -no-freetype
-$(package)_config_opts_mingw32 += -xplatform win32-g++
-$(package)_config_opts_mingw32 += "QMAKE_CFLAGS = '$($(package)_cflags) $($(package)_cppflags)'"
-$(package)_config_opts_mingw32 += "QMAKE_CXX = '$($(package)_cxx)'"
-$(package)_config_opts_mingw32 += "QMAKE_CXXFLAGS = '$($(package)_cxxflags) $($(package)_cppflags)'"
-$(package)_config_opts_mingw32 += "QMAKE_LINK = '$($(package)_cxx)'"
-$(package)_config_opts_mingw32 += "QMAKE_LFLAGS = '$($(package)_ldflags)'"
-$(package)_config_opts_mingw32 += "QMAKE_LIB = '$($(package)_ar) rc'"
-$(package)_config_opts_mingw32 += -device-option CROSS_COMPILE="$(host)-"
-$(package)_config_opts_mingw32 += -pch
-ifneq ($(LTO),)
-$(package)_config_opts_mingw32 += -ltcg
 endif
 
 # QtTools module.
@@ -160,7 +75,6 @@ $(package)_config_opts += -no-feature-qdbus
 $(package)_config_opts += -no-feature-qtattributionsscanner
 $(package)_config_opts += -no-feature-qtdiag
 $(package)_config_opts += -no-feature-qtplugininfo
-
 
 endef
 
