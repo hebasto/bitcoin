@@ -35,8 +35,23 @@ $(package)_config_opts += -pkg-config
 # Modules:
 $(package)_config_opts += -no-feature-concurrent
 $(package)_config_opts += -no-gui
-$(package)_config_opts += -no-feature-network
 $(package)_config_opts += -no-feature-testlib
+
+# Network is required for Qt Tools
+$(package)_config_opts += -feature-network
+$(package)_config_opts += -no-libproxy
+$(package)_config_opts += -no-schannel
+$(package)_config_opts += -no-sctp
+$(package)_config_opts += -no-securetransport
+$(package)_config_opts += -no-system-proxies
+$(package)_config_opts += -no-feature-gssapi
+$(package)_config_opts += -no-feature-http
+$(package)_config_opts += -no-feature-libresolv
+$(package)_config_opts += -no-feature-networkdiskcache
+$(package)_config_opts += -no-feature-networkproxy
+$(package)_config_opts += -no-feature-socks5
+$(package)_config_opts += -no-feature-topleveldomain
+$(package)_config_opts += -no-feature-udpsocket
 
 $(package)_config_opts += -no-glib
 $(package)_config_opts += -no-icu
@@ -64,7 +79,7 @@ else
   $(package)_config_opts_linux += -platform linux-g++ -xplatform bitcoin-linux-g++
 endif
 
-# QtTools module.
+# Qt Tools module.
 $(package)_config_opts += -no-feature-assistant
 $(package)_config_opts += -no-feature-clang
 $(package)_config_opts += -no-feature-qdoc
