@@ -7,7 +7,6 @@ $(package)_sha256_hash=c5f22a5e10fb162895ded7de0963328e7307611c688487b5d152c9ee6
 $(package)_linux_dependencies=freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
 $(package)_qt_libs=corelib network widgets gui plugins testlib
 $(package)_linguist_tools = lrelease lupdate lconvert
-$(package)_patches += top_level_configure
 $(package)_patches += top_level_CMakeLists.txt
 $(package)_patches += top_level_ECMOptionalAddSubdirectory.cmake
 $(package)_patches += top_level_QtTopLevelHelpers.cmake
@@ -197,8 +196,6 @@ endef
 #
 # 5. In clang.conf, swap out clang & clang++, for our compiler + flags. See #17466.
 define $(package)_preprocess_cmds
-  cp $($(package)_patch_dir)/top_level_configure configure && \
-  chmod +x configure && \
   cp $($(package)_patch_dir)/top_level_CMakeLists.txt CMakeLists.txt && \
   mkdir -p cmake && \
   cp $($(package)_patch_dir)/top_level_ECMOptionalAddSubdirectory.cmake cmake/ECMOptionalAddSubdirectory.cmake && \
@@ -228,8 +225,8 @@ define $(package)_preprocess_cmds
 endef
 
 define $(package)_config_cmds
-  ls -l && \
-  ./configure $($(package)_config_opts) -- -DCMAKE_CXX_STANDARD=20 --log-level=STATUS
+  cd qtbase && \
+  ./configure -top-level $($(package)_config_opts) -- -DCMAKE_CXX_STANDARD=20 --log-level=STATUS
 endef
 
 define $(package)_build_cmds
