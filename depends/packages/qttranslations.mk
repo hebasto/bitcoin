@@ -3,7 +3,7 @@ $(package)_version=$(qt_version)
 $(package)_download_path=$(qt_download_path)
 $(package)_file_name=$(package)-everywhere-src-$($(package)_version).tar.xz
 $(package)_sha256_hash=9845780b5dc1b7279d57836db51aeaf2e4a1160c42be09750616f39157582ca9
-$(package)_dependencies=qt qttools
+$(package)_dependencies=qt
 $(package)_build_subdir=$(package)/build
 
 define $(package)_set_vars

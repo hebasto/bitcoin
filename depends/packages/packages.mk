@@ -9,9 +9,9 @@ qrencode_darwin_packages = qrencode
 qrencode_mingw32_packages = qrencode
 
 qt_native_packages = native_qt
-qt_linux_packages:=qt qttools qttranslations expat libxcb xcb_proto libXau xproto freetype fontconfig libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
-qt_darwin_packages=qt qttools qttranslations
-qt_mingw32_packages=qt qttools qttranslations
+qt_linux_packages:=qt qttranslations expat libxcb xcb_proto libXau xproto freetype fontconfig libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
+qt_darwin_packages=qt qttranslations
+qt_mingw32_packages=qt qttranslations
 
 bdb_packages=bdb
 sqlite_packages=sqlite
