@@ -197,8 +197,6 @@ endef
 #
 # 5. In clang.conf, swap out clang & clang++, for our compiler + flags. See #17466.
 define $(package)_preprocess_cmds
-  cp $($(package)_patch_dir)/top_level_configure configure && \
-  chmod +x configure && \
   cp $($(package)_patch_dir)/top_level_CMakeLists.txt CMakeLists.txt && \
   mkdir -p cmake && \
   cp $($(package)_patch_dir)/top_level_ECMOptionalAddSubdirectory.cmake cmake/ECMOptionalAddSubdirectory.cmake && \
@@ -228,8 +226,8 @@ define $(package)_preprocess_cmds
 endef
 
 define $(package)_config_cmds
-  ls -l && \
-  ./configure $($(package)_config_opts) -- -DCMAKE_CXX_STANDARD=20 --log-level=STATUS
+  cd qtbase && \
+  ./configure -top-level $($(package)_config_opts) -- -DCMAKE_CXX_STANDARD=20 --log-level=STATUS
 endef
 
 define $(package)_build_cmds
