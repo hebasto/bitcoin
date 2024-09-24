@@ -17,6 +17,10 @@ $(package)_patches += utc_from_string_no_optimize.patch
 $(package)_patches += windows_lto.patch
 $(package)_build_subdir=build
 
+$(package)_qttools_file_name=qttools-$($(package)_suffix)
+$(package)_qttools_sha256_hash=58e855ad1b2533094726c8a425766b63a04a0eede2ed85086860e54593aa4b2a
+$(package)_extra_sources += $($(package)_qttools_file_name)
+
 define $(package)_set_vars
 $(package)_config_env = QT_MAC_SDK_NO_VERSION_CHECK=1
 $(package)_config_opts_release = -release
@@ -147,12 +151,21 @@ $(package)_config_opts_mingw32 += -ltcg
 endif
 endef
 
+define $(package)_fetch_cmds
+  $(call fetch_file,$(package),$($(package)_download_path),$($(package)_download_file),$($(package)_file_name),$($(package)_sha256_hash)) && \
+  $(call fetch_file,$(package),$($(package)_download_path),$($(package)_qttools_file_name),$($(package)_qttools_file_name),$($(package)_qttools_sha256_hash))
+endef
+
+
 define $(package)_extract_cmds
   mkdir -p $($(package)_extract_dir) && \
   echo "$($(package)_sha256_hash)  $($(package)_source)" > $($(package)_extract_dir)/.$($(package)_file_name).hash && \
+  echo "$($(package)_qttools_sha256_hash)  $($(package)_source_dir)/$($(package)_qttools_file_name)" >> $($(package)_extract_dir)/.$($(package)_file_name).hash && \
   $(build_SHA256SUM) -c $($(package)_extract_dir)/.$($(package)_file_name).hash && \
   mkdir qtbase && \
-  $(build_TAR) --no-same-owner --strip-components=1 -xf $($(package)_source) -C qtbase
+  $(build_TAR) --no-same-owner --strip-components=1 -xf $($(package)_source) -C qtbase && \
+  mkdir qttools && \
+  $(build_TAR) --no-same-owner --strip-components=1 -xf $($(package)_source_dir)/$($(package)_qttools_file_name) -C qttools
 endef
 
 # Preprocessing steps work as follows:
