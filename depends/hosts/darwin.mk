@@ -55,7 +55,7 @@ darwin_CC=$(clang_prog) --target=$(host) \
               -iwithsysroot/usr/include -iframeworkwithsysroot/System/Library/Frameworks
 
 darwin_CXX=$(clangxx_prog) --target=$(host) \
-               -isysroot$(OSX_SDK) -nostdinc++ -nostdlibinc \
+               -isysroot$(OSX_SDK) -nostdlibinc \
                -iwithsysroot/usr/include/c++/v1 \
                -iwithsysroot/usr/include -iframeworkwithsysroot/System/Library/Frameworks
 
