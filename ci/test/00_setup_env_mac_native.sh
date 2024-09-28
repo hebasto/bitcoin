@@ -11,7 +11,8 @@ export LC_ALL=C.UTF-8
 export PIP_PACKAGES="--break-system-packages zmq"
 export GOAL="install"
 export CMAKE_GENERATOR="Ninja"
-export BITCOIN_CONFIG="-DBUILD_GUI=ON -DWITH_ZMQ=ON -DWITH_MINIUPNPC=ON -DWITH_NATPMP=ON -DREDUCE_EXPORTS=ON"
+# TODO: Fix -Wdeprecated-declarations warning.
+export BITCOIN_CONFIG="-DBUILD_GUI=ON -DWITH_ZMQ=ON -DWITH_MINIUPNPC=ON -DWITH_NATPMP=ON -DREDUCE_EXPORTS=ON -DCMAKE_CXX_FLAGS='-Wno-error=deprecated-declarations'"
 export CI_OS_NAME="macos"
 export NO_DEPENDS=1
 export OSX_SDK=""
