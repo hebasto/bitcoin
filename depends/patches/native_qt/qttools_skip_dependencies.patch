@@ -1,0 +1,41 @@
+QtTools: Skip unnecessary dependencies:
+
+1. The Qt::Network target.
+2. The LLVM installatiion.
+3. The Qt::PrintSupport target for the "linguist" feature.
+
+
+--- a/qttools/CMakeLists.txt
++++ b/qttools/CMakeLists.txt
+@@ -18,7 +18,7 @@ if(WIN32)
+     list(APPEND optional_components AxContainer)
+ endif()
+ 
+-find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS BuildInternals Core Network)
++find_package(Qt6 ${PROJECT_VERSION} CONFIG REQUIRED COMPONENTS BuildInternals Core)
+ find_package(Qt6 ${PROJECT_VERSION} QUIET CONFIG OPTIONAL_COMPONENTS
+              DBus Xml Widgets Quick QuickWidgets Qml
+              Sql PrintSupport OpenGL OpenGLWidgets ${optional_components})
+
+--- a/qttools/configure.cmake
++++ b/qttools/configure.cmake
+@@ -17,7 +17,7 @@
+ # Presumably because 6.0 ClangConfig.cmake files are not good enough?
+ # In any case explicitly request a minimum version of 8.x for now, otherwise
+ # building with CMake will fail at compilation time.
+-qt_find_package(WrapLibClang 8 PROVIDED_TARGETS WrapLibClang::WrapLibClang)
++#qt_find_package(WrapLibClang 8 PROVIDED_TARGETS WrapLibClang::WrapLibClang)
+ # special case end
+ 
+ if(TARGET WrapLibClang::WrapLibClang)
+
+--- a/qttools/configure.cmake
++++ b/qttools/configure.cmake
+@@ -74,7 +74,6 @@ qt_feature("kmap2qmap" PRIVATE
+ qt_feature("linguist" PRIVATE
+     LABEL "Qt Linguist"
+     PURPOSE "Qt Linguist can be used by translator to translate text in Qt applications."
+-    CONDITION TARGET Qt::PrintSupport
+ )
+ qt_feature("pixeltool" PRIVATE
+     LABEL "pixeltool"
