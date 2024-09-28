@@ -32,7 +32,7 @@ import lief
 # See https://gcc.gnu.org/onlinedocs/libstdc++/manual/abi.html for more info.
 
 MAX_VERSIONS = {
-'GCC':       (4,3,0),
+'GCC':       (12,0,0),
 'GLIBC': {
     lief.ELF.ARCH.x86_64: (2,31),
     lief.ELF.ARCH.ARM:    (2,31),
@@ -112,6 +112,7 @@ ELF_ALLOWED_LIBRARIES = {
 'libfontconfig.so.1', # font support
 'libfreetype.so.6', # font parsing
 'libdl.so.2', # programming interface to dynamic linker
+'libxcb-cursor.so.0',
 'libxcb-icccm.so.4',
 'libxcb-image.so.0',
 'libxcb-shm.so.0',
