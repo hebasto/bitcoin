@@ -1,9 +1,9 @@
 package=qt
-$(package)_version=6.7.2
-$(package)_download_path=https://download.qt.io/official_releases/qt/6.7/$($(package)_version)/submodules
-$(package)_suffix=everywhere-src-$($(package)_version).tar.xz
-$(package)_file_name=qtbase-$($(package)_suffix)
-$(package)_sha256_hash=c5f22a5e10fb162895ded7de0963328e7307611c688487b5d152c9ee64767599
+include packages/qt_details.mk
+$(package)_version=$(qt_details_version)
+$(package)_download_path=$(qt_details_download_path)
+$(package)_file_name=$(qt_details_qtbase_file_name)
+$(package)_sha256_hash=$(qt_details_qtbase_sha256_hash)
 $(package)_linux_dependencies=freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
 $(package)_patches := top_level_CMakeLists.txt
 $(package)_patches += top_level_ECMOptionalAddSubdirectory.cmake
@@ -17,11 +17,11 @@ $(package)_patches += macos_skip_version_checks.patch
 $(package)_patches += windows_lto.patch
 $(package)_patches += qttools_skip_dependencies.patch
 
-$(package)_qttranslations_file_name=qttranslations-$($(package)_suffix)
-$(package)_qttranslations_sha256_hash=9845780b5dc1b7279d57836db51aeaf2e4a1160c42be09750616f39157582ca9
+$(package)_qttranslations_file_name=$(qt_details_qttranslations_file_name)
+$(package)_qttranslations_sha256_hash=$(qt_details_qttranslations_sha256_hash)
 
-$(package)_qttools_file_name=qttools-$($(package)_suffix)
-$(package)_qttools_sha256_hash=58e855ad1b2533094726c8a425766b63a04a0eede2ed85086860e54593aa4b2a
+$(package)_qttools_file_name=$(qt_details_qttools_file_name)
+$(package)_qttools_sha256_hash=$(qt_details_qttools_sha256_hash)
 
 $(package)_extra_sources  = $($(package)_qttranslations_file_name)
 $(package)_extra_sources += $($(package)_qttools_file_name)
