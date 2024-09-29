@@ -17,4 +17,5 @@ export XCODE_BUILD_ID=15A240d
 export RUN_UNIT_TESTS=false
 export RUN_FUNCTIONAL_TESTS=false
 export GOAL="deploy"
+export NO_WERROR=1  # TODO: Fix -Wdeprecated-declarations warning.
 export BITCOIN_CONFIG="-DBUILD_GUI=ON -DREDUCE_EXPORTS=ON"
