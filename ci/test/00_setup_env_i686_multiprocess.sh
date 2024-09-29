@@ -13,6 +13,7 @@ export PACKAGES="llvm clang g++-multilib"
 export DEP_OPTS="DEBUG=1 MULTIPROCESS=1"
 export GOAL="install"
 export TEST_RUNNER_EXTRA="--v2transport"
+export NO_WERROR=1  # TODO: Fix -Wdeprecated-declarations warning.
 export BITCOIN_CONFIG="\
  -DCMAKE_BUILD_TYPE=Debug \
  -DCMAKE_C_COMPILER='clang;-m32' \
