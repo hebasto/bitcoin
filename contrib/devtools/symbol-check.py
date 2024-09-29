@@ -147,8 +147,9 @@ MACHO_ALLOWED_LIBRARIES = {
 'IOSurface', # cross process image/drawing buffers
 'libobjc.A.dylib', # Objective-C runtime library
 'Metal', # 3D graphics
-'Security', # access control and authentication
 'QuartzCore', # animation
+'Security', # access control and authentication
+'UniformTypeIdentifiers',
 }
 
 PE_ALLOWED_LIBRARIES = {
