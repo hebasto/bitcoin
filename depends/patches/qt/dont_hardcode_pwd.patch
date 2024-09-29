@@ -76,3 +76,15 @@ index 08b49a8d..faea5b55 100755
  #  include <sys/auxv.h>
  #endif
  
+
+--- a/qtbase/src/corelib/kernel/qeventdispatcher_unix.cpp
++++ b/qtbase/src/corelib/kernel/qeventdispatcher_unix.cpp
+@@ -18,7 +18,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ 
+-#if __has_include(<sys/eventfd.h>)
++#if __has_include(<sys/eventfd.h>) && (defined(__linux__) || defined(__FreeBSD__) || defined(__NetBSD__))
+ #  include <sys/eventfd.h>
+ static constexpr bool UsingEventfd = true;
+ #else
