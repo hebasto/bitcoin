@@ -49,3 +49,17 @@ index 08b49a8d..faea5b55 100755
  
  printUsage()
  {
+
+
+--- a/qtbase/src/corelib/kernel/qproperty.h
++++ b/qtbase/src/corelib/kernel/qproperty.h
+@@ -32,8 +32,8 @@
+ #endif
+ 
+ #if __has_include(<experimental/source_location>) && !defined(Q_QDOC)
+-#include <experimental/source_location>
+ #if !defined(QT_PROPERTY_COLLECT_BINDING_LOCATION)
++#include <experimental/source_location>
+ #if defined(__cpp_lib_experimental_source_location)
+ #define QT_SOURCE_LOCATION_NAMESPACE std::experimental
+ #define QT_PROPERTY_COLLECT_BINDING_LOCATION
