@@ -154,12 +154,14 @@ $(package)_cmake_opts += -DQT_ENABLE_CXX_EXTENSIONS=OFF
 $(package)_cmake_opts += --log-level=STATUS
 ifneq ($(host),$(build))
 $(package)_cmake_opts += -DCMAKE_SYSTEM_NAME=$($(host_os)_cmake_system_name)
+$(package)_cmake_opts += -DCMAKE_SYSTEM_VERSION=$($(host_os)_cmake_system_version)
+$(package)_cmake_opts += -DCMAKE_SYSTEM_PROCESSOR=$(host_arch)
 endif
 ifeq ($(host_os),darwin)
 $(package)_cmake_opts += -DCMAKE_INSTALL_NAME_TOOL=true
 $(package)_cmake_opts += -DCMAKE_FRAMEWORK_PATH=$(OSX_SDK)/System/Library/Frameworks
 $(package)_cmake_opts += -DQT_INTERNAL_APPLE_SDK_VERSION=$(OSX_SDK_VERSION)
-$(package)_cmake_opts += -DQT_NO_XCODE_MIN_VERSION_CHECK=TRUE
+$(package)_cmake_opts += -DQT_INTERNAL_XCODE_VERSION=$(XCODE_VERSION)
 endif
 
 $(package)_config_env := CC="$$($(package)_cc)"
