@@ -4,6 +4,9 @@ $(package)_version=$(qt_details_version)
 $(package)_download_path=$(qt_details_download_path)
 $(package)_file_name=$(qt_details_qtbase_file_name)
 $(package)_sha256_hash=$(qt_details_qtbase_sha256_hash)
+ifneq ($(host),$(build))
+$(package)_dependencies := native_$(package)
+endif
 $(package)_linux_dependencies=freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
 $(package)_patches := top_level_CMakeLists.txt
 $(package)_patches += top_level_ECMOptionalAddSubdirectory.cmake
@@ -30,6 +33,9 @@ define $(package)_set_vars
 $(package)_config_opts_release = -release
 $(package)_config_opts_debug = -debug
 $(package)_config_opts_debug += -optimized-tools
+ifneq ($(host),$(build))
+$(package)_config_opts += -qt-host-path $(build_prefix)
+endif
 $(package)_config_opts += -no-egl
 $(package)_config_opts += -no-eglfs
 $(package)_config_opts += -no-evdev
@@ -90,6 +96,7 @@ $(package)_config_opts += -no-feature-vnc
 # A workaround for https://bugreports.qt.io/browse/QTBUG-99957.
 $(package)_config_opts += -no-pch
 
+ifeq ($(host),$(build))
 # Qt Tools module.
 $(package)_config_opts += -feature-linguist
 $(package)_config_opts += -no-feature-assistant
@@ -101,25 +108,13 @@ $(package)_config_opts += -no-feature-pixeltool
 $(package)_config_opts += -no-feature-qtattributionsscanner
 $(package)_config_opts += -no-feature-qtdiag
 $(package)_config_opts += -no-feature-qtplugininfo
+endif
 
 $(package)_config_opts_darwin = -no-dbus
 $(package)_config_opts_darwin += -no-opengl
 $(package)_config_opts_darwin += -no-freetype
-$(package)_config_opts_darwin += QMAKE_MACOSX_DEPLOYMENT_TARGET=$(OSX_MIN_VERSION)
-
-ifneq ($(build_os),darwin)
-$(package)_config_opts_darwin += -xplatform macx-clang-linux
-$(package)_config_opts_darwin += -device-option MAC_SDK_PATH=$(OSX_SDK)
-$(package)_config_opts_darwin += -device-option MAC_SDK_VERSION=$(OSX_SDK_VERSION)
-$(package)_config_opts_darwin += -device-option CROSS_COMPILE="llvm-"
-$(package)_config_opts_darwin += -device-option MAC_TARGET=$(host)
-$(package)_config_opts_darwin += -device-option XCODE_VERSION=$(XCODE_VERSION)
-endif
-
-ifneq ($(build_arch),$(host_arch))
-$(package)_config_opts_aarch64_darwin += -device-option QMAKE_APPLE_DEVICE_ARCHS=arm64
-$(package)_config_opts_x86_64_darwin += -device-option QMAKE_APPLE_DEVICE_ARCHS=x86_64
-endif
+$(package)_config_opts_darwin += -no-feature-printsupport
+$(package)_config_opts_darwin += -no-feature-vulkan
 
 $(package)_config_opts_linux = -xcb
 $(package)_config_opts_linux += -no-xcb-xlib
@@ -155,12 +150,27 @@ $(package)_cmake_opts := -DCMAKE_PREFIX_PATH=$(host_prefix)
 $(package)_cmake_opts += -DQT_FEATURE_cxx20=ON
 $(package)_cmake_opts += -DQT_ENABLE_CXX_EXTENSIONS=OFF
 $(package)_cmake_opts += --log-level=STATUS
+ifneq ($(host),$(build))
+$(package)_cmake_opts += -DCMAKE_SYSTEM_NAME=$($(host_os)_cmake_system_name)
+$(package)_cmake_opts += -DCMAKE_SYSTEM_VERSION=$($(host_os)_cmake_system_version)
+$(package)_cmake_opts += -DCMAKE_SYSTEM_PROCESSOR=$(host_arch)
+endif
+ifeq ($(host_os),darwin)
+$(package)_cmake_opts += -DCMAKE_INSTALL_NAME_TOOL=true
+$(package)_cmake_opts += -DCMAKE_FRAMEWORK_PATH=$(OSX_SDK)/System/Library/Frameworks
+$(package)_cmake_opts += -DQT_INTERNAL_APPLE_SDK_VERSION=$(OSX_SDK_VERSION)
+$(package)_cmake_opts += -DQT_INTERNAL_XCODE_VERSION=$(XCODE_VERSION)
+endif
 
 $(package)_config_env := CC="$$($(package)_cc)"
 $(package)_config_env += CFLAGS="$$($(package)_cppflags) $$($(package)_cflags)"
 $(package)_config_env += CXX="$$($(package)_cxx)"
 $(package)_config_env += CXXFLAGS="$$($(package)_cppflags) $$($(package)_cxxflags)"
 $(package)_config_env += LDFLAGS="$$($(package)_ldflags)"
+$(package)_config_env_darwin := OBJC="$$($(package)_cc)"
+$(package)_config_env_darwin += OBJCFLAGS="$$($(package)_cppflags) $$($(package)_cflags)"
+$(package)_config_env_darwin += OBJCXX="$$($(package)_cxx)"
+$(package)_config_env_darwin += OBJCXXFLAGS="$$($(package)_cppflags) $$($(package)_cxxflags)"
 endef
 
 define $(package)_fetch_cmds
@@ -169,6 +179,7 @@ $(call fetch_file,$(package),$($(package)_download_path),$($(package)_qttranslat
 $(call fetch_file,$(package),$($(package)_download_path),$($(package)_qttools_file_name),$($(package)_qttools_file_name),$($(package)_qttools_sha256_hash))
 endef
 
+ifeq ($(host),$(build))
 define $(package)_extract_cmds
   mkdir -p $($(package)_extract_dir) && \
   echo "$($(package)_sha256_hash)  $($(package)_source)" > $($(package)_extract_dir)/.$($(package)_file_name).hash && \
@@ -182,6 +193,15 @@ define $(package)_extract_cmds
   mkdir qttools && \
   $(build_TAR) --no-same-owner --strip-components=1 -xf $($(package)_source_dir)/$($(package)_qttools_file_name) -C qttools
 endef
+else
+define $(package)_extract_cmds
+  mkdir -p $($(package)_extract_dir) && \
+  echo "$($(package)_sha256_hash)  $($(package)_source)" > $($(package)_extract_dir)/.$($(package)_file_name).hash && \
+  $(build_SHA256SUM) -c $($(package)_extract_dir)/.$($(package)_file_name).hash && \
+  mkdir qtbase && \
+  $(build_TAR) --no-same-owner --strip-components=1 -xf $($(package)_source) -C qtbase
+endef
+endif
 
 define $(package)_preprocess_cmds
   cp $($(package)_patch_dir)/top_level_CMakeLists.txt CMakeLists.txt && \
@@ -194,9 +214,11 @@ define $(package)_preprocess_cmds
   patch -p1 -i $($(package)_patch_dir)/utc_from_string_no_optimize.patch && \
   patch -p1 -i $($(package)_patch_dir)/guix_cross_lib_path.patch && \
   patch -p1 -i $($(package)_patch_dir)/windows_lto.patch && \
-  patch -p1 -i $($(package)_patch_dir)/macos_skip_version_checks.patch && \
-  patch -p1 -i $($(package)_patch_dir)/qttools_skip_dependencies.patch
+  patch -p1 -i $($(package)_patch_dir)/macos_skip_version_checks.patch
 endef
+ifeq ($(host),$(build))
+  $(package)_preprocess_cmds += && patch -p1 -i $($(package)_patch_dir)/qttools_skip_dependencies.patch
+endif
 
 define $(package)_config_cmds
   cd qtbase && \
