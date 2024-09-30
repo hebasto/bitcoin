@@ -69,17 +69,17 @@ unset CPLUS_INCLUDE_PATH
 unset OBJC_INCLUDE_PATH
 unset OBJCPLUS_INCLUDE_PATH
 
-export C_INCLUDE_PATH="${NATIVE_GCC}/include"
-export CPLUS_INCLUDE_PATH="${NATIVE_GCC}/include/c++:${NATIVE_GCC}/include"
+# export C_INCLUDE_PATH="${NATIVE_GCC}/include"
+# export CPLUS_INCLUDE_PATH="${NATIVE_GCC}/include/c++:${NATIVE_GCC}/include"
 
-case "$HOST" in
-    *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
-    *mingw*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;;
-    *)
-        NATIVE_GCC_STATIC="$(store_path gcc-toolchain static)"
-        export LIBRARY_PATH="${NATIVE_GCC}/lib:${NATIVE_GCC_STATIC}/lib"
-        ;;
-esac
+# case "$HOST" in
+#     *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
+#     *mingw*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;;
+#     *)
+#         NATIVE_GCC_STATIC="$(store_path gcc-toolchain static)"
+#         export LIBRARY_PATH="${NATIVE_GCC}/lib:${NATIVE_GCC_STATIC}/lib"
+#         ;;
+# esac
 
 # Set environment variables to point the CROSS toolchain to the right
 # includes/libs for $HOST
@@ -172,7 +172,10 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    ${BASE_CACHE+BASE_CACHE="$BASE_CACHE"} \
                                    ${SDK_PATH+SDK_PATH="$SDK_PATH"} \
                                    native_qt_cc="${NATIVE_GCC}/bin/gcc" \
+                                   native_qt_cflags="-I${NATIVE_GCC}/include" \
                                    native_qt_cxx="${NATIVE_GCC}/bin/g++" \
+                                   native_qt_cxxflags="-I${NATIVE_GCC}/include/c++ -I${NATIVE_GCC}/include" \
+                                   native_qt_ldflags="-L${NATIVE_GCC}/lib" \
                                    x86_64_linux_CC=x86_64-linux-gnu-gcc \
                                    x86_64_linux_CXX=x86_64-linux-gnu-g++ \
                                    x86_64_linux_AR=x86_64-linux-gnu-gcc-ar \

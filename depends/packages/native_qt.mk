@@ -63,7 +63,10 @@ $(package)_config_opts += -no-feature-qtdiag
 $(package)_config_opts += -no-feature-qtplugininfo
 
 $(package)_config_env := CC="$$($(package)_cc)"
+$(package)_config_env += CFLAGS="$$($(package)_cppflags) $$($(package)_cflags)"
 $(package)_config_env += CXX="$$($(package)_cxx)"
+$(package)_config_env += CXXFLAGS="$$($(package)_cppflags) $$($(package)_cxxflags)"
+$(package)_config_env += LDFLAGS="$$($(package)_ldflags)"
 endef
 
 define $(package)_fetch_cmds
