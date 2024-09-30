@@ -60,7 +60,9 @@ store_path() {
 
 # Set environment variables to point the NATIVE toolchain to the right
 # includes/libs
-NATIVE_GCC="$(store_path gcc)"
+echo ----------------------------------------------------------------
+grep --extended-regexp "/[^-]{32}-gcc-[^-]+" "${GUIX_ENVIRONMENT}/manifest"
+# NATIVE_GCC="$(store_path gcc)"
 
 echo NATIVE_GCC=${NATIVE_GCC}
 ls -l ${NATIVE_GCC}
