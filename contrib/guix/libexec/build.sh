@@ -72,12 +72,6 @@ unset OBJCPLUS_INCLUDE_PATH
 export C_INCLUDE_PATH="${NATIVE_GCC}/include"
 export CPLUS_INCLUDE_PATH="${NATIVE_GCC}/include/c++:${NATIVE_GCC}/include"
 
-echo --------------------------------------------------
-ls -l "${NATIVE_GCC}/bin"
-export native_qt_cc="${NATIVE_GCC}/bin/gcc"
-export native_qt_cxx="${NATIVE_GCC}/bin/g++"
-echo --------------------------------------------------
-
 case "$HOST" in
     *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
     *mingw*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;;
@@ -177,6 +171,8 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    ${SOURCES_PATH+SOURCES_PATH="$SOURCES_PATH"} \
                                    ${BASE_CACHE+BASE_CACHE="$BASE_CACHE"} \
                                    ${SDK_PATH+SDK_PATH="$SDK_PATH"} \
+                                   native_qt_cc="${NATIVE_GCC}/bin/gcc" \
+                                   native_qt_cxx="${NATIVE_GCC}/bin/g++" \
                                    x86_64_linux_CC=x86_64-linux-gnu-gcc \
                                    x86_64_linux_CXX=x86_64-linux-gnu-g++ \
                                    x86_64_linux_AR=x86_64-linux-gnu-gcc-ar \
