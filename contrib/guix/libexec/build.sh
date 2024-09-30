@@ -64,7 +64,9 @@ NATIVE_GCC="$(store_path gcc-toolchain)"
 
 echo ------------------------------------------------------------------
 ls -l ${NATIVE_GCC}/include/c++
+echo ------------------------------------------------------------------
 ls -l ${NATIVE_GCC}/include
+echo ------------------------------------------------------------------
 ls -l ${NATIVE_GCC}/lib
 echo ------------------------------------------------------------------
 
@@ -178,10 +180,10 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    ${BASE_CACHE+BASE_CACHE="$BASE_CACHE"} \
                                    ${SDK_PATH+SDK_PATH="$SDK_PATH"} \
                                    native_qt_cc="${NATIVE_GCC}/bin/gcc" \
-                                   native_qt_cflags="-I${NATIVE_GCC}/include" \
+                                   native_qt_cflags="-I${NATIVE_GCC}/include/" \
                                    native_qt_cxx="${NATIVE_GCC}/bin/g++" \
-                                   native_qt_cxxflags="-I${NATIVE_GCC}/include/c++ -I${NATIVE_GCC}/include" \
-                                   native_qt_ldflags="-L${NATIVE_GCC}/lib" \
+                                   native_qt_cxxflags="-I${NATIVE_GCC}/include/c++/ -I${NATIVE_GCC}/include/" \
+                                   native_qt_ldflags="-L${NATIVE_GCC}/lib/" \
                                    x86_64_linux_CC=x86_64-linux-gnu-gcc \
                                    x86_64_linux_CXX=x86_64-linux-gnu-g++ \
                                    x86_64_linux_AR=x86_64-linux-gnu-gcc-ar \
