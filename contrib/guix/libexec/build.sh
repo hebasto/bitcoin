@@ -63,7 +63,7 @@ store_path() {
 NATIVE_GCC="$(store_path gcc-toolchain)"
 
 echo NATIVE_GCC=${NATIVE_GCC}
-echo ls -l ${NATIVE_GCC}
+ls -l ${NATIVE_GCC}
 echo ================================================================
 which -a c++
 ls -l $(which c++)
