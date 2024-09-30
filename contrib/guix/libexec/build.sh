@@ -63,8 +63,8 @@ store_path() {
 echo ----------------------------------------------------------------
 cat "${GUIX_ENVIRONMENT}/manifest"
 echo ----------------------------------------------------------------
-grep --extended-regexp "/[^-]{32}-gcc-[^-]+" "${GUIX_ENVIRONMENT}/manifest"
-# NATIVE_GCC="$(store_path gcc)"
+# grep --extended-regexp "/[^-]{32}-gcc-[^-]+" "${GUIX_ENVIRONMENT}/manifest"
+NATIVE_GCC="$(store_path gcc)"
 
 echo NATIVE_GCC=${NATIVE_GCC}
 ls -l ${NATIVE_GCC}
