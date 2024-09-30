@@ -60,26 +60,26 @@ store_path() {
 
 # Set environment variables to point the NATIVE toolchain to the right
 # includes/libs
-# NATIVE_GCC="$(store_path gcc-toolchain)"
+NATIVE_GCC="$(store_path gcc-toolchain)"
 
-# unset LIBRARY_PATH
-# unset CPATH
-# unset C_INCLUDE_PATH
-# unset CPLUS_INCLUDE_PATH
-# unset OBJC_INCLUDE_PATH
-# unset OBJCPLUS_INCLUDE_PATH
+unset LIBRARY_PATH
+unset CPATH
+unset C_INCLUDE_PATH
+unset CPLUS_INCLUDE_PATH
+unset OBJC_INCLUDE_PATH
+unset OBJCPLUS_INCLUDE_PATH
 
-# export C_INCLUDE_PATH="${NATIVE_GCC}/include"
-# export CPLUS_INCLUDE_PATH="${NATIVE_GCC}/include/c++:${NATIVE_GCC}/include"
+export C_INCLUDE_PATH="${NATIVE_GCC}/include"
+export CPLUS_INCLUDE_PATH="${NATIVE_GCC}/include/c++:${NATIVE_GCC}/include"
 
-# case "$HOST" in
-#     *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
-#     *mingw*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;;
-#     *)
-#         NATIVE_GCC_STATIC="$(store_path gcc-toolchain static)"
-#         export LIBRARY_PATH="${NATIVE_GCC}/lib:${NATIVE_GCC_STATIC}/lib"
-#         ;;
-# esac
+case "$HOST" in
+    *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
+    *mingw*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;;
+    *)
+        NATIVE_GCC_STATIC="$(store_path gcc-toolchain static)"
+        export LIBRARY_PATH="${NATIVE_GCC}/lib:${NATIVE_GCC_STATIC}/lib"
+        ;;
+esac
 
 # Set environment variables to point the CROSS toolchain to the right
 # includes/libs for $HOST
