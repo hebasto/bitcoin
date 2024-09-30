@@ -73,6 +73,13 @@ which -a cc
 ls -l $(which cc)
 $(which cc) -v
 echo ================================================================
+echo LIBRARY_PATH=${LIBRARY_PATH}
+echo CPATH=${CPATH}
+echo C_INCLUDE_PATH=${C_INCLUDE_PATH}
+echo CPLUS_INCLUDE_PATH=${CPLUS_INCLUDE_PATH}
+echo OBJC_INCLUDE_PATH=${OBJC_INCLUDE_PATH}
+echo OBJCPLUS_INCLUDE_PATH=${OBJCPLUS_INCLUDE_PATH}
+echo ================================================================
 exit 0
 
 unset LIBRARY_PATH
