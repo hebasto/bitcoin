@@ -60,7 +60,7 @@ store_path() {
 
 # Set environment variables to point the NATIVE toolchain to the right
 # includes/libs
-NATIVE_GCC="$(store_path gcc-toolchain)"
+# NATIVE_GCC="$(store_path gcc-toolchain)"
 
 echo NATIVE_GCC=${NATIVE_GCC}
 ls -l ${NATIVE_GCC}
