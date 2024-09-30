@@ -508,7 +508,7 @@ inspecting signatures in Mach-O binaries.")
         gzip
         xz
         ;; Build tools
-        gcc-toolchain-12
+        ;;gcc-toolchain-12
         cmake-minimal
         gnu-make
         pkg-config
