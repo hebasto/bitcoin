@@ -62,6 +62,8 @@ $(package)_config_opts += -no-feature-qtattributionsscanner
 $(package)_config_opts += -no-feature-qtdiag
 $(package)_config_opts += -no-feature-qtplugininfo
 
+$(package)_config_env := CC="$$($(package)_cc)"
+$(package)_config_env += CXX="$$($(package)_cxx)"
 endef
 
 define $(package)_fetch_cmds

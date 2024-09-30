@@ -72,6 +72,12 @@ unset OBJCPLUS_INCLUDE_PATH
 export C_INCLUDE_PATH="${NATIVE_GCC}/include"
 export CPLUS_INCLUDE_PATH="${NATIVE_GCC}/include/c++:${NATIVE_GCC}/include"
 
+echo --------------------------------------------------
+ls -l "${NATIVE_GCC}/bin"
+export native_qt_cc="${NATIVE_GCC}/bin/gcc"
+export native_qt_cxx="${NATIVE_GCC}/bin/g++"
+echo --------------------------------------------------
+
 case "$HOST" in
     *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
     *mingw*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;;
