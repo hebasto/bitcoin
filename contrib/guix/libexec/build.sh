@@ -63,6 +63,8 @@ store_path() {
 NATIVE_GCC="$(store_path gcc-toolchain)"
 
 echo NATIVE_GCC=${NATIVE_GCC}
+which -a c++
+which -a cc
 exit 0
 
 unset LIBRARY_PATH
