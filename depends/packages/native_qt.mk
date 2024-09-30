@@ -67,6 +67,7 @@ $(package)_config_env += CFLAGS="$$($(package)_cppflags) $$($(package)_cflags)"
 $(package)_config_env += CXX="$$($(package)_cxx)"
 $(package)_config_env += CXXFLAGS="$$($(package)_cppflags) $$($(package)_cxxflags)"
 $(package)_config_env += LDFLAGS="$$($(package)_ldflags)"
+$(package)_config_env += LIBRARY_PATH="$$($(package)_ldflags)"
 endef
 
 define $(package)_fetch_cmds
