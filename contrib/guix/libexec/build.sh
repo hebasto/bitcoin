@@ -62,6 +62,12 @@ store_path() {
 # includes/libs
 NATIVE_GCC="$(store_path gcc-toolchain)"
 
+echo ------------------------------------------------------------------
+ls -l ${NATIVE_GCC}/include/c++
+ls -l ${NATIVE_GCC}/include
+ls -l ${NATIVE_GCC}/lib
+echo ------------------------------------------------------------------
+
 unset LIBRARY_PATH
 unset CPATH
 unset C_INCLUDE_PATH
