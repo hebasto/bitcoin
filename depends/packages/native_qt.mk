@@ -30,7 +30,8 @@ $(package)_config_opts += -prefix $(host_prefix)
 $(package)_config_opts += -no-reduce-relocations
 $(package)_config_opts += -no-use-gold-linker
 $(package)_config_opts += -pkg-config
-# Modules:
+
+# Modules.
 $(package)_config_opts += -no-feature-concurrent
 $(package)_config_opts += -no-gui
 $(package)_config_opts += -no-feature-network
@@ -49,6 +50,12 @@ $(package)_config_opts += -no-feature-backtrace
 $(package)_config_opts += -no-feature-permissions
 $(package)_config_opts += -no-feature-process
 $(package)_config_opts += -no-feature-settings
+
+# Core tools.
+$(package)_config_opts += -no-feature-androiddeployqt
+$(package)_config_opts += -no-feature-macdeployqt
+$(package)_config_opts += -no-feature-windeployqt
+$(package)_config_opts += -no-feature-qmake
 
 # Qt Tools module.
 $(package)_config_opts += -feature-linguist
