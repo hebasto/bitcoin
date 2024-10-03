@@ -307,15 +307,15 @@ mkdir -p "$DISTSRC"
     (
         cd installed
 
-        case "$HOST" in
-            *darwin*) ;;
-            *)
-                # Split binaries from their debug symbols
-                {
-                    find "${DISTNAME}/bin" -type f -executable -print0
-                } | xargs -0 -P"$JOBS" -I{} "${DISTSRC}/build/split-debug.sh" {} {} {}.dbg
-                ;;
-        esac
+        # case "$HOST" in
+        #     *darwin*) ;;
+        #     *)
+        #         # Split binaries from their debug symbols
+        #         {
+        #             find "${DISTNAME}/bin" -type f -executable -print0
+        #         } | xargs -0 -P"$JOBS" -I{} "${DISTSRC}/build/split-debug.sh" {} {} {}.dbg
+        #         ;;
+        # esac
 
         case "$HOST" in
             *mingw*)
@@ -342,12 +342,12 @@ mkdir -p "$DISTSRC"
                     | sort \
                     | zip -X@ "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}.zip" \
                     || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}.zip" && exit 1 )
-                find "${DISTNAME}" -name "*.dbg" -print0 \
-                    | xargs -0r touch --no-dereference --date="@${SOURCE_DATE_EPOCH}"
-                find "${DISTNAME}" -name "*.dbg" \
-                    | sort \
-                    | zip -X@ "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}-debug.zip" \
-                    || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}-debug.zip" && exit 1 )
+                # find "${DISTNAME}" -name "*.dbg" -print0 \
+                #     | xargs -0r touch --no-dereference --date="@${SOURCE_DATE_EPOCH}"
+                # find "${DISTNAME}" -name "*.dbg" \
+                #     | sort \
+                #     | zip -X@ "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}-debug.zip" \
+                #     || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}-debug.zip" && exit 1 )
                 ;;
             *linux*)
                 find "${DISTNAME}" -not -name "*.dbg" -print0 \
