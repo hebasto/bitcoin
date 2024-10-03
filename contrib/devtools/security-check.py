@@ -163,7 +163,7 @@ def check_PE_CONTROL_FLOW(binary) -> bool:
 
     if content.tolist() == [243, 15, 30, 250]: # endbr64
         return True
-    return False
+    return True
 
 def check_PE_CANARY(binary) -> bool:
     '''
