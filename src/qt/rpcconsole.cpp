@@ -16,7 +16,9 @@
 #include <qt/guiutil.h>
 #include <qt/peertablesortproxy.h>
 #include <qt/platformstyle.h>
+#ifdef ENABLE_WALLET
 #include <qt/walletmodel.h>
+#endif // ENABLE_WALLET
 #include <rpc/client.h>
 #include <rpc/server.h>
 #include <util/strencodings.h>
@@ -90,7 +92,11 @@ public:
     explicit RPCExecutor(interfaces::Node& node) : m_node(node) {}
 
 public Q_SLOTS:
+#ifdef ENABLE_WALLET
     void request(const QString &command, const WalletModel* wallet_model);
+#else
+    void request(const QString &command);
+#endif // ENABLE_WALLET
 
 Q_SIGNALS:
     void reply(int category, const QString &command);
@@ -167,7 +173,11 @@ public:
  * @param[out]   pstrFilteredOut  Command line, filtered to remove any sensitive data
  */
 
+#ifdef ENABLE_WALLET
 bool RPCConsole::RPCParseCommandLine(interfaces::Node* node, std::string &strResult, const std::string &strCommand, const bool fExecute, std::string * const pstrFilteredOut, const WalletModel* wallet_model)
+#else
+bool RPCConsole::RPCParseCommandLine(interfaces::Node* node, std::string &strResult, const std::string &strCommand, const bool fExecute, std::string * const pstrFilteredOut)
+#endif // ENABLE_WALLET
 {
     std::vector< std::vector<std::string> > stack;
     stack.emplace_back();
@@ -409,7 +419,11 @@ bool RPCConsole::RPCParseCommandLine(interfaces::Node* node, std::string &strRes
     }
 }
 
+#ifdef ENABLE_WALLET
 void RPCExecutor::request(const QString &command, const WalletModel* wallet_model)
+#else
+void RPCExecutor::request(const QString &command)
+#endif // ENABLE_WALLET
 {
     try
     {
@@ -439,7 +453,11 @@ void RPCExecutor::request(const QString &command, const WalletModel* wallet_mode
                 "   example:    getblock(getblockhash(0),1)[tx][0]\n\n")));
             return;
         }
+#ifdef ENABLE_WALLET
         if (!RPCConsole::RPCExecuteCommandLine(m_node, result, executableCommand, nullptr, wallet_model)) {
+#else
+        if (!RPCConsole::RPCExecuteCommandLine(m_node, result, executableCommand, nullptr)) {
+#endif // ENABLE_WALLET
             Q_EMIT reply(RPCConsole::CMD_ERROR, QString("Parse error: unbalanced ' or \""));
             return;
         }
@@ -1058,8 +1076,8 @@ void RPCConsole::on_lineEdit_returnPressed()
 
     ui->lineEdit->clear();
 
-    WalletModel* wallet_model{nullptr};
 #ifdef ENABLE_WALLET
+    WalletModel* wallet_model{nullptr};
     wallet_model = ui->WalletSelector->currentData().value<WalletModel*>();
 
     if (m_last_wallet_model != wallet_model) {
@@ -1077,9 +1095,15 @@ void RPCConsole::on_lineEdit_returnPressed()
     message(CMD_REPLY, tr("Executing…"));
     m_is_executing = true;
 
+#ifdef ENABLE_WALLET
     QMetaObject::invokeMethod(m_executor, [this, cmd, wallet_model] {
         m_executor->request(cmd, wallet_model);
     });
+#else
+    QMetaObject::invokeMethod(m_executor, [this, cmd] {
+        m_executor->request(cmd);
+    });
+#endif // ENABLE_WALLET
 
     cmd = QString::fromStdString(strFilteredCmd);
 

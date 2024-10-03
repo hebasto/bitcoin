@@ -21,7 +21,9 @@
 class PlatformStyle;
 class RPCExecutor;
 class RPCTimerInterface;
+#ifdef ENABLE_WALLET
 class WalletModel;
+#endif // ENABLE_WALLET
 
 namespace interfaces {
     class Node;
@@ -46,10 +48,17 @@ public:
     explicit RPCConsole(interfaces::Node& node, const PlatformStyle *platformStyle, QWidget *parent);
     ~RPCConsole();
 
+#ifdef ENABLE_WALLET
     static bool RPCParseCommandLine(interfaces::Node* node, std::string &strResult, const std::string &strCommand, bool fExecute, std::string * const pstrFilteredOut = nullptr, const WalletModel* wallet_model = nullptr);
     static bool RPCExecuteCommandLine(interfaces::Node& node, std::string &strResult, const std::string &strCommand, std::string * const pstrFilteredOut = nullptr, const WalletModel* wallet_model = nullptr) {
         return RPCParseCommandLine(&node, strResult, strCommand, true, pstrFilteredOut, wallet_model);
     }
+#else
+    static bool RPCParseCommandLine(interfaces::Node* node, std::string &strResult, const std::string &strCommand, bool fExecute, std::string * const pstrFilteredOut = nullptr);
+    static bool RPCExecuteCommandLine(interfaces::Node& node, std::string &strResult, const std::string &strCommand, std::string * const pstrFilteredOut = nullptr) {
+        return RPCParseCommandLine(&node, strResult, strCommand, true, pstrFilteredOut);
+    }
+#endif // ENABLE_WALLET
 
     void setClientModel(ClientModel *model = nullptr, int bestblock_height = 0, int64_t bestblock_date = 0, double verification_progress = 0.0);
 
@@ -173,7 +182,9 @@ private:
     QCompleter *autoCompleter = nullptr;
     QThread thread;
     RPCExecutor* m_executor{nullptr};
+#ifdef ENABLE_WALLET
     WalletModel* m_last_wallet_model{nullptr};
+#endif // ENABLE_WALLET
     bool m_is_executing{false};
     QByteArray m_peer_widget_header_state;
     QByteArray m_banlist_widget_header_state;
