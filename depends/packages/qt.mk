@@ -110,6 +110,7 @@ $(package)_config_opts += -no-feature-undoview
 $(package)_config_opts += -no-feature-vnc
 # A workaround for https://bugreports.qt.io/browse/QTBUG-99957.
 $(package)_config_opts += -no-pch
+$(package)_config_opts += -intelcet
 
 # Core tools.
 $(package)_config_opts += -no-feature-androiddeployqt
