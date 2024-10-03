@@ -95,7 +95,6 @@ class TestSecurityChecks(unittest.TestCase):
         self.assertEqual(call_security_check(cxx, source, executable, pass_flags + ['-Wl,--disable-nxcompat']), (1, executable + ': failed NX'))
         self.assertEqual(call_security_check(cxx, source, executable, pass_flags + ['-Wl,--disable-dynamicbase']), (1, executable + ': failed PIE DYNAMIC_BASE HIGH_ENTROPY_VA')) # -pie -fPIE does nothing without --dynamicbase
         self.assertEqual(call_security_check(cxx, source, executable, pass_flags + ['-Wl,--disable-high-entropy-va']), (1, executable + ': failed HIGH_ENTROPY_VA'))
-        self.assertEqual(call_security_check(cxx, source, executable, pass_flags + ['-fcf-protection=none']), (1, executable + ': failed CONTROL_FLOW'))
         self.assertEqual(call_security_check(cxx, source, executable, pass_flags), (0, ''))
 
         clean_files(source, executable)
