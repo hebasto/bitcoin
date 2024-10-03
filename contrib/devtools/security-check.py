@@ -155,6 +155,7 @@ def check_PE_CONTROL_FLOW(binary) -> bool:
     Check for control flow instrumentation
     '''
     main = binary.get_symbol('main').value
+    print(f'Symbol main is ${main}')
 
     section_addr = binary.section_from_rva(main).virtual_address
     virtual_address = binary.optional_header.imagebase + section_addr + main
@@ -162,7 +163,21 @@ def check_PE_CONTROL_FLOW(binary) -> bool:
     content = binary.get_content_from_virtual_address(virtual_address, 4, lief.Binary.VA_TYPES.VA)
 
     if content.tolist() == [243, 15, 30, 250]: # endbr64
+        print('endbr64 found in main')
         return True
+
+    qMain = binary.get_symbol('qMain').value
+    print(f'Symbol qMain is ${qMain}')
+
+    q_section_addr = binary.section_from_rva(qMain).virtual_address
+    q_virtual_address = binary.optional_header.imagebase + q_section_addr + qMain
+
+    q_content = binary.get_content_from_virtual_address(q_virtual_address, 4, lief.Binary.VA_TYPES.VA)
+
+    if q_content.tolist() == [243, 15, 30, 250]: # endbr64
+        print('endbr64 found in qMain ++++++++++++++++++++++++++++++++++++++++++++++++')
+        return True
+
     return False
 
 def check_PE_CANARY(binary) -> bool:
