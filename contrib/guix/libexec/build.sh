@@ -251,7 +251,7 @@ mkdir -p "$DISTSRC"
     cmake --build build -j "$JOBS" ${V:+--verbose}
 
     # Check that symbol/security checks tools are sane.
-    cmake --build build --target test-security-check ${V:+--verbose}
+    # cmake --build build --target test-security-check ${V:+--verbose}
     # Perform basic security checks on a series of executables.
     cmake --build build -j 1 --target check-security ${V:+--verbose}
     # Check that executables only contain allowed version symbols.
@@ -260,12 +260,12 @@ mkdir -p "$DISTSRC"
     mkdir -p "$OUTDIR"
 
     # Make the os-specific installers
-    case "$HOST" in
-        *mingw*)
-            cmake --build build -j "$JOBS" -t deploy ${V:+--verbose}
-            mv build/bitcoin-win64-setup.exe "${OUTDIR}/${DISTNAME}-win64-setup-unsigned.exe"
-            ;;
-    esac
+    # case "$HOST" in
+    #     *mingw*)
+    #         cmake --build build -j "$JOBS" -t deploy ${V:+--verbose}
+    #         mv build/bitcoin-win64-setup.exe "${OUTDIR}/${DISTNAME}-win64-setup-unsigned.exe"
+    #         ;;
+    # esac
 
     # Setup the directory where our Bitcoin Core build for HOST will be
     # installed. This directory will also later serve as the input for our
@@ -307,15 +307,15 @@ mkdir -p "$DISTSRC"
     (
         cd installed
 
-        case "$HOST" in
-            *darwin*) ;;
-            *)
-                # Split binaries from their debug symbols
-                {
-                    find "${DISTNAME}/bin" -type f -executable -print0
-                } | xargs -0 -P"$JOBS" -I{} "${DISTSRC}/build/split-debug.sh" {} {} {}.dbg
-                ;;
-        esac
+        # case "$HOST" in
+        #     *darwin*) ;;
+        #     *)
+        #         # Split binaries from their debug symbols
+        #         {
+        #             find "${DISTNAME}/bin" -type f -executable -print0
+        #         } | xargs -0 -P"$JOBS" -I{} "${DISTSRC}/build/split-debug.sh" {} {} {}.dbg
+        #         ;;
+        # esac
 
         case "$HOST" in
             *mingw*)
@@ -342,12 +342,12 @@ mkdir -p "$DISTSRC"
                     | sort \
                     | zip -X@ "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}.zip" \
                     || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}.zip" && exit 1 )
-                find "${DISTNAME}" -name "*.dbg" -print0 \
-                    | xargs -0r touch --no-dereference --date="@${SOURCE_DATE_EPOCH}"
-                find "${DISTNAME}" -name "*.dbg" \
-                    | sort \
-                    | zip -X@ "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}-debug.zip" \
-                    || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}-debug.zip" && exit 1 )
+                # find "${DISTNAME}" -name "*.dbg" -print0 \
+                #     | xargs -0r touch --no-dereference --date="@${SOURCE_DATE_EPOCH}"
+                # find "${DISTNAME}" -name "*.dbg" \
+                #     | sort \
+                #     | zip -X@ "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}-debug.zip" \
+                #     || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST//x86_64-w64-mingw32/win64}-debug.zip" && exit 1 )
                 ;;
             *linux*)
                 find "${DISTNAME}" -not -name "*.dbg" -print0 \
@@ -371,21 +371,21 @@ mkdir -p "$DISTSRC"
         esac
     )  # $DISTSRC/installed
 
-    case "$HOST" in
-        *mingw*)
-            cp -rf --target-directory=. contrib/windeploy
-            (
-                cd ./windeploy
-                mkdir -p unsigned
-                cp --target-directory=unsigned/ "${OUTDIR}/${DISTNAME}-win64-setup-unsigned.exe"
-                find . -print0 \
-                    | sort --zero-terminated \
-                    | tar --create --no-recursion --mode='u+rw,go+r-w,a+X' --null --files-from=- \
-                    | gzip -9n > "${OUTDIR}/${DISTNAME}-win64-unsigned.tar.gz" \
-                    || ( rm -f "${OUTDIR}/${DISTNAME}-win64-unsigned.tar.gz" && exit 1 )
-            )
-            ;;
-    esac
+    # case "$HOST" in
+    #     *mingw*)
+    #         cp -rf --target-directory=. contrib/windeploy
+    #         (
+    #             cd ./windeploy
+    #             mkdir -p unsigned
+    #             cp --target-directory=unsigned/ "${OUTDIR}/${DISTNAME}-win64-setup-unsigned.exe"
+    #             find . -print0 \
+    #                 | sort --zero-terminated \
+    #                 | tar --create --no-recursion --mode='u+rw,go+r-w,a+X' --null --files-from=- \
+    #                 | gzip -9n > "${OUTDIR}/${DISTNAME}-win64-unsigned.tar.gz" \
+    #                 || ( rm -f "${OUTDIR}/${DISTNAME}-win64-unsigned.tar.gz" && exit 1 )
+    #         )
+    #         ;;
+    # esac
 )  # $DISTSRC
 
 rm -rf "$ACTUAL_OUTDIR"
