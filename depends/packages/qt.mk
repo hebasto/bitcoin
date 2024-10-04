@@ -184,6 +184,8 @@ $(package)_cmake_opts += -DQT_INTERNAL_APPLE_SDK_VERSION=$(OSX_SDK_VERSION)
 $(package)_cmake_opts += -DQT_INTERNAL_XCODE_VERSION=$(XCODE_VERSION)
 endif
 
+$(package)_cxxflags += -ffile-prefix-map=$$($(package)_extract_dir)=/usr
+
 $(package)_config_env := CC="$$($(package)_cc)"
 $(package)_config_env += CFLAGS="$$($(package)_cppflags) $$($(package)_cflags)"
 $(package)_config_env += CXX="$$($(package)_cxx)"
