@@ -168,10 +168,27 @@ ifneq ($(LTO),)
 $(package)_config_opts_mingw32 += -ltcg
 endif
 
+# CMake build options.
 $(package)_cmake_opts := -DCMAKE_PREFIX_PATH=$(host_prefix)
 $(package)_cmake_opts += -DQT_FEATURE_cxx20=ON
 $(package)_cmake_opts += -DQT_ENABLE_CXX_EXTENSIONS=OFF
 $(package)_cmake_opts += --log-level=STATUS
+
+$(package)_cmake_opts += -DCMAKE_C_FLAGS="$$($(package)_cppflags) $$($$($(package)_type)_CFLAGS) -ffile-prefix-map=$$($(package)_extract_dir)=/usr"
+$(package)_cmake_opts += -DCMAKE_C_FLAGS_RELEASE="$$($$($(package)_type)_release_CFLAGS)"
+$(package)_cmake_opts += -DCMAKE_C_FLAGS_DEBUG="$$($$($(package)_type)_debug_CFLAGS)"
+$(package)_cmake_opts += -DCMAKE_CXX_FLAGS="$$($(package)_cppflags) $$($$($(package)_type)_CXXFLAGS) -ffile-prefix-map=$$($(package)_extract_dir)=/usr"
+$(package)_cmake_opts += -DCMAKE_CXX_FLAGS_RELEASE="$$($$($(package)_type)_release_CXXFLAGS)"
+$(package)_cmake_opts += -DCMAKE_CXX_FLAGS_DEBUG="$$($$($(package)_type)_debug_CXXFLAGS)"
+ifeq ($(host_os),darwin)
+$(package)_cmake_opts += -DCMAKE_OBJC_FLAGS="$$($(package)_cppflags) $$($$($(package)_type)_CFLAGS) -ffile-prefix-map=$$($(package)_extract_dir)=/usr"
+$(package)_cmake_opts += -DCMAKE_OBJC_FLAGS_RELEASE="$$($$($(package)_type)_release_CFLAGS)"
+$(package)_cmake_opts += -DCMAKE_OBJC_FLAGS_DEBUG="$$($$($(package)_type)_debug_CFLAGS)"
+$(package)_cmake_opts += -DCMAKE_OBJCXX_FLAGS="$$($(package)_cppflags) $$($$($(package)_type)_CXXFLAGS) -ffile-prefix-map=$$($(package)_extract_dir)=/usr"
+$(package)_cmake_opts += -DCMAKE_OBJCXX_FLAGS_RELEASE="$$($$($(package)_type)_release_CXXFLAGS)"
+$(package)_cmake_opts += -DCMAKE_OBJCXX_FLAGS_DEBUG="$$($$($(package)_type)_debug_CXXFLAGS)"
+endif
+
 ifneq ($(host),$(build))
 $(package)_cmake_opts += -DCMAKE_SYSTEM_NAME=$($(host_os)_cmake_system_name)
 $(package)_cmake_opts += -DCMAKE_SYSTEM_VERSION=$($(host_os)_cmake_system_version)
@@ -184,17 +201,10 @@ $(package)_cmake_opts += -DQT_INTERNAL_APPLE_SDK_VERSION=$(OSX_SDK_VERSION)
 $(package)_cmake_opts += -DQT_INTERNAL_XCODE_VERSION=$(XCODE_VERSION)
 endif
 
-$(package)_cxxflags += -ffile-prefix-map=$$($(package)_extract_dir)=/usr
-
 $(package)_config_env := CC="$$($(package)_cc)"
-$(package)_config_env += CFLAGS="$$($(package)_cppflags) $$($(package)_cflags)"
 $(package)_config_env += CXX="$$($(package)_cxx)"
-$(package)_config_env += CXXFLAGS="$$($(package)_cppflags) $$($(package)_cxxflags)"
-$(package)_config_env += LDFLAGS="$$($(package)_ldflags)"
 $(package)_config_env_darwin := OBJC="$$($(package)_cc)"
-$(package)_config_env_darwin += OBJCFLAGS="$$($(package)_cppflags) $$($(package)_cflags)"
 $(package)_config_env_darwin += OBJCXX="$$($(package)_cxx)"
-$(package)_config_env_darwin += OBJCXXFLAGS="$$($(package)_cppflags) $$($(package)_cxxflags)"
 endef
 
 define $(package)_fetch_cmds
@@ -265,7 +275,7 @@ define $(package)_config_cmds
 endef
 
 define $(package)_build_cmds
-  cmake --build . --parallel
+  cmake --build . --parallel --verbose
 endef
 
 define $(package)_stage_cmds
