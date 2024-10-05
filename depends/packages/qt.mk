@@ -151,13 +151,13 @@ ifneq ($(LTO),)
 $(package)_config_opts_linux += -ltcg
 endif
 
-ifneq (,$(findstring clang,$($(package)_cxx)))
-  ifneq (,$(findstring -stdlib=libc++,$($(package)_cxx)))
-    $(package)_config_opts_linux += -platform linux-clang-libc++ -xplatform linux-clang-libc++
-  else
-    $(package)_config_opts_linux += -platform linux-clang -xplatform linux-clang
-  endif
-endif
+# ifneq (,$(findstring clang,$($(package)_cxx)))
+#   ifneq (,$(findstring -stdlib=libc++,$($(package)_cxx)))
+#     $(package)_config_opts_linux += -platform linux-clang-libc++ -xplatform linux-clang-libc++
+#   else
+#     $(package)_config_opts_linux += -platform linux-clang -xplatform linux-clang
+#   endif
+# endif
 
 $(package)_config_opts_mingw32 = -no-opengl
 $(package)_config_opts_mingw32 += -no-dbus
