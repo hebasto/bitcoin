@@ -50,6 +50,7 @@ $(package)_config_opts_debug += -optimized-tools
 ifneq ($(host),$(build))
 $(package)_config_opts += -qt-host-path $(build_prefix)
 endif
+$(package)_config_opts += -disable-deprecated-up-to $(qt_details_hex_version)
 $(package)_config_opts += -no-egl
 $(package)_config_opts += -no-eglfs
 $(package)_config_opts += -no-evdev

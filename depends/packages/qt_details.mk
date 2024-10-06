@@ -1,4 +1,5 @@
 qt_details_version := 6.7.3
+qt_details_hex_version := 0x060703
 qt_details_download_path := https://download.qt.io/official_releases/qt/6.7/$(qt_details_version)/submodules
 qt_details_suffix := everywhere-src-$(qt_details_version).tar.xz
 
