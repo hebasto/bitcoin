@@ -313,8 +313,7 @@ if(WIN32)
     try_append_cxx_flags("-Wa,-muse-unaligned-vector-move" TARGET core_interface SKIP_LINK)
     try_append_linker_flag("-static" TARGET core_interface)
     # We require Windows 10 or later.
-    try_append_linker_flag("-Wl,--major-subsystem-version,10" TARGET core_interface)
-    try_append_linker_flag("-Wl,--minor-subsystem-version,0" TARGET core_interface)
+    try_append_linker_flag("-Wl,--subsystem,windows,10.0" TARGET core_interface)
   endif()
 endif()
 
