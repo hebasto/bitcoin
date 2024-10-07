@@ -260,7 +260,7 @@ def check_PE_libraries(binary) -> bool:
 def check_PE_subsystem_version(binary) -> bool:
     major: int = binary.optional_header.major_subsystem_version
     minor: int = binary.optional_header.minor_subsystem_version
-    if major == 10 and minor == 6:
+    if major == 10 and minor == 0:
         return True
     return False
 
