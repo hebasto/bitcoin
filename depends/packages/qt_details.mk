@@ -11,6 +11,8 @@ qt_details_qttranslations_sha256_hash := 84bf2b67c243cd0c50a08acd7bfa9df2b196502
 qt_details_qttools_file_name := qttools-$(qt_details_suffix)
 qt_details_qttools_sha256_hash := 403115d8268503c6cc6e43310c8ae28eb9e605072a5d04e4a2de8b6af39981f7
 
+qt_details_patches_path := $(PATCHES_PATH)/qt
+
 qt_details_top_download_path := https://code.qt.io/cgit/qt/qt5.git/plain
 qt_details_top_cmakelists_file_name := CMakeLists.txt
 qt_details_top_cmakelists_download_file := $(qt_details_top_cmakelists_file_name)?h=$(qt_details_version)
