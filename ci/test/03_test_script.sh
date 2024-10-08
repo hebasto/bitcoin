@@ -96,6 +96,8 @@ if [ -z "$NO_DEPENDS" ]; then
   else
     SHELL_OPTS="CONFIG_SHELL="
   fi
+  bash -c "rm -rf depends/sources/*"
+  bash -c "$SHELL_OPTS make $MAKEJOBS -C depends HOST=$HOST $DEP_OPTS download-one"
   bash -c "$SHELL_OPTS make $MAKEJOBS -C depends HOST=$HOST $DEP_OPTS LOG=1"
 fi
 if [ "$DOWNLOAD_PREVIOUS_RELEASES" = "true" ]; then
