@@ -25,7 +25,21 @@ function(import_plugins target)
     endif()
     qt_import_plugins(${target}
       INCLUDE ${plugins}
-      EXCLUDE_BY_TYPE imageformats iconengines
+      EXCLUDE_BY_TYPE
+        accessiblebridge
+        platforms
+        platforms_darwin
+        xcbglintegrations
+        platformthemes
+        platforminputcontexts
+        generic
+        iconengines
+        imageformats
+        egldeviceintegrations
+        styles
+        networkaccess
+        networkinformation
+        tls
     )
   endif()
 endfunction()
@@ -218,7 +232,21 @@ if(qt_lib_type STREQUAL "STATIC_LIBRARY")
   # We want to define static plugins to link ourselves, thus preventing
   # automatic linking against a "sane" set of default static plugins.
   qt_import_plugins(bitcoinqt
-      EXCLUDE_BY_TYPE bearer iconengines imageformats platforms styles
+    EXCLUDE_BY_TYPE
+      accessiblebridge
+      platforms
+      platforms_darwin
+      xcbglintegrations
+      platformthemes
+      platforminputcontexts
+      generic
+      iconengines
+      imageformats
+      egldeviceintegrations
+      styles
+      networkaccess
+      networkinformation
+      tls
   )
 endif()
 
