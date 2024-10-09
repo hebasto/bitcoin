@@ -79,7 +79,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(QT_TRANSLATIONS_DIR "@depends_prefix@/translations")
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND NOT CMAKE_HOST_APPLE)
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
   # The find_package(Qt ...) function internally uses find_library()
   # calls for all dependencies to ensure their availability.
   # In turn, the find_library() inspects the well-known locations

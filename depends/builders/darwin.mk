@@ -10,6 +10,7 @@ build_darwin_SHA256SUM=shasum -a 256
 build_darwin_DOWNLOAD=curl --location --fail --connect-timeout $(DOWNLOAD_CONNECT_TIMEOUT) --retry $(DOWNLOAD_RETRIES) -o
 
 #darwin host on darwin builder. overrides darwin host preferences.
+OSX_SDK:=$(shell xcrun --show-sdk-path)
 darwin_CC=$(shell xcrun -f clang) -isysroot$(shell xcrun --show-sdk-path)
 darwin_CXX:=$(shell xcrun -f clang++) -stdlib=libc++ -isysroot$(shell xcrun --show-sdk-path)
 darwin_AR:=$(shell xcrun -f ar)
