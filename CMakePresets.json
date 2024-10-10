@@ -3,6 +3,20 @@
   "cmakeMinimumRequired": {"major": 3, "minor": 21, "patch": 0},
   "configurePresets": [
     {
+      "name": "xcode",
+      "displayName": "Build using 'Xcode' generator",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Darwin"
+      },
+      "generator": "Xcode",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-Wno-shorten-64-to-32",
+        "CMAKE_C_FLAGS": "-Wno-shorten-64-to-32"
+      }
+    },
+    {
       "name": "vs2022",
       "displayName": "Build using 'Visual Studio 17 2022' generator and 'x64-windows' triplet",
       "condition": {
