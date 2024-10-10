@@ -7,6 +7,8 @@
 #ifndef BITCOIN_PUBKEY_H
 #define BITCOIN_PUBKEY_H
 
+#include <secp256k1_ecdh.h>
+
 #include <hash.h>
 #include <serialize.h>
 #include <span.h>
