@@ -22,12 +22,15 @@ env:
   RECOVERY: no
   EXTRAKEYS: no
   SCHNORRSIG: no
+  MUSIG: no
   ELLSWIFT: no
   ### test options
   SECP256K1_TEST_ITERS:
   BENCH: yes
   SECP256K1_BENCH_ITERS: 2
   CTIMETESTS: yes
+  SYMBOL_CHECK: yes
+  VIRTUAL_ENV: /root/venv
   # Compile and run the tests
   EXAMPLES: yes
 
@@ -52,6 +55,7 @@ cat_logs_snippet: &CAT_LOGS
 
 linux_arm64_container_snippet: &LINUX_ARM64_CONTAINER
   env_script:
+    - export PATH="$VIRTUAL_ENV/bin:$PATH"
     - env | tee /tmp/env
   build_script:
     - DOCKER_BUILDKIT=1 docker build --file "ci/linux-debian.Dockerfile" --tag="ci_secp256k1_arm"
@@ -69,6 +73,7 @@ task:
     RECOVERY: yes
     EXTRAKEYS: yes
     SCHNORRSIG: yes
+    MUSIG: yes
     ELLSWIFT: yes
   matrix:
      # Currently only gcc-snapshot, the other compilers are tested on GHA with QEMU
@@ -86,6 +91,7 @@ task:
     RECOVERY: yes
     EXTRAKEYS: yes
     SCHNORRSIG: yes
+    MUSIG: yes
     ELLSWIFT: yes
     WRAPPER_CMD: 'valgrind --error-exitcode=42'
     SECP256K1_TEST_ITERS: 2
