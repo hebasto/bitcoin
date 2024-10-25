@@ -97,6 +97,7 @@ target_link_libraries(bitcoinkernel
 # incrementally define what to export from the library.
 set_target_properties(bitcoinkernel PROPERTIES
   CXX_VISIBILITY_PRESET default
+  WINDOWS_EXPORT_ALL_SYMBOLS TRUE
 )
 
 # When building the static library, install all static libraries the
