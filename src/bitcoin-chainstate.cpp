@@ -24,6 +24,7 @@
 #include <node/caches.h>
 #include <node/chainstate.h>
 #include <random.h>
+#include <sync.h>
 #include <script/sigcache.h>
 #include <util/chaintype.h>
 #include <util/fs.h>

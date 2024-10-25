@@ -15,7 +15,7 @@
 #include <serialize.h>
 #include <span.h>
 #include <streams.h>
-#include <sync.h>
+#include <kernel/cs_main.h>
 #include <tinyformat.h>
 #include <uint256.h>
 #include <util/check.h>

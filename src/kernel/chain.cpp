@@ -5,7 +5,7 @@
 #include <chain.h>
 #include <interfaces/chain.h>
 #include <kernel/chain.h>
-#include <sync.h>
+#include <kernel/cs_main.h>
 #include <uint256.h>
 
 class CBlock;
