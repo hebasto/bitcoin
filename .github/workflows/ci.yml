@@ -130,7 +130,7 @@ jobs:
           key: ${{ github.job }}-ccache-${{ github.run_id }}
 
   win64-native:
-    name: 'Win64 native, VS 2022'
+    name: 'Win64 native, VS 2022, libbitcoinkernel'
     # Use latest image, but hardcode version to avoid silent upgrades (and breaks).
     # See: https://github.com/actions/runner-images#available-images.
     runs-on: windows-2022
@@ -182,7 +182,7 @@ jobs:
 
       - name: Generate build system
         run: |
-          cmake -B build --preset vs2022-static -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT\scripts\buildsystems\vcpkg.cmake" -DBUILD_GUI=ON -DWITH_BDB=ON -DWITH_ZMQ=ON -DBUILD_BENCH=ON -DBUILD_FUZZ_BINARY=ON -DWERROR=ON
+          cmake -B build --preset vs2022-static -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT\scripts\buildsystems\vcpkg.cmake" -DBUILD_GUI=ON -DWITH_BDB=ON -DWITH_ZMQ=ON -DBUILD_BENCH=ON -DBUILD_FUZZ_BINARY=ON -DBUILD_UTIL_CHAINSTATE=ON -DBUILD_KERNEL_LIB=ON -DBUILD_SHARED_LIBS=ON -DWERROR=ON
 
       - name: Save vcpkg binary cache
         uses: actions/cache/save@v4
