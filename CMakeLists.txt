@@ -562,6 +562,17 @@ endif()
 if(BUILD_TESTS)
   enable_testing()
 endif()
+
+if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
+  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+endif()
+if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
+  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+endif()
+if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
+  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+endif()
+
 # TODO: The `CMAKE_SKIP_BUILD_RPATH` variable setting can be deleted
 #       in the future after reordering Guix script commands to
 #       perform binary checks after the installation step.
