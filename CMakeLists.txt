@@ -259,8 +259,8 @@ if(WIN32)
   ]=]
 
   target_compile_definitions(core_interface INTERFACE
-    _WIN32_WINNT=0x0601
-    _WIN32_IE=0x0501
+    _WIN32_WINNT=0x0A00
+    _WIN32_IE=0x0A00
     WIN32_LEAN_AND_MEAN
     NOMINMAX
   )
@@ -298,9 +298,9 @@ if(WIN32)
     # See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=54412.
     try_append_cxx_flags("-Wa,-muse-unaligned-vector-move" TARGET core_interface SKIP_LINK)
     try_append_linker_flag("-static" TARGET core_interface)
-    # We require Windows 7 (NT 6.1) or later.
-    try_append_linker_flag("-Wl,--major-subsystem-version,6" TARGET core_interface)
-    try_append_linker_flag("-Wl,--minor-subsystem-version,1" TARGET core_interface)
+    # We require Windows 10 (NT10.0) or later.
+    try_append_linker_flag("-Wl,--major-subsystem-version,10" TARGET core_interface)
+    try_append_linker_flag("-Wl,--minor-subsystem-version,0" TARGET core_interface)
   endif()
 endif()
 
