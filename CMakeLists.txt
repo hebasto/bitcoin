@@ -294,6 +294,7 @@ if(WIN32)
       _WINDOWS
       _MT
       _CONSOLE
+      _UCRT
     )
     # Avoid the use of aligned vector instructions when building for Windows.
     # See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=54412.
@@ -306,6 +307,8 @@ if(WIN32)
     try_append_linker_flag("-Wl,--minor-subsystem-version,0" TARGET core_interface)
     try_append_cxx_flags("-mconsole" TARGET core_interface)
     try_append_linker_flag("-Wl,-e,mainCRTStartup" TARGET core_interface)
+    try_append_cxx_flags("-mcrtdll=ucrt" TARGET core_interface)
+    try_append_linker_flag("-Wl,-mcrtdll=ucrt" TARGET core_interface)
   endif()
 endif()
 
