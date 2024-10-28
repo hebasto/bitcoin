@@ -293,14 +293,19 @@ if(WIN32)
       WIN32
       _WINDOWS
       _MT
+      _CONSOLE
     )
     # Avoid the use of aligned vector instructions when building for Windows.
     # See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=54412.
     try_append_cxx_flags("-Wa,-muse-unaligned-vector-move" TARGET core_interface SKIP_LINK)
     try_append_linker_flag("-static" TARGET core_interface)
     # We require Windows 10 (NT10.0) or later.
+    try_append_linker_flag("-Wl,--major-os-version,10" TARGET core_interface)
+    try_append_linker_flag("-Wl,--minor-os-version,0" TARGET core_interface)
     try_append_linker_flag("-Wl,--major-subsystem-version,10" TARGET core_interface)
     try_append_linker_flag("-Wl,--minor-subsystem-version,0" TARGET core_interface)
+    try_append_cxx_flags("-mconsole" TARGET core_interface)
+    try_append_linker_flag("-Wl,-e,mainCRTStartup" TARGET core_interface)
   endif()
 endif()
 
