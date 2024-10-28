@@ -40,7 +40,7 @@
     },
     "qt5": {
       "description": "Build GUI, Qt 5",
-      "dependencies": [ "qt5-base", "qt5-tools" ]
+      "dependencies": [ "qt5-base", "qt5-tools", "libqrencode" ]
     }
   }
 }
