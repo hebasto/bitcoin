@@ -268,3 +268,62 @@ jobs:
           path: ${{ env.CCACHE_DIR }}
           # https://github.com/actions/cache/blob/main/tips-and-workarounds.md#update-a-cache
           key: ${{ github.job }}-ccache-${{ github.run_id }}
+
+  windows-cross-build:
+    runs-on: ubuntu-latest
+    name: Cross-build to Windows
+    container: debian:bookworm
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install required packages
+        run: |
+          apt-get update
+          apt-get install --no-install-recommends -y build-essential pkg-config curl ca-certificates ccache python3 cmake nsis g++-mingw-w64-x86-64-posix
+
+      - name: Build depends
+        working-directory: depends
+        run: |
+          make -j$(nproc) HOST=x86_64-w64-mingw32 LOG=1 NO_QT=1
+
+      - name: Generate build system
+        # Using the "Release" build type to avoid oversized executables for the following job.
+        run: |
+          cmake -B build --toolchain depends/x86_64-w64-mingw32/toolchain.cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_BENCH=ON
+
+      - name: Build
+        run: |
+          cmake --build build -j $(nproc)
+
+      - name: Upload built executables
+        uses: actions/upload-artifact@v4
+        with:
+          name: x86_64-w64-mingw32-executables-${{ github.run_id }}
+          path: |
+            build/src/bitcoind.exe
+            build/src/test/test_bitcoin.exe
+            build/src/bench/bench_bitcoin.exe
+
+  windows-native-test:
+    runs-on: windows-2022
+    needs: windows-cross-build
+    name: Test on Windows
+    steps:
+      - name: Download built executables
+        uses: actions/download-artifact@v4
+        with:
+          name: x86_64-w64-mingw32-executables-${{ github.run_id }}
+
+      - name: Run bitcoind.exe
+        run: |
+          .\bitcoind.exe -version
+
+      - name: Run benchmarks
+        run: |
+          .\bench\bench_bitcoin.exe -sanity-check -priority-level=high
+
+      - name: Run tests
+        run: |
+          .\test\test_bitcoin.exe
