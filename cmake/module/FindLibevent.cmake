@@ -56,8 +56,8 @@ if(Libevent_FOUND)
     NO_MODULE
   )
   find_package_handle_standard_args(Libevent
-    REQUIRED_VARS Libevent_DIR
-    VERSION_VAR Libevent_VERSION
+    HANDLE_COMPONENTS
+    CONFIG_MODE
   )
   check_evhttp_connection_get_peer(libevent::extra)
 else()
