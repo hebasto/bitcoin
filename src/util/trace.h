@@ -9,7 +9,7 @@
 
 #ifdef ENABLE_TRACING
 
-#include <sys/sdt.h>
+#include SYS_SDT_H_PATH
 
 #define TRACE(context, event) DTRACE_PROBE(context, event)
 #define TRACE1(context, event, a) DTRACE_PROBE1(context, event, a)

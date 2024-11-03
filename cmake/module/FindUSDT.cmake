@@ -36,7 +36,7 @@ if(USDT_INCLUDE_DIR)
   include(CheckCXXSourceCompiles)
   set(CMAKE_REQUIRED_INCLUDES ${USDT_INCLUDE_DIR})
   check_cxx_source_compiles("
-    #include <sys/sdt.h>
+    #include \"${USDT_INCLUDE_DIR}/sys/sdt.h\"
 
     int main()
     {
@@ -57,8 +57,9 @@ find_package_handle_standard_args(USDT
 
 if(USDT_FOUND AND NOT TARGET USDT::headers)
   add_library(USDT::headers INTERFACE IMPORTED)
-  set_target_properties(USDT::headers PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "${USDT_INCLUDE_DIR}"
+  target_compile_definitions(USDT::headers
+    INTERFACE
+      SYS_SDT_H_PATH=\"${USDT_INCLUDE_DIR}/sys/sdt.h\"
   )
   set(ENABLE_TRACING TRUE)
 endif()
