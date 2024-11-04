@@ -169,10 +169,10 @@ echo ===========================================================================
 printenv | sort
 echo ==============================================================================
 
-eval "$(make -C depends --no-print-directory HOST="$HOST" print-qt_cxx \
+qt_cxx="$(make -C depends --no-print-directory HOST="$HOST" print-qt_cxx \
                                    ${SOURCES_PATH+SOURCES_PATH="$SOURCES_PATH"} \
                                    ${BASE_CACHE+BASE_CACHE="$BASE_CACHE"} \
-                                   ${SDK_PATH+SDK_PATH="$SDK_PATH"})"
+                                   ${SDK_PATH+SDK_PATH="$SDK_PATH"} | sed 's@^[^=]\+=@@g')"
 
 echo $qt_cxx
 echo ==============================================================================
