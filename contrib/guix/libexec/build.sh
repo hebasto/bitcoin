@@ -70,7 +70,7 @@ unset OBJC_INCLUDE_PATH
 unset OBJCPLUS_INCLUDE_PATH
 
 export C_INCLUDE_PATH="${NATIVE_GCC}/include"
-export CPLUS_INCLUDE_PATH="${NATIVE_GCC}/include/c++:${NATIVE_GCC}/include"
+export CPLUS_INCLUDE_PATH="${NATIVE_GCC}/include"
 
 case "$HOST" in
     *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
@@ -164,6 +164,22 @@ export TZ="UTC"
 ####################
 # Depends Building #
 ####################
+
+echo ==============================================================================
+printenv | sort
+echo ==============================================================================
+
+qt_cxx="$(make -C depends --no-print-directory HOST="$HOST" print-qt_cxx \
+                                   ${SOURCES_PATH+SOURCES_PATH="$SOURCES_PATH"} \
+                                   ${BASE_CACHE+BASE_CACHE="$BASE_CACHE"} \
+                                   ${SDK_PATH+SDK_PATH="$SDK_PATH"} | sed 's@^[^=]\+=@@g')"
+
+echo $qt_cxx
+echo ==============================================================================
+
+$qt_cxx -v -E -x c++ - < /dev/null
+echo ==============================================================================
+
 
 # Build the depends tree, overriding variables that assume multilib gcc
 make -C depends --jobs="$JOBS" HOST="$HOST" \
