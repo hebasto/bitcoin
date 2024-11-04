@@ -169,6 +169,18 @@ echo ===========================================================================
 printenv | sort
 echo ==============================================================================
 
+eval "$(make -C depends --no-print-directory HOST="$HOST" print-qt_cxx \
+                                   ${SOURCES_PATH+SOURCES_PATH="$SOURCES_PATH"} \
+                                   ${BASE_CACHE+BASE_CACHE="$BASE_CACHE"} \
+                                   ${SDK_PATH+SDK_PATH="$SDK_PATH"})"
+
+echo $qt_cxx
+echo ==============================================================================
+
+$qt_cxx -v -E -x c++ - < /dev/null
+echo ==============================================================================
+
+
 # Build the depends tree, overriding variables that assume multilib gcc
 make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    ${V:+V=1} \
