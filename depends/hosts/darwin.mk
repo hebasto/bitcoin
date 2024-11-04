@@ -51,11 +51,11 @@ darwin_STRIP=$(shell $(SHELL) $(.SHELLFLAGS) "command -v llvm-strip")
 #         non-determinism issues with the Identifier field.
 
 darwin_CC=$(clang_prog) --target=$(host) \
-              -isysroot$(OSX_SDK) -nostdlibinc \
+              -isysroot$(OSX_SDK) -nostdinc -nostdlibinc \
               -iwithsysroot/usr/include -iframeworkwithsysroot/System/Library/Frameworks
 
 darwin_CXX=$(clangxx_prog) --target=$(host) \
-               -isysroot$(OSX_SDK) -nostdlibinc \
+               -isysroot$(OSX_SDK) -nostdinc -nostdinc++ -nostdlibinc \
                -iwithsysroot/usr/include/c++/v1 \
                -iwithsysroot/usr/include -iframeworkwithsysroot/System/Library/Frameworks
 
