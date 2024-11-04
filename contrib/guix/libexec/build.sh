@@ -165,6 +165,10 @@ export TZ="UTC"
 # Depends Building #
 ####################
 
+echo ==============================================================================
+printenv | sort
+echo ==============================================================================
+
 # Build the depends tree, overriding variables that assume multilib gcc
 make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    ${V:+V=1} \
