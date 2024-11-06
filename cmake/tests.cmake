@@ -2,14 +2,19 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
-if(TARGET bitcoin-util AND TARGET bitcoin-tx AND PYTHON_COMMAND)
+if(TARGET bitcoin-util AND TARGET bitcoin-tx AND TARGET Python3::Interpreter)
   add_test(NAME util_test_runner
-    COMMAND ${CMAKE_COMMAND} -E env BITCOINUTIL=$<TARGET_FILE:bitcoin-util> BITCOINTX=$<TARGET_FILE:bitcoin-tx> ${PYTHON_COMMAND} ${PROJECT_BINARY_DIR}/test/util/test_runner.py
+    COMMAND Python3::Interpreter ${PROJECT_BINARY_DIR}/test/util/test_runner.py
+  )
+  set_property(TEST util_test_runner PROPERTY
+    ENVIRONMENT_MODIFICATION
+      BITCOINUTIL=set:$<TARGET_FILE:bitcoin-util>
+      BITCOINTX=set:$<TARGET_FILE:bitcoin-tx>
   )
 endif()
 
-if(PYTHON_COMMAND)
+if(TARGET Python3::Interpreter)
   add_test(NAME util_rpcauth_test
-    COMMAND ${PYTHON_COMMAND} ${PROJECT_BINARY_DIR}/test/util/rpcauth-test.py
+    COMMAND Python3::Interpreter ${PROJECT_BINARY_DIR}/test/util/rpcauth-test.py
   )
 endif()
