@@ -603,6 +603,13 @@ kernel_ChainstateManagerOptions* kernel_chainstate_manager_options_create(const 
     }
 }
 
+void kernel_chainstate_manager_options_set_worker_threads_num(kernel_ChainstateManagerOptions* opts_, int worker_threads)
+{
+    auto opts{cast_chainstate_manager_options(opts_)};
+    LOCK(opts->m_mutex);
+    opts->m_chainman_options.worker_threads_num = worker_threads;
+}
+
 void kernel_chainstate_manager_options_destroy(kernel_ChainstateManagerOptions* options)
 {
     if (options) {
