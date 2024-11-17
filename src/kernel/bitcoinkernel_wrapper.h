@@ -219,6 +219,13 @@ public:
     friend class ContextOptions;
 };
 
+struct BlockHashDeleter {
+    void operator()(kernel_BlockHash* ptr) const
+    {
+        kernel_block_hash_destroy(ptr);
+    }
+};
+
 class UnownedBlock
 {
 private:
@@ -231,6 +238,11 @@ public:
     UnownedBlock& operator=(const UnownedBlock&) = delete;
     UnownedBlock(UnownedBlock&&) = delete;
     UnownedBlock& operator=(UnownedBlock&&) = delete;
+
+    std::unique_ptr<kernel_BlockHash, BlockHashDeleter> GetHash() const noexcept
+    {
+        return std::unique_ptr<kernel_BlockHash, BlockHashDeleter>(kernel_block_pointer_get_hash(m_block));
+    }
 
     std::vector<unsigned char> GetBlockData() const noexcept
     {
@@ -435,6 +447,11 @@ public:
 
     Block(kernel_Block* block) noexcept : m_block{block} {}
 
+    std::unique_ptr<kernel_BlockHash, BlockHashDeleter> GetHash() const noexcept
+    {
+        return std::unique_ptr<kernel_BlockHash, BlockHashDeleter>(kernel_block_get_hash(m_block.get()));
+    }
+
     std::vector<unsigned char> GetBlockData() const noexcept
     {
         auto serialized_block{kernel_copy_block_data(m_block.get())};
@@ -480,13 +497,6 @@ public:
         uint64_t tx_prevout_index) const noexcept
     {
         return TransactionOutput{kernel_get_undo_output_by_index(m_block_undo.get(), tx_undo_index, tx_prevout_index)};
-    }
-};
-
-struct BlockHashDeleter {
-    void operator()(kernel_BlockHash* ptr) const
-    {
-        kernel_block_hash_destroy(ptr);
     }
 };
 

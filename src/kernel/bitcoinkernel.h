@@ -918,6 +918,26 @@ BITCOINKERNEL_API kernel_Block* BITCOINKERNEL_WARN_UNUSED_RESULT kernel_block_cr
 ) BITCOINKERNEL_ARG_NONNULL(1);
 
 /**
+ * @brief Calculate and return the hash of a block.
+ *
+ * @param[in] block Non-null.
+ * @return    The block hash.
+ */
+BITCOINKERNEL_API kernel_BlockHash* BITCOINKERNEL_WARN_UNUSED_RESULT kernel_block_get_hash(
+    kernel_Block* block
+) BITCOINKERNEL_ARG_NONNULL(1);
+
+/** @name ByteArray
+ * @brief Calculate and return the hash of a block.
+ *
+ * @param[in] block Non-null.
+ * @return    The block hash.
+ */
+BITCOINKERNEL_API kernel_BlockHash* BITCOINKERNEL_WARN_UNUSED_RESULT kernel_block_pointer_get_hash(
+    const kernel_BlockPointer* block
+) BITCOINKERNEL_ARG_NONNULL(1);
+
+/**
  * @brief Copies block data into the returned byte array.
  *
  * @param[in] block  Non-null.
