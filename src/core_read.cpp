@@ -39,6 +39,7 @@ public:
             }
             mapOpNames[strName] = static_cast<opcodetype>(op);
             // Convenience: OP_ADD and just ADD are both recognized:
+            // NOLINTNEXTLINE(modernize-use-starts-ends-with)
             if (strName.compare(0, 3, "OP_") == 0) { // strName starts with "OP_"
                 mapOpNames[strName.substr(3)] = static_cast<opcodetype>(op);
             }
