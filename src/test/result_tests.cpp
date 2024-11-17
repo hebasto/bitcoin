@@ -59,12 +59,11 @@ void ExpectResult(const util::Result<T>& result, bool success, const bilingual_s
 }
 
 template <typename T, typename... Args>
-void ExpectSuccess(const util::Result<T>& result, const bilingual_str& str, Args&&... args)
+void ExpectSuccess(const util::Result<T>& result, const bilingual_str& str, const Args&... args)
 {
     ExpectResult(result, true, str);
     BOOST_CHECK_EQUAL(result.has_value(), true);
-    // NOLINTNEXTLINE(bugprone-use-after-move)
-    BOOST_CHECK_EQUAL(result.value(), T{std::forward<Args>(args)...});
+    BOOST_CHECK_EQUAL(result.value(), T{args...});
     BOOST_CHECK_EQUAL(&result.value(), &*result);
 }
 
