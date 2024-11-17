@@ -183,6 +183,12 @@ if [ "${RUN_TIDY}" = "true" ]; then
   cd "${BASE_ROOT_DIR}/src"
   python3 "/include-what-you-use/fix_includes.py" --nosafe_headers < /tmp/iwyu_ci.out
   git --no-pager diff
+
+  # TODO: Expand the following list to all targets.
+  TARGETS_WITH_FORCED_IWYU="bitcoin_crypto"
+  cd "${BASE_BUILD_DIR}"
+  bash -c "cmake -S $BASE_ROOT_DIR -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=\"include-what-you-use;-Xiwyu;--cxx17ns;-Xiwyu;--mapping_file=${BASE_ROOT_DIR}/contrib/devtools/iwyu/bitcoin.core.imp;-Xiwyu;--error\""
+  bash -c "cmake --build . $MAKEJOBS --target $TARGETS_WITH_FORCED_IWYU"
 fi
 
 if [ "$RUN_FUZZ_TESTS" = "true" ]; then
