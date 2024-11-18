@@ -178,6 +178,12 @@ if [ "${RUN_TIDY}" = "true" ]; then
            -- -Xiwyu --cxx17ns -Xiwyu --mapping_file="${BASE_ROOT_DIR}/contrib/devtools/iwyu/bitcoin.core.imp" \
            -Xiwyu --max_line_length=160 \
            2>&1 | tee /tmp/iwyu_ci.out
+
+  cd "${BASE_BUILD_DIR}"
+  cmake -S "$BASE_ROOT_DIR" -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="include-what-you-use;-Xiwyu;--cxx17ns;-Xiwyu;--mapping_file=${BASE_ROOT_DIR}/contrib/devtools/iwyu/bitcoin.core.imp;-Xiwyu;--error"
+  # TODO: Expand the --target option to all targets.
+  cmake --build . "$MAKEJOBS" --clean-first --target bitcoin_clientversion bitcoin_crypto
+
   cd "${BASE_ROOT_DIR}/src"
   python3 "/include-what-you-use/fix_includes.py" --nosafe_headers < /tmp/iwyu_ci.out
   git --no-pager diff
