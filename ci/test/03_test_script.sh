@@ -170,6 +170,13 @@ if [ "${RUN_TIDY}" = "true" ]; then
     echo "^^^ ⚠️ Failure generated from clang-tidy"
     false
   fi
+
+  # TODO: Expand the following list to all targets.
+  TARGETS_WITH_FORCED_IWYU="bitcoin_crypto"
+  cd "${BASE_BUILD_DIR}"
+  bash -c "cmake -S $BASE_ROOT_DIR -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=\"include-what-you-use;-Xiwyu;--cxx17ns;-Xiwyu;--mapping_file=${BASE_ROOT_DIR}/contrib/devtools/iwyu/bitcoin.core.imp;-Xiwyu;--error\""
+  bash -c "cmake --build . $MAKEJOBS --clean-first --target $TARGETS_WITH_FORCED_IWYU"
+
   # Filter out:
   # * qt qrc and moc generated files
   jq 'map(select(.file | test("src/qt/qrc_.*\\.cpp$|/moc_.*\\.cpp$") | not))' "${BASE_BUILD_DIR}/compile_commands.json" > tmp.json
