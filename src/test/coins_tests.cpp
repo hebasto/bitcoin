@@ -773,8 +773,10 @@ static void CheckAddCoinBase(CAmount base_value, CAmount cache_value, CAmount mo
 template <typename... Args>
 static void CheckAddCoin(Args&&... args)
 {
-    for (const CAmount base_value : {ABSENT, SPENT, VALUE1})
+    for (const CAmount base_value : {ABSENT, SPENT, VALUE1}) {
+        // NOLINTNEXTLINE(bugprone-use-after-move)
         CheckAddCoinBase(base_value, std::forward<Args>(args)...);
+    }
 }
 
 BOOST_AUTO_TEST_CASE(ccoins_add)
