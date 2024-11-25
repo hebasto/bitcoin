@@ -135,7 +135,7 @@ jobs:
           key: ${{ github.job }}-ccache-${{ github.run_id }}
 
   win64-native:
-    name: 'Win64 native, VS 2022'
+    name: 'Windows native, VS 2022'
     # Use latest image, but hardcode version to avoid silent upgrades (and breaks).
     # See: https://github.com/actions/runner-images#available-images.
     runs-on: windows-2022
@@ -215,6 +215,57 @@ jobs:
           TEST_RUNNER_EXTRA: ${{ github.event_name != 'pull_request' && '--extended' || '' }}
         shell: cmd
         run: py -3 test\functional\test_runner.py --jobs %NUMBER_OF_PROCESSORS% --ci --quiet --tmpdirprefix=%RUNNER_TEMP% --combinedlogslen=99999999 --timeout-factor=%TEST_RUNNER_TIMEOUT_FACTOR% %TEST_RUNNER_EXTRA%
+
+  windows-cross:
+    name: 'Windows cross, unit tests, no gui tests, no functional tests'
+    runs-on: ubuntu-latest
+    if: ${{ vars.SKIP_BRANCH_PUSH != 'true' || github.event_name == 'pull_request' }}
+
+    env:
+      FILE_ENV: './ci/test/00_setup_env_win64.sh'
+      DANGER_CI_ON_HOST_CACHE_FOLDERS: 1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set environment variables
+        run: |
+          echo "BASE_ROOT_DIR=${{ runner.temp }}" >> "$GITHUB_ENV"
+          echo "DEPENDS_DIR=${{ runner.temp }}/depends" >> "$GITHUB_ENV"
+          echo "CCACHE_DIR=${{ runner.temp }}/ccache_dir" >> "$GITHUB_ENV"
+          # Required for the next step.
+          cp ${{ env.FILE_ENV }} depends/
+
+      - name: Depends fingerprint
+        id: depends_fingerprint
+        run: |
+          echo "hash=${{ hashFiles('depends/**') }}" >> "$GITHUB_OUTPUT"
+
+      - name: Depends cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.DEPENDS_DIR }}/built
+          key: ${{ github.job }}-depends-${{ steps.depends_fingerprint.outputs.hash }}
+
+      - name: Restore Ccache cache
+        id: ccache-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ github.job }}-ccache-${{ github.run_id }}
+          restore-keys: ${{ github.job }}-ccache-
+
+      - name: CI script
+        run: ./ci/test_run_all.sh
+
+      - name: Save Ccache cache
+        uses: actions/cache/save@v4
+        if: github.event_name != 'pull_request' && steps.ccache-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ${{ github.job }}-ccache-${{ github.run_id }}
 
   asan-lsan-ubsan-integer-no-depends-usdt:
     name: 'ASan + LSan + UBSan + integer, no depends, USDT'
