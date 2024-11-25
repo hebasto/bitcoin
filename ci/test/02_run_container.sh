@@ -88,11 +88,14 @@ if [ -z "$DANGER_RUN_CI_ON_HOST" ]; then
   # When detecting podman-docker, `--external` should be added.
   docker image prune --force --filter "label=$CI_IMAGE_LABEL"
 
+  mkdir -p "${BASE_OUTDIR}"
+
   # Append $USER to /tmp/env to support multi-user systems and $CONTAINER_NAME
   # to allow support starting multiple runs simultaneously by the same user.
   # shellcheck disable=SC2086
   CI_CONTAINER_ID=$(docker run --cap-add LINUX_IMMUTABLE $CI_CONTAINER_CAP --rm --interactive --detach --tty \
                   --mount "type=bind,src=$BASE_READ_ONLY_DIR,dst=$BASE_READ_ONLY_DIR,readonly" \
+                  --mount "type=bind,src=${BASE_OUTDIR},dst=${BASE_OUTDIR}" \
                   --mount "${CI_CCACHE_MOUNT}" \
                   --mount "${CI_DEPENDS_MOUNT}" \
                   --mount "${CI_DEPENDS_SOURCES_MOUNT}" \

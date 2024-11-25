@@ -217,7 +217,7 @@ jobs:
         run: py -3 test\functional\test_runner.py --jobs %NUMBER_OF_PROCESSORS% --ci --quiet --tmpdirprefix=%RUNNER_TEMP% --combinedlogslen=99999999 --timeout-factor=%TEST_RUNNER_TIMEOUT_FACTOR% %TEST_RUNNER_EXTRA%
 
   windows-cross:
-    name: 'Windows cross, unit tests, no gui tests, no functional tests'
+    name: 'Windows cross, no tests'
     runs-on: ubuntu-latest
     if: ${{ vars.SKIP_BRANCH_PUSH != 'true' || github.event_name == 'pull_request' }}
 
@@ -234,6 +234,7 @@ jobs:
           echo "BASE_ROOT_DIR=${{ runner.temp }}" >> "$GITHUB_ENV"
           echo "DEPENDS_DIR=${{ runner.temp }}/depends" >> "$GITHUB_ENV"
           echo "CCACHE_DIR=${{ runner.temp }}/ccache_dir" >> "$GITHUB_ENV"
+          echo "BASE_OUTDIR=${{ github.workspace }}/out" >> "$GITHUB_ENV"
           # Required for the next step.
           cp ${{ env.FILE_ENV }} depends/
 
@@ -258,6 +259,9 @@ jobs:
           restore-keys: ${{ github.job }}-ccache-
 
       - name: CI script
+        env:
+          # Using the "Release" build type to avoid oversized executables to pass to the following job.
+          CMAKE_BUILD_TYPE: 'Release'
         run: ./ci/test_run_all.sh
 
       - name: Save Ccache cache
@@ -266,6 +270,37 @@ jobs:
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ${{ github.job }}-ccache-${{ github.run_id }}
+
+      - name: Upload built executables
+        uses: actions/upload-artifact@v4
+        with:
+          name: x86_64-w64-mingw32-executables-${{ github.run_id }}
+          path: |
+            out/bin/bitcoind.exe
+            out/bin/test_bitcoin.exe
+            out/bin/bench_bitcoin.exe
+
+  windows-native-test:
+    name: 'Test on Windows'
+    runs-on: windows-2022
+    needs: windows-cross
+    steps:
+      - name: Download built executables
+        uses: actions/download-artifact@v4
+        with:
+          name: x86_64-w64-mingw32-executables-${{ github.run_id }}
+
+      - name: Run bitcoind.exe
+        run: |
+          .\bitcoind.exe -version
+
+      - name: Run benchmarks
+        run: |
+          .\bench_bitcoin.exe -sanity-check -priority-level=high
+
+      - name: Run tests
+        run: |
+          .\test_bitcoin.exe
 
   asan-lsan-ubsan-integer-no-depends-usdt:
     name: 'ASan + LSan + UBSan + integer, no depends, USDT'
