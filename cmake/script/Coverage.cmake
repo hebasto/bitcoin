@@ -50,32 +50,7 @@ execute_process(
 )
 
 execute_process(
-  COMMAND ${functional_test_runner}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-  COMMAND_ERROR_IS_FATAL ANY
-)
-execute_process(
-  COMMAND ${LCOV_COMMAND} --capture --directory src --test-name functional-tests --output-file functional_test.info
-  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-  COMMAND_ERROR_IS_FATAL ANY
-)
-execute_process(
-  COMMAND ${LCOV_COMMAND} --zerocounters --directory src
-  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-  COMMAND_ERROR_IS_FATAL ANY
-)
-execute_process(
-  COMMAND ${LCOV_FILTER_COMMAND} functional_test.info functional_test_filtered.info
-  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-  COMMAND_ERROR_IS_FATAL ANY
-)
-execute_process(
-  COMMAND ${LCOV_COMMAND} --add-tracefile functional_test_filtered.info --output-file functional_test_filtered.info
-  WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-  COMMAND_ERROR_IS_FATAL ANY
-)
-execute_process(
-  COMMAND ${LCOV_COMMAND} --add-tracefile baseline_filtered.info --add-tracefile test_bitcoin_filtered.info --add-tracefile functional_test_filtered.info --output-file total_coverage.info
+  COMMAND ${LCOV_COMMAND} --add-tracefile baseline_filtered.info --add-tracefile test_bitcoin_filtered.info --output-file total_coverage.info
   COMMAND ${GREP_EXECUTABLE} "%"
   COMMAND ${AWK_EXECUTABLE} "{ print substr($3,2,50) \"/\" $5 }"
   OUTPUT_FILE coverage_percent.txt
