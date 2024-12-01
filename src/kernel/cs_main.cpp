@@ -5,4 +5,4 @@
 #include <kernel/cs_main.h>
 #include <sync.h>
 
-RecursiveMutex cs_main;
+BITCOINKERNEL_EXPORT_SYMBOL RecursiveMutex cs_main;
