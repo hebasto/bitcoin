@@ -121,7 +121,7 @@ jobs:
 
       - name: Run benchmarks
         run: |
-          .\bench_bitcoin.exe -sanity-check -priority-level=high
+          .\src\bench\bench_bitcoin.exe -sanity-check -priority-level=high
 
       - name: Run util tests
         run: |
