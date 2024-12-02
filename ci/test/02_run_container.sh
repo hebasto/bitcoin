@@ -71,11 +71,11 @@ if [ -z "$DANGER_RUN_CI_ON_HOST" ]; then
    fi # End temporary exclusion
   fi
 
-  if [ -n "$DANGER_CI_ON_HOST_OUT_FOLDER" ] ; then
-    mkdir -p "${BASE_OUTDIR}"
-    CI_OUT_MOUNT="--mount type=bind,src=${BASE_OUTDIR},dst=${BASE_OUTDIR}"
+  if [ -n "$DANGER_CI_ON_HOST_BUILD_FOLDER" ] ; then
+    mkdir -p "${BASE_BUILD_DIR}"
+    CI_BUILD_MOUNT="--mount type=bind,src=${BASE_BUILD_DIR},dst=${BASE_BUILD_DIR}"
   else
-    CI_OUT_MOUNT=
+    CI_BUILD_MOUNT=
   fi
 
   docker network create --ipv6 --subnet 1111:1111::/112 ci-ip6net || true
@@ -104,7 +104,7 @@ if [ -z "$DANGER_RUN_CI_ON_HOST" ]; then
                   --mount "${CI_DEPENDS_MOUNT}" \
                   --mount "${CI_DEPENDS_SOURCES_MOUNT}" \
                   --mount "${CI_PREVIOUS_RELEASES_MOUNT}" \
-                  ${CI_OUT_MOUNT} \
+                  ${CI_BUILD_MOUNT} \
                   --env-file /tmp/env-$USER-$CONTAINER_NAME \
                   --name "$CONTAINER_NAME" \
                   --network ci-ip6net \
