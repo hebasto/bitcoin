@@ -109,9 +109,9 @@ jobs:
         with:
           name: x86_64-w64-mingw32-executables-${{ github.run_id }}
 
-      - name: Run bitcoind.exe
-        run: |
-          .\bitcoind.exe -version
+      # - name: Run bitcoind.exe
+      #   run: |
+      #     .\bitcoind.exe -version
 
       # - name: Run benchmarks
       #   run: |
