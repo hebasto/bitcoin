@@ -93,6 +93,10 @@ jobs:
     runs-on: windows-2022
     needs: windows-cross
 
+    env:
+      PYTHONUTF8: 1
+      TEST_RUNNER_TIMEOUT_FACTOR: 40
+
     # env:
     #   BITCOIND: '${{ github.workspace }}\bitcoind.exe'
     #   BITCOINCLI: '${{ github.workspace }}\bitcoin-cli.exe'
@@ -111,25 +115,28 @@ jobs:
           # path: ${{ github.workspace }}/build
 
       - name: Run bitcoind.exe
-        run: |
-          .\src\bitcoind.exe -version
+        run: .\src\bitcoind.exe -version
 
       - name: Adjust paths in test\config.ini
         run: |
           (Get-Content "test\config.ini") -replace '(?<=^SRCDIR=).*', '${{ github.workspace }}' -replace '(?<=^BUILDDIR=).*', '${{ github.workspace }}' -replace '(?<=^RPCAUTH=).*', '${{ github.workspace }}\share\rpcauth\rpcauth.py' | Set-Content "test\config.ini"
           Get-Content "test\config.ini"
 
+      - name: Run unit tests
+        run: .\src\test\test_bitcoin.exe -l test_suite
+
       - name: Run benchmarks
-        run: |
-          .\src\bench\bench_bitcoin.exe -sanity-check -priority-level=high
+        run: .\src\bench\bench_bitcoin.exe -sanity-check -priority-level=high
 
       - name: Run util tests
-        run: |
-          py -3 test\util\test_runner.py
+        run: py -3 test\util\test_runner.py
 
-      # - name: Run unit tests
-      #   run: |
-      #     .\test_bitcoin.exe
+      - name: Run rpcauth test
+        run: py -3 test\util\rpcauth-test.py
 
-      - run: |
-          dir
+      - name: Run functional tests
+        env:
+          # TEST_RUNNER_EXTRA: ${{ github.event_name != 'pull_request' && '--extended' || '' }}
+          TEST_RUNNER_EXTRA: ''
+        shell: cmd
+        run: py -3 test\functional\test_runner.py --jobs %NUMBER_OF_PROCESSORS% --ci --quiet --tmpdirprefix=%RUNNER_TEMP% --combinedlogslen=99999999 --timeout-factor=%TEST_RUNNER_TIMEOUT_FACTOR% %TEST_RUNNER_EXTRA%
