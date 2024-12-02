@@ -83,7 +83,9 @@ jobs:
         with:
           name: x86_64-w64-mingw32-executables-${{ github.run_id }}
           path: |
-            build/**/*.exe
+            build/src/*.exe
+            build/src/bench/bench_bitcoin.exe
+            build/src/test/test_bitcoin.exe
             build/test/config.ini
 
   windows-native-test:
@@ -106,10 +108,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: x86_64-w64-mingw32-executables-${{ github.run_id }}
+          path: ${{ github.workspace }}/build
 
-      # - name: Run bitcoind.exe
-      #   run: |
-      #     .\bitcoind.exe -version
+      - name: Run bitcoind.exe
+        run: |
+          .\build\src\bitcoind.exe -version
 
       # - name: Run benchmarks
       #   run: |
