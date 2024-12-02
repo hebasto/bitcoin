@@ -114,6 +114,15 @@ jobs:
         run: |
           .\build\src\bitcoind.exe -version
 
+      - run: |
+          Get-Content "build\test\config.ini"
+
+      - run: |
+          (Get-Content "build\test\config.ini") -replace '(?<=^SRCDIR=).*', '${{ github.workspace }}' | Set-Content "build\test\config.ini"
+
+      - run: |
+          Get-Content "build\test\config.ini"
+
       # - name: Run benchmarks
       #   run: |
       #     .\bench_bitcoin.exe -sanity-check -priority-level=high
