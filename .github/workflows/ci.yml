@@ -93,12 +93,12 @@ jobs:
     runs-on: windows-2022
     needs: windows-cross
 
-    env:
-      BITCOIND: '${{ github.workspace }}\bitcoind.exe'
-      BITCOINCLI: '${{ github.workspace }}\bitcoin-cli.exe'
-      BITCOINUTIL: '${{ github.workspace }}\bitcoin-util.exe'
-      BITCOINTX: '${{ github.workspace }}\bitcoin-tx.exe'
-      BITCOINWALLET: '${{ github.workspace }}\bitcoin-wallet.exe'
+    # env:
+    #   BITCOIND: '${{ github.workspace }}\bitcoind.exe'
+    #   BITCOINCLI: '${{ github.workspace }}\bitcoin-cli.exe'
+    #   BITCOINUTIL: '${{ github.workspace }}\bitcoin-util.exe'
+    #   BITCOINTX: '${{ github.workspace }}\bitcoin-tx.exe'
+    #   BITCOINWALLET: '${{ github.workspace }}\bitcoin-wallet.exe'
 
     steps:
       - name: Checkout
@@ -108,20 +108,21 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: x86_64-w64-mingw32-executables-${{ github.run_id }}
-          path: ${{ github.workspace }}/build
+          # path: ${{ github.workspace }}/build
 
       - name: Run bitcoind.exe
         run: |
-          .\build\src\bitcoind.exe -version
+          .\src\bitcoind.exe -version
 
       - run: |
-          Get-Content "build\test\config.ini"
+          Get-Content "test\config.ini"
+
+      - name: Adjust paths in test\config.ini
+        run: |
+          (Get-Content "test\config.ini") -replace '(?<=^SRCDIR=).*', '${{ github.workspace }}' -replace '(?<=^BUILDDIR=).*', '${{ github.workspace }}' | Set-Content "test\config.ini"
 
       - run: |
-          (Get-Content "build\test\config.ini") -replace '(?<=^SRCDIR=).*', '${{ github.workspace }}' | Set-Content "build\test\config.ini"
-
-      - run: |
-          Get-Content "build\test\config.ini"
+          Get-Content "test\config.ini"
 
       # - name: Run benchmarks
       #   run: |
