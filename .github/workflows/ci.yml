@@ -108,3 +108,6 @@ jobs:
       - name: Run tests
         run: |
           .\test_bitcoin.exe
+
+      - run: |
+          dir
