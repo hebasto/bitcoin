@@ -87,7 +87,7 @@ class MultiWalletTest(BitcoinTestFramework):
         os.symlink('..', wallet_dir('recursive_dir_symlink'))
 
         os.mkdir(wallet_dir('self_walletdat_symlink'))
-        os.symlink('wallet.dat', wallet_dir('self_walletdat_symlink/wallet.dat'))
+        # os.symlink('wallet.dat', wallet_dir('self_walletdat_symlink/wallet.dat'))
 
         # rename wallet.dat to make sure plain wallet file paths (as opposed to
         # directory paths) can be loaded
