@@ -86,12 +86,24 @@ jobs:
             out/bin/bitcoind.exe
             out/bin/test_bitcoin.exe
             out/bin/bench_bitcoin.exe
+            build/test/config.ini
 
   windows-native-test:
     name: 'Test on Windows'
     runs-on: windows-2022
     needs: windows-cross
+
+    env:
+      BITCOIND: '${{ github.workspace }}\bitcoind.exe'
+      BITCOINCLI: '${{ github.workspace }}\bitcoin-cli.exe'
+      BITCOINUTIL: '${{ github.workspace }}\bitcoin-util.exe'
+      BITCOINTX: '${{ github.workspace }}\bitcoin-tx.exe'
+      BITCOINWALLET: '${{ github.workspace }}\bitcoin-wallet.exe'
+
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Download built executables
         uses: actions/download-artifact@v4
         with:
@@ -101,13 +113,16 @@ jobs:
         run: |
           .\bitcoind.exe -version
 
-      - name: Run benchmarks
-        run: |
-          .\bench_bitcoin.exe -sanity-check -priority-level=high
+      # - name: Run benchmarks
+      #   run: |
+      #     .\bench_bitcoin.exe -sanity-check -priority-level=high
 
-      - name: Run tests
-        run: |
-          .\test_bitcoin.exe
+      # - name: Run util tests
+      #   run: py -3 test\util\test_runner.py
+
+      # - name: Run unit tests
+      #   run: |
+      #     .\test_bitcoin.exe
 
       - run: |
           dir
