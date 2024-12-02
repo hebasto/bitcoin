@@ -78,6 +78,11 @@ jobs:
           path: ${{ env.CCACHE_DIR }}
           key: ${{ github.job }}-ccache-${{ github.run_id }}
 
+      - run: |
+          pwd
+          ls -l
+          ls -l ${BASE_ROOT_DIR}
+
       - name: Upload built executables
         uses: actions/upload-artifact@v4
         with:
