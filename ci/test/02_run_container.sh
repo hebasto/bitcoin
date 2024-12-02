@@ -72,8 +72,8 @@ if [ -z "$DANGER_RUN_CI_ON_HOST" ]; then
   fi
 
   if [ -n "$DANGER_CI_ON_HOST_BUILD_FOLDER" ] ; then
-    mkdir -p "${BASE_ROOT_DIR}"
-    CI_BUILD_MOUNT="--mount type=bind,src=${BASE_ROOT_DIR},dst=${BASE_ROOT_DIR}"
+    mkdir -p "${BASE_BUILD_DIR}"
+    CI_BUILD_MOUNT="--mount type=bind,src=${BASE_BUILD_DIR},dst=${BASE_BUILD_DIR}"
   else
     CI_BUILD_MOUNT=
   fi

@@ -38,8 +38,8 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo "BASE_ROOT_DIR=${{ github.workspace }}" >> "$GITHUB_ENV"
-          echo "DEPENDS_DIR=${{ github.workspace }}/depends" >> "$GITHUB_ENV"
+          echo "BASE_ROOT_DIR=${{ runner.temp }}" >> "$GITHUB_ENV"
+          echo "DEPENDS_DIR=${{ runner.temp }}/depends" >> "$GITHUB_ENV"
           echo "CCACHE_DIR=${{ runner.temp }}/ccache_dir" >> "$GITHUB_ENV"
           echo "BASE_BUILD_DIR=${{ github.workspace }}/build" >> "$GITHUB_ENV"
           # Required for the next step.
