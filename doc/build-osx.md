@@ -92,7 +92,7 @@ Bitcoin Core includes a GUI built with the cross-platform Qt Framework. To compi
 Qt, libqrencode and pass `-DBUILD_GUI=ON`. Skip if you don't intend to use the GUI.
 
 ``` bash
-brew install qt@5
+brew install qt
 ```
 
 Note: Building may fail if Qt 6 is installed (`qt` or `qt@6`)
