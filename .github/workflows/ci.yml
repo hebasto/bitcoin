@@ -78,17 +78,12 @@ jobs:
           path: ${{ env.CCACHE_DIR }}
           key: ${{ github.job }}-ccache-${{ github.run_id }}
 
-      - run: |
-          ls -l build
-
       - name: Upload built executables
         uses: actions/upload-artifact@v4
         with:
           name: x86_64-w64-mingw32-executables-${{ github.run_id }}
           path: |
-            out/bin/bitcoind.exe
-            out/bin/test_bitcoin.exe
-            out/bin/bench_bitcoin.exe
+            build/**/*.exe
             build/test/config.ini
 
   windows-native-test:
