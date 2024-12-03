@@ -26,7 +26,9 @@ std::vector<std::pair<fs::path, std::string>> ListDatabases(const fs::path& wall
     std::error_code ec;
 
     for (auto it = fs::recursive_directory_iterator(wallet_dir, ec); it != fs::recursive_directory_iterator(); it.increment(ec)) {
+        LogPrintf("%s:%i: %s @ %i\n", __func__, __LINE__, fs::PathToString(it->path()), it.depth());
         if (ec) {
+            LogPrintf("%s:%i: %s @ %i\n", __func__, __LINE__, fs::PathToString(it->path()), it.depth());
             if (fs::is_directory(*it)) {
                 it.disable_recursion_pending();
                 LogPrintf("%s: %s %s -- skipping.\n", __func__, ec.message(), fs::PathToString(it->path()));
@@ -37,9 +39,11 @@ std::vector<std::pair<fs::path, std::string>> ListDatabases(const fs::path& wall
         }
 
         try {
+            LogPrintf("%s:%i: %s @ %i\n", __func__, __LINE__, fs::PathToString(it->path()), it.depth());
             const fs::path path{it->path().lexically_relative(wallet_dir)};
 
             if (it->status().type() == fs::file_type::directory) {
+                LogPrintf("%s:%i: %s @ %i\n", __func__, __LINE__, fs::PathToString(it->path()), it.depth());
                 if (IsBDBFile(BDBDataFile(it->path()))) {
                     // Found a directory which contains wallet.dat btree file, add it as a wallet with BERKELEY format.
                     paths.emplace_back(path, "bdb");
@@ -48,6 +52,7 @@ std::vector<std::pair<fs::path, std::string>> ListDatabases(const fs::path& wall
                     paths.emplace_back(path, "sqlite");
                 }
             } else if (it.depth() == 0 && it->symlink_status().type() == fs::file_type::regular && it->path().extension() != ".bak") {
+                LogPrintf("%s:%i: %s @ %i\n", __func__, __LINE__, fs::PathToString(it->path()), it.depth());
                 if (it->path().filename() == "wallet.dat") {
                     // Found top-level wallet.dat file, add top level directory ""
                     // as a wallet.
@@ -65,7 +70,7 @@ std::vector<std::pair<fs::path, std::string>> ListDatabases(const fs::path& wall
                 }
             }
         } catch (const std::exception& e) {
-            LogPrintf("%s: Error scanning %s: %s\n", __func__, fs::PathToString(it->path()), e.what());
+            LogPrintf("%s: Error scanning %s @ %i: %s\n", __func__, fs::PathToString(it->path()), it.depth(), e.what());
             it.disable_recursion_pending();
         }
     }
