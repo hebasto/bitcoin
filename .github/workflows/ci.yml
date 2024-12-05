@@ -342,11 +342,15 @@ jobs:
         run: .\src\bitcoind.exe -version
 
       - name: Run unit tests
+        env:
+          UNIVALUE_JSON_TEST_SRC: '${{ github.workspace }}\src\univalue\test'
         run: |
           .\src\test\test_bitcoin.exe -l test_suite
           .\src\secp256k1\bin\exhaustive_tests.exe
           .\src\secp256k1\bin\noverify_tests.exe
           .\src\secp256k1\bin\tests.exe
+          .\src\univalue\object.exe
+          .\src\univalue\unitester.exe
 
       - name: Run benchmarks
         run: .\src\bench\bench_bitcoin.exe -sanity-check -priority-level=high
