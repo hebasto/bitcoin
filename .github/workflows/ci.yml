@@ -317,9 +317,7 @@ jobs:
         with:
           name: x86_64-w64-mingw32-executables-${{ github.run_id }}
           path: |
-            build/src/*.exe
-            build/src/bench/bench_bitcoin.exe
-            build/src/test/test_bitcoin.exe
+            build/src/**/*.exe
             build/test/config.ini
 
   windows-native-test:
@@ -344,7 +342,11 @@ jobs:
         run: .\src\bitcoind.exe -version
 
       - name: Run unit tests
-        run: .\src\test\test_bitcoin.exe -l test_suite
+        run: |
+          .\src\test\test_bitcoin.exe -l test_suite
+          .\src\secp256k1\bin\exhaustive_tests.exe
+          .\src\secp256k1\bin\noverify_tests.exe
+          .\src\secp256k1\bin\tests.exe
 
       - name: Run benchmarks
         run: .\src\bench\bench_bitcoin.exe -sanity-check -priority-level=high
