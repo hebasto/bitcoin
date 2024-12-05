@@ -303,9 +303,6 @@ jobs:
           restore-keys: ${{ github.job }}-ccache-
 
       - name: CI script
-        env:
-          # Using the "Release" build type to avoid oversized executables to pass to the following job.
-          CMAKE_BUILD_TYPE: 'Release'
         run: ./ci/test_run_all.sh
 
       - name: Save Ccache cache
