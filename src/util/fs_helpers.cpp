@@ -162,11 +162,16 @@ bool TruncateFile(FILE* file, unsigned int length)
  */
 int RaiseFileDescriptorLimit(int nMinFD)
 {
+    std::cerr << __FILE__ << ":" << __LINE__ << " nMinFD=" << nMinFD << "\n";
 #if defined(WIN32)
     return 2048;
 #else
     struct rlimit limitFD;
-    if (getrlimit(RLIMIT_NOFILE, &limitFD) != -1) {
+    int ret_code = getrlimit(RLIMIT_NOFILE, &limitFD);
+    std::cerr << __FILE__ << ":" << __LINE__ << " ret_code=" << ret_code << "\n";
+    if (ret_code != -1) {
+        std::cerr << __FILE__ << ":" << __LINE__ << " rlimit.rlim_cur=" << limitFD.rlim_cur << "\n";
+        std::cerr << __FILE__ << ":" << __LINE__ << " rlimit.rlim_max=" << limitFD.rlim_max << "\n";
         if (limitFD.rlim_cur < (rlim_t)nMinFD) {
             limitFD.rlim_cur = nMinFD;
             if (limitFD.rlim_cur > limitFD.rlim_max)
