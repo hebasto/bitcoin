@@ -980,9 +980,11 @@ bool AppInitParameterInteraction(const ArgsManager& args)
 
     // Try raising the FD limit to what we need (available_fds may be smaller than the requested amount if this fails)
     available_fds = RaiseFileDescriptorLimit(user_max_connection + min_required_fds);
+    std::cerr << __FILE__ << ":" << __LINE__ << " available_fds=" << available_fds << "\n";
     // If we are using select instead of poll, our actual limit may be even smaller
 #ifndef USE_POLL
     available_fds = std::min(FD_SETSIZE, available_fds);
+    std::cerr << __FILE__ << ":" << __LINE__ << " available_fds=" << available_fds << "\n";
 #endif
     if (available_fds < min_required_fds)
         return InitError(strprintf(_("Not enough file descriptors available. %d available, %d required."), available_fds, min_required_fds));
