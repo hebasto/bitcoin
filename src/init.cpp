@@ -990,8 +990,9 @@ bool AppInitParameterInteraction(const ArgsManager& args)
     // Trim requested connection counts, to fit into system limitations
     nMaxConnections = std::min(available_fds - min_required_fds, user_max_connection);
 
-    if (nMaxConnections < user_max_connection)
+    if (nMaxConnections < user_max_connection && chainparams.GetChainType() != ChainType::REGTEST) {
         InitWarning(strprintf(_("Reducing -maxconnections from %d to %d, because of system limitations."), user_max_connection, nMaxConnections));
+    }
 
     // ********************************************************* Step 3: parameter-to-internal-flags
     if (auto result{init::SetLoggingCategories(args)}; !result) return InitError(util::ErrorString(result));
