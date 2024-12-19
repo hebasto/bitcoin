@@ -117,6 +117,9 @@ class TestNode():
             "-debugexclude=leveldb",
             "-debugexclude=rand",
             "-uacomment=testnode%d" % i,  # required for subversion uniqueness across peers
+            # Limit max connections to mitigate failures on some systems caused by the warning:
+            # "Warning: Reducing -maxconnections from 125 to <N> due to system limitations".
+            f"-maxconnections={MAX_NODES}",
         ]
         if self.descriptors is None:
             self.args.append("-disablewallet")
