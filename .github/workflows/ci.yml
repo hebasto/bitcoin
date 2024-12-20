@@ -308,8 +308,8 @@ jobs:
         with:
           name: x86_64-w64-mingw32-executables-${{ github.run_id }}
           path: |
-            build/src/**/*.exe
-            build/test/config.ini
+            ${{ env.BASE_BUILD_DIR }}/src/**/*.exe
+            ${{ env.BASE_BUILD_DIR }}/test/config.ini
 
   windows-native-test:
     name: 'Test on Windows'
