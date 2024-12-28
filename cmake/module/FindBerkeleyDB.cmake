@@ -63,11 +63,6 @@ if(NOT BerkeleyDB_LIBRARY)
 
   get_filename_component(_BerkeleyDB_lib_hint "${BerkeleyDB_INCLUDE_DIR}" DIRECTORY)
 
-
-  message("======================== _BerkeleyDB_lib_hint is ${_BerkeleyDB_lib_hint}")
-
-  set(CMAKE_FIND_DEBUG_MODE TRUE)
-
   find_library(BerkeleyDB_LIBRARY_RELEASE
     NAMES db_cxx-4.8 db48 libdb48 db4_cxx db_cxx-5.3 db-5.3 db_cxx-5 db-5 db_cxx db
     NAMES_PER_DIR
@@ -83,9 +78,6 @@ if(NOT BerkeleyDB_LIBRARY)
     PATH_SUFFIXES debug/lib
   )
   mark_as_advanced(BerkeleyDB_LIBRARY_DEBUG)
-
-  set(CMAKE_FIND_DEBUG_MODE FALSE)
-
 
   unset(_BerkeleyDB_lib_hint)
   unset(CMAKE_FIND_USE_CMAKE_PATH)
