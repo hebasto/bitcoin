@@ -71,6 +71,11 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
 
+
+message("CMAKE_CXX_LIBRARY_ARCHITECTURE is ${CMAKE_CXX_LIBRARY_ARCHITECTURE}")
+message("CMAKE_LIBRARY_ARCHITECTURE is ${CMAKE_LIBRARY_ARCHITECTURE}")
+
+
 #=============================
 # Configurable options
 #=============================
@@ -657,3 +662,6 @@ endif()
 
 # We want all build properties to be encapsulated properly.
 include(WarnAboutGlobalProperties)
+
+message("CMAKE_CXX_LIBRARY_ARCHITECTURE is ${CMAKE_CXX_LIBRARY_ARCHITECTURE}")
+message("CMAKE_LIBRARY_ARCHITECTURE is ${CMAKE_LIBRARY_ARCHITECTURE}")
