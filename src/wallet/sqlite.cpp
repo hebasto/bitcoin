@@ -145,8 +145,10 @@ SQLiteDatabase::SQLiteDatabase(const fs::path& dir_path, const fs::path& file_pa
         Open();
         std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     } catch (const std::runtime_error&) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         // If open fails, cleanup this object and rethrow the exception
         Cleanup();
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         throw;
     }
 }
@@ -267,7 +269,7 @@ void SQLiteDatabase::Open()
         }
         int ret = sqlite3_open_v2(m_file_path.c_str(), &m_db, flags, nullptr);
         if (ret != SQLITE_OK) {
-            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - ret=" << ret << ", " << sqlite3_errstr(ret) << "\n";
             throw std::runtime_error(strprintf("SQLiteDatabase: Failed to open database: %s\n", sqlite3_errstr(ret)));
         }
         std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
