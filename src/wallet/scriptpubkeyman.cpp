@@ -2323,11 +2323,16 @@ std::vector<WalletDestination> DescriptorScriptPubKeyMan::MarkUnusedAddresses(co
 
 void DescriptorScriptPubKeyMan::AddDescriptorKey(const CKey& key, const CPubKey &pubkey)
 {
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     LOCK(cs_desc_man);
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     WalletBatch batch(m_storage.GetDatabase());
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     if (!AddDescriptorKeyWithDB(batch, key, pubkey)) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         throw std::runtime_error(std::string(__func__) + ": writing descriptor private key failed");
     }
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
 }
 
 bool DescriptorScriptPubKeyMan::AddDescriptorKeyWithDB(WalletBatch& batch, const CKey& key, const CPubKey &pubkey)

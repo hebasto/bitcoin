@@ -3949,6 +3949,7 @@ ScriptPubKeyMan* CWallet::AddWalletDescriptor(WalletDescriptor& desc, const Flat
         std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         const CKey& key = entry.second;
         spk_man->AddDescriptorKey(key, key.GetPubKey());
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     }
 
     // Top up key pool, the manager will generate new scriptPubKeys internally
