@@ -44,6 +44,8 @@ ReachableNets g_reachable_nets;
 
 std::vector<CNetAddr> WrappedGetAddrInfo(const std::string& name, bool allow_lookup)
 {
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+
     addrinfo ai_hint{};
     // We want a TCP port, which is a streaming socket type
     ai_hint.ai_socktype = SOCK_STREAM;
@@ -68,9 +70,11 @@ std::vector<CNetAddr> WrappedGetAddrInfo(const std::string& name, bool allow_loo
             ai_hint.ai_flags = (ai_hint.ai_flags & ~AI_ADDRCONFIG);
             const int n_err_retry{getaddrinfo(name.c_str(), nullptr, &ai_hint, &ai_res)};
             if (n_err_retry != 0) {
+                std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
                 return {};
             }
         } else {
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
             return {};
         }
     }
@@ -82,16 +86,19 @@ std::vector<CNetAddr> WrappedGetAddrInfo(const std::string& name, bool allow_loo
         if (ai_trav->ai_family == AF_INET) {
             assert(ai_trav->ai_addrlen >= sizeof(sockaddr_in));
             resolved_addresses.emplace_back(reinterpret_cast<sockaddr_in*>(ai_trav->ai_addr)->sin_addr);
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - resolved=" << resolved_addresses.back().ToStringAddr() << "\n";
         }
         if (ai_trav->ai_family == AF_INET6) {
             assert(ai_trav->ai_addrlen >= sizeof(sockaddr_in6));
             const sockaddr_in6* s6{reinterpret_cast<sockaddr_in6*>(ai_trav->ai_addr)};
             resolved_addresses.emplace_back(s6->sin6_addr, s6->sin6_scope_id);
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - resolved=" << resolved_addresses.back().ToStringAddr() << "\n";
         }
         ai_trav = ai_trav->ai_next;
     }
     freeaddrinfo(ai_res);
 
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     return resolved_addresses;
 }
 
