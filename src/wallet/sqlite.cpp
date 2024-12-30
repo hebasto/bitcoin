@@ -119,7 +119,8 @@ SQLiteDatabase::SQLiteDatabase(const fs::path& dir_path, const fs::path& file_pa
         LogPrintf("Using SQLite Version %s\n", SQLiteDatabaseVersion());
         LogPrintf("Using wallet %s\n", m_dir_path);
 
-        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - dir_path=" << dir_path << "\n";
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - m_dir_path=" << m_dir_path << "\n";
 
         if (++g_sqlite_count == 1) {
             // Setup logging
