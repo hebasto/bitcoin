@@ -267,8 +267,11 @@ void SQLiteDatabase::Open()
             std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
             TryCreateDirectories(fs::PathFromString(m_dir_path));
         }
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - m_file_path=" << m_file_path << "\n";
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - flags=" << flags << "\n";
         int ret = sqlite3_open_v2(m_file_path.c_str(), &m_db, flags, nullptr);
         if (ret != SQLITE_OK) {
+            // It prints: "ret=14, unable to open database file".
             std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - ret=" << ret << ", " << sqlite3_errstr(ret) << "\n";
             throw std::runtime_error(strprintf("SQLiteDatabase: Failed to open database: %s\n", sqlite3_errstr(ret)));
         }
