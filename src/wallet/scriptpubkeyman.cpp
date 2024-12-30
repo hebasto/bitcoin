@@ -2221,16 +2221,26 @@ std::optional<CKey> DescriptorScriptPubKeyMan::GetKey(const CKeyID& keyid) const
 
 bool DescriptorScriptPubKeyMan::TopUp(unsigned int size)
 {
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     WalletBatch batch(m_storage.GetDatabase());
-    if (!batch.TxnBegin()) return false;
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+    if (!batch.TxnBegin()) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+        return false;
+    }
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     bool res = TopUpWithDB(batch, size);
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     if (!batch.TxnCommit()) throw std::runtime_error(strprintf("Error during descriptors keypool top up. Cannot commit changes for wallet %s", m_storage.GetDisplayName()));
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     return res;
 }
 
 bool DescriptorScriptPubKeyMan::TopUpWithDB(WalletBatch& batch, unsigned int size)
 {
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     LOCK(cs_desc_man);
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     std::set<CScript> new_spks;
     unsigned int target_size;
     if (size > 0) {
@@ -2289,7 +2299,9 @@ bool DescriptorScriptPubKeyMan::TopUpWithDB(WalletBatch& batch, unsigned int siz
     assert(m_wallet_descriptor.range_end - 1 == m_max_cached_index);
 
     m_storage.TopUpCallback(new_spks, this);
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     NotifyCanGetAddressesChanged();
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     return true;
 }
 
