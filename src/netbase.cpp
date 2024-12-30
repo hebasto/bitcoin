@@ -44,7 +44,7 @@ ReachableNets g_reachable_nets;
 
 std::vector<CNetAddr> WrappedGetAddrInfo(const std::string& name, bool allow_lookup)
 {
-    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - allow_lookup=" << (allow_lookup ? "true" : "false") << "\n";
 
     addrinfo ai_hint{};
     // We want a TCP port, which is a streaming socket type
@@ -60,6 +60,9 @@ std::vector<CNetAddr> WrappedGetAddrInfo(const std::string& name, bool allow_loo
     // getaddrinfo to only decode numerical network addresses and suppress
     // hostname lookups.
     ai_hint.ai_flags = allow_lookup ? AI_ADDRCONFIG : AI_NUMERICHOST;
+
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - AI_ADDRCONFIG=" << AI_ADDRCONFIG << "\n";
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - AI_NUMERICHOST=" << AI_NUMERICHOST << "\n";
 
     addrinfo* ai_res{nullptr};
     std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - name=" << name << "\n";
