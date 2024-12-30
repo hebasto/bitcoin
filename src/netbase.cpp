@@ -147,7 +147,11 @@ std::vector<std::string> GetNetworkNames(bool append_unroutable)
 
 static std::vector<CNetAddr> LookupIntern(const std::string& name, unsigned int nMaxSolutions, bool fAllowLookup, DNSLookupFn dns_lookup_function)
 {
-    if (!ContainsNoNUL(name)) return {};
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+    if (!ContainsNoNUL(name)) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+        return {};
+    }
     {
         CNetAddr addr;
         // From our perspective, onion addresses are not hostnames but rather
@@ -156,40 +160,65 @@ static std::vector<CNetAddr> LookupIntern(const std::string& name, unsigned int 
         // getaddrinfo to decode them and it wouldn't make sense to resolve
         // them, we return a network address representing it instead. See
         // CNetAddr::SetSpecial(const std::string&) for more details.
-        if (addr.SetSpecial(name)) return {addr};
+        if (addr.SetSpecial(name)) {
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+            return {addr};
+        }
     }
 
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     std::vector<CNetAddr> addresses;
 
     for (const CNetAddr& resolved : dns_lookup_function(name, fAllowLookup)) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         if (nMaxSolutions > 0 && addresses.size() >= nMaxSolutions) {
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
             break;
         }
         /* Never allow resolving to an internal address. Consider any such result invalid */
         if (!resolved.IsInternal()) {
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - resolved=" << resolved.ToStringAddr() << "\n";
             addresses.push_back(resolved);
         }
     }
 
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     return addresses;
 }
 
 std::vector<CNetAddr> LookupHost(const std::string& name, unsigned int nMaxSolutions, bool fAllowLookup, DNSLookupFn dns_lookup_function)
 {
-    if (!ContainsNoNUL(name)) return {};
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+
+    if (!ContainsNoNUL(name)) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+        return {};
+    }
     std::string strHost = name;
-    if (strHost.empty()) return {};
+    if (strHost.empty()) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+        return {};
+    }
     if (strHost.front() == '[' && strHost.back() == ']') {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         strHost = strHost.substr(1, strHost.size() - 2);
     }
 
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     return LookupIntern(strHost, nMaxSolutions, fAllowLookup, dns_lookup_function);
 }
 
 std::optional<CNetAddr> LookupHost(const std::string& name, bool fAllowLookup, DNSLookupFn dns_lookup_function)
 {
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     const std::vector<CNetAddr> addresses{LookupHost(name, 1, fAllowLookup, dns_lookup_function)};
-    return addresses.empty() ? std::nullopt : std::make_optional(addresses.front());
+    if (addresses.empty()) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+        return std::nullopt;
+    } else {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+        return std::make_optional(addresses.front());
+    }
 }
 
 std::vector<CService> Lookup(const std::string& name, uint16_t portDefault, bool fAllowLookup, unsigned int nMaxSolutions, DNSLookupFn dns_lookup_function)
