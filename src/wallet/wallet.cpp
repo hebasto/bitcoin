@@ -3918,18 +3918,23 @@ std::optional<bool> CWallet::IsInternalScriptPubKeyMan(ScriptPubKeyMan* spk_man)
 
 ScriptPubKeyMan* CWallet::AddWalletDescriptor(WalletDescriptor& desc, const FlatSigningProvider& signing_provider, const std::string& label, bool internal)
 {
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     AssertLockHeld(cs_wallet);
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
 
     if (!IsWalletFlagSet(WALLET_FLAG_DESCRIPTORS)) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         WalletLogPrintf("Cannot add WalletDescriptor to a non-descriptor wallet\n");
         return nullptr;
     }
 
     auto spk_man = GetDescriptorScriptPubKeyMan(desc);
     if (spk_man) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         WalletLogPrintf("Update existing descriptor: %s\n", desc.descriptor->ToString());
         spk_man->UpdateWalletDescriptor(desc);
     } else {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         auto new_spk_man = std::unique_ptr<DescriptorScriptPubKeyMan>(new DescriptorScriptPubKeyMan(*this, desc, m_keypool_size));
         spk_man = new_spk_man.get();
 
@@ -3937,15 +3942,18 @@ ScriptPubKeyMan* CWallet::AddWalletDescriptor(WalletDescriptor& desc, const Flat
         uint256 id = new_spk_man->GetID();
         AddScriptPubKeyMan(id, std::move(new_spk_man));
     }
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
 
     // Add the private keys to the descriptor
     for (const auto& entry : signing_provider.keys) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         const CKey& key = entry.second;
         spk_man->AddDescriptorKey(key, key.GetPubKey());
     }
 
     // Top up key pool, the manager will generate new scriptPubKeys internally
     if (!spk_man->TopUp()) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         WalletLogPrintf("Could not top up scriptPubKeys\n");
         return nullptr;
     }
@@ -3953,13 +3961,16 @@ ScriptPubKeyMan* CWallet::AddWalletDescriptor(WalletDescriptor& desc, const Flat
     // Apply the label if necessary
     // Note: we disable labels for ranged descriptors
     if (!desc.descriptor->IsRange()) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         auto script_pub_keys = spk_man->GetScriptPubKeys();
         if (script_pub_keys.empty()) {
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
             WalletLogPrintf("Could not generate scriptPubKeys (cache is empty)\n");
             return nullptr;
         }
 
         if (!internal) {
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
             for (const auto& script : script_pub_keys) {
                 CTxDestination dest;
                 if (ExtractDestination(script, dest)) {
@@ -3969,9 +3980,11 @@ ScriptPubKeyMan* CWallet::AddWalletDescriptor(WalletDescriptor& desc, const Flat
         }
     }
 
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     // Save the descriptor to DB
     spk_man->WriteDescriptor();
 
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     return spk_man;
 }
 
