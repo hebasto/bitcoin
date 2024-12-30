@@ -62,8 +62,11 @@ std::vector<CNetAddr> WrappedGetAddrInfo(const std::string& name, bool allow_loo
     ai_hint.ai_flags = allow_lookup ? AI_ADDRCONFIG : AI_NUMERICHOST;
 
     addrinfo* ai_res{nullptr};
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - name=" << name << "\n";
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - ai_hint.ai_flags=" << ai_hint.ai_flags << "\n";
     const int n_err{getaddrinfo(name.c_str(), nullptr, &ai_hint, &ai_res)};
     if (n_err != 0) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - n_err=" << n_err << "\n";
         if ((ai_hint.ai_flags & AI_ADDRCONFIG) == AI_ADDRCONFIG) {
             // AI_ADDRCONFIG on some systems may exclude loopback-only addresses
             // If first lookup failed we perform a second lookup without AI_ADDRCONFIG
