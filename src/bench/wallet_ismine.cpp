@@ -43,11 +43,16 @@ static void WalletIsMine(benchmark::Bench& bench, bool legacy_wallet, int num_co
     auto database = CreateMockableWalletDatabase();
     auto wallet = TestLoadWallet(std::move(database), context, create_flags);
 
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+
     // For a descriptor wallet, fill with num_combo combo descriptors with random keys
     // This benchmarks a non-HD wallet migrated to descriptors
     if (!legacy_wallet && num_combo > 0) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         LOCK(wallet->cs_wallet);
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         for (int i = 0; i < num_combo; ++i) {
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
             CKey key;
             key.MakeNewKey(/*fCompressed=*/true);
             FlatSigningProvider keys;
@@ -62,7 +67,9 @@ static void WalletIsMine(benchmark::Bench& bench, bool legacy_wallet, int num_co
     const CScript script = GetScriptForDestination(DecodeDestination(ADDRESS_BCRT1_UNSPENDABLE));
 
     bench.run([&] {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         LOCK(wallet->cs_wallet);
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         isminetype mine = wallet->IsMine(script);
         assert(mine == ISMINE_NO);
     });
