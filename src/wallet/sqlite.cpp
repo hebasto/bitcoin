@@ -111,6 +111,25 @@ static void SetPragma(sqlite3* db, const std::string& key, const std::string& va
 Mutex SQLiteDatabase::g_sqlite_mutex;
 int SQLiteDatabase::g_sqlite_count = 0;
 
+static void demo_perms(std::filesystem::perms p)
+{
+    using std::filesystem::perms;
+    auto show = [=](char op, perms perm)
+    {
+        std::cerr << (perms::none == (perm & p) ? '-' : op);
+    };
+    show('r', perms::owner_read);
+    show('w', perms::owner_write);
+    show('x', perms::owner_exec);
+    show('r', perms::group_read);
+    show('w', perms::group_write);
+    show('x', perms::group_exec);
+    show('r', perms::others_read);
+    show('w', perms::others_write);
+    show('x', perms::others_exec);
+    std::cerr << '\n';
+}
+
 SQLiteDatabase::SQLiteDatabase(const fs::path& dir_path, const fs::path& file_path, const DatabaseOptions& options, bool mock)
     : WalletDatabase(), m_mock(mock), m_dir_path(fs::PathToString(dir_path)), m_file_path(fs::PathToString(file_path)), m_write_semaphore(1), m_use_unsafe_sync(options.use_unsafe_sync)
 {
@@ -119,7 +138,9 @@ SQLiteDatabase::SQLiteDatabase(const fs::path& dir_path, const fs::path& file_pa
         LogPrintf("Using SQLite Version %s\n", SQLiteDatabaseVersion());
         LogPrintf("Using wallet %s\n", m_dir_path);
 
-        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - dir_path=" << dir_path << "\n";
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - dir_path=" << dir_path << " @ ";
+        demo_perms(std::filesystem::status(dir_path).permissions());
+        std::cerr << "\n";
         std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - m_dir_path=" << m_dir_path << "\n";
 
         if (++g_sqlite_count == 1) {
