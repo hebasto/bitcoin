@@ -119,6 +119,8 @@ SQLiteDatabase::SQLiteDatabase(const fs::path& dir_path, const fs::path& file_pa
         LogPrintf("Using SQLite Version %s\n", SQLiteDatabaseVersion());
         LogPrintf("Using wallet %s\n", m_dir_path);
 
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+
         if (++g_sqlite_count == 1) {
             // Setup logging
             int ret = sqlite3_config(SQLITE_CONFIG_LOG, ErrorLogCallback, nullptr);
@@ -135,10 +137,13 @@ SQLiteDatabase::SQLiteDatabase(const fs::path& dir_path, const fs::path& file_pa
         if (ret != SQLITE_OK) {
             throw std::runtime_error(strprintf("SQLiteDatabase: Failed to initialize SQLite: %s\n", sqlite3_errstr(ret)));
         }
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     }
 
     try {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         Open();
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     } catch (const std::runtime_error&) {
         // If open fails, cleanup this object and rethrow the exception
         Cleanup();
@@ -246,33 +251,47 @@ bool SQLiteDatabase::Verify(bilingual_str& error)
 
 void SQLiteDatabase::Open()
 {
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     int flags = SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
     if (m_mock) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         flags |= SQLITE_OPEN_MEMORY; // In memory database for mock db
     }
 
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     if (m_db == nullptr) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         if (!m_mock) {
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
             TryCreateDirectories(fs::PathFromString(m_dir_path));
         }
         int ret = sqlite3_open_v2(m_file_path.c_str(), &m_db, flags, nullptr);
         if (ret != SQLITE_OK) {
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
             throw std::runtime_error(strprintf("SQLiteDatabase: Failed to open database: %s\n", sqlite3_errstr(ret)));
         }
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         ret = sqlite3_extended_result_codes(m_db, 1);
         if (ret != SQLITE_OK) {
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
             throw std::runtime_error(strprintf("SQLiteDatabase: Failed to enable extended result codes: %s\n", sqlite3_errstr(ret)));
         }
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         // Trace SQL statements if tracing is enabled with -debug=walletdb -loglevel=walletdb:trace
         if (LogAcceptCategory(BCLog::WALLETDB, BCLog::Level::Trace)) {
+           std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
            ret = sqlite3_trace_v2(m_db, SQLITE_TRACE_STMT, TraceSqlCallback, this);
+           std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
            if (ret != SQLITE_OK) {
+               std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
                LogPrintf("Failed to enable SQL tracing for %s\n", Filename());
            }
         }
     }
 
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
     if (sqlite3_db_readonly(m_db, "main") != 0) {
+        std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         throw std::runtime_error("SQLiteDatabase: Database opened in readonly mode but read-write permissions are needed");
     }
 
@@ -334,6 +353,7 @@ void SQLiteDatabase::Open()
         SetPragma(m_db, "user_version", strprintf("%d", WALLET_SCHEMA_VERSION),
                   "Failed to set the wallet schema version");
     }
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
 }
 
 bool SQLiteDatabase::Rewrite(const char* skip)
