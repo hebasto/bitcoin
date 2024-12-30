@@ -52,7 +52,7 @@ static void WalletIsMine(benchmark::Bench& bench, bool legacy_wallet, int num_co
         LOCK(wallet->cs_wallet);
         std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
         for (int i = 0; i < num_combo; ++i) {
-            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
+            std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - i=" << i << "\n";
             CKey key;
             key.MakeNewKey(/*fCompressed=*/true);
             FlatSigningProvider keys;
@@ -63,6 +63,8 @@ static void WalletIsMine(benchmark::Bench& bench, bool legacy_wallet, int num_co
             assert(spkm);
         }
     }
+
+    std::cerr << __FILE__ << ":" << __LINE__ << ":" << __func__ << " - " << "\n";
 
     const CScript script = GetScriptForDestination(DecodeDestination(ADDRESS_BCRT1_UNSPENDABLE));
 
