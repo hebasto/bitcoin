@@ -244,7 +244,7 @@ class WalletTest(BitcoinTestFramework):
         before = self.nodes[1].getbalances()['mine']['untrusted_pending']
         dst = self.nodes[1].getnewaddress()
         self.nodes[1].unloadwallet(self.default_wallet_name)
-        self.nodes[0].sendtoaddress(dst, 0.1)
+        self.nodes[0].sendtoaddress(dst, Decimal('0.1'))
         self.sync_all()
         self.nodes[1].loadwallet(self.default_wallet_name)
         after = self.nodes[1].getbalances()['mine']['untrusted_pending']
