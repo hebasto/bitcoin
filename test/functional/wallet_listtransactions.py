@@ -100,7 +100,7 @@ class ListTransactionsTest(BitcoinTestFramework):
             pubkey = self.nodes[1].getaddressinfo(self.nodes[1].getnewaddress())['pubkey']
             multisig = self.nodes[1].createmultisig(1, [pubkey])
             self.nodes[0].importaddress(multisig["redeemScript"], "watchonly", False, True)
-            txid = self.nodes[1].sendtoaddress(multisig["address"], 0.1)
+            txid = self.nodes[1].sendtoaddress(multisig["address"], Decimal("0.1"))
             self.generate(self.nodes[1], 1)
             assert_equal(len(self.nodes[0].listtransactions(label="watchonly", include_watchonly=True)), 1)
             assert_equal(len(self.nodes[0].listtransactions(dummy="watchonly", include_watchonly=True)), 1)
