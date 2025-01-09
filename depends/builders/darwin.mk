@@ -6,7 +6,7 @@ build_darwin_STRIP:=$(shell xcrun -f strip)
 build_darwin_OBJDUMP:=$(shell xcrun -f objdump)
 build_darwin_NM:=$(shell xcrun -f nm)
 build_darwin_DSYMUTIL:=$(shell xcrun -f dsymutil)
-build_darwin_SHA256SUM=shasum -a 256
+build_darwin_SHA256SUM=sha256sum
 build_darwin_DOWNLOAD=curl --location --fail --connect-timeout $(DOWNLOAD_CONNECT_TIMEOUT) --retry $(DOWNLOAD_RETRIES) -o
 
 #darwin host on darwin builder. overrides darwin host preferences.
