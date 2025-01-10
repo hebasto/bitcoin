@@ -249,15 +249,14 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         """Update self.options with the paths of all binaries from environment variables or their default values"""
 
         binaries = {
-            "bitcoind": ("bitcoind", "BITCOIND"),
-            "bitcoin-cli": ("bitcoincli", "BITCOINCLI"),
-            "bitcoin-util": ("bitcoinutil", "BITCOINUTIL"),
-            "bitcoin-wallet": ("bitcoinwallet", "BITCOINWALLET"),
+            "bin/bitcoind": ("bitcoind", "BITCOIND"),
+            "bin/bitcoin-cli": ("bitcoincli", "BITCOINCLI"),
+            "bin/bitcoin-wallet": ("bitcoinwallet", "BITCOINWALLET"),
+            "libexec/bitcoin-util": ("bitcoinutil", "BITCOINUTIL"),
         }
         for binary, [attribute_name, env_variable_name] in binaries.items():
             default_filename = os.path.join(
                 self.config["environment"]["BUILDDIR"],
-                "src",
                 binary + self.config["environment"]["EXEEXT"],
             )
             setattr(self.options, attribute_name, os.getenv(env_variable_name, default=default_filename))
@@ -274,8 +273,8 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         self.set_binary_paths()
 
         os.environ['PATH'] = os.pathsep.join([
-            os.path.join(config['environment']['BUILDDIR'], 'src'),
-            os.path.join(config['environment']['BUILDDIR'], 'src', 'qt'), os.environ['PATH']
+            os.path.join(config['environment']['BUILDDIR'], 'bin'),
+            os.environ['PATH']
         ])
 
         # Set up temp directory and start logging
