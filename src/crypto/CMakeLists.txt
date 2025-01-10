@@ -22,9 +22,10 @@ add_library(bitcoin_crypto STATIC EXCLUDE_FROM_ALL
   ../support/cleanse.cpp
 )
 
-if(MSVC)
-  try_append_cxx_flags("/wd4146" TARGET bitcoin_crypto SKIP_LINK)
-endif()
+target_compile_options(bitcoin_crypto
+  PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:/wd4146>
+)
 
 target_link_libraries(bitcoin_crypto
   PRIVATE
