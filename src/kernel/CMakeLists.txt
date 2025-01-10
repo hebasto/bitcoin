@@ -89,6 +89,7 @@ target_link_libraries(bitcoinkernel
   PUBLIC
     Boost::headers
 )
+set_libexec_output_directory(bitcoinkernel)
 
 # libbitcoinkernel requires default symbol visibility, explicitly
 # specify that here so that things still work even when user
