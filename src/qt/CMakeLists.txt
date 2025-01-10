@@ -252,6 +252,11 @@ if(WITH_MULTIPROCESS)
     bitcoin_node
     bitcoin_ipc
   )
+  if(multiprocess_runtime_output_directory)
+    set_target_properties(bitcoin-gui PROPERTIES
+      RUNTIME_OUTPUT_DIRECTORY ${multiprocess_runtime_output_directory}
+    )
+  endif()
   import_plugins(bitcoin-gui)
   list(APPEND installable_targets bitcoin-gui)
   if(WIN32)
