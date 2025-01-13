@@ -69,7 +69,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake ${PROJECT_SOURCE_DIR}/cmake/module)
 
 #=============================
 # Configurable options
@@ -585,9 +585,6 @@ set(CMAKE_SKIP_INSTALL_RPATH TRUE)
 add_subdirectory(test)
 add_subdirectory(doc)
 
-include(cmake/crc32c.cmake)
-include(cmake/leveldb.cmake)
-include(cmake/minisketch.cmake)
 add_subdirectory(src)
 
 include(cmake/tests.cmake)
