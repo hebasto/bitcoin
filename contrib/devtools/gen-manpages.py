@@ -13,8 +13,8 @@ BINARIES = [
 'bin/bitcoin-cli',
 'bin/bitcoin-tx',
 'bin/bitcoin-wallet',
-'bin/bitcoin-util',
 'bin/bitcoin-qt',
+'libexec/bitcoin-util',
 ]
 
 parser = argparse.ArgumentParser(

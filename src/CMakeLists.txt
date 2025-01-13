@@ -71,13 +71,24 @@ string(APPEND CMAKE_C_COMPILE_OBJECT " ${APPEND_CPPFLAGS} ${APPEND_CFLAGS}")
 # Set top-level target output locations.
 if(NOT CMAKE_RUNTIME_OUTPUT_DIRECTORY)
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
+  set(set_libexec_runtime_output_directory RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libexec)
 endif()
 if(NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+  set(set_libexec_library_output_directory LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libexec)
 endif()
 if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+  set(set_libexec_archive_output_directory ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/libexec)
 endif()
+
+function(set_libexec_output_directory target)
+  set_target_properties(${target} PROPERTIES
+    ${set_libexec_runtime_output_directory}
+    ${set_libexec_library_output_directory}
+    ${set_libexec_archive_output_directory}
+  )
+endfunction()
 
 configure_file(${PROJECT_SOURCE_DIR}/cmake/bitcoin-build-config.h.in bitcoin-build-config.h USE_SOURCE_PERMISSIONS @ONLY)
 include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
@@ -423,7 +434,10 @@ if(BUILD_UTIL)
     bitcoin_common
     bitcoin_util
   )
-  list(APPEND installable_targets bitcoin-util)
+  set_libexec_output_directory(bitcoin-util)
+  install(TARGETS bitcoin-util
+    RUNTIME DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}
+  )
 endif()
 
 
@@ -454,6 +468,7 @@ if(BUILD_UTIL_CHAINSTATE)
       core_interface
       bitcoinkernel
   )
+  set_libexec_output_directory(bitcoin-chainstate)
 endif()
 
 

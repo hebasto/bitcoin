@@ -251,8 +251,8 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         binaries = {
             "bin/bitcoind": ("bitcoind", "BITCOIND"),
             "bin/bitcoin-cli": ("bitcoincli", "BITCOINCLI"),
-            "bin/bitcoin-util": ("bitcoinutil", "BITCOINUTIL"),
             "bin/bitcoin-wallet": ("bitcoinwallet", "BITCOINWALLET"),
+            "libexec/bitcoin-util": ("bitcoinutil", "BITCOINUTIL"),
         }
         for binary, [attribute_name, env_variable_name] in binaries.items():
             default_filename = os.path.join(
