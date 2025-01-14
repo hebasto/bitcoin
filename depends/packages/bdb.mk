@@ -21,7 +21,12 @@ define $(package)_preprocess_cmds
 endef
 
 define $(package)_config_cmds
-  ../dist/$($(package)_autoconf)
+  ../dist/$($(package)_autoconf) && \
+  echo "============================================" && \
+  cat db_config.h && \
+  echo "============================================" && \
+  cat db_int.h && \
+  echo "============================================"
 endef
 
 define $(package)_build_cmds
