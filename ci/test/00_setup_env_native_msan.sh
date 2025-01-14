@@ -17,12 +17,9 @@ export PACKAGES="ninja-build"
 # BDB generates false-positives and will be removed in future
 export DEP_OPTS="DEBUG=1 NO_BDB=1 NO_QT=1 CC=clang CXX=clang++ CFLAGS='${MSAN_FLAGS}' CXXFLAGS='${MSAN_AND_LIBCXX_FLAGS}'"
 export GOAL="install"
-# Setting CMAKE_{C,CXX}_FLAGS_DEBUG flags to an empty string ensures that the flags set in MSAN_FLAGS remain unaltered.
 # _FORTIFY_SOURCE is not compatible with MSAN.
 export BITCOIN_CONFIG="\
- -DCMAKE_BUILD_TYPE=Debug \
- -DCMAKE_C_FLAGS_DEBUG='' \
- -DCMAKE_CXX_FLAGS_DEBUG='' \
+ -DEXTRA_DEBUG=ON \
  -DSANITIZERS=memory \
  -DAPPEND_CPPFLAGS='-U_FORTIFY_SOURCE' \
 "
