@@ -171,6 +171,7 @@ endif()
 option(BUILD_BENCH "Build bench_bitcoin executable." OFF)
 option(BUILD_FUZZ_BINARY "Build fuzz binary." OFF)
 option(BUILD_FOR_FUZZING "Build for fuzzing. Enabling this will disable all other targets and override BUILD_FUZZ_BINARY." OFF)
+option(EXTRA_DEBUG "Enable extra debug options" OFF)
 
 option(INSTALL_MAN "Install man pages." ON)
 
@@ -203,8 +204,20 @@ unset(check_pie_output)
 add_library(core_interface INTERFACE)
 add_library(core_interface_depends INTERFACE)
 add_library(core_interface_debug INTERFACE)
+
+# Redefine/adjust per-configuration flags.
+if(EXTRA_DEBUG)
+  target_compile_definitions(core_interface_debug INTERFACE
+    DEBUG
+    DEBUG_LOCKORDER
+    DEBUG_LOCKCONTENTION
+    RPC_DOC_CHECK
+    ABORT_ON_FAILED_ASSUME
+  )
+endif()
+
 target_link_libraries(core_interface INTERFACE
-  $<$<CONFIG:Debug>:core_interface_debug>
+  core_interface_debug
   $<$<CONFIG:Depends>:core_interface_depends>
 )
 
