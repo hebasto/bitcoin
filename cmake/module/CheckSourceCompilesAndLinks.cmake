@@ -6,9 +6,6 @@ include_guard(GLOBAL)
 include(CheckCXXSourceCompiles)
 include(CMakePushCheckState)
 
-# This avoids running the linker.
-set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-
 macro(check_cxx_source_links source)
   set(CMAKE_TRY_COMPILE_TARGET_TYPE EXECUTABLE)
   check_cxx_source_compiles("${source}" ${ARGN})
