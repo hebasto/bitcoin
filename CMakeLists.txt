@@ -371,7 +371,7 @@ endif()
 target_link_options(sanitize_interface INTERFACE ${SANITIZER_LDFLAGS})
 
 if(BUILD_FUZZ_BINARY)
-  include(CheckSourceCompilesAndLinks)
+  include(CheckSourceCompilesWithFlags)
   check_cxx_source_compile_with_flags("
       #include <cstdint>
       #include <cstddef>
