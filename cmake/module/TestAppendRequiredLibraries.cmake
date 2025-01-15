@@ -28,7 +28,7 @@ function(test_append_socket_library target)
   include(CheckCXXSourceCompiles)
   check_cxx_source_compiles("${check_socket_source}" IFADDR_LINKS_WITHOUT_LIBSOCKET)
   if(NOT IFADDR_LINKS_WITHOUT_LIBSOCKET)
-    include(CheckSourceCompilesAndLinks)
+    include(CheckSourceCompilesWithFlags)
     check_cxx_source_compiles_with_flags("${check_socket_source}" IFADDR_NEEDS_LINK_TO_LIBSOCKET
       LINK_LIBRARIES socket
     )
@@ -86,7 +86,7 @@ function(test_append_atomic_library target)
     return()
   endif()
 
-  include(CheckSourceCompilesAndLinks)
+  include(CheckSourceCompilesWithFlags)
   check_cxx_source_compiles_with_flags("${check_atomic_source}" STD_ATOMIC_NEEDS_LINK_TO_LIBATOMIC
     LINK_LIBRARIES atomic
   )
