@@ -10,7 +10,7 @@ $(package)_patches += cmake_minimum.patch
 # definitions in endian.h, which are required for a working
 # endianness check in configure when building with -flto.
 define $(package)_set_vars
-  $(package)_config_opts := -DCMAKE_BUILD_TYPE=None -DEXPAT_BUILD_TOOLS=OFF
+  $(package)_config_opts := -DEXPAT_BUILD_TOOLS=OFF
   $(package)_config_opts += -DEXPAT_BUILD_EXAMPLES=OFF -DEXPAT_BUILD_TESTS=OFF
   $(package)_config_opts += -DBUILD_SHARED_LIBS=OFF
   $(package)_cppflags += -D_DEFAULT_SOURCE

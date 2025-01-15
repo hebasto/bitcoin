@@ -13,7 +13,7 @@ $(package)_patches += cacheline_undefined.patch
 $(package)_patches += no_librt.patch
 
 define $(package)_set_vars
-  $(package)_config_opts := -DCMAKE_BUILD_TYPE=None -DWITH_DOCS=OFF -DWITH_LIBSODIUM=OFF
+  $(package)_config_opts := -DWITH_DOCS=OFF -DWITH_LIBSODIUM=OFF
   $(package)_config_opts += -DWITH_LIBBSD=OFF -DENABLE_CURVE=OFF -DENABLE_CPACK=OFF
   $(package)_config_opts += -DBUILD_SHARED=OFF -DBUILD_TESTS=OFF -DZMQ_BUILD_TESTS=OFF
   $(package)_config_opts += -DENABLE_DRAFTS=OFF -DZMQ_BUILD_TESTS=OFF
