@@ -2,7 +2,7 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
-include(CheckCXXSourceCompiles)
+include(BitcoinCheckSourceCompiles)
 include(CheckCXXSymbolExists)
 include(CheckIncludeFileCXX)
 
@@ -34,7 +34,7 @@ if(HAVE_STD_SYSTEM OR HAVE__WSYSTEM)
   set(HAVE_SYSTEM 1)
 endif()
 
-check_cxx_source_compiles("
+bitcoin_check_cxx_source_compiles("
   #include <string.h>
 
   int main()
@@ -50,7 +50,7 @@ check_cxx_source_compiles("
 check_cxx_symbol_exists(malloc_info "malloc.h" HAVE_MALLOC_INFO)
 
 # Check for mallopt(M_ARENA_MAX) (to set glibc arenas).
-check_cxx_source_compiles("
+bitcoin_check_cxx_source_compiles("
   #include <malloc.h>
 
   int main()
@@ -61,7 +61,7 @@ check_cxx_source_compiles("
 )
 
 # Check for posix_fallocate().
-check_cxx_source_compiles("
+bitcoin_check_cxx_source_compiles("
   // same as in src/util/fs_helpers.cpp
   #ifdef __linux__
   #ifdef _POSIX_C_SOURCE
@@ -79,7 +79,7 @@ check_cxx_source_compiles("
 )
 
 # Check for strong getauxval() support in the system headers.
-check_cxx_source_compiles("
+bitcoin_check_cxx_source_compiles("
   #include <sys/auxv.h>
 
   int main()
@@ -90,7 +90,7 @@ check_cxx_source_compiles("
 )
 
 # Check for UNIX sockets.
-check_cxx_source_compiles("
+bitcoin_check_cxx_source_compiles("
   #include <sys/socket.h>
   #include <sys/un.h>
 
@@ -104,7 +104,7 @@ check_cxx_source_compiles("
 
 # Check for different ways of gathering OS randomness:
 # - Linux getrandom()
-check_cxx_source_compiles("
+bitcoin_check_cxx_source_compiles("
   #include <sys/random.h>
 
   int main()
@@ -115,7 +115,7 @@ check_cxx_source_compiles("
 )
 
 # - BSD getentropy()
-check_cxx_source_compiles("
+bitcoin_check_cxx_source_compiles("
   #include <sys/random.h>
 
   int main()
@@ -127,7 +127,7 @@ check_cxx_source_compiles("
 
 
 # - BSD sysctl()
-check_cxx_source_compiles("
+bitcoin_check_cxx_source_compiles("
   #include <sys/types.h>
   #include <sys/sysctl.h>
 
@@ -143,7 +143,7 @@ check_cxx_source_compiles("
 )
 
 # - BSD sysctl(KERN_ARND)
-check_cxx_source_compiles("
+bitcoin_check_cxx_source_compiles("
   #include <sys/types.h>
   #include <sys/sysctl.h>
 
@@ -160,8 +160,6 @@ check_cxx_source_compiles("
 )
 
 if(NOT MSVC)
-  include(BitcoinCheckSourceCompiles)
-
   # Check for SSE4.1 intrinsics.
   set(SSE41_CXXFLAGS -msse4.1)
   bitcoin_check_cxx_source_compiles("

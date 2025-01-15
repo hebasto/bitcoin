@@ -6,11 +6,10 @@
 # support has been merged we should switch to using the upstream CMake
 # buildsystem.
 
-include(CheckCXXSourceCompiles)
 include(BitcoinCheckSourceCompiles)
 
 # Check for __builtin_prefetch support in the compiler.
-check_cxx_source_compiles("
+bitcoin_check_cxx_source_compiles("
   int main() {
     char data = 0;
     const char* address = &data;
@@ -21,7 +20,7 @@ check_cxx_source_compiles("
 )
 
 # Check for _mm_prefetch support in the compiler.
-check_cxx_source_compiles("
+bitcoin_check_cxx_source_compiles("
   #if defined(_MSC_VER)
   #include <intrin.h>
   #else

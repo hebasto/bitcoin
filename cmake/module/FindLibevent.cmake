@@ -17,11 +17,9 @@ This is a wrapper around find_package()/pkg_check_modules() commands that:
 # Check whether evhttp_connection_get_peer expects const char**.
 # See https://github.com/libevent/libevent/commit/a18301a2bb160ff7c3ffaf5b7653c39ffe27b385
 function(check_evhttp_connection_get_peer target)
-  include(CMakePushCheckState)
-  cmake_push_check_state(RESET)
   set(CMAKE_REQUIRED_LIBRARIES ${target})
-  include(CheckCXXSourceCompiles)
-  check_cxx_source_compiles("
+  include(BitcoinCheckSourceCompiles)
+  bitcoin_check_cxx_source_compiles("
     #include <cstdint>
     #include <event2/http.h>
 
@@ -34,7 +32,6 @@ function(check_evhttp_connection_get_peer target)
     }
     " HAVE_EVHTTP_CONNECTION_GET_PEER_CONST_CHAR
   )
-  cmake_pop_check_state()
   target_compile_definitions(${target} INTERFACE
     $<$<BOOL:${HAVE_EVHTTP_CONNECTION_GET_PEER_CONST_CHAR}>:HAVE_EVHTTP_CONNECTION_GET_PEER_CONST_CHAR>
   )

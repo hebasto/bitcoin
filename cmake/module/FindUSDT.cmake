@@ -33,9 +33,9 @@ if(USDT_INCLUDE_DIR)
   include(CMakePushCheckState)
   cmake_push_check_state(RESET)
 
-  include(CheckCXXSourceCompiles)
   set(CMAKE_REQUIRED_INCLUDES ${USDT_INCLUDE_DIR})
-  check_cxx_source_compiles("
+  include(BitcoinCheckSourceCompiles)
+  bitcoin_check_cxx_source_compiles("
     // Setting SDT_USE_VARIADIC lets systemtap (sys/sdt.h) know that we want to use
     // the optional variadic macros to define tracepoints.
     #define SDT_USE_VARIADIC 1
