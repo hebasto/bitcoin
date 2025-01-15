@@ -2,7 +2,7 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
-include(CheckSourceCompilesAndLinks)
+include(BitcoinCheckSourceCompiles)
 
 # Check for clmul instructions support.
 if(MSVC)
@@ -10,7 +10,7 @@ if(MSVC)
 else()
   set(CLMUL_CXXFLAGS -mpclmul)
 endif()
-check_cxx_source_compiles_with_flags("
+bitcoin_check_cxx_source_compiles("
   #include <immintrin.h>
   #include <cstdint>
 

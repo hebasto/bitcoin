@@ -160,11 +160,11 @@ check_cxx_source_compiles("
 )
 
 if(NOT MSVC)
-  include(CheckSourceCompilesAndLinks)
+  include(BitcoinCheckSourceCompiles)
 
   # Check for SSE4.1 intrinsics.
   set(SSE41_CXXFLAGS -msse4.1)
-  check_cxx_source_compiles_with_flags("
+  bitcoin_check_cxx_source_compiles("
     #include <immintrin.h>
 
     int main()
@@ -181,7 +181,7 @@ if(NOT MSVC)
 
   # Check for AVX2 intrinsics.
   set(AVX2_CXXFLAGS -mavx -mavx2)
-  check_cxx_source_compiles_with_flags("
+  bitcoin_check_cxx_source_compiles("
     #include <immintrin.h>
 
     int main()
@@ -196,7 +196,7 @@ if(NOT MSVC)
 
   # Check for x86 SHA-NI intrinsics.
   set(X86_SHANI_CXXFLAGS -msse4 -msha)
-  check_cxx_source_compiles_with_flags("
+  bitcoin_check_cxx_source_compiles("
     #include <immintrin.h>
 
     int main()
@@ -213,7 +213,7 @@ if(NOT MSVC)
 
   # Check for ARMv8 SHA-NI intrinsics.
   set(ARM_SHANI_CXXFLAGS -march=armv8-a+crypto)
-  check_cxx_source_compiles_with_flags("
+  bitcoin_check_cxx_source_compiles("
     #include <arm_neon.h>
 
     int main()

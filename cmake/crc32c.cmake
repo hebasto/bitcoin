@@ -7,7 +7,7 @@
 # buildsystem.
 
 include(CheckCXXSourceCompiles)
-include(CheckSourceCompilesAndLinks)
+include(BitcoinCheckSourceCompiles)
 
 # Check for __builtin_prefetch support in the compiler.
 check_cxx_source_compiles("
@@ -43,7 +43,7 @@ if(MSVC)
 else()
   set(SSE42_CXXFLAGS -msse4.2)
 endif()
-check_cxx_source_compiles_with_flags("
+bitcoin_check_cxx_source_compiles("
   #include <cstdint>
   #if defined(_MSC_VER)
   #include <intrin.h>
@@ -64,7 +64,7 @@ check_cxx_source_compiles_with_flags("
 
 # Check for ARMv8 w/ CRC and CRYPTO extensions support in the compiler.
 set(ARM64_CRC_CXXFLAGS -march=armv8-a+crc+crypto)
-check_cxx_source_compiles_with_flags("
+bitcoin_check_cxx_source_compiles("
   #include <arm_acle.h>
   #include <arm_neon.h>
 

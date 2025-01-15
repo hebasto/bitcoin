@@ -15,7 +15,7 @@ Options:
   CXXFLAGS - A list of additional flags to pass to the compiler.
 
 ]=]
-function(check_cxx_source_compiles_with_flags source var)
+function(bitcoin_check_cxx_source_compiles source var)
   cmake_parse_arguments(PARSE_ARGV 2 _ "" "" CXXFLAGS)
   # This avoids running the linker.
   set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
