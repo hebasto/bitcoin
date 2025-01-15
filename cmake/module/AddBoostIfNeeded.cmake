@@ -46,22 +46,19 @@ function(add_boost_if_needed)
   # See: https://github.com/boostorg/config/pull/430.
   set(CMAKE_REQUIRED_DEFINITIONS -DBOOST_NO_CXX98_FUNCTION_BASE)
   set(CMAKE_REQUIRED_INCLUDES ${Boost_INCLUDE_DIR})
-  include(CMakePushCheckState)
-  cmake_push_check_state()
-  include(TryAppendCXXFlags)
-  set(CMAKE_REQUIRED_FLAGS ${working_compiler_werror_flag})
-  set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-  check_cxx_source_compiles("
+  include(TryAppendCXXFlags)  # For working_compiler_werror_flag.
+  include(CheckSourceCompilesWithFlags)
+  check_cxx_source_compiles_with_flags("
     #include <boost/config.hpp>
     " NO_DIAGNOSTICS_BOOST_NO_CXX98_FUNCTION_BASE
+    CXXFLAGS ${working_compiler_werror_flag}
   )
-  cmake_pop_check_state()
   if(NO_DIAGNOSTICS_BOOST_NO_CXX98_FUNCTION_BASE)
     target_compile_definitions(Boost::headers INTERFACE
       BOOST_NO_CXX98_FUNCTION_BASE
     )
   else()
-    set(CMAKE_REQUIRED_DEFINITIONS)
+    set(CMAKE_REQUIRED_DEFINITIONS "")
   endif()
 
   # Some package managers, such as vcpkg, vendor Boost.Test separately
