@@ -4,9 +4,6 @@
 
 include_guard(GLOBAL)
 
-# This avoids running the linker.
-set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-
 #[=[
 Check once if C++ source code can be compiled.
 
