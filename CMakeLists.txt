@@ -543,12 +543,13 @@ if(WERROR)
   unset(werror_flag)
 endif()
 
-find_package(Python3 3.10 COMPONENTS Interpreter)
-if(Python3_EXECUTABLE)
+option(WITH_PYTHON "Use Python for tests." ON)
+if(WITH_PYTHON)
+  find_package(Python3 3.10 REQUIRED COMPONENTS Interpreter)
   set(PYTHON_COMMAND ${Python3_EXECUTABLE})
 else()
   list(APPEND configure_warnings
-    "Minimum required Python not found. Utils and rpcauth tests are disabled."
+    "Utils and rpcauth tests are disabled.\nUse \"-DWITH_PYTHON=ON\" to enable them."
   )
 endif()
 
