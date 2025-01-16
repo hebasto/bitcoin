@@ -23,6 +23,14 @@ if(NOT MSVC)
   else()
     set(WITH_CCACHE OFF)
   endif()
+  if(WITH_CCACHE)
+    try_append_cxx_flags("-fdebug-prefix-map=A=B" SKIP_LINK
+      TARGET core_interface
+      IF_CHECK_PASSED "-fdebug-prefix-map=${CMAKE_BINARY_DIR}=."
+      # Additionally, apply this flag to C code.
+      VAR APPEND_CFLAGS
+    )
+  endif()
 endif()
 
 mark_as_advanced(CCACHE_EXECUTABLE)
