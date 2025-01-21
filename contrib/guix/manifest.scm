@@ -130,7 +130,7 @@ desirable for building Bitcoin Core release binaries."
       (arguments
         (substitute-keyword-arguments (package-arguments base-mingw-w64)
           ((#:configure-flags flags)
-           `(append ,flags '("--with-default-msvcrt=ucrt"))))))))
+           `(append '("--with-default-msvcrt=ucrt") ,flags)))))))
 
 (define (make-mingw-pthreads-cross-toolchain target)
   "Create a cross-compilation toolchain package for TARGET"
