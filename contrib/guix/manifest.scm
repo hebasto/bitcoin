@@ -122,7 +122,7 @@ desirable for building Bitcoin Core release binaries."
 
 (define mingw-w64-ucrt
   (package
-    (inherit (make-mingw-w64 machine
+    (inherit (make-mingw-w64 (substring target 0 (string-index target #\-))
                              #:xgcc (cross-gcc target #:xgcc (gcc-mingw-patches base-gcc))
                              #:with-winpthreads? #t))
     (arguments
@@ -133,7 +133,6 @@ desirable for building Bitcoin Core release binaries."
 (define (make-mingw-pthreads-cross-toolchain target)
   "Create a cross-compilation toolchain package for TARGET"
   (let* ((xbinutils (binutils-mingw-patches (cross-binutils target)))
-         (machine (substring target 0 (string-index target #\-)))
          (pthreads-xlibc (winpthreads-patches mingw-w64-ucrt))
          (pthreads-xgcc (cross-gcc target
                                     #:xgcc (gcc-mingw-patches mingw-w64-base-gcc)
