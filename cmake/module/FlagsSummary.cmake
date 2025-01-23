@@ -18,6 +18,17 @@ endfunction()
 function(print_flags_per_config config indent_num)
   string(TOUPPER "${config}" config_uppercase)
 
+  # The CMake FindThreads module uses generator expressions to conditionally apply
+  # the `-pthread` flag, avoiding its addition in cases such as CUDA or Swift, which
+  # are not applicable to this project. These expressions are effectively equivalent
+  # to using the `-pthread` flag directly.
+  get_target_property(thread_flags Threads::Threads INTERFACE_COMPILE_OPTIONS)
+  if(thread_flags)
+    set_target_properties(Threads::Threads PROPERTIES
+      INTERFACE_COMPILE_OPTIONS -pthread
+    )
+  endif()
+
   include(GetTargetInterface)
   get_target_interface(definitions "${config}" core_interface COMPILE_DEFINITIONS)
   indent_message("Preprocessor defined macros ..........." "${definitions}" ${indent_num})
