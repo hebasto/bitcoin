@@ -32,7 +32,15 @@ endfunction()
 function(get_target_interface var config target property)
   get_target_property(result ${target} INTERFACE_${property})
   if(result)
-    evaluate_generator_expressions(result "${config}")
+    # The CMake FindThreads module uses generator expressions to conditionally apply
+    # the `-pthread` flag, avoiding its addition in cases such as CUDA or Swift, which
+    # are not applicable to this project. These expressions are effectively equivalent
+    # to using the `-pthread` flag directly.
+    if(${target} STREQUAL "Threads::Threads" AND ${property} STREQUAL "COMPILE_OPTIONS")
+      set(result -pthread)
+    else()
+      evaluate_generator_expressions(result "${config}")
+    endif()
     list(JOIN result " " result)
   else()
     set(result)
