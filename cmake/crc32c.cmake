@@ -2,11 +2,16 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
-# This file is part of the transition from Autotools to CMake. Once CMake
-# support has been merged we should switch to using the upstream CMake
-# buildsystem.
-
 set(crc32c_subtree_dir ${PROJECT_SOURCE_DIR}/src/crc32c)
+
+# We do not use the upstream CMake-based buildsystem.
+# See the discussion in https://github.com/bitcoin/bitcoin/pull/30905.
+# However, we want to ensure that no changes upstream remain unnoticed.
+file(SHA256 ${crc32c_subtree_dir}/CMakeLists.txt upstream_cmakelists_hash)
+if(NOT upstream_cmakelists_hash STREQUAL "f5c90773b3afd4ee95e792356a802758a29a3751878d0388c555c575c19ed4ce")
+  message(FATAL_ERROR "${crc32c_subtree_dir}/CMakeLists.txt has been modified.")
+endif()
+unset(upstream_cmakelists_hash)
 
 include(CheckCXXSourceCompiles)
 
