@@ -8,7 +8,7 @@
     #define BITCOINKERNEL_EXPORT_SYMBOL __declspec(dllimport)
   #endif
 #else
-  #define BITCOINKERNEL_EXPORT_SYMBOL extern
+  #define BITCOINKERNEL_EXPORT_SYMBOL
 #endif
 
 #endif // BITCOIN_KERNEL_SYMBOL_VISIBILITY_H

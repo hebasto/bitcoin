@@ -18,6 +18,6 @@
  * The transaction pool has a separate lock to allow reading from it and the
  * chainstate at the same time.
  */
-BITCOINKERNEL_EXPORT_SYMBOL RecursiveMutex cs_main;
+BITCOINKERNEL_EXPORT_SYMBOL extern RecursiveMutex cs_main;
 
 #endif // BITCOIN_KERNEL_CS_MAIN_H
