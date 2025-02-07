@@ -158,6 +158,10 @@ add_library(bitcoin_common STATIC EXCLUDE_FROM_ALL
   script/signingprovider.cpp
   script/solver.cpp
 )
+target_compile_definitions(bitcoin_common
+  PUBLIC
+    BITCOINKERNEL_STATIC
+)
 target_link_libraries(bitcoin_common
   PRIVATE
     core_interface
