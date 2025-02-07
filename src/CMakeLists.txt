@@ -291,7 +291,7 @@ add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL
 )
 target_compile_definitions(bitcoin_node
   PRIVATE
-    BITCOIN_CORE_INTERNAL_BUILD
+    BITCOINKERNEL_STATIC
 )
 target_link_libraries(bitcoin_node
   PRIVATE
