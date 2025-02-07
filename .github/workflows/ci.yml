@@ -216,6 +216,8 @@ jobs:
         run: |
           cmake -B build --preset vs2022-static -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT\scripts\buildsystems\vcpkg.cmake" ${{ matrix.generate-options }}
 
+      - run: Get-Content -Path "build\src\kernel\bitcoinkernel_export.h"
+
       - name: Save vcpkg binary cache
         uses: actions/cache/save@v4
         if: github.event_name != 'pull_request' && steps.vcpkg-binary-cache.outputs.cache-hit != 'true' && matrix.job-type == 'standard'
