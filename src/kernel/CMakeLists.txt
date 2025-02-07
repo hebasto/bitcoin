@@ -90,6 +90,11 @@ target_link_libraries(bitcoinkernel
     Boost::headers
 )
 
+
+include(GenerateExportHeader)
+generate_export_header(bitcoinkernel)
+
+
 set_target_properties(bitcoinkernel PROPERTIES
   # libbitcoinkernel requires default symbol visibility, explicitly
   # specify that here so that things still work even when user
