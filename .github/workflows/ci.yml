@@ -169,7 +169,10 @@ jobs:
         include:
           - job-type: standard
             generate-options: '-DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DENABLE_WALLET=OFF -DBUILD_GUI=OFF -DWITH_QRENCODE=OFF -DBUILD_TESTS=OFF -DBUILD_UTIL_CHAINSTATE=ON -DBUILD_KERNEL_LIB=ON -DBUILD_SHARED_LIBS=ON -DWERROR=ON'
-            job-name: 'Win64 native, VS 2022, libbitcoinkernel'
+            job-name: 'Win64 native, VS 2022, shared libbitcoinkernel'
+          - job-type: standard
+            generate-options: '-DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DENABLE_WALLET=OFF -DBUILD_GUI=OFF -DWITH_QRENCODE=OFF -DBUILD_TESTS=OFF -DBUILD_UTIL_CHAINSTATE=ON -DBUILD_KERNEL_LIB=OFF -DBUILD_SHARED_LIBS=ON -DWERROR=ON'
+            job-name: 'Win64 native, VS 2022, static libbitcoinkernel'
           - job-type: fuzz
             generate-options: '-DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DVCPKG_MANIFEST_FEATURES="sqlite" -DBUILD_GUI=OFF -DBUILD_FOR_FUZZING=ON -DWERROR=ON'
             job-name: 'Win64 native fuzz, VS 2022'
@@ -217,6 +220,7 @@ jobs:
           cmake -B build --preset vs2022-static -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_INSTALLATION_ROOT\scripts\buildsystems\vcpkg.cmake" ${{ matrix.generate-options }}
 
       - run: Get-Content -Path "build\src\kernel\bitcoinkernel_export.h"
+        if: matrix.job-type == 'standard'
 
       - name: Save vcpkg binary cache
         uses: actions/cache/save@v4
