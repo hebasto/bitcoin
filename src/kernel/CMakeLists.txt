@@ -103,9 +103,9 @@ set_target_properties(bitcoinkernel PROPERTIES
   # Note this is a quick hack that will be removed as we
   # incrementally define what to export from the library.
   CXX_VISIBILITY_PRESET default
-  # Temporarily enable WINDOWS_EXPORT_ALL_SYMBOLS until a dedicated
-  # header with __declspec(dllexport) directives is available.
-  WINDOWS_EXPORT_ALL_SYMBOLS TRUE
+  # # Temporarily enable WINDOWS_EXPORT_ALL_SYMBOLS until a dedicated
+  # # header with __declspec(dllexport) directives is available.
+  # WINDOWS_EXPORT_ALL_SYMBOLS TRUE
 )
 
 # When building the static library, install all static libraries the
