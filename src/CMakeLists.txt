@@ -290,7 +290,7 @@ add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL
   $<$<NOT:$<TARGET_EXISTS:bitcoin_wallet>>:dummywallet.cpp>
 )
 target_compile_definitions(bitcoin_node
-  PRIVATE
+  PUBLIC
     BITCOINKERNEL_STATIC
 )
 target_link_libraries(bitcoin_node
