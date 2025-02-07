@@ -1,7 +1,7 @@
 #ifndef BITCOIN_KERNEL_SYMBOL_VISIBILITY_H
 #define BITCOIN_KERNEL_SYMBOL_VISIBILITY_H
 
-#if defined(_WIN32)
+#if !defined(BITCOIN_CORE_INTERNAL_BUILD) && defined(_WIN32)
   #if defined(bitcoinkernel_EXPORTS)
     #define BITCOINKERNEL_EXPORT_SYMBOL __declspec(dllexport)
   #else
