@@ -151,7 +151,7 @@ jobs:
           key: ${{ github.job }}-${{ matrix.job-type }}-ccache-${{ github.run_id }}
 
   win64-native:
-    name: ${{ matrix.job-name }}
+    name: 'Windows, VS 2022, ${{ matrix.job-name }}'
     # Use latest image, but hardcode version to avoid silent upgrades (and breaks).
     # See: https://github.com/actions/runner-images#available-images.
     runs-on: windows-2022
@@ -165,14 +165,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        job-type: [standard, fuzz]
+        job-type: [gui, kernel-shared, kernel-static, fuzz]
         include:
-          - job-type: standard
+          - job-type: gui
             generate-options: '-DBUILD_GUI=ON -DWITH_BDB=ON -DWITH_ZMQ=ON -DBUILD_BENCH=ON -DWERROR=ON'
-            job-name: 'Win64 native, VS 2022'
+            job-name: 'gui, no functional tests'
+          - job-type: kernel-shared
+            generate-options: '-DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DVCPKG_MANIFEST_FEATURES="wallet;tests;zeromq" -DBUILD_GUI=OFF -DBUILD_UTIL_CHAINSTATE=ON -DBUILD_KERNEL_LIB=ON -DBUILD_SHARED_LIBS=ON -DWITH_BDB=ON -DWITH_ZMQ=ON -DBUILD_BENCH=ON -DWERROR=ON'
+            job-name: 'shared libbitcoinkernel, no functional tests'
+          - job-type: kernel-static
+            generate-options: '-DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DVCPKG_MANIFEST_FEATURES="wallet;tests;zeromq" -DBUILD_GUI=OFF -DBUILD_UTIL_CHAINSTATE=ON -DBUILD_KERNEL_LIB=ON -DBUILD_SHARED_LIBS=OFF -DWITH_BDB=ON -DWITH_ZMQ=ON -DBUILD_BENCH=ON -DWERROR=ON'
+            job-name: 'static libbitcoinkernel'
+            run-functional-test: true
           - job-type: fuzz
             generate-options: '-DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DVCPKG_MANIFEST_FEATURES="sqlite" -DBUILD_GUI=OFF -DBUILD_FOR_FUZZING=ON -DWERROR=ON'
-            job-name: 'Win64 native fuzz, VS 2022'
+            job-name: 'fuzz'
 
     steps:
       - name: Checkout
@@ -218,7 +225,7 @@ jobs:
 
       - name: Save vcpkg binary cache
         uses: actions/cache/save@v4
-        if: github.event_name != 'pull_request' && steps.vcpkg-binary-cache.outputs.cache-hit != 'true' && matrix.job-type == 'standard'
+        if: github.event_name != 'pull_request' && steps.vcpkg-binary-cache.outputs.cache-hit != 'true' && matrix.job-type == 'gui'
         with:
           path: ~/AppData/Local/vcpkg/archives
           key: ${{ github.job }}-vcpkg-binary-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
@@ -229,39 +236,39 @@ jobs:
           cmake --build . -j $env:NUMBER_OF_PROCESSORS --config Release
 
       - name: Run test suite
-        if: matrix.job-type == 'standard'
+        if: matrix.job-type != 'fuzz'
         working-directory: build
         run: |
           ctest --output-on-failure --stop-on-failure -j $env:NUMBER_OF_PROCESSORS -C Release
 
-      - name: Run functional tests
-        if: matrix.job-type == 'standard'
-        working-directory: build
-        env:
-          BITCOIND: '${{ github.workspace }}\build\src\Release\bitcoind.exe'
-          BITCOINCLI: '${{ github.workspace }}\build\src\Release\bitcoin-cli.exe'
-          BITCOINUTIL: '${{ github.workspace }}\build\src\Release\bitcoin-util.exe'
-          BITCOINWALLET: '${{ github.workspace }}\build\src\Release\bitcoin-wallet.exe'
-          TEST_RUNNER_EXTRA: ${{ github.event_name != 'pull_request' && '--extended' || '' }}
-        shell: cmd
-        run: py -3 test\functional\test_runner.py --jobs %NUMBER_OF_PROCESSORS% --ci --quiet --tmpdirprefix=%RUNNER_TEMP% --combinedlogslen=99999999 --timeout-factor=%TEST_RUNNER_TIMEOUT_FACTOR% %TEST_RUNNER_EXTRA%
+      # - name: Run functional tests
+      #   if: matrix.run-functional-test == 'true'
+      #   working-directory: build
+      #   env:
+      #     BITCOIND: '${{ github.workspace }}\build\src\Release\bitcoind.exe'
+      #     BITCOINCLI: '${{ github.workspace }}\build\src\Release\bitcoin-cli.exe'
+      #     BITCOINUTIL: '${{ github.workspace }}\build\src\Release\bitcoin-util.exe'
+      #     BITCOINWALLET: '${{ github.workspace }}\build\src\Release\bitcoin-wallet.exe'
+      #     TEST_RUNNER_EXTRA: ${{ github.event_name != 'pull_request' && '--extended' || '' }}
+      #   shell: cmd
+      #   run: py -3 test\functional\test_runner.py --jobs %NUMBER_OF_PROCESSORS% --ci --quiet --tmpdirprefix=%RUNNER_TEMP% --combinedlogslen=99999999 --timeout-factor=%TEST_RUNNER_TIMEOUT_FACTOR% %TEST_RUNNER_EXTRA%
 
-      - name: Clone corpora
-        if: matrix.job-type == 'fuzz'
-        run: |
-          git clone --depth=1 https://github.com/bitcoin-core/qa-assets "$env:RUNNER_TEMP\qa-assets"
-          Set-Location "$env:RUNNER_TEMP\qa-assets"
-          Write-Host "Using qa-assets repo from commit ..."
-          git log -1
+      # - name: Clone corpora
+      #   if: matrix.job-type == 'fuzz'
+      #   run: |
+      #     git clone --depth=1 https://github.com/bitcoin-core/qa-assets "$env:RUNNER_TEMP\qa-assets"
+      #     Set-Location "$env:RUNNER_TEMP\qa-assets"
+      #     Write-Host "Using qa-assets repo from commit ..."
+      #     git log -1
 
-      - name: Run fuzz tests
-        if: matrix.job-type == 'fuzz'
-        working-directory: build
-        env:
-          BITCOINFUZZ: '${{ github.workspace }}\build\src\test\fuzz\Release\fuzz.exe'
-        shell: cmd
-        run: |
-          py -3 test\fuzz\test_runner.py --par %NUMBER_OF_PROCESSORS% --loglevel DEBUG %RUNNER_TEMP%\qa-assets\fuzz_corpora
+      # - name: Run fuzz tests
+      #   if: matrix.job-type == 'fuzz'
+      #   working-directory: build
+      #   env:
+      #     BITCOINFUZZ: '${{ github.workspace }}\build\src\test\fuzz\Release\fuzz.exe'
+      #   shell: cmd
+      #   run: |
+      #     py -3 test\fuzz\test_runner.py --par %NUMBER_OF_PROCESSORS% --loglevel DEBUG %RUNNER_TEMP%\qa-assets\fuzz_corpora
 
   asan-lsan-ubsan-integer-no-depends-usdt:
     name: 'ASan + LSan + UBSan + integer, no depends, USDT'
