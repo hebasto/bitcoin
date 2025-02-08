@@ -33,6 +33,7 @@ std::vector<std::pair<fs::path, std::string>> ListDatabases(const fs::path& wall
             } else {
                 LogPrintf("%s: %s %s\n", __func__, ec.message(), fs::PathToString(it->path()));
             }
+            ec.clear();
             continue;
         }
 
@@ -68,6 +69,13 @@ std::vector<std::pair<fs::path, std::string>> ListDatabases(const fs::path& wall
             LogPrintf("%s: Error scanning %s: %s\n", __func__, fs::PathToString(it->path()), e.what());
             it.disable_recursion_pending();
         }
+    }
+    // The previous `increment()` might have set `ec` and reset itself to the
+    // default constructed iterator, exiting the loop.
+    // Observed on Windows native builds when removing the ACL read permissions
+    // of a wallet directory after the process started.
+    if (ec) {
+        LogWarning("Error scanning directory entries under %s, loop probably aborted: %s", fs::PathToString(wallet_dir), ec.message());
     }
 
     return paths;
