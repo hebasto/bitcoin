@@ -1,0 +1,32 @@
+name: Sync with Upstream
+on:
+  schedule:
+    - cron: '0 3 * * *' # 03:00 UTC daily
+  workflow_dispatch:
+permissions:
+  contents: write # Required for pushing to master
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Add upstream remote
+        run: |
+          git remote add upstream https://github.com/bitcoin/bitcoin.git
+          git remote -v
+      - name: Fetch upstream
+        run: git fetch upstream
+      - name: Configure Git
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+      - name: Rebase onto upstream
+        run: |
+          git checkout master
+          git rebase upstream/master
+      - name: Push changes
+        run: git push --force-with-lease origin master
