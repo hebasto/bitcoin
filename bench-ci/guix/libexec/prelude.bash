@@ -13,6 +13,11 @@ GUIX_PROFILE=/home/github-runner/.config/guix/current
 . "$GUIX_PROFILE/etc/profile"
 echo "Using the following guix command:"
 command -v guix
+echo "Guix command symlink points to:"
+readlink -f "$(command -v guix)"
+echo "Current Guix profile:"
+echo "$GUIX_PROFILE"
+echo "Profile generation info:"
 guix describe
 
 ################
@@ -58,7 +63,7 @@ fi
 time-machine() {
     # shellcheck disable=SC2086
     guix time-machine --url=https://git.savannah.gnu.org/git/guix.git \
-                      --commit=53396a22afc04536ddf75d8f82ad2eafa5082725 \
+                      --commit=4fa41a04802c43dc4c064b7ac4c2e6a4e92f63b6 \
                       --cores="$JOBS" \
                       --keep-failed \
                       --fallback \

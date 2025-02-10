@@ -142,10 +142,10 @@ export GUIX_LD_WRAPPER_DISABLE_RPATH=yes
 
 # Determine the correct value for -Wl,--dynamic-linker for the current $HOST
 case "$HOST" in
+    x86_64-linux-gnu) ;;
     *linux*)
         glibc_dynamic_linker=$(
             case "$HOST" in
-                x86_64-linux-gnu)      echo /lib64/ld-linux-x86-64.so.2 ;;
                 arm-linux-gnueabihf)   echo /lib/ld-linux-armhf.so.3 ;;
                 aarch64-linux-gnu)     echo /lib/ld-linux-aarch64.so.1 ;;
                 riscv64-linux-gnu)     echo /lib/ld-linux-riscv64-lp64d.so.1 ;;
@@ -234,6 +234,7 @@ esac
 
 # LDFLAGS
 case "$HOST" in
+    x86_64-linux-gnu) HOST_LDFLAGS=" -static-pie -static-libgcc -Wl,-O2" ;;
     *linux*)  HOST_LDFLAGS="-Wl,--as-needed -Wl,--dynamic-linker=$glibc_dynamic_linker -static-libstdc++ -Wl,-O2" ;;
     *mingw*)  HOST_LDFLAGS="-Wl,--no-insert-timestamp" ;;
 esac
@@ -252,17 +253,10 @@ mkdir -p "$DISTSRC"
           --toolchain "${BASEPREFIX}/${HOST}/toolchain.cmake" \
           -DWITH_CCACHE=OFF \
           ${CONFIGFLAGS} \
-          ${BENCHCOINFLAGS
+          ${BENCHCOINFLAGS}
 
     # Build Bitcoin Core
     cmake --build build -j "$JOBS" ${V:+--verbose}
-
-    # Check that symbol/security checks tools are sane.
-    # cmake --build build --target test-security-check ${V:+--verbose}
-    # Perform basic security checks on a series of executables.
-    # cmake --build build -j 1 --target check-security ${V:+--verbose}
-    # Check that executables only contain allowed version symbols.
-    # cmake --build build -j 1 --target check-symbols ${V:+--verbose}
 
     mkdir -p "$OUTDIR"
 
