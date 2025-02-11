@@ -130,10 +130,15 @@ class MultiWalletTest(BitcoinTestFramework):
             walletlist = self.nodes[0].listwalletdir()['wallets']
         assert_equal(sorted(map(lambda w: w['name'], walletlist)), sorted(in_wallet_dir))
         # 1. Baseline + recursive directory symlink, no errors.
-        os.symlink('..', wallet_dir('recursive_dir_symlink'))
-        with self.nodes[0].assert_debug_log(expected_msgs=[], unexpected_msgs=['Error scanning']):
-            walletlist = self.nodes[0].listwalletdir()['wallets']
-        assert_equal(sorted(map(lambda w: w['name'], walletlist)), sorted(in_wallet_dir))
+        # This test cannot be conducted robustly on Windows
+        # because it depends on the build toolchain:
+        # - A cross-compiled bitcoind.exe fails to parse recursive_dir_symlink.
+        # - A natively compiled bitcoind.exe parses recursive_dir_symlink without errors.
+        if platform.system() != 'Windows':
+            os.symlink('..', wallet_dir('recursive_dir_symlink'))
+            with self.nodes[0].assert_debug_log(expected_msgs=[], unexpected_msgs=['Error scanning']):
+                walletlist = self.nodes[0].listwalletdir()['wallets']
+            assert_equal(sorted(map(lambda w: w['name'], walletlist)), sorted(in_wallet_dir))
         # 2. "Permission denied" error.
         if platform.system() != 'Windows':
             if os.geteuid() == 0:
