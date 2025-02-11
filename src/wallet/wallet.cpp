@@ -2962,17 +2962,28 @@ static util::Result<fs::path> GetWalletPath(const std::string& name)
     // 3. Path to a symlink to a directory.
     // 4. For backwards compatibility, the name of a data file in -walletdir.
     const fs::path wallet_path = fsbridge::AbsPathJoin(GetWalletDir(), fs::PathFromString(name));
-    fs::file_type path_type = fs::symlink_status(wallet_path).type();
-    if (!(path_type == fs::file_type::not_found || path_type == fs::file_type::directory ||
-          (path_type == fs::file_type::symlink && fs::is_directory(wallet_path)) ||
-          (path_type == fs::file_type::regular && fs::PathFromString(name).filename() == fs::PathFromString(name)))) {
-        return util::Error{Untranslated(strprintf(
-              "Invalid -wallet path '%s'. -wallet path should point to a directory where wallet.dat and "
-              "database/log.?????????? files can be stored, a location where such a directory could be created, "
-              "or (for backwards compatibility) the name of an existing data file in -walletdir (%s)",
-              name, fs::quoted(fs::PathToString(GetWalletDir()))))};
+
+    if (fs::is_regular_file(fs::symlink_status(wallet_path)) && fs::PathFromString(name).filename() == fs::PathFromString(name)) {
+        return wallet_path;
     }
-    return wallet_path;
+
+    auto p{wallet_path};
+    while (true) {
+        if (fs::is_directory(p)) {
+            return wallet_path;
+        } else if (fs::exists(p)) {
+            break;
+        } else if (!p.has_parent_path()) {
+            break;
+        }
+        p = p.parent_path();
+    };
+
+    return util::Error{Untranslated(strprintf(
+        "Invalid -wallet path '%s'. -wallet path should point to a directory where wallet.dat and "
+        "database/log.?????????? files can be stored, a location where such a directory could be created, "
+        "or (for backwards compatibility) the name of an existing data file in -walletdir (%s)",
+        name, fs::quoted(fs::PathToString(GetWalletDir()))))};
 }
 
 std::unique_ptr<WalletDatabase> MakeWalletDatabase(const std::string& name, const DatabaseOptions& options, DatabaseStatus& status, bilingual_str& error_string)
