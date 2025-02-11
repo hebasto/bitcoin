@@ -2970,12 +2970,9 @@ static util::Result<fs::path> GetWalletPath(const std::string& name)
     auto p{wallet_path};
     std::string error_details;
     while (true) {
-        fs::file_type path_type = fs::symlink_status(p).type();
-        if (path_type == fs::file_type::directory) {
+        if (fs::is_directory(p)) {
             return wallet_path;
-        } else if (path_type == fs::file_type::symlink && fs::is_directory(p)) {
-            return wallet_path;
-        } else if (path_type != fs::file_type::not_found) {
+        } else if (fs::exists(p)) {
             error_details = strprintf("%s is not a directory.", fs::quoted(fs::PathToString(p)));
             break;
         } else if (!p.has_parent_path()) {
