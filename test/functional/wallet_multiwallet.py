@@ -142,7 +142,7 @@ class MultiWalletTest(BitcoinTestFramework):
         assert_equal(set(node.listwallets()), set(wallet_names))
 
         # should raise rpc error if wallet path can't be created
-        assert_raises_rpc_error(-4, "Wallet file verification failed. Invalid -wallet path 'w8/bad'", self.nodes[0].createwallet, "w8/bad")
+        assert_raises_rpc_error(-4, f'"{wallet_dir("w8")}" is not a directory.', self.nodes[0].createwallet, "w8/bad")
 
         # check that all requested wallets were created
         self.stop_node(0)
@@ -166,7 +166,7 @@ class MultiWalletTest(BitcoinTestFramework):
 
         # should not initialize if wallet file is a symlink
         os.symlink('w8', wallet_dir('w8_symlink'))
-        self.nodes[0].assert_start_raises_init_error(['-wallet=w8_symlink'], r'Error: Invalid -wallet path \'w8_symlink\'\. .*', match=ErrorMatch.FULL_REGEX)
+        self.nodes[0].assert_start_raises_init_error(['-wallet=w8_symlink'], f'Error: "{wallet_dir("w8_symlink")}" is not a directory. .*', match=ErrorMatch.FULL_REGEX)
 
         # should not initialize if the specified walletdir does not exist
         self.nodes[0].assert_start_raises_init_error(['-walletdir=bad'], 'Error: Specified -walletdir "bad" does not exist')
@@ -317,7 +317,7 @@ class MultiWalletTest(BitcoinTestFramework):
             assert_raises_rpc_error(-4, "BerkeleyDatabase: Can't open database w8_copy (duplicates fileid", self.nodes[0].loadwallet, 'w8_copy')
 
         # Fail to load if wallet file is a symlink
-        assert_raises_rpc_error(-4, "Wallet file verification failed. Invalid -wallet path 'w8_symlink'", self.nodes[0].loadwallet, 'w8_symlink')
+        assert_raises_rpc_error(-4, f'"{wallet_dir("w8_symlink")}" is not a directory.', self.nodes[0].loadwallet, "w8_symlink")
 
         # Fail to load if a directory is specified that doesn't contain a wallet
         os.mkdir(wallet_dir('empty_wallet_dir'))

@@ -2968,22 +2968,25 @@ static util::Result<fs::path> GetWalletPath(const std::string& name)
     }
 
     auto p{wallet_path};
+    std::string error_details;
     while (true) {
         if (fs::is_directory(p)) {
             return wallet_path;
         } else if (fs::exists(p)) {
+            error_details = strprintf("%s is not a directory.", fs::quoted(fs::PathToString(p)));
             break;
         } else if (!p.has_parent_path()) {
+            error_details = strprintf("Invalid -wallet path '%s'.", name);
             break;
         }
         p = p.parent_path();
     };
 
     return util::Error{Untranslated(strprintf(
-        "Invalid -wallet path '%s'. -wallet path should point to a directory where wallet.dat and "
+        "%s -wallet path should point to a directory where wallet.dat and "
         "database/log.?????????? files can be stored, a location where such a directory could be created, "
         "or (for backwards compatibility) the name of an existing data file in -walletdir (%s)",
-        name, fs::quoted(fs::PathToString(GetWalletDir()))))};
+        error_details, fs::quoted(fs::PathToString(GetWalletDir()))))};
 }
 
 std::unique_ptr<WalletDatabase> MakeWalletDatabase(const std::string& name, const DatabaseOptions& options, DatabaseStatus& status, bilingual_str& error_string)
