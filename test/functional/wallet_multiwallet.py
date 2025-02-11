@@ -169,7 +169,10 @@ class MultiWalletTest(BitcoinTestFramework):
 
         # should raise rpc error if wallet path can't be created
         err_code = -4 if self.options.descriptors else -1
-        assert_raises_rpc_error(err_code, "filesystem error:" if platform.system() != 'Windows' else "create_directories:", self.nodes[0].createwallet, "w8/bad")
+        # The actual error message differs depending on the toolchain used:
+        # - "create_directories: unknown error: ..." when built natively on Windows.
+        # - "filesystem error: cannot create directories: Not a directory ..." in all other cases.
+        assert_raises_rpc_error(err_code, "directories:", self.nodes[0].createwallet, "w8/bad")
 
         # check that all requested wallets were created
         self.stop_node(0)
