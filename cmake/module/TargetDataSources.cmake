@@ -7,6 +7,14 @@ macro(set_add_custom_command_options)
   if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.27)
     set(DEPENDS_EXPLICIT_OPT DEPENDS_EXPLICIT_ONLY)
   endif()
+  set(CODEGEN_OPT "")
+  if(POLICY CMP0171)
+    cmake_policy(GET CMP0171 _cmp0171_status)
+    if(_cmp0171_status STREQUAL "NEW")
+      set(CODEGEN_OPT CODEGEN)
+    endif()
+    unset(_cmp0171_status)
+  endif()
 endmacro()
 
 # Specifies JSON data files to be processed into corresponding
@@ -21,6 +29,7 @@ function(target_json_data_sources target)
       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${json_file} ${PROJECT_SOURCE_DIR}/cmake/script/GenerateHeaderFromJson.cmake
       MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${json_file}
       VERBATIM
+      ${CODEGEN_OPT}
       ${DEPENDS_EXPLICIT_OPT}
     )
     target_sources(${target} PRIVATE ${header})
@@ -40,6 +49,7 @@ function(target_raw_data_sources target)
       DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${raw_file} ${PROJECT_SOURCE_DIR}/cmake/script/GenerateHeaderFromRaw.cmake
       MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/${raw_file}
       VERBATIM
+      ${CODEGEN_OPT}
       ${DEPENDS_EXPLICIT_OPT}
     )
     target_sources(${target} PRIVATE ${header})
