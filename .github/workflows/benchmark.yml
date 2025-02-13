@@ -39,7 +39,7 @@ jobs:
         with:
           name: bitcoind-binaries
           path: ${{ runner.temp }}/binaries/
-  assumeutxo:
+  instrumented:
     needs: build-binaries
     strategy:
       matrix:
@@ -85,7 +85,7 @@ jobs:
         run: |
           env
           mkdir -p "$TMP_DATADIR"
-          nix-shell --command "just run-${{ matrix.network }}-ci $BASE_SHA $CHECKOUT_COMMIT $TMP_DATADIR $ORIGINAL_DATADIR ${{ runner.temp }}/results.json ${{ matrix.dbcache }} ${{ runner.temp }}/pngs $BINARIES_DIR"
+          nix-shell --command "just run-${{ matrix.network }}-ci-instrumented $BASE_SHA $CHECKOUT_COMMIT $TMP_DATADIR $ORIGINAL_DATADIR ${{ runner.temp }}/results.json ${{ matrix.dbcache }} ${{ runner.temp }}/pngs $BINARIES_DIR"
       - uses: actions/upload-artifact@v4
         with:
           name: result-${{ matrix.name }}

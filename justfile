@@ -10,10 +10,15 @@ default:
 build-assumeutxo-binaries-guix base_commit head_commit:
     ./bench-ci/build_binaries.sh {{ base_commit }} {{ head_commit }}
 
-# Run mainnet benchmark workflow for large cache
+# Run uninstrumented benchmarks on mainnet
 [group('ci')]
 run-mainnet-ci base_commit head_commit TMP_DATADIR ORIGINAL_DATADIR results_file dbcache png_dir binaries_dir:
     ./bench-ci/run-benchmark.sh {{ base_commit }} {{ head_commit }} {{ TMP_DATADIR }} {{ ORIGINAL_DATADIR }} {{ results_file }} {{ png_dir }} main 855000 "148.251.128.115:33333" {{ dbcache }} {{ binaries_dir }}
+
+# Run instrumented benchmarks on mainnet
+[group('ci')]
+run-mainnet-ci-instrumented base_commit head_commit TMP_DATADIR ORIGINAL_DATADIR results_file dbcache png_dir binaries_dir:
+    ./bench-ci/run-benchmark-instrumented.sh {{ base_commit }} {{ head_commit }} {{ TMP_DATADIR }} {{ ORIGINAL_DATADIR }} {{ results_file }} {{ png_dir }} main 855000 "148.251.128.115:33333" {{ dbcache }} {{ binaries_dir }}
 
 # Cherry-pick commits from a bitcoin core PR onto this branch
 [group('git')]

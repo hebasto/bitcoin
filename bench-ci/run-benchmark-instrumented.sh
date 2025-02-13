@@ -65,7 +65,30 @@ prepare_run() {
 # Executed after each timing run
 conclude_run() {
   set -euxo pipefail
-  return 0
+
+  local commit="$1"
+  local TMP_DATADIR="$2"
+  local PNG_DIR="$3"
+
+  # Search in subdirs e.g. $datadir/signet
+  debug_log=$(find "${TMP_DATADIR}" -name debug.log -print -quit)
+  if [ -n "${debug_log}" ]; then
+    echo "Generating plots from ${debug_log}"
+    if [ -x "bench-ci/parse_and_plot.py" ]; then
+      bench-ci/parse_and_plot.py "${debug_log}" "${PNG_DIR}"
+    else
+      ls -al "bench-ci/"
+      echo "parse_and_plot.py not found or not executable, skipping plot generation"
+    fi
+  else
+    ls -al "${TMP_DATADIR}/"
+    echo "debug.log not found, skipping plot generation"
+  fi
+
+  # Move flamegraph if exists
+  if [ -e flamegraph.svg ]; then
+    mv flamegraph.svg "${commit}"-flamegraph.svg
+  fi
 }
 
 # Execute CMD after the completion of all benchmarking runs for each individual
@@ -122,12 +145,12 @@ run_benchmark() {
     --prepare "prepare_run ${TMP_DATADIR} ${ORIGINAL_DATADIR}" \
     --conclude "conclude_run {commit} ${TMP_DATADIR} ${png_dir}" \
     --cleanup "cleanup_run ${TMP_DATADIR}" \
-    --runs 3 \
+    --runs 1 \
     --export-json "${results_file}" \
     --show-output \
     --command-name "base (${base_commit})" \
     --command-name "head (${head_commit})" \
-    "taskset -c 2-15 chrt -o 1 ${BINARIES_DIR}/{commit}/bitcoind -datadir=${TMP_DATADIR} -connect=${connect_address} -daemon=0 -prune=10000 -chain=${chain} -stopatheight=${stop_at_height} -dbcache=${dbcache} -printtoconsole=0" \
+    "taskset -c 1 flamegraph --palette bitcoin --title 'bitcoind IBD@{commit}' -c 'record -F 101 --call-graph fp' -- taskset -c 2-15 chrt -r 1 ${BINARIES_DIR}/{commit}/bitcoind -datadir=${TMP_DATADIR} -connect=${connect_address} -daemon=0 -prune=10000 -chain=${chain} -stopatheight=${stop_at_height} -dbcache=${dbcache} -printtoconsole=0 -debug=coindb -debug=leveldb -debug=bench -debug=validation" \
     -L commit "base,head"
 }
 
