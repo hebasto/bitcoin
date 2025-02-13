@@ -12,8 +12,8 @@ build-assumeutxo-binaries-guix base_commit head_commit:
 
 # Run uninstrumented benchmarks on mainnet
 [group('ci')]
-run-mainnet-ci base_commit head_commit TMP_DATADIR ORIGINAL_DATADIR results_file dbcache png_dir binaries_dir:
-    ./bench-ci/run-benchmark.sh {{ base_commit }} {{ head_commit }} {{ TMP_DATADIR }} {{ ORIGINAL_DATADIR }} {{ results_file }} {{ png_dir }} main 855000 "148.251.128.115:33333" {{ dbcache }} {{ binaries_dir }}
+run-mainnet-ci base_commit head_commit TMP_DATADIR ORIGINAL_DATADIR results_file dbcache binaries_dir:
+    ./bench-ci/run-benchmark.sh {{ base_commit }} {{ head_commit }} {{ TMP_DATADIR }} {{ ORIGINAL_DATADIR }} {{ results_file }} main 855000 "148.251.128.115:33333" {{ dbcache }} {{ binaries_dir }}
 
 # Run instrumented benchmarks on mainnet
 [group('ci')]
