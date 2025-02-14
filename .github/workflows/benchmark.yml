@@ -45,12 +45,12 @@ jobs:
       matrix:
         include:
           - network: mainnet
-            name: mainnet-default
+            name: mainnet-default-uninstrumented
             timeout: 600
             datadir_path: /data/pruned-840k
             dbcache: 450
           - network: mainnet
-            name: mainnet-large
+            name: mainnet-large-uninstrumented
             timeout: 600
             datadir_path: /data/pruned-840k
             dbcache: 32000
@@ -109,12 +109,12 @@ jobs:
       matrix:
         include:
           - network: mainnet
-            name: mainnet-default
+            name: mainnet-default-instrumented
             timeout: 600
             datadir_path: /data/pruned-840k
             dbcache: 450
           - network: mainnet
-            name: mainnet-large
+            name: mainnet-large-instrumented
             timeout: 600
             datadir_path: /data/pruned-840k
             dbcache: 32000
