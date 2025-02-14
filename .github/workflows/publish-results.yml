@@ -12,7 +12,7 @@ jobs:
       contents: write
       checks: read
     env:
-      NETWORKS: "mainnet-default,mainnet-large"
+      NETWORKS: "mainnet-default-instrumented,mainnet-large-instrumented,mainnet-default-uninstrumented,mainnet-large-uninstrumented"
     outputs:
       speedups: ${{ steps.organize.outputs.speedups }}
       pr-number: ${{ steps.organize.outputs.pr-number }}
