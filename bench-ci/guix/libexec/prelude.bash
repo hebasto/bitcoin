@@ -10,7 +10,7 @@ source contrib/shell/git-utils.bash
 
 # Source guix profile from the runner home directory
 GUIX_PROFILE=/home/github-runner/.config/guix/current
-. "$GUIX_PROFILE/etc/profile"
+. "$GUIX_PROFILE/etc/profile" || true
 echo "Using the following guix command:"
 command -v guix
 echo "Guix command symlink points to:"
