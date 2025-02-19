@@ -247,6 +247,16 @@ mkdir -p "$DISTSRC"
     # Build Bitcoin Core
     cmake --build build -j "$JOBS" ${V:+--verbose}
 
+    echo "=============================================================== src/clientversion.cpp === START"
+    cat src/clientversion.cpp
+    echo "=============================================================== src/clientversion.cpp === END"
+
+    echo "=============================================================== build/src/bitcoin-build-info.h === START"
+    cat build/src/bitcoin-build-info.h
+    echo "=============================================================== build/src/bitcoin-build-info.h === END"
+
+    exit 1
+
     # Perform basic security checks on a series of executables.
     cmake --build build -j 1 --target check-security ${V:+--verbose}
     # Check that executables only contain allowed version symbols.
