@@ -35,7 +35,6 @@ build-aux/test-driver
 config.cache
 config.log
 config.status
-configure
 libtool
 src/config/bitcoin-config.h
 src/config/bitcoin-config.h.in
