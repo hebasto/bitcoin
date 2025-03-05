@@ -337,6 +337,7 @@ jobs:
         run: .\src\bitcoind.exe -version
 
       - name: Run unit tests
+        shell: powershell
         run: |
           .\src\test\test_bitcoin.exe -l test_suite
           .\src\secp256k1\bin\exhaustive_tests.exe
