@@ -292,7 +292,7 @@ BOOST_AUTO_TEST_CASE(patharg)
     BOOST_CHECK_EQUAL(local_args.GetPathArg("-dir"), root_path);
 
 #ifdef WIN32
-    const fs::path win_root_path{"C:\\"};
+    const fs::path win_root_path{"C:"};
     ResetArgs(local_args, "-dir=C:\\");
     BOOST_CHECK_EQUAL(local_args.GetPathArg("-dir"), win_root_path);
 
