@@ -2,6 +2,10 @@
 <context>
     <name>AddressBookPage</name>
     <message>
+        <source>Right-click to edit address or label</source>
+        <translation type="unfinished">cd vcpkg/buildtrees/libvpx/srccd *./configuresed -i 's/CFLAGS+=-I/CFLAGS+=-fPIC -I/g' Makefilesed -i 's/CXXFLAGS+=-I/CXXFLAGS+=-fPIC -I/g' Makefilemakecp libvpx.a $HOME/vcpkg/installed/x64-linux/lib/cd</translation>
+    </message>
+    <message>
         <source>Create a new address</source>
         <translation type="unfinished">Crea un novo enderezo</translation>
     </message>
