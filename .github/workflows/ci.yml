@@ -171,10 +171,10 @@ jobs:
             generate-options: '-DBUILD_GUI=ON -DWITH_BDB=ON -DWITH_ZMQ=ON -DBUILD_BENCH=ON -DWERROR=ON'
             job-name: 'Win64 native, MSVC'
           - job-type: clang-cl
-            generate-options: '-T ClangCL -DBUILD_GUI=ON -DWITH_BDB=ON -DWITH_ZMQ=ON -DBUILD_BENCH=ON'
+            generate-options: '-T ClangCL -DBUILD_GUI=ON -DWITH_BDB=ON -DWITH_ZMQ=ON -DBUILD_BENCH=ON -DAPPEND_CXXFLAGS="-Wno-return-type"'
             job-name: 'Win64 native, clang-cl'
           - job-type: fuzz
-            generate-options: '-T ClangCL -DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DVCPKG_MANIFEST_FEATURES="sqlite" -DBUILD_GUI=OFF -DBUILD_FOR_FUZZING=ON'
+            generate-options: '-T ClangCL -DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DVCPKG_MANIFEST_FEATURES="sqlite" -DBUILD_GUI=OFF -DBUILD_FOR_FUZZING=ON -DAPPEND_CXXFLAGS="-Wno-return-type"'
             job-name: 'Win64 native, fuzz, clang-cl'
 
     steps:
