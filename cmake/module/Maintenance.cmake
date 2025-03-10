@@ -125,16 +125,28 @@ function(add_macos_deploy_target)
         DEPENDS ${PROJECT_BINARY_DIR}/dist/${macos_app}/Contents/MacOS/Bitcoin-Qt
       )
 
-      find_program(ZIP_COMMAND zip REQUIRED)
-      add_custom_command(
-        OUTPUT ${PROJECT_BINARY_DIR}/dist/${osx_volname}.zip
-        WORKING_DIRECTORY dist
-        COMMAND ${PROJECT_SOURCE_DIR}/cmake/script/macos_zip.sh ${ZIP_COMMAND} ${osx_volname}.zip
-        VERBATIM
-      )
-      add_custom_target(deploy
-        DEPENDS ${PROJECT_BINARY_DIR}/dist/${osx_volname}.zip
-      )
+      find_program(ZIP_EXECUTABLE zip)
+      if(NOT ZIP_EXECUTABLE)
+        add_custom_target(deploy
+          COMMAND ${CMAKE_COMMAND} -E echo
+          COMMAND ${CMAKE_COMMAND} -E echo "Error: ZIP not found."
+          COMMAND ${CMAKE_COMMAND} -E echo "Please install ZIP and/or ensure that its executable is accessible to the find_program() command—"
+          COMMAND ${CMAKE_COMMAND} -E echo "for example, by setting the ZIP_EXECUTABLE variable or another relevant CMake variable."
+          COMMAND ${CMAKE_COMMAND} -E echo "Then re-run cmake to regenerate the build system."
+          COMMAND ${CMAKE_COMMAND} -E echo
+          VERBATIM
+        )
+      else()
+        add_custom_command(
+          OUTPUT ${PROJECT_BINARY_DIR}/dist/${osx_volname}.zip
+          WORKING_DIRECTORY dist
+          COMMAND ${PROJECT_SOURCE_DIR}/cmake/script/macos_zip.sh ${ZIP_EXECUTABLE} ${osx_volname}.zip
+          VERBATIM
+        )
+        add_custom_target(deploy
+          DEPENDS ${PROJECT_BINARY_DIR}/dist/${osx_volname}.zip
+        )
+      endif()
     endif()
     add_dependencies(deploydir bitcoin-qt)
     add_dependencies(deploy deploydir)
