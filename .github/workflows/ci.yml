@@ -168,6 +168,7 @@ jobs:
         job-type: [standard, fuzz]
         include:
           - job-type: standard
+            env_vars: {}
             generate-options: '-DBUILD_GUI=ON -DWITH_BDB=ON -DWITH_ZMQ=ON -DBUILD_BENCH=ON -DWERROR=ON'
             job-name: 'Win64 native, MSVC'
           - job-type: clang-cl
