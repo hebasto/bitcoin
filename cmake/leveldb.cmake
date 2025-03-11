@@ -95,6 +95,9 @@ else()
   try_append_cxx_flags("-Wsuggest-override" TARGET nowarn_leveldb_interface SKIP_LINK
     IF_CHECK_PASSED "-Wno-suggest-override"
   )
+  try_append_cxx_flags("-Wunused-member-function" TARGET nowarn_leveldb_interface SKIP_LINK
+    IF_CHECK_PASSED "-Wno-unused-member-function"
+  )
 endif()
 
 target_link_libraries(leveldb PRIVATE
