@@ -172,11 +172,11 @@ jobs:
             generate-options: '-DBUILD_GUI=ON -DWITH_BDB=ON -DWITH_ZMQ=ON -DBUILD_BENCH=ON -DWERROR=ON'
             job-name: 'Win64 native, MSVC'
           - job-type: clang-cl
-            env_vars: { CXXFLAGS: '-Wno-return-type -Wno-error=conditional-uninitialized' }
+            env_vars: { CXXFLAGS: '-Wno-return-type -Wno-error=conditional-uninitialized -Wno-error=missing-braces' }
             generate-options: '-T ClangCL -DBUILD_GUI=ON -DWITH_BDB=ON -DWITH_ZMQ=ON -DBUILD_BENCH=ON'
             job-name: 'Win64 native, clang-cl'
           - job-type: fuzz
-            env_vars: { CXXFLAGS: '-Wno-return-type -Wno-error=conditional-uninitialized' }
+            env_vars: { CXXFLAGS: '-Wno-return-type -Wno-error=conditional-uninitialized -Wno-error=missing-braces' }
             generate-options: '-T ClangCL -DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DVCPKG_MANIFEST_FEATURES="sqlite" -DBUILD_GUI=OFF -DBUILD_FOR_FUZZING=ON'
             job-name: 'Win64 native, fuzz, clang-cl'
 
