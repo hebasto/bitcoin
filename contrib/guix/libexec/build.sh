@@ -207,6 +207,7 @@ mkdir -p "$OUTDIR"
 
 # CONFIGFLAGS
 CONFIGFLAGS="-DREDUCE_EXPORTS=ON -DBUILD_BENCH=OFF -DBUILD_GUI_TESTS=OFF -DBUILD_FUZZ_BINARY=OFF"
+TARGETS="bitcoind bitcoin-qt bitcoin-cli bitcoin-tx bitcoin-util bitcoin-wallet test_bitcoin"
 
 # CFLAGS
 HOST_CFLAGS="-O2 -g"
@@ -245,7 +246,7 @@ mkdir -p "$DISTSRC"
           ${CONFIGFLAGS}
 
     # Build Bitcoin Core
-    cmake --build build -j "$JOBS" ${V:+--verbose}
+    cmake --build build -j "$JOBS" --target ${TARGETS} ${V:+--verbose}
 
     # Perform basic security checks on a series of executables.
     cmake --build build -j 1 --target check-security ${V:+--verbose}
