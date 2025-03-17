@@ -266,7 +266,7 @@ jobs:
         env:
           BITCOINFUZZ: '${{ github.workspace }}\build\bin\Release\fuzz.exe'
         run: |
-          py -3 test\fuzz\test_runner.py --par $NUMBER_OF_PROCESSORS --loglevel DEBUG "${RUNNER_TEMP}\qa-assets\fuzz_corpora"
+          py -3 test\\fuzz\\test_runner.py --par $NUMBER_OF_PROCESSORS --loglevel DEBUG "${RUNNER_TEMP}\qa-assets\fuzz_corpora"
 
   windows-cross:
     name: 'Linux->Windows cross, no tests'
@@ -362,18 +362,17 @@ jobs:
           Get-Content "test\config.ini"
 
       - name: Run util tests
-        run: py -3 test\util\test_runner.py
+        run: py -3 test\\util\\test_runner.py
 
       - name: Run rpcauth test
-        run: py -3 test\util\rpcauth-test.py
+        run: py -3 test\\util\\rpcauth-test.py
 
       - name: Run functional tests
         env:
           # TODO: Fix the excluded tests and re-enable them.
           EXCLUDE: '--exclude wallet_migration.py,wallet_multiwallet.py'
           TEST_RUNNER_EXTRA: ${{ github.event_name != 'pull_request' && '--extended' || '' }}
-        shell: cmd
-        run: py -3 test\functional\test_runner.py --jobs %NUMBER_OF_PROCESSORS% --ci --quiet --tmpdirprefix=%RUNNER_TEMP% --combinedlogslen=99999999 --timeout-factor=%TEST_RUNNER_TIMEOUT_FACTOR% %EXCLUDE% %TEST_RUNNER_EXTRA%
+        run: py -3 test\\functional\\test_runner.py --jobs $NUMBER_OF_PROCESSORS --ci --quiet --tmpdirprefix="$RUNNER_TEMP" --combinedlogslen=99999999 --timeout-factor=$TEST_RUNNER_TIMEOUT_FACTOR $EXCLUDE $TEST_RUNNER_EXTRA
 
   asan-lsan-ubsan-integer-no-depends-usdt:
     name: 'ASan + LSan + UBSan + integer, no depends, USDT'
