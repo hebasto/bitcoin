@@ -191,13 +191,15 @@ jobs:
           arch: x64
 
       - name: Get tool information
+        shell: pwsh
         run: |
-          cmake --version | tee cmake_version
-          echo "---"
-          msbuild -version | tee msbuild_version
-          echo "$VCToolsVersion" | tee toolset_version
+          cmake -version | Tee-Object -FilePath "cmake_version"
+          Write-Output "---"
+          msbuild -version | Tee-Object -FilePath "msbuild_version"
+          $env:VCToolsVersion | Tee-Object -FilePath "toolset_version"
           py -3 --version
-          $0 --version
+          Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
+          bash --version
 
       - name: Using vcpkg with MSBuild
         run: |
