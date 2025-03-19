@@ -138,7 +138,10 @@ jobs:
           restore-keys: ${{ github.job }}-${{ matrix.job-type }}-ccache-
 
       - name: CI script
-        run: ./ci/test_run_all.sh
+        run: |
+          locale
+          ./ci/test_run_all.sh
+          locale
         env:
           FILE_ENV: ${{ matrix.file-env }}
 
