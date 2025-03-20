@@ -9,19 +9,11 @@
              (gnu packages gawk)
              (gnu packages gcc)
              ((gnu packages linux) #:select (linux-libre-headers-6.1))
-             (gnu packages llvm)
-             (gnu packages mingw)
              (gnu packages ninja)
              (gnu packages pkg-config)
-             ((gnu packages python) #:select (python-minimal))
-             ((gnu packages python-build) #:select (python-tomli python-poetry-core))
-             ((gnu packages python-crypto) #:select (python-asn1crypto))
-             ((gnu packages tls) #:select (openssl))
              ((gnu packages version-control) #:select (git-minimal))
              (guix build-system cmake)
              (guix build-system gnu)
-             (guix build-system python)
-             (guix build-system pyproject)
              (guix build-system trivial)
              (guix download)
              (guix gexp)
@@ -107,61 +99,6 @@ desirable for building Bitcoin Core release binaries."
                         base-kernel-headers
                         base-libc
                         base-gcc))
-
-(define (gcc-mingw-patches gcc)
-  (package-with-extra-patches gcc
-    (search-our-patches "gcc-remap-guix-store.patch")))
-
-(define (binutils-mingw-patches binutils)
-  (package-with-extra-patches binutils
-    (search-our-patches "binutils-unaligned-default.patch")))
-
-(define (winpthreads-patches mingw-w64-x86_64-winpthreads)
-  (package-with-extra-patches mingw-w64-x86_64-winpthreads
-    (search-our-patches "winpthreads-remap-guix-store.patch")))
-
-(define (make-mingw-pthreads-cross-toolchain target)
-  "Create a cross-compilation toolchain package for TARGET"
-  (let* ((xbinutils (binutils-mingw-patches (cross-binutils target)))
-         (machine (substring target 0 (string-index target #\-)))
-         (pthreads-xlibc (winpthreads-patches (make-mingw-w64 machine
-                                         #:xgcc (cross-gcc target #:xgcc (gcc-mingw-patches base-gcc))
-                                         #:with-winpthreads? #t)))
-         (pthreads-xgcc (cross-gcc target
-                                    #:xgcc (gcc-mingw-patches mingw-w64-base-gcc)
-                                    #:xbinutils xbinutils
-                                    #:libc pthreads-xlibc)))
-    ;; Define a meta-package that propagates the resulting XBINUTILS, XLIBC, and
-    ;; XGCC
-    (package
-      (name (string-append target "-posix-toolchain"))
-      (version (package-version pthreads-xgcc))
-      (source #f)
-      (build-system trivial-build-system)
-      (arguments '(#:builder (begin (mkdir %output) #t)))
-      (propagated-inputs
-        (list xbinutils
-              pthreads-xlibc
-              pthreads-xgcc
-              `(,pthreads-xgcc "lib")))
-      (synopsis (string-append "Complete GCC tool chain for " target))
-      (description (string-append "This package provides a complete GCC tool
-chain for " target " development."))
-      (home-page (package-home-page pthreads-xgcc))
-      (license (package-license pthreads-xgcc)))))
-
-(define-public mingw-w64-base-gcc
-  (package
-    (inherit base-gcc)
-    (arguments
-      (substitute-keyword-arguments (package-arguments base-gcc)
-        ((#:configure-flags flags)
-          `(append ,flags
-            ;; https://gcc.gnu.org/install/configure.html
-            (list "--enable-threads=posix",
-                  "--enable-default-ssp=yes",
-                  "--disable-gcov",
-                  building-on)))))))
 
 (define-public linux-base-gcc
   (package
@@ -255,8 +192,6 @@ chain for " target " development."))
         cmake-minimal
         gnu-make
         ninja
-        ;; Scripting
-        python-minimal ;; (3.10)
         ;; Git
         git-minimal)
   (let ((target (getenv "HOST")))
@@ -265,9 +200,4 @@ chain for " target " development."))
                  pkg-config
                  (list gcc-toolchain-13 "static")
                  (make-bitcoin-cross-toolchain target)))
-          ((string-contains target "darwin")
-           (list clang-toolchain-18
-                 lld-18
-                 (make-lld-wrapper lld-18 #:lld-as-ld? #t)
-                 zip))
           (else '())))))
