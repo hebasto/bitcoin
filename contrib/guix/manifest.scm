@@ -180,6 +180,7 @@ desirable for building Bitcoin Core release binaries."
         diffutils
         findutils
         ;; File transformation
+        bison
         patch
         gawk
         sed
@@ -188,16 +189,12 @@ desirable for building Bitcoin Core release binaries."
         gzip
         xz
         ;; Build tools
-        gcc-toolchain-13
         cmake-minimal
+        gcc-toolchain-13
+        (list gcc-toolchain-13 "static")
         gnu-make
+        (make-bitcoin-cross-toolchain x86_64-linux-gnu)
         ninja
+        pkg-config
         ;; Git
-        git-minimal)
-  (let ((target (getenv "HOST")))
-    (cond ((string-contains target "-linux-")
-           (list bison
-                 pkg-config
-                 (list gcc-toolchain-13 "static")
-                 (make-bitcoin-cross-toolchain target)))
-          (else '())))))
+        git-minimal)))
