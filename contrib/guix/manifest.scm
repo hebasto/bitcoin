@@ -193,7 +193,7 @@ desirable for building Bitcoin Core release binaries."
         gcc-toolchain-13
         (list gcc-toolchain-13 "static")
         gnu-make
-        (make-bitcoin-cross-toolchain x86_64-linux-gnu)
+        (make-bitcoin-cross-toolchain "x86_64-linux-gnu")
         ninja
         pkg-config
         ;; Git
