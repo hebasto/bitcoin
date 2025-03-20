@@ -267,6 +267,7 @@ import_plugins(bitcoin-qt)
 install_binary_component(bitcoin-qt HAS_MANPAGE)
 if(WIN32)
   set_target_properties(bitcoin-qt PROPERTIES WIN32_EXECUTABLE TRUE)
+  set_target_properties(Qt6::Core PROPERTIES qt_no_entrypoint TRUE)
 endif()
 
 if(WITH_MULTIPROCESS)
