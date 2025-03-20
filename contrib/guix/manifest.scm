@@ -1,7 +1,6 @@
 (use-modules (gnu packages)
              ((gnu packages bash) #:select (bash-minimal))
              (gnu packages bison)
-             ((gnu packages certs) #:select (nss-certs))
              ((gnu packages cmake) #:select (cmake-minimal))
              (gnu packages commencement)
              (gnu packages compression)
@@ -9,7 +8,6 @@
              (gnu packages file)
              (gnu packages gawk)
              (gnu packages gcc)
-             ((gnu packages installers) #:select (nsis-x86_64))
              ((gnu packages linux) #:select (linux-libre-headers-6.1))
              (gnu packages llvm)
              (gnu packages mingw)
@@ -233,36 +231,6 @@ chain for " target " development."))
                    (("^install-others =.*$")
                     (string-append "install-others = " out "/etc/rpc\n")))))))))))))
 
-;; The sponge tool from moreutils.
-(define-public sponge
-  (package
-    (name "sponge")
-    (version "0.69")
-    (source (origin
-              (method url-fetch)
-              (uri (string-append
-                    "https://git.joeyh.name/index.cgi/moreutils.git/snapshot/
-                    moreutils-" version ".tar.gz"))
-              (file-name (string-append "moreutils-" version ".tar.gz"))
-              (sha256
-               (base32
-                "1l859qnzccslvxlh5ghn863bkq2vgmqgnik6jr21b9kc6ljmsy8g"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list #:phases
-           #~(modify-phases %standard-phases
-               (delete 'configure)
-               (replace 'install
-                (lambda* (#:key outputs #:allow-other-keys)
-                  (let ((bin (string-append (assoc-ref outputs "out") "/bin")))
-                  (install-file "sponge" bin)))))
-           #:make-flags
-           #~(list "sponge" (string-append "CC=" #$(cc-for-target)))))
-    (home-page "https://joeyh.name/code/moreutils/")
-    (synopsis "Miscellaneous general-purpose command-line tools")
-    (description "Just sponge")
-    (license license:gpl2+)))
-
 (packages->manifest
  (append
   (list ;; The Basics
@@ -278,7 +246,6 @@ chain for " target " development."))
         patch
         gawk
         sed
-        sponge
         ;; Compression and archiving
         tar
         gzip
@@ -293,12 +260,7 @@ chain for " target " development."))
         ;; Git
         git-minimal)
   (let ((target (getenv "HOST")))
-    (cond ((string-suffix? "-mingw32" target)
-           (list zip
-                 (make-mingw-pthreads-cross-toolchain "x86_64-w64-mingw32")
-                 nsis-x86_64
-                 nss-certs))
-          ((string-contains target "-linux-")
+    (cond ((string-contains target "-linux-")
            (list bison
                  pkg-config
                  (list gcc-toolchain-13 "static")
