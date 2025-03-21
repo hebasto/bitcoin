@@ -70,8 +70,27 @@ unset OBJC_INCLUDE_PATH
 unset OBJCPLUS_INCLUDE_PATH
 
 # Set native toolchain
-build_CC="${NATIVE_GCC}/bin/gcc -isystem ${NATIVE_GCC}/include"
-build_CXX="${NATIVE_GCC}/bin/g++ -isystem ${NATIVE_GCC}/include/c++ -isystem ${NATIVE_GCC}/include"
+case "$HOST" in
+    *darwin*)
+        NATIVE_CLANG="$(store_path clang-toolchain)"
+        build_CC="${NATIVE_CLANG}/bin/clang \
+            -isystem ${NATIVE_GCC}/include"
+        build_CXX="${NATIVE_CLANG}/bin/clang++ \
+            --gcc-toolchain=${NATIVE_GCC} \
+            -nostdinc++ \
+            -isystem ${NATIVE_GCC}/include/c++ \
+            -isystem ${NATIVE_GCC}/include/c++/$(${NATIVE_GCC}/bin/gcc -dumpmachine) \
+            -isystem ${NATIVE_GCC}/include"
+        build_LDFLAGS="-Wl,-rpath,${NATIVE_GCC}/lib"
+        ;;
+    *)
+        build_CC="${NATIVE_GCC}/bin/gcc \
+            -isystem ${NATIVE_GCC}/include"
+        build_CXX="${NATIVE_GCC}/bin/g++ \
+            -isystem ${NATIVE_GCC}/include/c++ \
+            -isystem ${NATIVE_GCC}/include"
+        ;;
+esac
 
 case "$HOST" in
     *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
@@ -174,6 +193,7 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    ${SDK_PATH+SDK_PATH="$SDK_PATH"} \
                                    ${build_CC+build_CC="$build_CC"} \
                                    ${build_CXX+build_CXX="$build_CXX"} \
+                                   ${build_LDFLAGS+build_LDFLAGS="$build_LDFLAGS"} \
                                    x86_64_linux_CC=x86_64-linux-gnu-gcc \
                                    x86_64_linux_CXX=x86_64-linux-gnu-g++ \
                                    x86_64_linux_AR=x86_64-linux-gnu-gcc-ar \
