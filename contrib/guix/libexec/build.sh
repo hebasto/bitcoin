@@ -195,7 +195,7 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    ${SOURCES_PATH+SOURCES_PATH="$SOURCES_PATH"} \
                                    ${BASE_CACHE+BASE_CACHE="$BASE_CACHE"} \
                                    ${SDK_PATH+SDK_PATH="$SDK_PATH"} \
-                                   $TOOLCHAIN_DETAILS \
+                                   "$TOOLCHAIN_DETAILS" \
                                    x86_64_linux_CC=x86_64-linux-gnu-gcc \
                                    x86_64_linux_CXX=x86_64-linux-gnu-g++ \
                                    x86_64_linux_AR=x86_64-linux-gnu-gcc-ar \
