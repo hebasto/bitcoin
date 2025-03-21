@@ -85,8 +85,9 @@ $(package)_config_opts += -no-feature-qtattributionsscanner
 $(package)_config_opts += -no-feature-qtdiag
 $(package)_config_opts += -no-feature-qtplugininfo
 
-$(package)_config_env := CC="$$($(package)_cc)"
-$(package)_config_env += CXX="$$($(package)_cxx)"
+$(package)_config_env := CC="$$(build_CC)"
+$(package)_config_env += CXX="$$(build_CXX)"
+$(package)_cmake_opts += -DCMAKE_EXE_LINKER_FLAGS="$$(build_LDFLAGS)"
 
 ifneq ($(V),)
 $(package)_cmake_opts += --log-level=STATUS

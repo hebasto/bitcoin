@@ -194,7 +194,8 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    x86_64_linux_NM=x86_64-linux-gnu-gcc-nm \
                                    x86_64_linux_STRIP=x86_64-linux-gnu-strip \
                                    build_CC="$NATIVE_C_COMPILER" \
-                                   build_CXX="$NATIVE_CXX_COMPILER"
+                                   build_CXX="$NATIVE_CXX_COMPILER" \
+                                   build_LDFLAGS="-Wl,-rpath,${NATIVE_GCC}/lib"
 
 case "$HOST" in
     *darwin*)
