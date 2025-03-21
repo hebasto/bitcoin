@@ -45,12 +45,9 @@ $(package)_extra_sources += $($(package)_top_cmake_ecmoptionaladdsubdirectory_fi
 $(package)_extra_sources += $($(package)_top_cmake_qttoplevelhelpers_file_name)-$($(package)_version)
 
 define $(package)_set_vars
-$(package)_config_opts_release = -release
-$(package)_config_opts_debug = -debug
-ifneq ($(host),$(build))
-$(package)_config_opts += -qt-host-path $(build_prefix)
-endif
-$(package)_config_opts += -no-egl
+$(package)_config_opts_release := -release
+$(package)_config_opts_debug := -debug
+$(package)_config_opts := -no-egl
 $(package)_config_opts += -no-eglfs
 $(package)_config_opts += -no-evdev
 $(package)_config_opts += -no-gif
@@ -76,9 +73,12 @@ $(package)_config_opts += -nomake examples
 $(package)_config_opts += -nomake tests
 $(package)_config_opts += -prefix $(host_prefix)
 $(package)_config_opts += -qt-doubleconversion
+$(package)_config_opts += -qt-harfbuzz
+ifneq ($(host),$(build))
+$(package)_config_opts += -qt-host-path $(build_prefix)
+endif
 $(package)_config_opts += -qt-libpng
 $(package)_config_opts += -qt-pcre
-$(package)_config_opts += -qt-harfbuzz
 $(package)_config_opts += -qt-zlib
 $(package)_config_opts += -static
 $(package)_config_opts += -no-feature-backtrace
@@ -114,46 +114,46 @@ $(package)_config_opts += -no-pch
 # Core tools.
 $(package)_config_opts += -no-feature-androiddeployqt
 $(package)_config_opts += -no-feature-macdeployqt
-$(package)_config_opts += -no-feature-windeployqt
 $(package)_config_opts += -no-feature-qmake
+$(package)_config_opts += -no-feature-windeployqt
 
 ifeq ($(host),$(build))
 # Qt Tools module.
 $(package)_config_opts += -feature-linguist
 $(package)_config_opts += -no-feature-assistant
 $(package)_config_opts += -no-feature-clang
-$(package)_config_opts += -no-feature-qdoc
 $(package)_config_opts += -no-feature-clangcpp
 $(package)_config_opts += -no-feature-designer
 $(package)_config_opts += -no-feature-pixeltool
+$(package)_config_opts += -no-feature-qdoc
 $(package)_config_opts += -no-feature-qtattributionsscanner
 $(package)_config_opts += -no-feature-qtdiag
 $(package)_config_opts += -no-feature-qtplugininfo
 endif
 
-$(package)_config_opts_darwin = -no-pkg-config
-$(package)_config_opts_darwin += -no-dbus
-$(package)_config_opts_darwin += -no-opengl
-$(package)_config_opts_darwin += -no-freetype
+$(package)_config_opts_darwin := -no-dbus
 $(package)_config_opts_darwin += -no-feature-printsupport
+$(package)_config_opts_darwin += -no-freetype
+$(package)_config_opts_darwin += -no-opengl
+$(package)_config_opts_darwin += -no-pkg-config
 
-$(package)_config_opts_linux = -pkg-config
-$(package)_config_opts_linux += -xcb
-$(package)_config_opts_linux += -no-xcb-xlib
-$(package)_config_opts_linux += -no-feature-xlib
-$(package)_config_opts_linux += -no-feature-process
-$(package)_config_opts_linux += -system-freetype
+$(package)_config_opts_linux := -dbus-runtime
 $(package)_config_opts_linux += -fontconfig
+$(package)_config_opts_linux += -no-feature-process
+$(package)_config_opts_linux += -no-feature-xlib
 $(package)_config_opts_linux += -no-opengl
-$(package)_config_opts_linux += -dbus-runtime
+$(package)_config_opts_linux += -no-xcb-xlib
+$(package)_config_opts_linux += -pkg-config
+$(package)_config_opts_linux += -system-freetype
+$(package)_config_opts_linux += -xcb
 ifneq ($(LTO),)
 $(package)_config_opts_linux += -ltcg
 endif
 
-$(package)_config_opts_mingw32 = -no-pkg-config
-$(package)_config_opts_mingw32 += -no-opengl
-$(package)_config_opts_mingw32 += -no-dbus
+$(package)_config_opts_mingw32 := -no-dbus
 $(package)_config_opts_mingw32 += -no-freetype
+$(package)_config_opts_mingw32 += -no-opengl
+$(package)_config_opts_mingw32 += -no-pkg-config
 ifneq ($(LTO),)
 $(package)_config_opts_mingw32 += -ltcg
 endif

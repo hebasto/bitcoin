@@ -36,8 +36,8 @@ $(package)_extra_sources += $($(package)_top_cmake_ecmoptionaladdsubdirectory_fi
 $(package)_extra_sources += $($(package)_top_cmake_qttoplevelhelpers_file_name)-$($(package)_version)
 
 define $(package)_set_vars
-# Build options:
-$(package)_config_opts += -release
+# Build options.
+$(package)_config_opts := -release
 $(package)_config_opts += -make tools
 $(package)_config_opts += -static
 $(package)_config_opts += -prefix $(host_prefix)
@@ -87,8 +87,8 @@ $(package)_config_opts += -no-feature-qtplugininfo
 
 $(package)_config_env := CC="$$(build_CC)"
 $(package)_config_env += CXX="$$(build_CXX)"
-$(package)_cmake_opts += -DCMAKE_EXE_LINKER_FLAGS="$$(build_LDFLAGS)"
 
+$(package)_cmake_opts := -DCMAKE_EXE_LINKER_FLAGS="$$(build_LDFLAGS)"
 ifneq ($(V),)
 $(package)_cmake_opts += --log-level=STATUS
 endif
