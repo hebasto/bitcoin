@@ -69,8 +69,16 @@ unset CPLUS_INCLUDE_PATH
 unset OBJC_INCLUDE_PATH
 unset OBJCPLUS_INCLUDE_PATH
 
+# Set native compilers
 case "$HOST" in
     *darwin*)
+        NATIVE_CLANG="$(store_path clang-toolchain)"
+        NATIVE_KERNEL="$(store_path linux-libre-headers)"
+        NATIVE_C_COMPILER="${NATIVE_CLANG}/bin/clang -idirafter${NATIVE_KERNEL}/include"
+        echo NATIVE_CLANG=$NATIVE_CLANG
+        echo NATIVE_KERNEL=$NATIVE_KERNEL
+        echo NATIVE_C_COMPILER=$NATIVE_C_COMPILER
+        exit 42
         ;;
     *)
         export C_INCLUDE_PATH="${NATIVE_GCC}/include"
@@ -183,8 +191,8 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    x86_64_linux_RANLIB=x86_64-linux-gnu-gcc-ranlib \
                                    x86_64_linux_NM=x86_64-linux-gnu-gcc-nm \
                                    x86_64_linux_STRIP=x86_64-linux-gnu-strip \
-                                   build_CC="${NATIVE_GCC}/bin/gcc -isystem ${NATIVE_GCC}/include" \
-                                   build_CXX="${NATIVE_GCC}/bin/g++ -isystem ${NATIVE_GCC}/include/c++ -isystem ${NATIVE_GCC}/include"
+                                   build_CC="${NATIVE_CLANG}/bin/clang -isystem ${NATIVE_CLANG}/include" \
+                                   build_CXX="${NATIVE_CLANG}/bin/clang++ -isystem ${NATIVE_GCC}/include/c++ -isystem ${NATIVE_CLANG}/include"
 
 case "$HOST" in
     *darwin*)
