@@ -69,12 +69,22 @@ unset CPLUS_INCLUDE_PATH
 unset OBJC_INCLUDE_PATH
 unset OBJCPLUS_INCLUDE_PATH
 
+# Set native compilers
 case "$HOST" in
     *darwin*)
+        NATIVE_CLANG="$(store_path clang-toolchain)"
+        NATIVE_C_COMPILER="${NATIVE_CLANG}/bin/clang \
+          -isystem ${NATIVE_GCC}/include"
+        NATIVE_CXX_COMPILER="${NATIVE_CLANG}/bin/clang++ \
+          --gcc-toolchain=${NATIVE_GCC} \
+          -nostdinc++ \
+          -isystem ${NATIVE_GCC}/include/c++ \
+          -isystem ${NATIVE_GCC}/include/c++/$(${NATIVE_GCC}/bin/gcc -dumpmachine) \
+          -isystem ${NATIVE_GCC}/include"
         ;;
     *)
-        export C_INCLUDE_PATH="${NATIVE_GCC}/include"
-        export CPLUS_INCLUDE_PATH="${NATIVE_GCC}/include/c++:${NATIVE_GCC}/include"
+        NATIVE_C_COMPILER="${NATIVE_GCC}/bin/gcc -isystem ${NATIVE_GCC}/include"
+        NATIVE_CXX_COMPILER="${NATIVE_GCC}/bin/g++ -isystem ${NATIVE_GCC}/include/c++ -isystem ${NATIVE_GCC}/include"
         ;;
 esac
 
@@ -183,8 +193,9 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    x86_64_linux_RANLIB=x86_64-linux-gnu-gcc-ranlib \
                                    x86_64_linux_NM=x86_64-linux-gnu-gcc-nm \
                                    x86_64_linux_STRIP=x86_64-linux-gnu-strip \
-                                   build_CC="${NATIVE_GCC}/bin/gcc -isystem ${NATIVE_GCC}/include" \
-                                   build_CXX="${NATIVE_GCC}/bin/g++ -isystem ${NATIVE_GCC}/include/c++ -isystem ${NATIVE_GCC}/include"
+                                   build_CC="$NATIVE_C_COMPILER" \
+                                   build_CXX="$NATIVE_CXX_COMPILER" \
+                                   build_LDFLAGS="-Wl,-rpath,${NATIVE_GCC}/lib"
 
 case "$HOST" in
     *darwin*)
