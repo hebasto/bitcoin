@@ -86,13 +86,15 @@ case "$HOST" in
         ;;
     *)
         TOOLCHAIN_DETAILS=" \
-            build_CC='${NATIVE_CLANG}/bin/gcc \
+            build_CC='${NATIVE_GCC}/bin/gcc \
                 -isystem ${NATIVE_GCC}/include' \
-            build_CXX='${NATIVE_CLANG}/bin/g++ \
+            build_CXX='${NATIVE_GCC}/bin/g++ \
                 -isystem ${NATIVE_GCC}/include/c++ \
                 -isystem ${NATIVE_GCC}/include'"
         ;;
 esac
+
+echo "========================= TOOLCHAIN_DETAILS=$TOOLCHAIN_DETAILS"
 
 case "$HOST" in
     *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
