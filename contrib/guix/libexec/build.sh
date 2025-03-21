@@ -73,24 +73,22 @@ unset OBJCPLUS_INCLUDE_PATH
 case "$HOST" in
     *darwin*)
         NATIVE_CLANG="$(store_path clang-toolchain)"
-        TOOLCHAIN_DETAILS=" \
-            build_CC='${NATIVE_CLANG}/bin/clang \
-                -isystem ${NATIVE_GCC}/include' \
-            build_CXX='${NATIVE_CLANG}/bin/clang++ \
-                --gcc-toolchain=${NATIVE_GCC} \
-                -nostdinc++ \
-                -isystem ${NATIVE_GCC}/include/c++ \
-                -isystem ${NATIVE_GCC}/include/c++/$(${NATIVE_GCC}/bin/gcc -dumpmachine) \
-                -isystem ${NATIVE_GCC}/include' \
-            build_LDFLAGS='-Wl,-rpath,${NATIVE_GCC}/lib'"
+        build_CC="${NATIVE_CLANG}/bin/clang \
+            -isystem ${NATIVE_GCC}/include"
+        build_CXX="${NATIVE_CLANG}/bin/clang++ \
+            --gcc-toolchain=${NATIVE_GCC} \
+            -nostdinc++ \
+            -isystem ${NATIVE_GCC}/include/c++ \
+            -isystem ${NATIVE_GCC}/include/c++/$(${NATIVE_GCC}/bin/gcc -dumpmachine) \
+            -isystem ${NATIVE_GCC}/include"
+        build_LDFLAGS="-Wl,-rpath,${NATIVE_GCC}/lib"
         ;;
     *)
-        TOOLCHAIN_DETAILS=" \
-            build_CC='${NATIVE_GCC}/bin/gcc \
-                -isystem ${NATIVE_GCC}/include' \
-            build_CXX='${NATIVE_GCC}/bin/g++ \
-                -isystem ${NATIVE_GCC}/include/c++ \
-                -isystem ${NATIVE_GCC}/include'"
+        build_CC="${NATIVE_GCC}/bin/gcc \
+            -isystem ${NATIVE_GCC}/include"
+        build_CXX="${NATIVE_GCC}/bin/g++ \
+            -isystem ${NATIVE_GCC}/include/c++ \
+            -isystem ${NATIVE_GCC}/include"
         ;;
 esac
 
@@ -195,7 +193,9 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    ${SOURCES_PATH+SOURCES_PATH="$SOURCES_PATH"} \
                                    ${BASE_CACHE+BASE_CACHE="$BASE_CACHE"} \
                                    ${SDK_PATH+SDK_PATH="$SDK_PATH"} \
-                                   "$TOOLCHAIN_DETAILS" \
+                                   ${build_CC+build_CC="$build_CC"} \
+                                   ${build_CXX+build_CXX="$build_CXX"} \
+                                   ${build_LDFLAGS+build_LDFLAGS="$build_LDFLAGS"} \
                                    x86_64_linux_CC=x86_64-linux-gnu-gcc \
                                    x86_64_linux_CXX=x86_64-linux-gnu-g++ \
                                    x86_64_linux_AR=x86_64-linux-gnu-gcc-ar \
