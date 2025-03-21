@@ -61,6 +61,7 @@ store_path() {
 # Set environment variables to point the NATIVE toolchain to the right
 # includes/libs
 NATIVE_GCC="$(store_path gcc-toolchain)"
+NATIVE_CLANG="$(store_path clang-toolchain)"
 
 unset LIBRARY_PATH
 unset CPATH
@@ -183,8 +184,8 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    x86_64_linux_RANLIB=x86_64-linux-gnu-gcc-ranlib \
                                    x86_64_linux_NM=x86_64-linux-gnu-gcc-nm \
                                    x86_64_linux_STRIP=x86_64-linux-gnu-strip \
-                                   build_CC="${NATIVE_GCC}/bin/gcc -isystem ${NATIVE_GCC}/include" \
-                                   build_CXX="${NATIVE_GCC}/bin/g++ -isystem ${NATIVE_GCC}/include/c++ -isystem ${NATIVE_GCC}/include"
+                                   build_CC="${NATIVE_CLANG}/bin/clang -isystem ${NATIVE_CLANG}/include" \
+                                   build_CXX="${NATIVE_CLANG}/bin/clang++ -isystem ${NATIVE_GCC}/include/c++ -isystem ${NATIVE_CLANG}/include"
 
 case "$HOST" in
     *darwin*)
