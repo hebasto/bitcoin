@@ -73,7 +73,9 @@ case "$HOST" in
         build_CC="${CLANG_TOOLCHAIN}/bin/clang"
         build_CXX="${CLANG_TOOLCHAIN}/bin/clang++ \
             --stdlib=libc++ \
-            -isystem ${LIBCXX}/include/c++/v1" \
+            -isystem ${LIBCXX}/include/c++/v1 \
+            -isystem ${LIBCXX}/include/c++ \
+            -isystem ${LIBCXX}/include" \
         build_LDFLAGS="-L${LIBCXX}/lib"
         ;;
     *)
