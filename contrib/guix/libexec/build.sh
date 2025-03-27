@@ -72,10 +72,12 @@ unset OBJCPLUS_INCLUDE_PATH
 # Set native toolchain
 case "$HOST" in
     *darwin*)
-        NATIVE_CLANG="$(store_path clang-toolchain)"
-        build_CC="${NATIVE_CLANG}/bin/clang"
-        build_CXX="${NATIVE_CLANG}/bin/clang++ \
-            --stdlib=libc++"
+        CLANG_TOOLCHAIN="$(store_path clang-toolchain)"
+        LIBCXX="$(store_path libcxx)"
+        build_CC="${CLANG_TOOLCHAIN}/bin/clang"
+        build_CXX="${CLANG_TOOLCHAIN}/bin/clang++ \
+            --stdlib=libc++ \
+            -isystem ${LIBCXX}/include/c++/v1"
         # build_LDFLAGS="-Wl,-rpath,${NATIVE_GCC}/lib"
         ;;
     *)
