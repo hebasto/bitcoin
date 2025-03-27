@@ -60,7 +60,7 @@ store_path() {
 
 # Set environment variables to point the NATIVE toolchain to the right
 # includes/libs
-NATIVE_GCC="$(store_path gcc-toolchain)"
+
 
 unset LIBRARY_PATH
 unset CPATH
@@ -73,17 +73,13 @@ unset OBJCPLUS_INCLUDE_PATH
 case "$HOST" in
     *darwin*)
         NATIVE_CLANG="$(store_path clang-toolchain)"
-        build_CC="${NATIVE_CLANG}/bin/clang \
-            -isystem ${NATIVE_GCC}/include"
+        build_CC="${NATIVE_CLANG}/bin/clang"
         build_CXX="${NATIVE_CLANG}/bin/clang++ \
-            --gcc-toolchain=${NATIVE_GCC} \
-            -nostdinc++ \
-            -isystem ${NATIVE_GCC}/include/c++ \
-            -isystem ${NATIVE_GCC}/include/c++/$(${NATIVE_GCC}/bin/gcc -dumpmachine) \
-            -isystem ${NATIVE_GCC}/include"
-        build_LDFLAGS="-Wl,-rpath,${NATIVE_GCC}/lib"
+            --stdlib=libc++"
+        # build_LDFLAGS="-Wl,-rpath,${NATIVE_GCC}/lib"
         ;;
     *)
+        NATIVE_GCC="$(store_path gcc-toolchain)"
         build_CC="${NATIVE_GCC}/bin/gcc \
             -isystem ${NATIVE_GCC}/include"
         build_CXX="${NATIVE_GCC}/bin/g++ \
