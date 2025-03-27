@@ -61,7 +61,7 @@ echo "================================ LINE: 60"
 
 # Set environment variables to point the NATIVE toolchain to the right
 # includes/libs
-NATIVE_GCC="$(store_path gcc-toolchain)"
+
 
 unset LIBRARY_PATH
 unset CPATH
@@ -83,6 +83,7 @@ case "$HOST" in
         # build_LDFLAGS="-Wl,-rpath,${NATIVE_GCC}/lib"
         ;;
     *)
+        NATIVE_GCC="$(store_path gcc-toolchain)"
         build_CC="${NATIVE_GCC}/bin/gcc \
             -isystem ${NATIVE_GCC}/include"
         build_CXX="${NATIVE_GCC}/bin/g++ \
