@@ -75,7 +75,7 @@ case "$HOST" in
             --stdlib=libc++ \
             -isystem ${LIBCXX}/include/c++/v1 \
             -isystem ${CLANG_TOOLCHAIN}/include" \
-        build_LDFLAGS="-L${LIBCXX}/lib"
+        build_LDFLAGS="-L${LIBCXX}/lib -Wl,-rpath,${LIBCXX}/lib"
         ;;
     *)
         NATIVE_GCC="$(store_path gcc-toolchain)"
