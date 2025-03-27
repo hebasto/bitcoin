@@ -196,13 +196,6 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    x86_64_linux_NM=x86_64-linux-gnu-gcc-nm \
                                    x86_64_linux_STRIP=x86_64-linux-gnu-strip
 
-case "$HOST" in
-    *darwin*)
-        # Unset now that Qt is built
-        unset LIBRARY_PATH
-        ;;
-esac
-
 ###########################
 # Source Tarball Building #
 ###########################
