@@ -58,10 +58,6 @@ store_path() {
 }
 
 
-# Set environment variables to point the NATIVE toolchain to the right
-# includes/libs
-
-
 unset LIBRARY_PATH
 unset CPATH
 unset C_INCLUDE_PATH
@@ -77,8 +73,8 @@ case "$HOST" in
         build_CC="${CLANG_TOOLCHAIN}/bin/clang"
         build_CXX="${CLANG_TOOLCHAIN}/bin/clang++ \
             --stdlib=libc++ \
-            -isystem ${LIBCXX}/include/c++/v1"
-        # build_LDFLAGS="-Wl,-rpath,${NATIVE_GCC}/lib"
+            -isystem ${LIBCXX}/include/c++/v1" \
+        build_LDFLAGS="-L${LIBCXX}/lib"
         ;;
     *)
         NATIVE_GCC="$(store_path gcc-toolchain)"
@@ -91,7 +87,8 @@ case "$HOST" in
 esac
 
 case "$HOST" in
-    *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
+    *darwin*)
+        ;;
     *mingw*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;;
     *)
         NATIVE_GCC_STATIC="$(store_path gcc-toolchain static)"
