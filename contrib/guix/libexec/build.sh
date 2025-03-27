@@ -57,6 +57,7 @@ store_path() {
               --expression='s|"[[:space:]]*$||'
 }
 
+echo "================================ LINE: 60"
 
 # Set environment variables to point the NATIVE toolchain to the right
 # includes/libs
@@ -68,6 +69,9 @@ unset C_INCLUDE_PATH
 unset CPLUS_INCLUDE_PATH
 unset OBJC_INCLUDE_PATH
 unset OBJCPLUS_INCLUDE_PATH
+
+
+echo "================================ LINE: 74"
 
 # Set native toolchain
 case "$HOST" in
@@ -86,6 +90,8 @@ case "$HOST" in
             -isystem ${NATIVE_GCC}/include"
         ;;
 esac
+
+echo "================================ LINE: 94"
 
 case "$HOST" in
     *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
@@ -179,6 +185,11 @@ export TZ="UTC"
 ####################
 # Depends Building #
 ####################
+
+echo "=========================================================================================="
+echo "build_CC = '$build_CC'"
+echo "build_CXX = '$build_CXX'"
+echo "=========================================================================================="
 
 # Build the depends tree, overriding variables that assume multilib gcc
 make -C depends --jobs="$JOBS" HOST="$HOST" \
