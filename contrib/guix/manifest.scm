@@ -569,7 +569,7 @@ inspecting signatures in Mach-O binaries.")
                  (make-bitcoin-cross-toolchain target)))
           ((string-contains target "darwin")
            (list clang-toolchain-19
-                 libcxx-19
+                 libcxx ;; llvm-19
                  lld-19
                  (make-lld-wrapper lld-19 #:lld-as-ld? #t)
                  python-signapple
