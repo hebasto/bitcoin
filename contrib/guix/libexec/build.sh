@@ -58,10 +58,6 @@ store_path() {
 }
 
 
-# Set environment variables to point the NATIVE toolchain to the right
-# includes/libs
-NATIVE_GCC="$(store_path gcc-toolchain)"
-
 unset LIBRARY_PATH
 unset CPATH
 unset C_INCLUDE_PATH
@@ -73,17 +69,16 @@ unset OBJCPLUS_INCLUDE_PATH
 case "$HOST" in
     *darwin*)
         CLANG_TOOLCHAIN="$(store_path clang-toolchain)"
-        build_CC="${CLANG_TOOLCHAIN}/bin/clang \
-            -isystem ${NATIVE_GCC}/include"
+        LIBCXX="$(store_path libcxx)"
+        build_CC="${CLANG_TOOLCHAIN}/bin/clang"
         build_CXX="${CLANG_TOOLCHAIN}/bin/clang++ \
-            --gcc-toolchain=${NATIVE_GCC} \
-            -nostdinc++ \
-            -isystem ${NATIVE_GCC}/include/c++ \
-            -isystem ${NATIVE_GCC}/include/c++/$(${NATIVE_GCC}/bin/gcc -dumpmachine) \
-            -isystem ${NATIVE_GCC}/include"
-        build_LDFLAGS="-Wl,-rpath,${NATIVE_GCC}/lib"
+            --stdlib=libc++ \
+            -isystem ${LIBCXX}/include/c++/v1 \
+            -isystem ${CLANG_TOOLCHAIN}/include" \
+        build_LDFLAGS="-L${LIBCXX}/lib -Wl,-rpath,${LIBCXX}/lib"
         ;;
     *)
+        NATIVE_GCC="$(store_path gcc-toolchain)"
         build_CC="${NATIVE_GCC}/bin/gcc \
             -isystem ${NATIVE_GCC}/include"
         build_CXX="${NATIVE_GCC}/bin/g++ \
@@ -93,7 +88,8 @@ case "$HOST" in
 esac
 
 case "$HOST" in
-    *darwin*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;; # Required for qt/qmake
+    *darwin*)
+        ;;
     *mingw*) export LIBRARY_PATH="${NATIVE_GCC}/lib" ;;
     *)
         NATIVE_GCC_STATIC="$(store_path gcc-toolchain static)"
@@ -200,13 +196,6 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    x86_64_linux_RANLIB=x86_64-linux-gnu-gcc-ranlib \
                                    x86_64_linux_NM=x86_64-linux-gnu-gcc-nm \
                                    x86_64_linux_STRIP=x86_64-linux-gnu-strip
-
-case "$HOST" in
-    *darwin*)
-        # Unset now that Qt is built
-        unset LIBRARY_PATH
-        ;;
-esac
 
 ###########################
 # Source Tarball Building #
