@@ -545,7 +545,7 @@ inspecting signatures in Mach-O binaries.")
         gzip
         xz
         ;; Build tools
-        gcc-toolchain-13
+        ; gcc-toolchain-13
         cmake-minimal
         gnu-make
         ninja
