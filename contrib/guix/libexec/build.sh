@@ -70,7 +70,8 @@ case "$HOST" in
     *darwin*)
         CLANG_TOOLCHAIN="$(store_path clang-toolchain)"
         LIBCXX="$(store_path libcxx)"
-        build_CC="${CLANG_TOOLCHAIN}/bin/clang"
+        build_CC="${CLANG_TOOLCHAIN}/bin/clang \
+            -isystem ${CLANG_TOOLCHAIN}/include"
         build_CXX="${CLANG_TOOLCHAIN}/bin/clang++ \
             --stdlib=libc++ \
             -isystem ${LIBCXX}/include/c++/v1 \
