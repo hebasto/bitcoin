@@ -24,7 +24,16 @@
     "qt": {
       "description": "Build GUI, Qt 6",
       "dependencies": [
-        "qtbase",
+        {
+          "name": "qtbase",
+          "default-features": false,
+          "features": [
+            "gui",
+            "network",
+            "testlib",
+            "widgets"
+          ]
+        },
         "qttools",
         "libqrencode"
       ]
