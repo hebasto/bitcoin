@@ -30,6 +30,7 @@
           "features": [
             "gui",
             "network",
+            "png",
             "testlib",
             "widgets"
           ]
