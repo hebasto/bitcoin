@@ -30,12 +30,8 @@
           "features": [
             "gui",
             "network",
-            "pcre2",
-            "png",
             "testlib",
-            "thread",
-            "widgets",
-            "zstd"
+            "widgets"
           ]
         },
         "qttools",
