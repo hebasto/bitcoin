@@ -144,10 +144,16 @@ class MultiWalletTest(BitcoinTestFramework):
                     os.chmod(wallet_dir('no_access'), stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
                 assert_equal(sorted(map(lambda w: w['name'], walletlist)), sorted(in_wallet_dir))
         # 2. Recursive directory symlink, no errors.
-        os.symlink('..', wallet_dir('recursive_dir_symlink'))
-        with self.nodes[0].assert_debug_log(expected_msgs=[], unexpected_msgs=['Error scanning']):
-            walletlist = self.nodes[0].listwalletdir()['wallets']
-        assert_equal(sorted(map(lambda w: w['name'], walletlist)), sorted(in_wallet_dir))
+        # This test cannot be conducted reliably on Windows
+        # because its behaviour depends on the build toolchain:
+        # - A cross-compiled bitcoind.exe fails to handle a recursive directory symlink.
+        # - A natively compiled bitcoind.exe parses a recursive directory symlink without
+        #   errors.
+        if platform.system() != 'Windows':
+            os.symlink('..', wallet_dir('recursive_dir_symlink'))
+            with self.nodes[0].assert_debug_log(expected_msgs=[], unexpected_msgs=['Error scanning']):
+                walletlist = self.nodes[0].listwalletdir()['wallets']
+            assert_equal(sorted(map(lambda w: w['name'], walletlist)), sorted(in_wallet_dir))
         # 3. "Too many levels of symbolic links" error.
         os.mkdir(wallet_dir('self_walletdat_symlink'))
         os.symlink('wallet.dat', wallet_dir('self_walletdat_symlink/wallet.dat'))
