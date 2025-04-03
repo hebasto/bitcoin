@@ -88,6 +88,8 @@ $(package)_config_opts += -no-feature-qtplugininfo
 
 $(package)_config_env := CC="$$(build_CC)"
 $(package)_config_env += CXX="$$(build_CXX)"
+$(package)_config_env_darwin := OBJC="$$(build_CC)"
+$(package)_config_env_darwin += OBJCXX="$$(build_CXX)"
 
 $(package)_cmake_opts := -DCMAKE_EXE_LINKER_FLAGS="$$(build_LDFLAGS)"
 ifneq ($(V),)
