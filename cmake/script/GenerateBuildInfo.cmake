@@ -5,7 +5,7 @@
 macro(fatal_error)
   message(FATAL_ERROR "\n"
     "Usage:\n"
-    "  cmake -D BUILD_INFO_HEADER_PATH=<path> [-D SOURCE_DIR=<path>] -P ${CMAKE_CURRENT_LIST_FILE}\n"
+    "  cmake -D PROJECT_IS_TOP_LEVEL=<bool> -D BUILD_INFO_HEADER_PATH=<path> [-D SOURCE_DIR=<path>] -P ${CMAKE_CURRENT_LIST_FILE}\n"
     "All specified paths must be absolute ones.\n"
   )
 endmacro()
@@ -33,7 +33,7 @@ set(IS_SOURCE_TARBALL FALSE)
 
 set(GIT_TAG "")
 set(GIT_COMMIT "")
-if(NOT IS_SOURCE_TARBALL AND NOT "$ENV{BITCOIN_GENBUILD_NO_GIT}" STREQUAL "1")
+if(NOT IS_SOURCE_TARBALL AND PROJECT_IS_TOP_LEVEL)
   find_package(Git QUIET)
   if(Git_FOUND)
     execute_process(
