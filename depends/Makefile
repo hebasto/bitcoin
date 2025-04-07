@@ -105,7 +105,7 @@ endif
 $(host_arch)_$(host_os)_prefix=$(BASEDIR)/$(host)
 $(host_arch)_$(host_os)_host=$(host)
 host_prefix=$($(host_arch)_$(host_os)_prefix)
-build_prefix=$(host_prefix)/native
+build_prefix=$(BASEDIR)/native
 build_host=$(build)
 
 all: install
