@@ -239,7 +239,7 @@ $(host_prefix)/toolchain.cmake : toolchain.cmake.in $(host_prefix)/.stamp_$(fina
 	touch $@
 
 define check_or_remove_cached
-  mkdir -p $(BASE_CACHE)/$(host)/$(package) && cd $(BASE_CACHE)/$(host)/$(package); \
+  mkdir -p $(BASE_CACHE)/$($(package)_type)/$(package) && cd $(BASE_CACHE)/$($(package)_type)/$(package); \
   $(build_SHA256SUM) -c $($(package)_cached_checksum) >/dev/null 2>/dev/null || \
   ( rm -f $($(package)_cached_checksum); \
     if test -f "$($(package)_cached)"; then echo "Checksum mismatch for $(package). Forcing rebuild.."; rm -f $($(package)_cached_checksum) $($(package)_cached); fi )
