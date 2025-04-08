@@ -180,7 +180,9 @@ endif
 
 all_packages = $(packages) $(native_packages)
 
-meta_depends = Makefile config.guess config.sub funcs.mk builders/default.mk hosts/default.mk hosts/$(host_os).mk builders/$(build_os).mk
+meta_depends = Makefile config.guess config.sub funcs.mk builders/default.mk hosts/default.mk
+native_meta_depends = builders/$(build_os).mk
+host_meta_depends_ = hosts/$(host_os).mk
 
 include funcs.mk
 
