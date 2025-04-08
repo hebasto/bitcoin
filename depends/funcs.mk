@@ -41,7 +41,7 @@ endef
 
 define int_get_build_recipe_hash
 $(eval $(1)_patches_path?=$(PATCHES_PATH)/$(1))
-$(eval $(1)_all_file_checksums:=$(shell $(build_SHA256SUM) $(meta_depends) packages/$(1).mk $(addprefix $($(1)_patches_path)/,$($(1)_patches)) | cut -d" " -f1))
+$(eval $(1)_all_file_checksums:=$(shell $(build_SHA256SUM) $(meta_depends) $(native_meta_depends) $(host_meta_depends_$($(1)_is_native)) packages/$(1).mk $(addprefix $($(1)_patches_path)/,$($(1)_patches)) | cut -d" " -f1))
 $(eval $(1)_recipe_hash:=$(shell echo -n "$($(1)_all_file_checksums)" | $(build_SHA256SUM) | cut -d" " -f1))
 endef
 
@@ -278,6 +278,7 @@ endef
 # happened to be computed already.
 
 #set the type for host/build packages.
+$(foreach native_package,$(native_packages),$(eval $(native_package)_is_native=yes))
 $(foreach native_package,$(native_packages),$(eval $(native_package)_type=build))
 $(foreach package,$(packages),$(eval $(package)_type=$(host_arch)_$(host_os)))
 

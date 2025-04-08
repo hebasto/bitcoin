@@ -142,7 +142,7 @@ include packages/packages.mk
 build_id:=$(shell env CC='$(build_CC)' C_STANDARD='$(C_STANDARD)' CXX='$(build_CXX)' CXX_STANDARD='$(CXX_STANDARD)' \
                       AR='$(build_AR)' NM='$(build_NM)' RANLIB='$(build_RANLIB)' STRIP='$(build_STRIP)' SHA256SUM='$(build_SHA256SUM)' \
                       DEBUG='$(DEBUG)' \
-                      ./gen_id '$(BUILD_ID_SALT)' 'GUIX_ENVIRONMENT=$(realpath $(GUIX_ENVIRONMENT))')
+                      ./gen_id '$(BUILD_ID_SALT)')
 
 $(host_arch)_$(host_os)_id:=$(shell env CC='$(host_CC)' C_STANDARD='$(C_STANDARD)' CXX='$(host_CXX)' CXX_STANDARD='$(CXX_STANDARD)' \
                                         CPPFLAGS='$(CPPFLAGS)' CFLAGS='$(CFLAGS)' CXXFLAGS='$(CXXFLAGS)' LDFLAGS='$(LDFLAGS)' \
@@ -180,7 +180,9 @@ endif
 
 all_packages = $(packages) $(native_packages)
 
-meta_depends = Makefile config.guess config.sub funcs.mk builders/default.mk hosts/default.mk hosts/$(host_os).mk builders/$(build_os).mk
+meta_depends = Makefile config.guess config.sub funcs.mk builders/default.mk hosts/default.mk
+native_meta_depends = builders/$(build_os).mk
+host_meta_depends_ = hosts/$(host_os).mk
 
 include funcs.mk
 
