@@ -28,7 +28,7 @@
 #define DECORATION_SIZE 54
 #define NUM_ITEMS 5
 
-Q_DECLARE_METATYPE(interfaces::WalletBalances)
+// Q_DECLARE_METATYPE(interfaces::WalletBalances)
 
 class TxViewDelegate : public QAbstractItemDelegate
 {

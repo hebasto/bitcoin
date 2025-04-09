@@ -29,7 +29,7 @@ struct CNodeCombinedStats {
     CNodeStateStats nodeStateStats;
     bool fNodeStateStatsAvailable;
 };
-Q_DECLARE_METATYPE(CNodeCombinedStats*)
+// Q_DECLARE_METATYPE(CNodeCombinedStats*)
 
 /**
    Qt model providing information about connected peers, similar to the

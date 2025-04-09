@@ -154,6 +154,6 @@ Q_SIGNALS:
     void fontForMoneyChanged(const QFont&);
 };
 
-Q_DECLARE_METATYPE(OptionsModel::FontChoice)
+// Q_DECLARE_METATYPE(OptionsModel::FontChoice)
 
 #endif // BITCOIN_QT_OPTIONSMODEL_H

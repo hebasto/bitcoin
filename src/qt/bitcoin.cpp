@@ -60,15 +60,15 @@
 #include <QTranslator>
 #include <QWindow>
 
-// Declare meta types used for QMetaObject::invokeMethod
-Q_DECLARE_METATYPE(bool*)
-Q_DECLARE_METATYPE(CAmount)
-Q_DECLARE_METATYPE(SynchronizationState)
-Q_DECLARE_METATYPE(SyncType)
-Q_DECLARE_METATYPE(uint256)
-#ifdef ENABLE_WALLET
-Q_DECLARE_METATYPE(wallet::AddressPurpose)
-#endif // ENABLE_WALLET
+// // Declare meta types used for QMetaObject::invokeMethod
+// Q_DECLARE_METATYPE(bool*)
+// Q_DECLARE_METATYPE(CAmount)
+// Q_DECLARE_METATYPE(SynchronizationState)
+// Q_DECLARE_METATYPE(SyncType)
+// Q_DECLARE_METATYPE(uint256)
+// #ifdef ENABLE_WALLET
+// Q_DECLARE_METATYPE(wallet::AddressPurpose)
+// #endif // ENABLE_WALLET
 
 using util::MakeUnorderedList;
 
