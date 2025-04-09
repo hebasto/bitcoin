@@ -19,6 +19,7 @@ class Handler;
 class PlatformStyle;
 class TransactionRecord;
 class TransactionTablePriv;
+class uint256;
 class WalletModel;
 
 /** UI model for the transaction table of a wallet.
@@ -109,7 +110,7 @@ private:
 
 public Q_SLOTS:
     /* New transaction, or transaction changed status */
-    void updateTransaction(const QString &hash, int status, bool showTransaction);
+    void updateTransaction(const uint256& hash, int status, bool showTransaction);
     void updateConfirmations();
     void updateDisplayUnit();
     /** Updates the column title to "Amount (DisplayUnit)" and emits headerDataChanged() signal for table headers to react. */

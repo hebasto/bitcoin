@@ -67,15 +67,13 @@ public:
     TransactionNotification(uint256 _hash, ChangeType _status, bool _showTransaction):
         hash(_hash), status(_status), showTransaction(_showTransaction) {}
 
-    void invoke(QObject *ttm)
+    void invoke(TransactionTableModel* ttm)
     {
         QString strHash = QString::fromStdString(hash.GetHex());
         qDebug() << "NotifyTransactionChanged: " + strHash + " status= " + QString::number(status);
-        bool invoked = QMetaObject::invokeMethod(ttm, "updateTransaction", Qt::QueuedConnection,
-                                  Q_ARG(QString, strHash),
-                                  Q_ARG(int, status),
-                                  Q_ARG(bool, showTransaction));
-        assert(invoked);
+        QMetaObject::invokeMethod(ttm, [ttm, hash = this->hash, status = this->status, showTransaction = this->showTransaction] {
+            ttm->updateTransaction(hash, status, showTransaction);
+        }, Qt::QueuedConnection);
     }
 private:
     uint256 hash;
@@ -274,12 +272,9 @@ void TransactionTableModel::updateAmountColumnTitle()
     Q_EMIT headerDataChanged(Qt::Horizontal,Amount,Amount);
 }
 
-void TransactionTableModel::updateTransaction(const QString &hash, int status, bool showTransaction)
+void TransactionTableModel::updateTransaction(const uint256& hash, int status, bool showTransaction)
 {
-    uint256 updated;
-    updated.SetHexDeprecated(hash.toStdString());
-
-    priv->updateWallet(walletModel->wallet(), updated, status, showTransaction);
+    priv->updateWallet(walletModel->wallet(), hash, status, showTransaction);
 }
 
 void TransactionTableModel::updateConfirmations()
