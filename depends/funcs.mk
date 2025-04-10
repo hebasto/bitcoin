@@ -175,29 +175,13 @@ endif
 # setting in depends/toolchain.cmake.in, which also hardcodes "lib".
 # Without this setting, CMake by default would use the OS library
 # directory, which might be "lib64" or something else, not "lib", on multiarch systems.
-$(1)_cmake=env CC="$$($(1)_cc)" \
-               CFLAGS="$$($(1)_cppflags) $$($(1)_cflags)" \
-               CXX="$$($(1)_cxx)" \
-               CXXFLAGS="$$($(1)_cppflags) $$($(1)_cxxflags)" \
-               LDFLAGS="$$($(1)_ldflags)" \
-               cmake -G "Unix Makefiles" \
+$(1)_cmake=    cmake -G "Unix Makefiles" \
                -DCMAKE_INSTALL_PREFIX:PATH="$$($($(1)_type)_prefix)" \
-               -DCMAKE_AR=`which $$($(1)_ar)` \
-               -DCMAKE_NM=`which $$($(1)_nm)` \
-               -DCMAKE_RANLIB=`which $$($(1)_ranlib)` \
-               -DCMAKE_INSTALL_LIBDIR=lib/ \
-               -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+               -DANDROID_ABI=arm64-v8a \
+               -DANDROID_PLATFORM=33 \
+               -DCMAKE_TOOLCHAIN_FILE=/home/hebasto/Android/Sdk/ndk/26.1.10909125/build/cmake/android.toolchain.cmake \
                -DCMAKE_VERBOSE_MAKEFILE:BOOL=$(V) \
                $$($(1)_config_opts)
-ifeq ($($(1)_type),build)
-$(1)_cmake += -DCMAKE_INSTALL_RPATH:PATH="$$($($(1)_type)_prefix)/lib"
-else
-ifneq ($(host),$(build))
-$(1)_cmake += -DCMAKE_SYSTEM_NAME=$($(host_os)_cmake_system_name)
-$(1)_cmake += -DCMAKE_C_COMPILER_TARGET=$(host)
-$(1)_cmake += -DCMAKE_CXX_COMPILER_TARGET=$(host)
-endif
-endif
 endef
 
 define int_add_cmds
