@@ -10,6 +10,7 @@ endif
 $(package)_linux_dependencies=freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
 $(package)_patches_path := $(qt_details_patches_path)
 $(package)_patches := dont_hardcode_pwd.patch
+$(package)_patches += fix_android_jni_static.patch
 $(package)_patches += qtbase-moc-ignore-gcc-macro.patch
 $(package)_patches += qtbase_avoid_native_float16.patch
 $(package)_patches += qtbase_avoid_qmain.patch
@@ -154,6 +155,24 @@ ifneq ($(LTO),)
 $(package)_config_opts_mingw32 += -ltcg
 endif
 
+$(package)_config_opts_android = -xplatform android-clang
+$(package)_config_opts_android += -android-sdk $(ANDROID_SDK)
+$(package)_config_opts_android += -android-ndk $(ANDROID_NDK)
+$(package)_config_opts_android += -android-ndk-platform android-$(ANDROID_API_LEVEL)
+$(package)_config_opts_android += -egl
+$(package)_config_opts_android += -no-dbus
+$(package)_config_opts_android += -opengl es2
+$(package)_config_opts_android += -qt-freetype
+$(package)_config_opts_android += -no-fontconfig
+$(package)_config_opts_android += -L $(host_prefix)/lib
+$(package)_config_opts_android += -I $(host_prefix)/include
+$(package)_config_opts_android += -pch
+$(package)_config_opts_android += -no-feature-vulkan
+
+$(package)_config_opts_aarch64_android += -android-arch arm64-v8a
+$(package)_config_opts_armv7a_android += -android-arch armeabi-v7a
+$(package)_config_opts_x86_64_android += -android-arch x86_64
+
 # CMake build options.
 $(package)_config_env := CC="$$($(package)_cc)"
 $(package)_config_env += CXX="$$($(package)_cxx)"
@@ -249,6 +268,7 @@ endif
 
 define $(package)_preprocess_cmds
   patch -p1 -i $($(package)_patch_dir)/dont_hardcode_pwd.patch && \
+  patch -p1 -i $($(package)_patch_dir)/fix_android_jni_static.patch && \
   patch -p1 -i $($(package)_patch_dir)/qtbase-moc-ignore-gcc-macro.patch && \
   patch -p1 -i $($(package)_patch_dir)/qtbase_avoid_native_float16.patch && \
   patch -p1 -i $($(package)_patch_dir)/qtbase_avoid_qmain.patch && \

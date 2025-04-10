@@ -97,6 +97,10 @@ host_os+=$(findstring netbsd,$(full_host_os))
 host_os+=$(findstring openbsd,$(full_host_os))
 host_os+=$(findstring mingw32,$(full_host_os))
 
+ifeq (android,$(findstring android,$(full_host_os)))
+host_os:=android
+endif
+
 host_os:=$(strip $(host_os))
 ifeq ($(host_os),)
 host_os=$(full_host_os)
