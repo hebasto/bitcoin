@@ -23,3 +23,32 @@ This is an example command for a default build with no disabled dependencies:
 ## Building and packaging
 
 After the depends are built configure with one of the resulting prefixes and run `make && make apk` in `src/qt`.
+
+
+
+## UPDATE
+
+1. Qt 6.7 supports Android 6 - 13 (API 23 - 33).
+
+Qt 6.8 LTS supports Android 9 - 16 (API 28 - 37).
+
+
+https://www.qt.io/blog/qt-for-android-supported-versions-guidelines
+
+
+https://doc.qt.io/qt-6/whatsnew66.html:
+
+> Updated Android target SDK level to 33 to match Play Store requirement for 2023.
+
+`ANDROID_API_LEVEL=33` is OK.
+
+Tools: https://dl.google.com/android/repository/build-tools_r33.0.3-linux.zip
+
+
+
+2. https://doc.qt.io/qt-6/whatsnew67.html
+
+https://github.com/android/ndk/wiki/Changelog-r26
+
+NDK version: r26b (26.1.10909125)
+https://dl.google.com/android/repository/android-ndk-r26b-linux.zip
