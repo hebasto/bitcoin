@@ -176,11 +176,11 @@ endif
 # Without this setting, CMake by default would use the OS library
 # directory, which might be "lib64" or something else, not "lib", on multiarch systems.
 $(1)_cmake=    cmake -G "Unix Makefiles" \
-               -DCMAKE_SYSTEM_NAME=Android \
-               -DCMAKE_SYSTEM_VERSION=33 \
-               -DCMAKE_ANDROID_ARCH_ABI=arm64-v8a \
-               -DCMAKE_ANDROID_NDK=/home/hebasto/Android/Sdk \
-               -DCMAKE_ANDROID_STL_TYPE=gnustl_static
+               -DANDROID_ABI=arm64-v8a \
+               -DANDROID_PLATFORM=33 \
+               -DCMAKE_TOOLCHAIN_FILE=/home/hebasto/Android/Sdk/ndk/26.1.10909125/build/cmake/android.toolchain.cmake \
+               -DCMAKE_VERBOSE_MAKEFILE:BOOL=$(V) \
+               $$($(1)_config_opts)
 endef
 
 define int_add_cmds
