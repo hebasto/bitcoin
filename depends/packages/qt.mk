@@ -285,7 +285,8 @@ define $(package)_build_cmds
 endef
 
 define $(package)_stage_cmds
-  cmake --install . --prefix $($(package)_staging_prefix_dir)
+  cmake --install . --prefix $($(package)_staging_prefix_dir) && \
+  cp -r $($(package)_extract_dir)/qtbase/src/android/jar/src $($(package)_staging_prefix_dir)/src/android/java
 endef
 
 define $(package)_postprocess_cmds
