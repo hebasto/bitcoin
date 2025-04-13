@@ -11,4 +11,5 @@
             x86_64;libbitcoin-qt_x86_64.so
         </item>
     </array>
+    <string name="static_init_classes"></string>
 </resources>
