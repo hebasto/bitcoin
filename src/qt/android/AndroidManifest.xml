@@ -31,6 +31,7 @@
             <meta-data android:name="android.app.system_libs_prefix" android:value="/system/lib/" />
 
             <meta-data android:name="android.app.use_local_qt_libs" android:value="1" />
+            <meta-data android:name="android.app.bundle_local_qt_libs" android:value="1" />
         </activity>
 
     </application>
