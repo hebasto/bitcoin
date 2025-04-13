@@ -29,6 +29,8 @@
             <meta-data android:name="android.app.background_running" android:value="true" />
             <meta-data android:name="android.app.arguments" android:value="-signet" />
             <meta-data android:name="android.app.system_libs_prefix" android:value="/system/lib/" />
+
+            <meta-data android:name="android.app.use_local_qt_libs" android:value="1" />
         </activity>
 
     </application>
