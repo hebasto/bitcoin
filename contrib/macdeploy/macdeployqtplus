@@ -187,9 +187,9 @@ class DeploymentInfo(object):
                     return True
         return False
 
-def getFrameworks(binaryPath: str, verbose: int) -> list[FrameworkInfo]:
+def getFrameworks(binaryPath: str, verbose: int, rpath='') -> list[FrameworkInfo]:
     objdump = os.getenv("OBJDUMP", "objdump")
-    print(f"Inspecting with {objdump}: {binaryPath}")
+    print(f"Inspecting with {objdump}: {binaryPath} qqqqqqqqqqqqqqq rpath is {rpath}")
     if verbose:
         print(f"Inspecting with {objdump}: {binaryPath}")
     output = run([objdump, "--macho", "--dylibs-used", binaryPath], stdout=PIPE, stderr=PIPE, text=True)
@@ -209,6 +209,8 @@ def getFrameworks(binaryPath: str, verbose: int) -> list[FrameworkInfo]:
         print(f"++++++++++++++++++++ line = {line}")
 
         line = line.replace("@loader_path", os.path.dirname(binaryPath))
+        line = line.replace("@rpath", rpath)
+
         # info.frameworkDirectory
         info = FrameworkInfo.fromLibraryLine(line.strip())
         if info is not None:
@@ -336,7 +338,7 @@ def deployFrameworks(frameworks: list[FrameworkInfo], bundlePath: str, binaryPat
         # install_name_tool it a new id.
         changeIdentification(framework.deployedInstallName, deployedBinaryPath, verbose)
         # Check for framework dependencies
-        dependencies = getFrameworks(deployedBinaryPath, verbose)
+        dependencies = getFrameworks(deployedBinaryPath, verbose, rpath=framework.frameworkDirectory)
         
         for dependency in dependencies:
             changeInstallName(dependency.installName, dependency.deployedInstallName, deployedBinaryPath, verbose)
