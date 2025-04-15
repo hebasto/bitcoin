@@ -92,6 +92,9 @@ class FrameworkInfo(object):
         
         path = m.group(1)
         
+
+        print(f'============================= 96 === path = {path}')
+
         info = cls()
         info.sourceFilePath = path
         info.installName = path
@@ -125,6 +128,9 @@ class FrameworkInfo(object):
             info.frameworkName = parts[i]
             info.frameworkDirectory = "/".join(parts[:i])
             info.frameworkPath = os.path.join(info.frameworkDirectory, info.frameworkName)
+
+            print(f"zzzzzzzzzzzzzzzzzzzzzzzzzz info.frameworkDirectory is {info.frameworkDirectory}")
+
             
             info.binaryName = parts[i+3]
             info.binaryDirectory = "/".join(parts[i+1:i+3])
@@ -183,6 +189,7 @@ class DeploymentInfo(object):
 
 def getFrameworks(binaryPath: str, verbose: int) -> list[FrameworkInfo]:
     objdump = os.getenv("OBJDUMP", "objdump")
+    print(f"Inspecting with {objdump}: {binaryPath}")
     if verbose:
         print(f"Inspecting with {objdump}: {binaryPath}")
     output = run([objdump, "--macho", "--dylibs-used", binaryPath], stdout=PIPE, stderr=PIPE, text=True)
@@ -198,7 +205,11 @@ def getFrameworks(binaryPath: str, verbose: int) -> list[FrameworkInfo]:
     
     libraries = []
     for line in lines:
+
+        print(f"++++++++++++++++++++ line = {line}")
+
         line = line.replace("@loader_path", os.path.dirname(binaryPath))
+        # info.frameworkDirectory
         info = FrameworkInfo.fromLibraryLine(line.strip())
         if info is not None:
             if verbose:
@@ -259,10 +270,12 @@ def copyFramework(framework: FrameworkInfo, path: str, verbose: int) -> Optional
             print(" to:", toPath)
     else:
         to_dir = os.path.join(path, "Contents", "Frameworks", framework.frameworkName)
+        print(f'============================================= to_dir = {to_dir}')
         if os.path.exists(to_dir):
             return None # Already there
 
         from_dir = framework.frameworkPath
+        print(f'============================================= from_dir = {from_dir}')
         if not os.path.exists(from_dir):
             raise RuntimeError(f"No directory at {from_dir}")
 
@@ -297,17 +310,22 @@ def deployFrameworks(frameworks: list[FrameworkInfo], bundlePath: str, binaryPat
         
         # Get the Qt path from one of the Qt frameworks
         if deploymentInfo.qtPath is None and framework.isQtFramework():
+            print('============================================= 300')
             deploymentInfo.detectQtPath(framework.frameworkDirectory)
+            print('============================================= 302')
         
         if framework.installName.startswith("@executable_path") or framework.installName.startswith(bundlePath):
             print(framework.frameworkName, "already deployed, skipping.")
             continue
         
+        print('============================================= 308')
         # install_name_tool the new id into the binary
         changeInstallName(framework.installName, framework.deployedInstallName, binaryPath, verbose)
-        
+        print('============================================= 311')
+
         # Copy framework to app bundle.
         deployedBinaryPath = copyFramework(framework, bundlePath, verbose)
+        print('============================================= 315')
         # Skip the rest if already was deployed.
         if deployedBinaryPath is None:
             continue
@@ -330,7 +348,16 @@ def deployFrameworks(frameworks: list[FrameworkInfo], bundlePath: str, binaryPat
     return deploymentInfo
 
 def deployFrameworksForAppBundle(applicationBundle: ApplicationBundleInfo, strip: bool, verbose: int) -> DeploymentInfo:
+
+    print("============================================= 334")
+    print(f'============================================= applicationBundle = {applicationBundle}')
+    print(f'============================================= strip = {strip}')
+    print(f'============================================= verbose = {verbose}')
+
     frameworks = getFrameworks(applicationBundle.binaryPath, verbose)
+
+    print(f'============================================= frameworks = {frameworks}')
+
     if len(frameworks) == 0:
         print(f"Warning: Could not find any external frameworks to deploy in {applicationBundle.path}.")
         return DeploymentInfo()
@@ -437,7 +464,9 @@ applicationBundle = ApplicationBundleInfo(target)
 print("+ Deploying frameworks +")
 
 try:
+    print("============================================= 440")
     deploymentInfo = deployFrameworksForAppBundle(applicationBundle, config.strip, verbose)
+    print("============================================= 442")
     if deploymentInfo.qtPath is None:
         deploymentInfo.qtPath = os.getenv("QTDIR", None)
         if deploymentInfo.qtPath is None:

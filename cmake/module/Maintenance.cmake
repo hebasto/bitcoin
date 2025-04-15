@@ -97,6 +97,7 @@ function(add_macos_deploy_target)
 
     string(REPLACE " " "-" osx_volname ${CLIENT_NAME})
     if(CMAKE_HOST_APPLE)
+      message("======================== 100") # We are HERE.
       add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/${osx_volname}.zip
         COMMAND ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/contrib/macdeploy/macdeployqtplus ${macos_app} ${osx_volname} -translations-dir=${QT_TRANSLATIONS_DIR} -zip
@@ -110,6 +111,7 @@ function(add_macos_deploy_target)
         DEPENDS ${PROJECT_BINARY_DIR}/${osx_volname}.zip
       )
     else()
+      message("======================== 114")
       add_custom_command(
         OUTPUT ${PROJECT_BINARY_DIR}/dist/${macos_app}/Contents/MacOS/Bitcoin-Qt
         COMMAND OBJDUMP=${CMAKE_OBJDUMP} ${PYTHON_COMMAND} ${PROJECT_SOURCE_DIR}/contrib/macdeploy/macdeployqtplus ${macos_app} ${osx_volname} -translations-dir=${QT_TRANSLATIONS_DIR}
