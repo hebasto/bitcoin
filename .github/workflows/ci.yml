@@ -66,5 +66,6 @@ jobs:
           Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
 
       - name: Using vcpkg with MSBuild
+        shell: bash
         run: |
           echo "VCPKG_INSTALLATION_ROOT is '$VCPKG_INSTALLATION_ROOT'"
