@@ -14,5 +14,5 @@ export PACKAGES="g++-mingw-w64-x86-64-posix nsis"
 export RUN_UNIT_TESTS=false
 export RUN_FUNCTIONAL_TESTS=false
 export GOAL="deploy"
-export BITCOIN_CONFIG="-DREDUCE_EXPORTS=ON -DBUILD_GUI_TESTS=OFF \
+export BITCOIN_CONFIG="-DREDUCE_EXPORTS=ON -DBUILD_GUI=OFF -DBUILD_FUZZ_BINARY=ON \
 -DCMAKE_CXX_FLAGS='-Wno-error=maybe-uninitialized -Wno-error=array-bounds'"
