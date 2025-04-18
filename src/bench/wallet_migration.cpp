@@ -29,7 +29,10 @@ static void WalletMigration(benchmark::Bench& bench)
     int NUM_WATCH_ONLY_ADDR = 20;
 
     // Setup legacy wallet
-    std::unique_ptr<CWallet> wallet = std::make_unique<CWallet>(test_setup->m_node.chain.get(), "", CreateMockableWalletDatabase());
+    std::unique_ptr<CWallet> www = std::make_unique<CWallet>(test_setup->m_node.chain.get(), "", CreateMockableWalletDatabase());
+
+    std::shared_ptr<CWallet> wallet = std::move(www);
+
     wallet->chainStateFlushed(ChainstateRole::NORMAL, CBlockLocator{});
     LegacyDataSPKM* legacy_spkm = wallet->GetOrCreateLegacyDataSPKM();
     WalletBatch batch{wallet->GetDatabase()};
