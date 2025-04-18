@@ -63,8 +63,9 @@ static void WalletMigration(benchmark::Bench& bench)
         batch.WriteKey(pubkey, key.GetPrivKey(), CKeyMetadata());
     }
 
-    bench.epochs(/*numEpochs=*/1).run([&context, w = std::move(wallet)] {
-        util::Result<MigrationResult> res = MigrateLegacyToDescriptor(std::move(w), /*passphrase=*/"", context, /*was_loaded=*/false);
+    bench.epochs(/*numEpochs=*/1).run([&context, w = std::move(wallet)] () mutable {
+        std::shared_ptr<CWallet> shared_wallet = std::move(w);
+        util::Result<MigrationResult> res = MigrateLegacyToDescriptor(shared_wallet, /*passphrase=*/"", context, /*was_loaded=*/false);
         assert(res);
         assert(res->wallet);
         assert(res->watchonly_wallet);
