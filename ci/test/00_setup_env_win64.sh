@@ -10,9 +10,10 @@ export CONTAINER_NAME=ci_win64
 export CI_IMAGE_NAME_TAG="mirror.gcr.io/ubuntu:24.04"  # Check that https://packages.ubuntu.com/noble/g++-mingw-w64-x86-64-posix (version 13.x, similar to guix) can cross-compile
 export CI_IMAGE_PLATFORM="linux/amd64"
 export HOST=x86_64-w64-mingw32
+export DEP_OPTS="NO_QT=1 NO_ZMQ=1"
 export PACKAGES="g++-mingw-w64-x86-64-posix nsis"
 export RUN_UNIT_TESTS=false
 export RUN_FUNCTIONAL_TESTS=false
-export GOAL="deploy"
-export BITCOIN_CONFIG="-DREDUCE_EXPORTS=ON -DBUILD_GUI_TESTS=OFF \
+export GOAL="install"
+export BITCOIN_CONFIG="-DREDUCE_EXPORTS=ON -DBUILD_TESTS=OFF -DBUILD_FUZZ_BINARY=OFF \
 -DCMAKE_CXX_FLAGS='-Wno-error=maybe-uninitialized -Wno-error=array-bounds'"
