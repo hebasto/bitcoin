@@ -66,15 +66,17 @@ extern "C" {
   #include <cwchar>
 
   #define subprocess_close _close
-  #define subprocess_open _open
   #define subprocess_fileno _fileno
+  #define subprocess_open _open
+  #define subprocess_write _write
 #else
   #include <sys/wait.h>
   #include <unistd.h>
 
   #define subprocess_close close
-  #define subprocess_open open
   #define subprocess_fileno fileno
+  #define subprocess_open open
+  #define subprocess_write write
 #endif
   #include <csignal>
   #include <fcntl.h>
@@ -264,7 +266,7 @@ namespace util
 
     FILE *fp = _fdopen(os_fhandle, mode);
     if (fp == 0) {
-      _close(os_fhandle);
+      subprocess_close(os_fhandle);
       throw OSError("_fdopen", 0);
     }
 
@@ -383,7 +385,7 @@ namespace util
   {
     size_t nwritten = 0;
     while (nwritten < length) {
-      int written = write(fd, buf + nwritten, length - nwritten);
+      int written = subprocess_write(fd, buf + nwritten, length - nwritten);
       if (written == -1) return -1;
       nwritten += written;
     }
@@ -1311,15 +1313,15 @@ namespace detail {
 #ifdef WIN32
     util::configure_pipe(&this->g_hChildStd_IN_Rd, &this->g_hChildStd_IN_Wr, &this->g_hChildStd_IN_Wr);
     this->input(util::file_from_handle(this->g_hChildStd_IN_Wr, "w"));
-    this->write_to_child_ = _fileno(this->input());
+    this->write_to_child_ = subprocess_fileno(this->input());
 
     util::configure_pipe(&this->g_hChildStd_OUT_Rd, &this->g_hChildStd_OUT_Wr, &this->g_hChildStd_OUT_Rd);
     this->output(util::file_from_handle(this->g_hChildStd_OUT_Rd, "r"));
-    this->read_from_child_ = _fileno(this->output());
+    this->read_from_child_ = subprocess_fileno(this->output());
 
     util::configure_pipe(&this->g_hChildStd_ERR_Rd, &this->g_hChildStd_ERR_Wr, &this->g_hChildStd_ERR_Rd);
     this->error(util::file_from_handle(this->g_hChildStd_ERR_Rd, "r"));
-    this->err_read_ = _fileno(this->error());
+    this->err_read_ = subprocess_fileno(this->error());
 #else
 
     if (write_to_child_ != -1)  input(fdopen(write_to_child_, "wb"));
