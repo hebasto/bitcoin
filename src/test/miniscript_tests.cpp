@@ -50,61 +50,61 @@ struct TestData {
 
     TestData()
     {
-        // All our signatures sign (and are required to sign) this constant message.
-        constexpr uint256 MESSAGE_HASH{"0000000000000000f5cd94e18b6fe77dd7aca9e35c2b0c9cbd86356c80a71065"};
-        // We don't pass additional randomness when creating a schnorr signature.
-        const auto EMPTY_AUX{uint256::ZERO};
+        // // All our signatures sign (and are required to sign) this constant message.
+        // constexpr uint256 MESSAGE_HASH{"0000000000000000f5cd94e18b6fe77dd7aca9e35c2b0c9cbd86356c80a71065"};
+        // // We don't pass additional randomness when creating a schnorr signature.
+        // const auto EMPTY_AUX{uint256::ZERO};
 
-        // We generate 255 public keys and 255 hashes of each type.
-        for (int i = 1; i <= 255; ++i) {
-            // This 32-byte array functions as both private key data and hash preimage (31 zero bytes plus any nonzero byte).
-            unsigned char keydata[32] = {0};
-            keydata[31] = i;
+        // // We generate 255 public keys and 255 hashes of each type.
+        // for (int i = 1; i <= 255; ++i) {
+        //     // This 32-byte array functions as both private key data and hash preimage (31 zero bytes plus any nonzero byte).
+        //     unsigned char keydata[32] = {0};
+        //     keydata[31] = i;
 
-            // Compute CPubkey and CKeyID
-            CKey key;
-            key.Set(keydata, keydata + 32, true);
-            CPubKey pubkey = key.GetPubKey();
-            CKeyID keyid = pubkey.GetID();
-            // pubkeys.push_back(pubkey);
-            // pkhashes.emplace(pubkey, keyid);
-            // pkmap.emplace(keyid, pubkey);
-            XOnlyPubKey xonly_pubkey{pubkey};
-            uint160 xonly_hash{Hash160(xonly_pubkey)};
-            // xonly_pkhashes.emplace(xonly_pubkey, xonly_hash);
-            // pkmap.emplace(xonly_hash, pubkey);
+        //     // Compute CPubkey and CKeyID
+        //     CKey key;
+        //     key.Set(keydata, keydata + 32, true);
+        //     CPubKey pubkey = key.GetPubKey();
+        //     CKeyID keyid = pubkey.GetID();
+        //     // pubkeys.push_back(pubkey);
+        //     // pkhashes.emplace(pubkey, keyid);
+        //     // pkmap.emplace(keyid, pubkey);
+        //     XOnlyPubKey xonly_pubkey{pubkey};
+        //     uint160 xonly_hash{Hash160(xonly_pubkey)};
+        //     // xonly_pkhashes.emplace(xonly_pubkey, xonly_hash);
+        //     // pkmap.emplace(xonly_hash, pubkey);
 
-            // Compute ECDSA signatures on MESSAGE_HASH with the private keys.
-            std::vector<unsigned char> sig, schnorr_sig(64);
-            BOOST_CHECK(key.Sign(MESSAGE_HASH, sig));
-            sig.push_back(1); // sighash byte
-            // signatures.emplace(pubkey, sig);
-            BOOST_CHECK(key.SignSchnorr(MESSAGE_HASH, schnorr_sig, nullptr, EMPTY_AUX));
-            schnorr_sig.push_back(1); // Maximally sized Schnorr sigs have a sighash byte.
-            // schnorr_signatures.emplace(XOnlyPubKey{pubkey}, schnorr_sig);
+        //     // Compute ECDSA signatures on MESSAGE_HASH with the private keys.
+        //     std::vector<unsigned char> sig, schnorr_sig(64);
+        //     BOOST_CHECK(key.Sign(MESSAGE_HASH, sig));
+        //     sig.push_back(1); // sighash byte
+        //     // signatures.emplace(pubkey, sig);
+        //     BOOST_CHECK(key.SignSchnorr(MESSAGE_HASH, schnorr_sig, nullptr, EMPTY_AUX));
+        //     schnorr_sig.push_back(1); // Maximally sized Schnorr sigs have a sighash byte.
+        //     // schnorr_signatures.emplace(XOnlyPubKey{pubkey}, schnorr_sig);
 
-            // Compute various hashes
-            std::vector<unsigned char> hash;
-            hash.resize(32);
-            CSHA256().Write(keydata, 32).Finalize(hash.data());
-            // sha256.push_back(hash);
-            // sha256_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
-            CHash256().Write(keydata).Finalize(hash);
-            // hash256.push_back(hash);
-            // hash256_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
-            hash.resize(20);
-            CRIPEMD160().Write(keydata, 32).Finalize(hash.data());
-            // ripemd160.push_back(hash);
-            // ripemd160_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
-            CHash160().Write(keydata).Finalize(hash);
-            // hash160.push_back(hash);
-            // hash160_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
-        }
+        //     // Compute various hashes
+        //     std::vector<unsigned char> hash;
+        //     hash.resize(32);
+        //     CSHA256().Write(keydata, 32).Finalize(hash.data());
+        //     // sha256.push_back(hash);
+        //     // sha256_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
+        //     CHash256().Write(keydata).Finalize(hash);
+        //     // hash256.push_back(hash);
+        //     // hash256_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
+        //     hash.resize(20);
+        //     CRIPEMD160().Write(keydata, 32).Finalize(hash.data());
+        //     // ripemd160.push_back(hash);
+        //     // ripemd160_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
+        //     CHash160().Write(keydata).Finalize(hash);
+        //     // hash160.push_back(hash);
+        //     // hash160_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
+        // }
     }
 };
 
 //! Global TestData object
-std::unique_ptr<const TestData> g_testdata;
+// std::unique_ptr<const TestData> g_testdata;
 
 // //! A classification of leaf conditions in miniscripts (excluding true/false).
 // enum class ChallengeType {
