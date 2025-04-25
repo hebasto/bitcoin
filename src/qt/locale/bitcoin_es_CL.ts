@@ -6,6 +6,10 @@
         <translation type="unfinished">Click derecho para editar la dirección o etiqueta</translation>
     </message>
     <message>
+        <source>Create a new address</source>
+        <translation type="unfinished">Crea una dirección nueva</translation>
+    </message>
+    <message>
         <source>&amp;New</source>
         <translation type="unfinished">&amp;Nuevo</translation>
     </message>
