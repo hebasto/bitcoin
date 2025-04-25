@@ -2,28 +2,28 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <test/util/random.h>
+// #include <test/util/random.h>
 #include <test/util/setup_common.h>
 #include <boost/test/unit_test.hpp>
 
-#include <addresstype.h>
-#include <core_io.h>
-#include <hash.h>
-#include <pubkey.h>
-#include <uint256.h>
-#include <crypto/ripemd160.h>
-#include <crypto/sha256.h>
-#include <script/interpreter.h>
-#include <script/miniscript.h>
-#include <script/script_error.h>
-#include <script/signingprovider.h>
+// #include <addresstype.h>
+// #include <core_io.h>
+// #include <hash.h>
+// #include <pubkey.h>
+// #include <uint256.h>
+// #include <crypto/ripemd160.h>
+// #include <crypto/sha256.h>
+// #include <script/interpreter.h>
+// #include <script/miniscript.h>
+// #include <script/script_error.h>
+// #include <script/signingprovider.h>
 
-#include <algorithm>
-#include <cstdint>
-#include <string>
-#include <vector>
+// #include <algorithm>
+// #include <cstdint>
+// #include <string>
+// #include <vector>
 
-using namespace util::hex_literals;
+// using namespace util::hex_literals;
 
 namespace {
 
