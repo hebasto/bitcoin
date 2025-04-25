@@ -106,392 +106,392 @@ struct TestData {
 //! Global TestData object
 std::unique_ptr<const TestData> g_testdata;
 
-//! A classification of leaf conditions in miniscripts (excluding true/false).
-enum class ChallengeType {
-    SHA256,
-    RIPEMD160,
-    HASH256,
-    HASH160,
-    OLDER,
-    AFTER,
-    PK
-};
+// //! A classification of leaf conditions in miniscripts (excluding true/false).
+// enum class ChallengeType {
+//     SHA256,
+//     RIPEMD160,
+//     HASH256,
+//     HASH160,
+//     OLDER,
+//     AFTER,
+//     PK
+// };
 
-/* With each leaf condition we associate a challenge number.
- * For hashes it's just the first 4 bytes of the hash. For pubkeys, it's the last 4 bytes.
- */
-uint32_t ChallengeNumber(const CPubKey& pubkey) { return ReadLE32(pubkey.data() + 29); }
-uint32_t ChallengeNumber(const std::vector<unsigned char>& hash) { return ReadLE32(hash.data()); }
+// /* With each leaf condition we associate a challenge number.
+//  * For hashes it's just the first 4 bytes of the hash. For pubkeys, it's the last 4 bytes.
+//  */
+// uint32_t ChallengeNumber(const CPubKey& pubkey) { return ReadLE32(pubkey.data() + 29); }
+// uint32_t ChallengeNumber(const std::vector<unsigned char>& hash) { return ReadLE32(hash.data()); }
 
-//! A Challenge is a combination of type of leaf condition and its challenge number.
-typedef std::pair<ChallengeType, uint32_t> Challenge;
+// //! A Challenge is a combination of type of leaf condition and its challenge number.
+// typedef std::pair<ChallengeType, uint32_t> Challenge;
 
-/** A class encapulating conversion routing for CPubKey. */
-struct KeyConverter {
-    typedef CPubKey Key;
+// /** A class encapulating conversion routing for CPubKey. */
+// struct KeyConverter {
+//     typedef CPubKey Key;
 
-    const miniscript::MiniscriptContext m_script_ctx;
+//     const miniscript::MiniscriptContext m_script_ctx;
 
-    constexpr KeyConverter(miniscript::MiniscriptContext ctx) noexcept : m_script_ctx{ctx} {}
+//     constexpr KeyConverter(miniscript::MiniscriptContext ctx) noexcept : m_script_ctx{ctx} {}
 
-    bool KeyCompare(const Key& a, const Key& b) const {
-        return a < b;
-    }
+//     bool KeyCompare(const Key& a, const Key& b) const {
+//         return a < b;
+//     }
 
-    //! Convert a public key to bytes.
-    std::vector<unsigned char> ToPKBytes(const CPubKey& key) const {
-        if (!miniscript::IsTapscript(m_script_ctx)) {
-            return {key.begin(), key.end()};
-        }
-        const XOnlyPubKey xonly_pubkey{key};
-        return {xonly_pubkey.begin(), xonly_pubkey.end()};
-    }
+//     //! Convert a public key to bytes.
+//     std::vector<unsigned char> ToPKBytes(const CPubKey& key) const {
+//         if (!miniscript::IsTapscript(m_script_ctx)) {
+//             return {key.begin(), key.end()};
+//         }
+//         const XOnlyPubKey xonly_pubkey{key};
+//         return {xonly_pubkey.begin(), xonly_pubkey.end()};
+//     }
 
-    //! Convert a public key to its Hash160 bytes (precomputed).
-    std::vector<unsigned char> ToPKHBytes(const CPubKey& key) const {
-        if (!miniscript::IsTapscript(m_script_ctx)) {
-            auto hash = g_testdata->pkhashes.at(key);
-            return {hash.begin(), hash.end()};
-        }
-        const XOnlyPubKey xonly_key{key};
-        auto hash = g_testdata->xonly_pkhashes.at(xonly_key);
-        return {hash.begin(), hash.end()};
-    }
+//     //! Convert a public key to its Hash160 bytes (precomputed).
+//     std::vector<unsigned char> ToPKHBytes(const CPubKey& key) const {
+//         if (!miniscript::IsTapscript(m_script_ctx)) {
+//             auto hash = g_testdata->pkhashes.at(key);
+//             return {hash.begin(), hash.end()};
+//         }
+//         const XOnlyPubKey xonly_key{key};
+//         auto hash = g_testdata->xonly_pkhashes.at(xonly_key);
+//         return {hash.begin(), hash.end()};
+//     }
 
-    //! Parse a public key from a range of hex characters.
-    template<typename I>
-    std::optional<Key> FromString(I first, I last) const {
-        auto bytes = ParseHex(std::string(first, last));
-        Key key{bytes.begin(), bytes.end()};
-        if (key.IsValid()) return key;
-        return {};
-    }
+//     //! Parse a public key from a range of hex characters.
+//     template<typename I>
+//     std::optional<Key> FromString(I first, I last) const {
+//         auto bytes = ParseHex(std::string(first, last));
+//         Key key{bytes.begin(), bytes.end()};
+//         if (key.IsValid()) return key;
+//         return {};
+//     }
 
-    template<typename I>
-    std::optional<Key> FromPKBytes(I first, I last) const {
-        if (!miniscript::IsTapscript(m_script_ctx)) {
-            Key key{first, last};
-            if (key.IsValid()) return key;
-            return {};
-        }
-        if (last - first != 32) return {};
-        XOnlyPubKey xonly_pubkey;
-        std::copy(first, last, xonly_pubkey.begin());
-        return xonly_pubkey.GetEvenCorrespondingCPubKey();
-    }
+//     template<typename I>
+//     std::optional<Key> FromPKBytes(I first, I last) const {
+//         if (!miniscript::IsTapscript(m_script_ctx)) {
+//             Key key{first, last};
+//             if (key.IsValid()) return key;
+//             return {};
+//         }
+//         if (last - first != 32) return {};
+//         XOnlyPubKey xonly_pubkey;
+//         std::copy(first, last, xonly_pubkey.begin());
+//         return xonly_pubkey.GetEvenCorrespondingCPubKey();
+//     }
 
-    template<typename I>
-    std::optional<Key> FromPKHBytes(I first, I last) const {
-        assert(last - first == 20);
-        CKeyID keyid;
-        std::copy(first, last, keyid.begin());
-        return g_testdata->pkmap.at(keyid);
-    }
+//     template<typename I>
+//     std::optional<Key> FromPKHBytes(I first, I last) const {
+//         assert(last - first == 20);
+//         CKeyID keyid;
+//         std::copy(first, last, keyid.begin());
+//         return g_testdata->pkmap.at(keyid);
+//     }
 
-    std::optional<std::string> ToString(const Key& key) const {
-        return HexStr(ToPKBytes(key));
-    }
+//     std::optional<std::string> ToString(const Key& key) const {
+//         return HexStr(ToPKBytes(key));
+//     }
 
-    miniscript::MiniscriptContext MsContext() const {
-        return m_script_ctx;
-    }
-};
+//     miniscript::MiniscriptContext MsContext() const {
+//         return m_script_ctx;
+//     }
+// };
 
-/** A class that encapsulates all signing/hash revealing operations. */
-struct Satisfier : public KeyConverter {
+// /** A class that encapsulates all signing/hash revealing operations. */
+// struct Satisfier : public KeyConverter {
 
-    Satisfier(miniscript::MiniscriptContext ctx) noexcept : KeyConverter{ctx} {}
+//     Satisfier(miniscript::MiniscriptContext ctx) noexcept : KeyConverter{ctx} {}
 
-    //! Which keys/timelocks/hash preimages are available.
-    std::set<Challenge> supported;
+//     //! Which keys/timelocks/hash preimages are available.
+//     std::set<Challenge> supported;
 
-    //! Implement simplified CLTV logic: stack value must exactly match an entry in `supported`.
-    bool CheckAfter(uint32_t value) const {
-        return supported.count(Challenge(ChallengeType::AFTER, value));
-    }
+//     //! Implement simplified CLTV logic: stack value must exactly match an entry in `supported`.
+//     bool CheckAfter(uint32_t value) const {
+//         return supported.count(Challenge(ChallengeType::AFTER, value));
+//     }
 
-    //! Implement simplified CSV logic: stack value must exactly match an entry in `supported`.
-    bool CheckOlder(uint32_t value) const {
-        return supported.count(Challenge(ChallengeType::OLDER, value));
-    }
+//     //! Implement simplified CSV logic: stack value must exactly match an entry in `supported`.
+//     bool CheckOlder(uint32_t value) const {
+//         return supported.count(Challenge(ChallengeType::OLDER, value));
+//     }
 
-    //! Produce a signature for the given key.
-    miniscript::Availability Sign(const CPubKey& key, std::vector<unsigned char>& sig) const {
-        if (supported.count(Challenge(ChallengeType::PK, ChallengeNumber(key)))) {
-            if (!miniscript::IsTapscript(m_script_ctx)) {
-                auto it = g_testdata->signatures.find(key);
-                if (it == g_testdata->signatures.end()) return miniscript::Availability::NO;
-                sig = it->second;
-            } else {
-                auto it = g_testdata->schnorr_signatures.find(XOnlyPubKey{key});
-                if (it == g_testdata->schnorr_signatures.end()) return miniscript::Availability::NO;
-                sig = it->second;
-            }
-            return miniscript::Availability::YES;
-        }
-        return miniscript::Availability::NO;
-    }
+//     //! Produce a signature for the given key.
+//     miniscript::Availability Sign(const CPubKey& key, std::vector<unsigned char>& sig) const {
+//         if (supported.count(Challenge(ChallengeType::PK, ChallengeNumber(key)))) {
+//             if (!miniscript::IsTapscript(m_script_ctx)) {
+//                 auto it = g_testdata->signatures.find(key);
+//                 if (it == g_testdata->signatures.end()) return miniscript::Availability::NO;
+//                 sig = it->second;
+//             } else {
+//                 auto it = g_testdata->schnorr_signatures.find(XOnlyPubKey{key});
+//                 if (it == g_testdata->schnorr_signatures.end()) return miniscript::Availability::NO;
+//                 sig = it->second;
+//             }
+//             return miniscript::Availability::YES;
+//         }
+//         return miniscript::Availability::NO;
+//     }
 
-    //! Helper function for the various hash based satisfactions.
-    miniscript::Availability SatHash(const std::vector<unsigned char>& hash, std::vector<unsigned char>& preimage, ChallengeType chtype) const {
-        if (!supported.count(Challenge(chtype, ChallengeNumber(hash)))) return miniscript::Availability::NO;
-        const auto& m =
-            chtype == ChallengeType::SHA256 ? g_testdata->sha256_preimages :
-            chtype == ChallengeType::HASH256 ? g_testdata->hash256_preimages :
-            chtype == ChallengeType::RIPEMD160 ? g_testdata->ripemd160_preimages :
-            g_testdata->hash160_preimages;
-        auto it = m.find(hash);
-        if (it == m.end()) return miniscript::Availability::NO;
-        preimage = it->second;
-        return miniscript::Availability::YES;
-    }
+//     //! Helper function for the various hash based satisfactions.
+//     miniscript::Availability SatHash(const std::vector<unsigned char>& hash, std::vector<unsigned char>& preimage, ChallengeType chtype) const {
+//         if (!supported.count(Challenge(chtype, ChallengeNumber(hash)))) return miniscript::Availability::NO;
+//         const auto& m =
+//             chtype == ChallengeType::SHA256 ? g_testdata->sha256_preimages :
+//             chtype == ChallengeType::HASH256 ? g_testdata->hash256_preimages :
+//             chtype == ChallengeType::RIPEMD160 ? g_testdata->ripemd160_preimages :
+//             g_testdata->hash160_preimages;
+//         auto it = m.find(hash);
+//         if (it == m.end()) return miniscript::Availability::NO;
+//         preimage = it->second;
+//         return miniscript::Availability::YES;
+//     }
 
-    // Functions that produce the preimage for hashes of various types.
-    miniscript::Availability SatSHA256(const std::vector<unsigned char>& hash, std::vector<unsigned char>& preimage) const { return SatHash(hash, preimage, ChallengeType::SHA256); }
-    miniscript::Availability SatRIPEMD160(const std::vector<unsigned char>& hash, std::vector<unsigned char>& preimage) const { return SatHash(hash, preimage, ChallengeType::RIPEMD160); }
-    miniscript::Availability SatHASH256(const std::vector<unsigned char>& hash, std::vector<unsigned char>& preimage) const { return SatHash(hash, preimage, ChallengeType::HASH256); }
-    miniscript::Availability SatHASH160(const std::vector<unsigned char>& hash, std::vector<unsigned char>& preimage) const { return SatHash(hash, preimage, ChallengeType::HASH160); }
-};
+//     // Functions that produce the preimage for hashes of various types.
+//     miniscript::Availability SatSHA256(const std::vector<unsigned char>& hash, std::vector<unsigned char>& preimage) const { return SatHash(hash, preimage, ChallengeType::SHA256); }
+//     miniscript::Availability SatRIPEMD160(const std::vector<unsigned char>& hash, std::vector<unsigned char>& preimage) const { return SatHash(hash, preimage, ChallengeType::RIPEMD160); }
+//     miniscript::Availability SatHASH256(const std::vector<unsigned char>& hash, std::vector<unsigned char>& preimage) const { return SatHash(hash, preimage, ChallengeType::HASH256); }
+//     miniscript::Availability SatHASH160(const std::vector<unsigned char>& hash, std::vector<unsigned char>& preimage) const { return SatHash(hash, preimage, ChallengeType::HASH160); }
+// };
 
-/** Mocking signature/timelock checker.
- *
- * It holds a pointer to a Satisfier object, to determine which timelocks are supposed to be available.
- */
-class TestSignatureChecker : public BaseSignatureChecker {
-    const Satisfier& ctx;
+// /** Mocking signature/timelock checker.
+//  *
+//  * It holds a pointer to a Satisfier object, to determine which timelocks are supposed to be available.
+//  */
+// class TestSignatureChecker : public BaseSignatureChecker {
+//     const Satisfier& ctx;
 
-public:
-    TestSignatureChecker(const Satisfier& in_ctx LIFETIMEBOUND) : ctx(in_ctx) {}
+// public:
+//     TestSignatureChecker(const Satisfier& in_ctx LIFETIMEBOUND) : ctx(in_ctx) {}
 
-    bool CheckECDSASignature(const std::vector<unsigned char>& sig, const std::vector<unsigned char>& pubkey, const CScript& scriptcode, SigVersion sigversion) const override {
-        CPubKey pk(pubkey);
-        if (!pk.IsValid()) return false;
-        // Instead of actually running signature validation, check if the signature matches the precomputed one for this key.
-        auto it = g_testdata->signatures.find(pk);
-        if (it == g_testdata->signatures.end()) return false;
-        return sig == it->second;
-    }
+//     bool CheckECDSASignature(const std::vector<unsigned char>& sig, const std::vector<unsigned char>& pubkey, const CScript& scriptcode, SigVersion sigversion) const override {
+//         CPubKey pk(pubkey);
+//         if (!pk.IsValid()) return false;
+//         // Instead of actually running signature validation, check if the signature matches the precomputed one for this key.
+//         auto it = g_testdata->signatures.find(pk);
+//         if (it == g_testdata->signatures.end()) return false;
+//         return sig == it->second;
+//     }
 
-    bool CheckSchnorrSignature(std::span<const unsigned char> sig, std::span<const unsigned char> pubkey, SigVersion,
-                               ScriptExecutionData&, ScriptError*) const override {
-        XOnlyPubKey pk{pubkey};
-        auto it = g_testdata->schnorr_signatures.find(pk);
-        if (it == g_testdata->schnorr_signatures.end()) return false;
-        return std::ranges::equal(sig, it->second);
-    }
+//     bool CheckSchnorrSignature(std::span<const unsigned char> sig, std::span<const unsigned char> pubkey, SigVersion,
+//                                ScriptExecutionData&, ScriptError*) const override {
+//         XOnlyPubKey pk{pubkey};
+//         auto it = g_testdata->schnorr_signatures.find(pk);
+//         if (it == g_testdata->schnorr_signatures.end()) return false;
+//         return std::ranges::equal(sig, it->second);
+//     }
 
-    bool CheckLockTime(const CScriptNum& locktime) const override {
-        // Delegate to Satisfier.
-        return ctx.CheckAfter(locktime.GetInt64());
-    }
+//     bool CheckLockTime(const CScriptNum& locktime) const override {
+//         // Delegate to Satisfier.
+//         return ctx.CheckAfter(locktime.GetInt64());
+//     }
 
-    bool CheckSequence(const CScriptNum& sequence) const override {
-        // Delegate to Satisfier.
-        return ctx.CheckOlder(sequence.GetInt64());
-    }
-};
+//     bool CheckSequence(const CScriptNum& sequence) const override {
+//         // Delegate to Satisfier.
+//         return ctx.CheckOlder(sequence.GetInt64());
+//     }
+// };
 
-using Fragment = miniscript::Fragment;
-using NodeRef = miniscript::NodeRef<CPubKey>;
-using miniscript::operator""_mst;
-using Node = miniscript::Node<CPubKey>;
+// using Fragment = miniscript::Fragment;
+// using NodeRef = miniscript::NodeRef<CPubKey>;
+// using miniscript::operator""_mst;
+// using Node = miniscript::Node<CPubKey>;
 
-/** Compute all challenges (pubkeys, hashes, timelocks) that occur in a given Miniscript. */
-// NOLINTNEXTLINE(misc-no-recursion)
-std::set<Challenge> FindChallenges(const NodeRef& ref) {
-    std::set<Challenge> chal;
-    for (const auto& key : ref->keys) {
-        chal.emplace(ChallengeType::PK, ChallengeNumber(key));
-    }
-    if (ref->fragment == miniscript::Fragment::OLDER) {
-        chal.emplace(ChallengeType::OLDER, ref->k);
-    } else if (ref->fragment == miniscript::Fragment::AFTER) {
-        chal.emplace(ChallengeType::AFTER, ref->k);
-    } else if (ref->fragment == miniscript::Fragment::SHA256) {
-        chal.emplace(ChallengeType::SHA256, ChallengeNumber(ref->data));
-    } else if (ref->fragment == miniscript::Fragment::RIPEMD160) {
-        chal.emplace(ChallengeType::RIPEMD160, ChallengeNumber(ref->data));
-    } else if (ref->fragment == miniscript::Fragment::HASH256) {
-        chal.emplace(ChallengeType::HASH256, ChallengeNumber(ref->data));
-    } else if (ref->fragment == miniscript::Fragment::HASH160) {
-        chal.emplace(ChallengeType::HASH160, ChallengeNumber(ref->data));
-    }
-    for (const auto& sub : ref->subs) {
-        auto sub_chal = FindChallenges(sub);
-        chal.insert(sub_chal.begin(), sub_chal.end());
-    }
-    return chal;
-}
+// /** Compute all challenges (pubkeys, hashes, timelocks) that occur in a given Miniscript. */
+// // NOLINTNEXTLINE(misc-no-recursion)
+// std::set<Challenge> FindChallenges(const NodeRef& ref) {
+//     std::set<Challenge> chal;
+//     for (const auto& key : ref->keys) {
+//         chal.emplace(ChallengeType::PK, ChallengeNumber(key));
+//     }
+//     if (ref->fragment == miniscript::Fragment::OLDER) {
+//         chal.emplace(ChallengeType::OLDER, ref->k);
+//     } else if (ref->fragment == miniscript::Fragment::AFTER) {
+//         chal.emplace(ChallengeType::AFTER, ref->k);
+//     } else if (ref->fragment == miniscript::Fragment::SHA256) {
+//         chal.emplace(ChallengeType::SHA256, ChallengeNumber(ref->data));
+//     } else if (ref->fragment == miniscript::Fragment::RIPEMD160) {
+//         chal.emplace(ChallengeType::RIPEMD160, ChallengeNumber(ref->data));
+//     } else if (ref->fragment == miniscript::Fragment::HASH256) {
+//         chal.emplace(ChallengeType::HASH256, ChallengeNumber(ref->data));
+//     } else if (ref->fragment == miniscript::Fragment::HASH160) {
+//         chal.emplace(ChallengeType::HASH160, ChallengeNumber(ref->data));
+//     }
+//     for (const auto& sub : ref->subs) {
+//         auto sub_chal = FindChallenges(sub);
+//         chal.insert(sub_chal.begin(), sub_chal.end());
+//     }
+//     return chal;
+// }
 
-//! The spk for this script under the given context. If it's a Taproot output also record the spend data.
-CScript ScriptPubKey(miniscript::MiniscriptContext ctx, const CScript& script, TaprootBuilder& builder)
-{
-    if (!miniscript::IsTapscript(ctx)) return CScript() << OP_0 << WitnessV0ScriptHash(script);
+// //! The spk for this script under the given context. If it's a Taproot output also record the spend data.
+// CScript ScriptPubKey(miniscript::MiniscriptContext ctx, const CScript& script, TaprootBuilder& builder)
+// {
+//     if (!miniscript::IsTapscript(ctx)) return CScript() << OP_0 << WitnessV0ScriptHash(script);
 
-    // For Taproot outputs we always use a tree with a single script and a dummy internal key.
-    builder.Add(0, script, TAPROOT_LEAF_TAPSCRIPT);
-    builder.Finalize(XOnlyPubKey::NUMS_H);
-    return GetScriptForDestination(builder.GetOutput());
-}
+//     // For Taproot outputs we always use a tree with a single script and a dummy internal key.
+//     builder.Add(0, script, TAPROOT_LEAF_TAPSCRIPT);
+//     builder.Finalize(XOnlyPubKey::NUMS_H);
+//     return GetScriptForDestination(builder.GetOutput());
+// }
 
-//! Fill the witness with the data additional to the script satisfaction.
-void SatisfactionToWitness(miniscript::MiniscriptContext ctx, CScriptWitness& witness, const CScript& script, TaprootBuilder& builder) {
-    // For P2WSH, it's only the witness script.
-    witness.stack.emplace_back(script.begin(), script.end());
-    if (!miniscript::IsTapscript(ctx)) return;
-    // For Tapscript we also need the control block.
-    witness.stack.push_back(*builder.GetSpendData().scripts.begin()->second.begin());
-}
+// //! Fill the witness with the data additional to the script satisfaction.
+// void SatisfactionToWitness(miniscript::MiniscriptContext ctx, CScriptWitness& witness, const CScript& script, TaprootBuilder& builder) {
+//     // For P2WSH, it's only the witness script.
+//     witness.stack.emplace_back(script.begin(), script.end());
+//     if (!miniscript::IsTapscript(ctx)) return;
+//     // For Tapscript we also need the control block.
+//     witness.stack.push_back(*builder.GetSpendData().scripts.begin()->second.begin());
+// }
 
 struct MiniScriptTest : BasicTestingSetup {
-/** Run random satisfaction tests. */
-void TestSatisfy(const KeyConverter& converter, const std::string& testcase, const NodeRef& node) {
-    auto script = node->ToScript(converter);
-    auto challenges = FindChallenges(node); // Find all challenges in the generated miniscript.
-    std::vector<Challenge> challist(challenges.begin(), challenges.end());
-    for (int iter = 0; iter < 3; ++iter) {
-        std::shuffle(challist.begin(), challist.end(), m_rng);
-        Satisfier satisfier(converter.MsContext());
-        TestSignatureChecker checker(satisfier);
-        bool prev_mal_success = false, prev_nonmal_success = false;
-        // Go over all challenges involved in this miniscript in random order.
-        for (int add = -1; add < (int)challist.size(); ++add) {
-            if (add >= 0) satisfier.supported.insert(challist[add]); // The first iteration does not add anything
+// /** Run random satisfaction tests. */
+// void TestSatisfy(const KeyConverter& converter, const std::string& testcase, const NodeRef& node) {
+//     auto script = node->ToScript(converter);
+//     auto challenges = FindChallenges(node); // Find all challenges in the generated miniscript.
+//     std::vector<Challenge> challist(challenges.begin(), challenges.end());
+//     for (int iter = 0; iter < 3; ++iter) {
+//         std::shuffle(challist.begin(), challist.end(), m_rng);
+//         Satisfier satisfier(converter.MsContext());
+//         TestSignatureChecker checker(satisfier);
+//         bool prev_mal_success = false, prev_nonmal_success = false;
+//         // Go over all challenges involved in this miniscript in random order.
+//         for (int add = -1; add < (int)challist.size(); ++add) {
+//             if (add >= 0) satisfier.supported.insert(challist[add]); // The first iteration does not add anything
 
-            // Get the ScriptPubKey for this script, filling spend data if it's Taproot.
-            TaprootBuilder builder;
-            const CScript script_pubkey{ScriptPubKey(converter.MsContext(), script, builder)};
+//             // Get the ScriptPubKey for this script, filling spend data if it's Taproot.
+//             TaprootBuilder builder;
+//             const CScript script_pubkey{ScriptPubKey(converter.MsContext(), script, builder)};
 
-            // Run malleable satisfaction algorithm.
-            CScriptWitness witness_mal;
-            const bool mal_success = node->Satisfy(satisfier, witness_mal.stack, false) == miniscript::Availability::YES;
-            SatisfactionToWitness(converter.MsContext(), witness_mal, script, builder);
+//             // Run malleable satisfaction algorithm.
+//             CScriptWitness witness_mal;
+//             const bool mal_success = node->Satisfy(satisfier, witness_mal.stack, false) == miniscript::Availability::YES;
+//             SatisfactionToWitness(converter.MsContext(), witness_mal, script, builder);
 
-            // Run non-malleable satisfaction algorithm.
-            CScriptWitness witness_nonmal;
-            const bool nonmal_success = node->Satisfy(satisfier, witness_nonmal.stack, true) == miniscript::Availability::YES;
-            // Compute witness size (excluding script push, control block, and witness count encoding).
-            const size_t wit_size = GetSerializeSize(witness_nonmal.stack) - GetSizeOfCompactSize(witness_nonmal.stack.size());
-            SatisfactionToWitness(converter.MsContext(), witness_nonmal, script, builder);
+//             // Run non-malleable satisfaction algorithm.
+//             CScriptWitness witness_nonmal;
+//             const bool nonmal_success = node->Satisfy(satisfier, witness_nonmal.stack, true) == miniscript::Availability::YES;
+//             // Compute witness size (excluding script push, control block, and witness count encoding).
+//             const size_t wit_size = GetSerializeSize(witness_nonmal.stack) - GetSizeOfCompactSize(witness_nonmal.stack.size());
+//             SatisfactionToWitness(converter.MsContext(), witness_nonmal, script, builder);
 
-            if (nonmal_success) {
-                // Non-malleable satisfactions are bounded by the satisfaction size plus:
-                // - For P2WSH spends, the witness script
-                // - For Tapscript spends, both the witness script and the control block
-                const size_t max_stack_size{*node->GetStackSize() + 1 + miniscript::IsTapscript(converter.MsContext())};
-                BOOST_CHECK(witness_nonmal.stack.size() <= max_stack_size);
-                // If a non-malleable satisfaction exists, the malleable one must also exist, and be identical to it.
-                BOOST_CHECK(mal_success);
-                BOOST_CHECK(witness_nonmal.stack == witness_mal.stack);
-                assert(wit_size <= *node->GetWitnessSize());
+//             if (nonmal_success) {
+//                 // Non-malleable satisfactions are bounded by the satisfaction size plus:
+//                 // - For P2WSH spends, the witness script
+//                 // - For Tapscript spends, both the witness script and the control block
+//                 const size_t max_stack_size{*node->GetStackSize() + 1 + miniscript::IsTapscript(converter.MsContext())};
+//                 BOOST_CHECK(witness_nonmal.stack.size() <= max_stack_size);
+//                 // If a non-malleable satisfaction exists, the malleable one must also exist, and be identical to it.
+//                 BOOST_CHECK(mal_success);
+//                 BOOST_CHECK(witness_nonmal.stack == witness_mal.stack);
+//                 assert(wit_size <= *node->GetWitnessSize());
 
-                // Test non-malleable satisfaction.
-                ScriptError serror;
-                bool res = VerifyScript(CScript(), script_pubkey, &witness_nonmal, STANDARD_SCRIPT_VERIFY_FLAGS, checker, &serror);
-                // Non-malleable satisfactions are guaranteed to be valid if ValidSatisfactions().
-                if (node->ValidSatisfactions()) BOOST_CHECK(res);
-                // More detailed: non-malleable satisfactions must be valid, or could fail with ops count error (if CheckOpsLimit failed),
-                // or with a stack size error (if CheckStackSize check fails).
-                BOOST_CHECK(res ||
-                            (!node->CheckOpsLimit() && serror == ScriptError::SCRIPT_ERR_OP_COUNT) ||
-                            (!node->CheckStackSize() && serror == ScriptError::SCRIPT_ERR_STACK_SIZE));
-            }
+//                 // Test non-malleable satisfaction.
+//                 ScriptError serror;
+//                 bool res = VerifyScript(CScript(), script_pubkey, &witness_nonmal, STANDARD_SCRIPT_VERIFY_FLAGS, checker, &serror);
+//                 // Non-malleable satisfactions are guaranteed to be valid if ValidSatisfactions().
+//                 if (node->ValidSatisfactions()) BOOST_CHECK(res);
+//                 // More detailed: non-malleable satisfactions must be valid, or could fail with ops count error (if CheckOpsLimit failed),
+//                 // or with a stack size error (if CheckStackSize check fails).
+//                 BOOST_CHECK(res ||
+//                             (!node->CheckOpsLimit() && serror == ScriptError::SCRIPT_ERR_OP_COUNT) ||
+//                             (!node->CheckStackSize() && serror == ScriptError::SCRIPT_ERR_STACK_SIZE));
+//             }
 
-            if (mal_success && (!nonmal_success || witness_mal.stack != witness_nonmal.stack)) {
-                // Test malleable satisfaction only if it's different from the non-malleable one.
-                ScriptError serror;
-                bool res = VerifyScript(CScript(), script_pubkey, &witness_mal, STANDARD_SCRIPT_VERIFY_FLAGS, checker, &serror);
-                // Malleable satisfactions are not guaranteed to be valid under any conditions, but they can only
-                // fail due to stack or ops limits.
-                BOOST_CHECK(res || serror == ScriptError::SCRIPT_ERR_OP_COUNT || serror == ScriptError::SCRIPT_ERR_STACK_SIZE);
-            }
+//             if (mal_success && (!nonmal_success || witness_mal.stack != witness_nonmal.stack)) {
+//                 // Test malleable satisfaction only if it's different from the non-malleable one.
+//                 ScriptError serror;
+//                 bool res = VerifyScript(CScript(), script_pubkey, &witness_mal, STANDARD_SCRIPT_VERIFY_FLAGS, checker, &serror);
+//                 // Malleable satisfactions are not guaranteed to be valid under any conditions, but they can only
+//                 // fail due to stack or ops limits.
+//                 BOOST_CHECK(res || serror == ScriptError::SCRIPT_ERR_OP_COUNT || serror == ScriptError::SCRIPT_ERR_STACK_SIZE);
+//             }
 
-            if (node->IsSane()) {
-                // For sane nodes, the two algorithms behave identically.
-                BOOST_CHECK_EQUAL(mal_success, nonmal_success);
-            }
+//             if (node->IsSane()) {
+//                 // For sane nodes, the two algorithms behave identically.
+//                 BOOST_CHECK_EQUAL(mal_success, nonmal_success);
+//             }
 
-            // Adding more satisfied conditions can never remove our ability to produce a satisfaction.
-            BOOST_CHECK(mal_success >= prev_mal_success);
-            // For nonmalleable solutions this is only true if the added condition is PK;
-            // for other conditions, adding one may make an valid satisfaction become malleable. If the script
-            // is sane, this cannot happen however.
-            if (node->IsSane() || add < 0 || challist[add].first == ChallengeType::PK) {
-                BOOST_CHECK(nonmal_success >= prev_nonmal_success);
-            }
-            // Remember results for the next added challenge.
-            prev_mal_success = mal_success;
-            prev_nonmal_success = nonmal_success;
-        }
+//             // Adding more satisfied conditions can never remove our ability to produce a satisfaction.
+//             BOOST_CHECK(mal_success >= prev_mal_success);
+//             // For nonmalleable solutions this is only true if the added condition is PK;
+//             // for other conditions, adding one may make an valid satisfaction become malleable. If the script
+//             // is sane, this cannot happen however.
+//             if (node->IsSane() || add < 0 || challist[add].first == ChallengeType::PK) {
+//                 BOOST_CHECK(nonmal_success >= prev_nonmal_success);
+//             }
+//             // Remember results for the next added challenge.
+//             prev_mal_success = mal_success;
+//             prev_nonmal_success = nonmal_success;
+//         }
 
-        bool satisfiable = node->IsSatisfiable([](const Node&) { return true; });
-        // If the miniscript was satisfiable at all, a satisfaction must be found after all conditions are added.
-        BOOST_CHECK_EQUAL(prev_mal_success, satisfiable);
-        // If the miniscript is sane and satisfiable, a nonmalleable satisfaction must eventually be found.
-        if (node->IsSane()) BOOST_CHECK_EQUAL(prev_nonmal_success, satisfiable);
-    }
-}
+//         bool satisfiable = node->IsSatisfiable([](const Node&) { return true; });
+//         // If the miniscript was satisfiable at all, a satisfaction must be found after all conditions are added.
+//         BOOST_CHECK_EQUAL(prev_mal_success, satisfiable);
+//         // If the miniscript is sane and satisfiable, a nonmalleable satisfaction must eventually be found.
+//         if (node->IsSane()) BOOST_CHECK_EQUAL(prev_nonmal_success, satisfiable);
+//     }
+// }
 
-enum TestMode : int {
-    //! Invalid under any context
-    TESTMODE_INVALID = 0,
-    //! Valid under any context unless overridden
-    TESTMODE_VALID = 1,
-    TESTMODE_NONMAL = 2,
-    TESTMODE_NEEDSIG = 4,
-    TESTMODE_TIMELOCKMIX = 8,
-    //! Invalid only under P2WSH context
-    TESTMODE_P2WSH_INVALID = 16,
-    //! Invalid only under Tapscript context
-    TESTMODE_TAPSCRIPT_INVALID = 32,
-};
+// enum TestMode : int {
+//     //! Invalid under any context
+//     TESTMODE_INVALID = 0,
+//     //! Valid under any context unless overridden
+//     TESTMODE_VALID = 1,
+//     TESTMODE_NONMAL = 2,
+//     TESTMODE_NEEDSIG = 4,
+//     TESTMODE_TIMELOCKMIX = 8,
+//     //! Invalid only under P2WSH context
+//     TESTMODE_P2WSH_INVALID = 16,
+//     //! Invalid only under Tapscript context
+//     TESTMODE_TAPSCRIPT_INVALID = 32,
+// };
 
-void Test(const std::string& ms, const std::string& hexscript, int mode, const KeyConverter& converter,
-          int opslimit = -1, int stacklimit = -1, std::optional<uint32_t> max_wit_size = std::nullopt,
-          std::optional<uint32_t> stack_exec = {})
-{
-    auto node = miniscript::FromString(ms, converter);
-    const bool is_tapscript{miniscript::IsTapscript(converter.MsContext())};
-    if (mode == TESTMODE_INVALID || ((mode & TESTMODE_P2WSH_INVALID) && !is_tapscript) || ((mode & TESTMODE_TAPSCRIPT_INVALID) && is_tapscript)) {
-        BOOST_CHECK_MESSAGE(!node || !node->IsValid(), "Unexpectedly valid: " + ms);
-    } else {
-        BOOST_CHECK_MESSAGE(node, "Unparseable: " + ms);
-        BOOST_CHECK_MESSAGE(node->IsValid(), "Invalid: " + ms);
-        BOOST_CHECK_MESSAGE(node->IsValidTopLevel(), "Invalid top level: " + ms);
-        auto computed_script = node->ToScript(converter);
-        BOOST_CHECK_MESSAGE(node->ScriptSize() == computed_script.size(), "Script size mismatch: " + ms);
-        if (hexscript != "?") BOOST_CHECK_MESSAGE(HexStr(computed_script) == hexscript, "Script mismatch: " + ms + " (" + HexStr(computed_script) + " vs " + hexscript + ")");
-        BOOST_CHECK_MESSAGE(node->IsNonMalleable() == !!(mode & TESTMODE_NONMAL), "Malleability mismatch: " + ms);
-        BOOST_CHECK_MESSAGE(node->NeedsSignature() == !!(mode & TESTMODE_NEEDSIG), "Signature necessity mismatch: " + ms);
-        BOOST_CHECK_MESSAGE((node->GetType() << "k"_mst) == !(mode & TESTMODE_TIMELOCKMIX), "Timelock mix mismatch: " + ms);
-        auto inferred_miniscript = miniscript::FromScript(computed_script, converter);
-        BOOST_CHECK_MESSAGE(inferred_miniscript, "Cannot infer miniscript from script: " + ms);
-        BOOST_CHECK_MESSAGE(inferred_miniscript->ToScript(converter) == computed_script, "Roundtrip failure: miniscript->script != miniscript->script->miniscript->script: " + ms);
-        if (opslimit != -1) BOOST_CHECK_MESSAGE((int)*node->GetOps() == opslimit, "Ops limit mismatch: " << ms << " (" << *node->GetOps() << " vs " << opslimit << ")");
-        if (stacklimit != -1) BOOST_CHECK_MESSAGE((int)*node->GetStackSize() == stacklimit, "Stack limit mismatch: " << ms << " (" << *node->GetStackSize() << " vs " << stacklimit << ")");
-        if (max_wit_size) BOOST_CHECK_MESSAGE(*node->GetWitnessSize() == *max_wit_size, "Witness size limit mismatch: " << ms << " (" << *node->GetWitnessSize() << " vs " << *max_wit_size << ")");
-        if (stack_exec) BOOST_CHECK_MESSAGE(*node->GetExecStackSize() == *stack_exec, "Stack execution limit mismatch: " << ms << " (" << *node->GetExecStackSize() << " vs " << *stack_exec << ")");
-        TestSatisfy(converter, ms, node);
-    }
-}
+// void Test(const std::string& ms, const std::string& hexscript, int mode, const KeyConverter& converter,
+//           int opslimit = -1, int stacklimit = -1, std::optional<uint32_t> max_wit_size = std::nullopt,
+//           std::optional<uint32_t> stack_exec = {})
+// {
+//     auto node = miniscript::FromString(ms, converter);
+//     const bool is_tapscript{miniscript::IsTapscript(converter.MsContext())};
+//     if (mode == TESTMODE_INVALID || ((mode & TESTMODE_P2WSH_INVALID) && !is_tapscript) || ((mode & TESTMODE_TAPSCRIPT_INVALID) && is_tapscript)) {
+//         BOOST_CHECK_MESSAGE(!node || !node->IsValid(), "Unexpectedly valid: " + ms);
+//     } else {
+//         BOOST_CHECK_MESSAGE(node, "Unparseable: " + ms);
+//         BOOST_CHECK_MESSAGE(node->IsValid(), "Invalid: " + ms);
+//         BOOST_CHECK_MESSAGE(node->IsValidTopLevel(), "Invalid top level: " + ms);
+//         auto computed_script = node->ToScript(converter);
+//         BOOST_CHECK_MESSAGE(node->ScriptSize() == computed_script.size(), "Script size mismatch: " + ms);
+//         if (hexscript != "?") BOOST_CHECK_MESSAGE(HexStr(computed_script) == hexscript, "Script mismatch: " + ms + " (" + HexStr(computed_script) + " vs " + hexscript + ")");
+//         BOOST_CHECK_MESSAGE(node->IsNonMalleable() == !!(mode & TESTMODE_NONMAL), "Malleability mismatch: " + ms);
+//         BOOST_CHECK_MESSAGE(node->NeedsSignature() == !!(mode & TESTMODE_NEEDSIG), "Signature necessity mismatch: " + ms);
+//         BOOST_CHECK_MESSAGE((node->GetType() << "k"_mst) == !(mode & TESTMODE_TIMELOCKMIX), "Timelock mix mismatch: " + ms);
+//         auto inferred_miniscript = miniscript::FromScript(computed_script, converter);
+//         BOOST_CHECK_MESSAGE(inferred_miniscript, "Cannot infer miniscript from script: " + ms);
+//         BOOST_CHECK_MESSAGE(inferred_miniscript->ToScript(converter) == computed_script, "Roundtrip failure: miniscript->script != miniscript->script->miniscript->script: " + ms);
+//         if (opslimit != -1) BOOST_CHECK_MESSAGE((int)*node->GetOps() == opslimit, "Ops limit mismatch: " << ms << " (" << *node->GetOps() << " vs " << opslimit << ")");
+//         if (stacklimit != -1) BOOST_CHECK_MESSAGE((int)*node->GetStackSize() == stacklimit, "Stack limit mismatch: " << ms << " (" << *node->GetStackSize() << " vs " << stacklimit << ")");
+//         if (max_wit_size) BOOST_CHECK_MESSAGE(*node->GetWitnessSize() == *max_wit_size, "Witness size limit mismatch: " << ms << " (" << *node->GetWitnessSize() << " vs " << *max_wit_size << ")");
+//         if (stack_exec) BOOST_CHECK_MESSAGE(*node->GetExecStackSize() == *stack_exec, "Stack execution limit mismatch: " << ms << " (" << *node->GetExecStackSize() << " vs " << *stack_exec << ")");
+//         TestSatisfy(converter, ms, node);
+//     }
+// }
 
-void Test(const std::string& ms, const std::string& hexscript, const std::string& hextapscript, int mode,
-          int opslimit, int stacklimit, std::optional<uint32_t> max_wit_size,
-          std::optional<uint32_t> max_tap_wit_size,
-          std::optional<uint32_t> stack_exec)
-{
-    KeyConverter wsh_converter(miniscript::MiniscriptContext::P2WSH);
-    Test(ms, hexscript, mode, wsh_converter, opslimit, stacklimit, max_wit_size, stack_exec);
-    KeyConverter tap_converter(miniscript::MiniscriptContext::TAPSCRIPT);
-    Test(ms, hextapscript == "=" ? hexscript : hextapscript, mode, tap_converter, opslimit, stacklimit, max_tap_wit_size, stack_exec);
-}
+// void Test(const std::string& ms, const std::string& hexscript, const std::string& hextapscript, int mode,
+//           int opslimit, int stacklimit, std::optional<uint32_t> max_wit_size,
+//           std::optional<uint32_t> max_tap_wit_size,
+//           std::optional<uint32_t> stack_exec)
+// {
+//     KeyConverter wsh_converter(miniscript::MiniscriptContext::P2WSH);
+//     Test(ms, hexscript, mode, wsh_converter, opslimit, stacklimit, max_wit_size, stack_exec);
+//     KeyConverter tap_converter(miniscript::MiniscriptContext::TAPSCRIPT);
+//     Test(ms, hextapscript == "=" ? hexscript : hextapscript, mode, tap_converter, opslimit, stacklimit, max_tap_wit_size, stack_exec);
+// }
 
-void Test(const std::string& ms, const std::string& hexscript, const std::string& hextapscript, int mode)
-{
-    Test(ms, hexscript, hextapscript, mode,
-         /*opslimit=*/-1, /*stacklimit=*/-1,
-         /*max_wit_size=*/std::nullopt, /*max_tap_wit_size=*/std::nullopt, /*stack_exec=*/std::nullopt);
-}
+// void Test(const std::string& ms, const std::string& hexscript, const std::string& hextapscript, int mode)
+// {
+//     Test(ms, hexscript, hextapscript, mode,
+//          /*opslimit=*/-1, /*stacklimit=*/-1,
+//          /*max_wit_size=*/std::nullopt, /*max_tap_wit_size=*/std::nullopt, /*stack_exec=*/std::nullopt);
+// }
 }; // struct MiniScriptTest
 
 } // namespace
