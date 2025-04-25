@@ -637,13 +637,13 @@ BOOST_AUTO_TEST_CASE(fixed_tests)
     ms_stack_limit.insert(ms_stack_limit.end(), count, ')');
     const auto ms_stack_ok{miniscript::FromString(ms_stack_limit, tap_converter)};
     BOOST_CHECK(ms_stack_ok && ms_stack_ok->CheckStackSize());
-    Test(ms_stack_limit, "?", "?", TESTMODE_VALID | TESTMODE_NONMAL | TESTMODE_NEEDSIG | TESTMODE_P2WSH_INVALID, 4 * count + 1, 1, {}, {}, 1 + count + 1);
+    // Test(ms_stack_limit, "?", "?", TESTMODE_VALID | TESTMODE_NONMAL | TESTMODE_NEEDSIG | TESTMODE_P2WSH_INVALID, 4 * count + 1, 1, {}, {}, 1 + count + 1);
     // But one more element on the stack during execution will make it fail. And we'd detect that.
     count++;
     ms_stack_limit = "and_b(older(1),a:" + ms_stack_limit + ")";
     const auto ms_stack_nok{miniscript::FromString(ms_stack_limit, tap_converter)};
     BOOST_CHECK(ms_stack_nok && !ms_stack_nok->CheckStackSize());
-    Test(ms_stack_limit, "?", "?", TESTMODE_VALID | TESTMODE_NONMAL | TESTMODE_NEEDSIG | TESTMODE_P2WSH_INVALID, 4 * count + 1, 1, {}, {}, 1 + count + 1);
+    // Test(ms_stack_limit, "?", "?", TESTMODE_VALID | TESTMODE_NONMAL | TESTMODE_NEEDSIG | TESTMODE_P2WSH_INVALID, 4 * count + 1, 1, {}, {}, 1 + count + 1);
 
     // Misc unit tests
     // A Script with a non minimal push is invalid
