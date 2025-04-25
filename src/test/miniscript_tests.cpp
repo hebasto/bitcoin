@@ -30,23 +30,23 @@ namespace {
 /** TestData groups various kinds of precomputed data necessary in this test. */
 struct TestData {
     //! The only public keys used in this test.
-    std::vector<CPubKey> pubkeys;
+    // std::vector<CPubKey> pubkeys;
     //! A map from the public keys to their CKeyIDs (faster than hashing every time).
-    std::map<CPubKey, CKeyID> pkhashes;
-    std::map<CKeyID, CPubKey> pkmap;
-    std::map<XOnlyPubKey, CKeyID> xonly_pkhashes;
-    std::map<CPubKey, std::vector<unsigned char>> signatures;
-    std::map<XOnlyPubKey, std::vector<unsigned char>> schnorr_signatures;
+    // std::map<CPubKey, CKeyID> pkhashes;
+    // std::map<CKeyID, CPubKey> pkmap;
+    // std::map<XOnlyPubKey, CKeyID> xonly_pkhashes;
+    // std::map<CPubKey, std::vector<unsigned char>> signatures;
+    // std::map<XOnlyPubKey, std::vector<unsigned char>> schnorr_signatures;
 
     // Various precomputed hashes
-    std::vector<std::vector<unsigned char>> sha256;
-    std::vector<std::vector<unsigned char>> ripemd160;
-    std::vector<std::vector<unsigned char>> hash256;
-    std::vector<std::vector<unsigned char>> hash160;
-    std::map<std::vector<unsigned char>, std::vector<unsigned char>> sha256_preimages;
-    std::map<std::vector<unsigned char>, std::vector<unsigned char>> ripemd160_preimages;
-    std::map<std::vector<unsigned char>, std::vector<unsigned char>> hash256_preimages;
-    std::map<std::vector<unsigned char>, std::vector<unsigned char>> hash160_preimages;
+    // std::vector<std::vector<unsigned char>> sha256;
+    // std::vector<std::vector<unsigned char>> ripemd160;
+    // std::vector<std::vector<unsigned char>> hash256;
+    // std::vector<std::vector<unsigned char>> hash160;
+    // std::map<std::vector<unsigned char>, std::vector<unsigned char>> sha256_preimages;
+    // std::map<std::vector<unsigned char>, std::vector<unsigned char>> ripemd160_preimages;
+    // std::map<std::vector<unsigned char>, std::vector<unsigned char>> hash256_preimages;
+    // std::map<std::vector<unsigned char>, std::vector<unsigned char>> hash160_preimages;
 
     TestData()
     {
@@ -66,39 +66,39 @@ struct TestData {
             key.Set(keydata, keydata + 32, true);
             CPubKey pubkey = key.GetPubKey();
             CKeyID keyid = pubkey.GetID();
-            pubkeys.push_back(pubkey);
-            pkhashes.emplace(pubkey, keyid);
-            pkmap.emplace(keyid, pubkey);
+            // pubkeys.push_back(pubkey);
+            // pkhashes.emplace(pubkey, keyid);
+            // pkmap.emplace(keyid, pubkey);
             XOnlyPubKey xonly_pubkey{pubkey};
             uint160 xonly_hash{Hash160(xonly_pubkey)};
-            xonly_pkhashes.emplace(xonly_pubkey, xonly_hash);
-            pkmap.emplace(xonly_hash, pubkey);
+            // xonly_pkhashes.emplace(xonly_pubkey, xonly_hash);
+            // pkmap.emplace(xonly_hash, pubkey);
 
             // Compute ECDSA signatures on MESSAGE_HASH with the private keys.
             std::vector<unsigned char> sig, schnorr_sig(64);
             BOOST_CHECK(key.Sign(MESSAGE_HASH, sig));
             sig.push_back(1); // sighash byte
-            signatures.emplace(pubkey, sig);
+            // signatures.emplace(pubkey, sig);
             BOOST_CHECK(key.SignSchnorr(MESSAGE_HASH, schnorr_sig, nullptr, EMPTY_AUX));
             schnorr_sig.push_back(1); // Maximally sized Schnorr sigs have a sighash byte.
-            schnorr_signatures.emplace(XOnlyPubKey{pubkey}, schnorr_sig);
+            // schnorr_signatures.emplace(XOnlyPubKey{pubkey}, schnorr_sig);
 
             // Compute various hashes
             std::vector<unsigned char> hash;
             hash.resize(32);
             CSHA256().Write(keydata, 32).Finalize(hash.data());
-            sha256.push_back(hash);
-            sha256_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
+            // sha256.push_back(hash);
+            // sha256_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
             CHash256().Write(keydata).Finalize(hash);
-            hash256.push_back(hash);
-            hash256_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
+            // hash256.push_back(hash);
+            // hash256_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
             hash.resize(20);
             CRIPEMD160().Write(keydata, 32).Finalize(hash.data());
-            ripemd160.push_back(hash);
-            ripemd160_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
+            // ripemd160.push_back(hash);
+            // ripemd160_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
             CHash160().Write(keydata).Finalize(hash);
-            hash160.push_back(hash);
-            hash160_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
+            // hash160.push_back(hash);
+            // hash160_preimages[hash] = std::vector<unsigned char>(keydata, keydata + 32);
         }
     }
 };
