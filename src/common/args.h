@@ -480,19 +480,6 @@ std::string HelpMessageOpt(const std::string& option, const std::string& message
 
 namespace common {
 #ifdef WIN32
-class WinCmdLineArgs
-{
-public:
-    WinCmdLineArgs();
-    ~WinCmdLineArgs();
-    std::pair<int, char**> get();
-
-private:
-    int argc;
-    char** argv;
-    std::vector<std::string> args;
-};
-
 /**
  * A RAII-style class for temporarily changing the terminal output code page during runtime.
  */

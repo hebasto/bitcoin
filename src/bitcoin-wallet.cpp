@@ -98,8 +98,6 @@ MAIN_FUNCTION
 {
     ArgsManager& args = gArgs;
 #ifdef WIN32
-    common::WinCmdLineArgs winArgs;
-    std::tie(argc, argv) = winArgs.get();
     common::WindowsScopedCodePage windows_terminal_output_code_page{CP_UTF8};
 #endif
 
