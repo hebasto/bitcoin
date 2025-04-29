@@ -31,3 +31,5 @@ BEGIN
         VALUE "Translation", 0x0, 1252 // language neutral - multilingual (decimal)
     END
 END
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST bitcoin-cli.manifest
