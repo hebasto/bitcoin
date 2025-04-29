@@ -492,6 +492,19 @@ private:
     char** argv;
     std::vector<std::string> args;
 };
+
+/**
+ * A RAII-style class for temporarily changing the terminal output code page during runtime.
+ */
+class WindowsScopedCodePage
+{
+public:
+    WindowsScopedCodePage(UINT new_console_outp_code_page);
+    ~WindowsScopedCodePage();
+
+private:
+    UINT m_original_code_page;
+};
 #endif
 } // namespace common
 

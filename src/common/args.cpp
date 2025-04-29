@@ -889,5 +889,16 @@ std::pair<int, char**> WinCmdLineArgs::get()
 {
     return std::make_pair(argc, argv);
 }
+
+WindowsScopedCodePage::WindowsScopedCodePage(UINT new_console_outp_code_page)
+    : m_original_code_page{GetConsoleOutputCP()}
+{
+    SetConsoleOutputCP(new_console_outp_code_page);
+}
+
+WindowsScopedCodePage::~WindowsScopedCodePage()
+{
+    SetConsoleOutputCP(m_original_code_page);
+}
 #endif
 } // namespace common
