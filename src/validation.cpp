@@ -5637,7 +5637,7 @@ Chainstate& ChainstateManager::InitializeChainstate(CTxMemPool* mempool)
             }
         } catch (const fs::filesystem_error& e) {
             LogPrintf("[snapshot] failed to remove file %s: %s\n",
-                    fs::PathToString(base_blockhash_path), fsbridge::get_filesystem_error_message(e));
+                    fs::PathToString(base_blockhash_path), e.code().message());
         }
     }
 
