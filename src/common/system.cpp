@@ -78,7 +78,6 @@ void SetupEnvironment()
     }
 #elif defined(WIN32)
     // Set the default input/output charset is utf-8
-    SetConsoleCP(CP_UTF8);
     SetConsoleOutputCP(CP_UTF8);
 #endif
 
