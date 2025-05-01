@@ -288,6 +288,9 @@ if(WIN32)
       /Zc:__cplusplus
       /sdl
     )
+    target_link_options(core_interface INTERFACE
+      /MANIFEST:NO
+    )
     # Improve parallelism in MSBuild.
     # See: https://devblogs.microsoft.com/cppblog/improved-parallelism-in-msbuild/.
     list(APPEND CMAKE_VS_GLOBALS "UseMultiToolTask=true")
