@@ -219,7 +219,7 @@ jobs:
       - name: Generate build system
         working-directory: 'folder with spaces'
         run: |
-          cmake -B build --preset vs2022 -DVCPKG_INSTALL_OPTIONS="--x-buildtrees-root=${VCPKG_INSTALLATION_ROOT}/nospaces" -DCMAKE_TOOLCHAIN_FILE="${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake" ${{ matrix.generate-options }}
+          cmake -B build --preset vs2022 -DVCPKG_INSTALLED_DIR="${VCPKG_INSTALLATION_ROOT}/nospaces" -DCMAKE_TOOLCHAIN_FILE="${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake" ${{ matrix.generate-options }}
 
       - name: Build
         working-directory: build
