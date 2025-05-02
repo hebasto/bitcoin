@@ -245,6 +245,10 @@ int main(int argc, char** argv)
         test_one_input(buffer);
         return 0;
     }
+#ifdef WIN32
+    // Suppress the abort message.
+    _set_abort_behavior(0, _WRITE_ABORT_MSG);
+#endif
     std::signal(SIGABRT, signal_handler);
     const auto start_time{Now<SteadySeconds>()};
     int tested = 0;
