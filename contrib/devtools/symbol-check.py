@@ -314,30 +314,30 @@ def check_PE_application_manifest(binary) -> bool:
     print(f'============= rm.manifest are {rm.manifest}')
 
 
-    print('================================')
-    print(f'============= root.childs are {root.childs}')
-    print(f'============= lief.PE.RESOURCE_TYPES.MANIFEST are {lief.PE.RESOURCE_TYPES.MANIFEST}')
+    # print('================================')
+    # print(f'============= root.childs are {root.childs}')
+    # print(f'============= lief.PE.RESOURCE_TYPES.MANIFEST are {lief.PE.RESOURCE_TYPES.MANIFEST}')
 
-    try:
-        manifest_node = next(i for i in root.childs if i.id == lief.PE.RESOURCE_TYPES.MANIFEST)
-    except StopIteration:
-        # No resource of type manifest.
-        return False
+    # try:
+    #     manifest_node = next(i for i in root.childs if i.id == lief.PE.RESOURCE_TYPES.MANIFEST)
+    # except StopIteration:
+    #     # No resource of type manifest.
+    #     return False
 
-    # traverse two levels: id, language
-    if len(manifest_node.childs) != 1 or manifest_node.childs[0].id != 1:
-        # Must have one child with ID 1 (CREATEPROCESS_MANIFEST_RESOURCE_ID).
-        return False
+    # # traverse two levels: id, language
+    # if len(manifest_node.childs) != 1 or manifest_node.childs[0].id != 1:
+    #     # Must have one child with ID 1 (CREATEPROCESS_MANIFEST_RESOURCE_ID).
+    #     return False
 
-    if len(manifest_node.childs[0].childs) != 1:
-        # Cannot have language-dependent binary manifest.
-        return False
+    # if len(manifest_node.childs[0].childs) != 1:
+    #     # Cannot have language-dependent binary manifest.
+    #     return False
 
-    manifest_resource = manifest_node.childs[0].childs[0]
-    manifest = bytes(manifest_resource.content).decode("utf8")
+    # manifest_resource = manifest_node.childs[0].childs[0]
+    # manifest = bytes(manifest_resource.content).decode("utf8")
 
     # check against template
-    m = re.match(MANIFEST_TEMPLATE, manifest)
+    m = re.match(MANIFEST_TEMPLATE, rm.manifest)
     return m is not None
 
 def check_ELF_interpreter(binary) -> bool:
