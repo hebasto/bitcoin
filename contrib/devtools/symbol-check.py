@@ -305,6 +305,15 @@ def check_PE_application_manifest(binary) -> bool:
     # Find MANIFEST type in resource root.
     root = binary.resources
 
+    rm = binary.resources_manager
+    if not rm.has_manifest:
+        # No manifest at all.
+        return False
+
+    print('================================')
+    print(f'============= rm.manifest are {rm.manifest}')
+
+
     print('================================')
     print(f'============= root.childs are {root.childs}')
     print(f'============= lief.PE.RESOURCE_TYPES.MANIFEST are {lief.PE.RESOURCE_TYPES.MANIFEST}')
