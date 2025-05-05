@@ -304,6 +304,11 @@ def check_PE_application_manifest(binary) -> bool:
 
     # Find MANIFEST type in resource root.
     root = binary.resources
+
+    print('================================')
+    print(f'============= root.childs are {root.childs}')
+    print(f'============= lief.PE.RESOURCE_TYPES.MANIFEST are {lief.PE.RESOURCE_TYPES.MANIFEST}')
+
     try:
         manifest_node = next(i for i in root.childs if i.id == lief.PE.RESOURCE_TYPES.MANIFEST)
     except StopIteration:
