@@ -19,8 +19,8 @@ static std::unique_ptr<CWallet> g_wallet_ptr;
 
 void initialize_setup()
 {
-    // static const auto testing_setup = MakeNoLogFileContext<const TestingSetup>();
-    // g_setup = testing_setup.get();
+    static const auto testing_setup = MakeNoLogFileContext<const TestingSetup>();
+    g_setup = testing_setup.get();
     // const auto& node{g_setup->m_node};
     // g_wallet_ptr = std::make_unique<CWallet>(node.chain.get(), "", CreateMockableWalletDatabase());
 }
