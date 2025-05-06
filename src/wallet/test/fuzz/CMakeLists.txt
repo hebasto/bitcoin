@@ -4,9 +4,9 @@
 
 target_sources(fuzz
   PRIVATE
-    coincontrol.cpp
-    coinselection.cpp
-    crypter.cpp
+    # coincontrol.cpp
+    # coinselection.cpp
+    # crypter.cpp
     fees.cpp
     # notifications.cpp
     # scriptpubkeyman.cpp
