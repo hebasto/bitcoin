@@ -27,6 +27,7 @@ void initialize_setup()
 
 FUZZ_TARGET(wallet_fees, .init = initialize_setup)
 {
+    SeedRandomStateForTest(SeedRand::ZEROS);
     FuzzedDataProvider fuzzed_data_provider{buffer.data(), buffer.size()};
     const auto& node{g_setup->m_node};
 
