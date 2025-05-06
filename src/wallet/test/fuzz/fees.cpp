@@ -15,22 +15,22 @@
 namespace wallet {
 namespace {
 const TestingSetup* g_setup;
-static std::unique_ptr<CWallet> g_wallet_ptr;
 
 void initialize_setup()
 {
     static const auto testing_setup = MakeNoLogFileContext<const TestingSetup>();
     g_setup = testing_setup.get();
-    const auto& node{g_setup->m_node};
-    g_wallet_ptr = std::make_unique<CWallet>(node.chain.get(), "", CreateMockableWalletDatabase());
 }
 
 FUZZ_TARGET(wallet_fees, .init = initialize_setup)
 {
+    SeedRandomStateForTest(SeedRand::ZEROS);
     FuzzedDataProvider fuzzed_data_provider{buffer.data(), buffer.size()};
+    SetMockTime(ConsumeTime(fuzzed_data_provider));
     const auto& node{g_setup->m_node};
     Chainstate* chainstate = &node.chainman->ActiveChainstate();
-    CWallet& wallet = *g_wallet_ptr;
+    std::unique_ptr<CWallet> wallet_ptr{std::make_unique<CWallet>(node.chain.get(), "", CreateMockableWalletDatabase())};
+    CWallet& wallet{*wallet_ptr};
     {
         LOCK(wallet.cs_wallet);
         wallet.SetLastBlockProcessed(chainstate->m_chain.Height(), chainstate->m_chain.Tip()->GetBlockHash());
