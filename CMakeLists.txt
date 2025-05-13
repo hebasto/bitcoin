@@ -276,6 +276,9 @@ if(WIN32)
       /Zc:__cplusplus
       /sdl
     )
+
+    try_append_linker_flag("-rtlib=compiler-rt" TARGET core_interface)
+
     # Improve parallelism in MSBuild.
     # See: https://devblogs.microsoft.com/cppblog/improved-parallelism-in-msbuild/.
     list(APPEND CMAKE_VS_GLOBALS "UseMultiToolTask=true")
