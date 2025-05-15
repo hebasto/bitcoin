@@ -83,7 +83,13 @@ struct FeeFrac
     {
         return __int128{a} * b;
     }
+#else
+    static constexpr auto Mul = MulFallback;
+#endif
 
+// TODO: __int128 division when using clang-cl may require `-rtlib=compiler-rt`,
+//       but it remains unclear whether that alone is sufficient.
+#if defined(__SIZEOF_INT128__) && !defined(_MSC_VER)
     /** Helper function for 96/32 signed division, rounding towards negative infinity (if
      *  round_down), or towards positive infinity (if !round_down). This is a
      *  version relying on __int128.
@@ -99,7 +105,6 @@ struct FeeFrac
         return quot + ((mod > 0) - (mod && round_down));
     }
 #else
-    static constexpr auto Mul = MulFallback;
     static constexpr auto Div = DivFallback;
 #endif
 
