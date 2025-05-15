@@ -275,6 +275,9 @@ if(WIN32)
       /Zc:preprocessor
       /Zc:__cplusplus
       /sdl
+      # TODO: __int128 division when using clang-cl may require `-rtlib=compiler-rt`,
+      #       but it remains unclear whether that alone is sufficient.
+      -U__SIZEOF_INT128__
     )
     # Improve parallelism in MSBuild.
     # See: https://devblogs.microsoft.com/cppblog/improved-parallelism-in-msbuild/.
