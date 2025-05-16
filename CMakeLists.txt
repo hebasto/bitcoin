@@ -298,7 +298,10 @@ if(WIN32)
     # We support Windows 10+.
     try_append_linker_flag("-Wl,--major-subsystem-version,10" TARGET core_interface)
     try_append_linker_flag("-Wl,--minor-subsystem-version,0" TARGET core_interface)
-    try_append_linker_flag("-Wl,--undefined=__load_config_used" TARGET core_interface)
+    # Required for subsystem versions > 6.2.
+    # See: https://sourceforge.net/p/mingw-w64/bugs/968/#c97b.
+    try_append_linker_flag("-Wl,--undefined=_load_config_used" TARGET core_interface)
+    try_append_linker_flag("-Wl,--undefined=__security_init_cookie" TARGET core_interface)
   endif()
 
   # Workaround producing large object files, which cannot be handled by the assembler.
