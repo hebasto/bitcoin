@@ -295,11 +295,10 @@ if(WIN32)
     # See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=54412.
     try_append_cxx_flags("-Wa,-muse-unaligned-vector-move" TARGET core_interface SKIP_LINK)
     try_append_linker_flag("-static" TARGET core_interface)
-    # We support Windows 10+, however it's not possible to set these values accordingly,
-    # due to a bug in mingw-w64. See https://sourceforge.net/p/mingw-w64/bugs/968/.
-    # As a best effort, target Windows 8.
-    try_append_linker_flag("-Wl,--major-subsystem-version,6" TARGET core_interface)
-    try_append_linker_flag("-Wl,--minor-subsystem-version,2" TARGET core_interface)
+    # We support Windows 10+.
+    try_append_linker_flag("-Wl,--major-subsystem-version,10" TARGET core_interface)
+    try_append_linker_flag("-Wl,--minor-subsystem-version,0" TARGET core_interface)
+    try_append_linker_flag("-Wl,--undefined=__load_config_used" TARGET core_interface)
   endif()
 
   # Workaround producing large object files, which cannot be handled by the assembler.
