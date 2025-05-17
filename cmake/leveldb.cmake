@@ -87,10 +87,6 @@ if(MSVC)
     target_compile_options(nowarn_leveldb_interface INTERFACE
       /wd4722
     )
-  else()
-    try_append_cxx_flags("-Wunused-member-function" TARGET nowarn_leveldb_interface SKIP_LINK
-      IF_CHECK_PASSED "-Wno-unused-member-function"
-    )
   endif()
 else()
   try_append_cxx_flags("-Wconditional-uninitialized" TARGET nowarn_leveldb_interface SKIP_LINK
