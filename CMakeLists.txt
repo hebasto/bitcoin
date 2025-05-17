@@ -280,6 +280,8 @@ if(WIN32)
       /Zc:preprocessor
       /Zc:__cplusplus
       /sdl
+      # TODO: __int128 division when using clang-cl requires the builtins library.
+      -U__SIZEOF_INT128__
     )
     target_link_options(core_interface INTERFACE
       # We embed our own manifests.
