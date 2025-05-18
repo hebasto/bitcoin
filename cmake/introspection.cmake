@@ -156,7 +156,7 @@ if(NOT MSVC)
   include(CheckSourceCompilesWithFlags)
 
   # Check for SSE4.1 intrinsics.
-  set(SSE41_CXXFLAGS -msse4.1)
+  set(SSE41_CXXFLAGS -msse2 -msse4.1)
   check_cxx_source_compiles_with_flags("
     #include <immintrin.h>
 
