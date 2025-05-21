@@ -35,15 +35,13 @@ BOOST_AUTO_TEST_CASE(run_command)
         BOOST_CHECK(!success.isNull());
         BOOST_CHECK_EQUAL(success.get_bool(), true);
     }
+#ifdef WIN32
     {
         // An invalid command is handled by cpp-subprocess
-#ifdef WIN32
         const std::string expected{"CreateProcess failed: "};
-#else
-        const std::string expected{"execve failed: "};
-#endif
         BOOST_CHECK_EXCEPTION(RunCommandParseJSON("invalid_command"), subprocess::CalledProcessError, HasReason(expected));
     }
+#endif
     {
         // Return non-zero exit code, no output to stderr
 #ifdef WIN32
@@ -62,7 +60,7 @@ BOOST_AUTO_TEST_CASE(run_command)
 #ifdef WIN32
         const std::string command{"cmd.exe /c \"echo err 1>&2 && exit 1\""};
 #else
-        const std::string command{"sh -c 'echo err 1>&2 && false'"};
+        const std::string command{"echo err 1>&2 && false"};
 #endif
         const std::string expected{"err"};
         BOOST_CHECK_EXCEPTION(RunCommandParseJSON(command), std::runtime_error, [&](const std::runtime_error& e) {
