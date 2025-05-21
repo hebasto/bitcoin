@@ -314,20 +314,29 @@ namespace util
    * [out] vector<string> : Vector of strings split at deleimiter.
    */
   static inline std::vector<std::string>
-  split(const std::string& str, const std::string& delims=" \t")
+  split(const std::string& str, const std::string& delims=" \t", char quote = '\'')
   {
     std::vector<std::string> res;
     size_t init = 0;
 
     while (true) {
-      auto pos = str.find_first_of(delims, init);
-      if (pos == std::string::npos) {
-        res.emplace_back(str.substr(init, str.length()));
-        break;
+      if (str[init] == quote) {
+          size_t start = init + 1;
+          size_t end = str.find(quote, start);
+          // If no closing quote, take rest of string.
+          if (end == std::string::npos) end = str.length();
+          res.emplace_back(str.substr(start, end - start));
+          init = end + 1;
+      } else {
+        auto pos = str.find_first_of(delims, init);
+        if (pos == std::string::npos) {
+          res.emplace_back(str.substr(init, str.length()));
+          break;
+        }
+        res.emplace_back(str.substr(init, pos - init));
+        pos++;
+        init = pos;
       }
-      res.emplace_back(str.substr(init, pos - init));
-      pos++;
-      init = pos;
     }
 
     return res;
