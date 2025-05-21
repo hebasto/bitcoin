@@ -1237,6 +1237,19 @@ inline void Popen::execute_process() noexcept(false)
   std::tie(err_rd_pipe, err_wr_pipe) = util::pipe_cloexec();
 
   if (shell_) {
+    for (auto& arg : vargs_) {
+      std::string escaped_arg;
+      escaped_arg.reserve(arg.size() * 2);
+      for (std::size_t i = 0; i < arg.size(); ++i) {
+        if (arg[i] == '"') {
+          escaped_arg += "\\\"";
+        } else {
+          escaped_arg += arg[i];
+        }
+      }
+      arg = escaped_arg;
+    }
+
     auto new_cmd = util::join(vargs_);
     vargs_.clear();
     vargs_.insert(vargs_.begin(), {"/bin/sh", "-c"});
