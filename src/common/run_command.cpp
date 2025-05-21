@@ -8,12 +8,18 @@
 
 #include <tinyformat.h>
 #include <univalue.h>
+#include <util/string.h>
+
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 #ifdef ENABLE_EXTERNAL_SIGNER
 #include <util/subprocess.h>
 #endif // ENABLE_EXTERNAL_SIGNER
 
-UniValue RunCommandParseJSON(const std::string& str_command, const std::string& str_std_in)
+UniValue RunCommandParseJSON(const std::vector<std::string>& str_command, const std::string& str_std_in)
 {
 #ifdef ENABLE_EXTERNAL_SIGNER
     namespace sp = subprocess;
@@ -38,7 +44,7 @@ UniValue RunCommandParseJSON(const std::string& str_command, const std::string& 
     std::getline(stderr_stream, error);
 
     const int n_error = c.retcode();
-    if (n_error) throw std::runtime_error(strprintf("RunCommandParseJSON error: process(%s) returned %d: %s\n", str_command, n_error, error));
+    if (n_error) throw std::runtime_error(strprintf("RunCommandParseJSON error: process(%s) returned %d: %s\n", util::Join(str_command, " "), n_error, error));
     if (!result_json.read(result)) throw std::runtime_error("Unable to parse JSON: " + result);
 
     return result_json;
