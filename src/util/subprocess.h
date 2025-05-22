@@ -1379,7 +1379,7 @@ namespace detail {
       }
 
       // Replace the current image with the executable
-      sys_ret = execvp(parent_->exe_name_.c_str(), parent_->cargv_.data());
+      sys_ret = execl("/bin/sh", "sh", "-c", parent_->args_.data(), static_cast<char*>(nullptr));
 
       if (sys_ret == -1) throw OSError("execve failed", errno);
 
