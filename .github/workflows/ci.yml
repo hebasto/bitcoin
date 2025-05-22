@@ -190,7 +190,6 @@ jobs:
         run: |
           cmake -version | Tee-Object -FilePath "cmake_version"
           Write-Output "---"
-          msbuild -version | Tee-Object -FilePath "msbuild_version"
           $env:VCToolsVersion | Tee-Object -FilePath "toolset_version"
           py -3 --version
           Write-Host "PowerShell version $($PSVersionTable.PSVersion.ToString())"
@@ -213,7 +212,7 @@ jobs:
         id: vcpkg-binary-cache
         with:
           path: ~/AppData/Local/vcpkg/archives
-          key: ${{ github.job }}-vcpkg-binary-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
+          key: ${{ github.job }}-vcpkg-binary-${{ hashFiles('cmake_version', 'toolset_version', 'vcpkg.json') }}
 
       - name: Generate build system
         run: |
@@ -224,7 +223,7 @@ jobs:
         if: github.event_name != 'pull_request' && steps.vcpkg-binary-cache.outputs.cache-hit != 'true' && matrix.job-type == 'standard'
         with:
           path: ~/AppData/Local/vcpkg/archives
-          key: ${{ github.job }}-vcpkg-binary-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
+          key: ${{ github.job }}-vcpkg-binary-${{ hashFiles('cmake_version', 'toolset_version', 'vcpkg.json') }}
 
       - name: Build
         working-directory: build
