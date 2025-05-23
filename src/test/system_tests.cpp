@@ -16,7 +16,9 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <cstdlib>
 #include <fstream>
+#include <string>
 
 BOOST_FIXTURE_TEST_SUITE(system_tests, BasicTestingSetup)
 
@@ -69,12 +71,17 @@ BOOST_AUTO_TEST_CASE(run_command)
 #ifdef WIN32
         const std::string command{strprintf("cmd.exe /c \"echo %s 1>&2 && exit 1\"", expected_message)};
 #else
-        fs::path script_path{m_args.GetDataDirBase() + "script.sh"};
-        std::ofstream script(script_path);
-        BOOST_CHECK_MESSAGE(script, strprintf("failed to create: %s", fs::PathToString(script_path)));
+        const fs::path script_path{m_args.GetDataDirBase() / "script.sh"};
+        const std::string script_name{fs::PathToString(script_path)};
+        std::ofstream script{script_path};
+        BOOST_REQUIRE_MESSAGE(script, strprintf("failed to create: %s", script_name));
+        script << "#!/bin/sh\n";
+        script << "echo $1 >&2\n";
+        script << "exit 1\n";
         script.close();
-
-        const std::string command{PRINT_ERR_AND_FAIL_SCRIPT_PATH " " + expected_message};
+        int exit_status = std::system(("chmod +x \"" + script_name + "\"").data());
+        BOOST_REQUIRE_MESSAGE(exit_status == 0, strprintf("failed to chmod: %s", script_name));
+        const std::string command{script_name + " " + expected_message};
 #endif
         const std::string expected_error{strprintf("RunCommandParseJSON error: process(%s) returned 1: ", command)};
         BOOST_CHECK_EXCEPTION(RunCommandParseJSON(command), std::runtime_error, [&](const std::runtime_error& e) {
