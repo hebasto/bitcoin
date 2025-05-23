@@ -7,6 +7,7 @@
 #include <test/util/setup_common.h>
 #include <common/run_command.h>
 #include <univalue.h>
+#include <util/fs.h>
 
 #ifdef ENABLE_EXTERNAL_SIGNER
 #include <util/subprocess.h>
@@ -14,12 +15,18 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <cstdlib>
+#include <fstream>
+#include <string>
+
 BOOST_FIXTURE_TEST_SUITE(system_tests, BasicTestingSetup)
 
 #ifdef ENABLE_EXTERNAL_SIGNER
 
 BOOST_AUTO_TEST_CASE(run_command)
 {
+    BOOST_TEST_MESSAGE(strprintf("==== m_args: %s", fs::PathToString(m_args.GetDataDirBase())));
+
     {
         const UniValue result = RunCommandParseJSON("");
         BOOST_CHECK(result.isNull());
@@ -63,16 +70,31 @@ BOOST_AUTO_TEST_CASE(run_command)
 #ifdef WIN32
         const std::string command{strprintf("cmd.exe /c \"echo %s 1>&2 && exit 1\"", expected_message)};
 #else
-        const std::string command{PRINT_ERR_AND_FAIL_SCRIPT_PATH " " + expected_message};
+        // Not using the test data dir to avoid a space in the path.
+        const fs::path script_path{fs::temp_directory_path() / "script.sh"};
+        const std::string script_name{fs::PathToString(script_path)};
+        std::ofstream script{script_path};
+        BOOST_REQUIRE_MESSAGE(script, strprintf("failed to create: %s", script_name));
+        script < "#!/bin/sh\n";
+        script << "echo $1 >&2\n";
+        script << "exit 1\n";
+        script.close();
+        int exit_status = std::system(("chmod +x \"" + script_name + "\"").data());
+        BOOST_REQUIRE_MESSAGE(exit_status == 0, strprintf("failed to chmod: %s", script_name));
+        const std::string command{script_name + " " + expected_message};
 #endif
         const std::string expected_error{strprintf("RunCommandParseJSON error: process(%s) returned 1: ", command)};
         BOOST_CHECK_EXCEPTION(RunCommandParseJSON(command), std::runtime_error, [&](const std::runtime_error& e) {
             std::string what(e.what());
+
+            BOOST_TEST_MESSAGE(strprintf("==== what: %s", what));
+
             BOOST_CHECK(what.find(expected_error) != std::string::npos);
             what.erase(0, expected_error.size());
             BOOST_CHECK(what.find(expected_message) != std::string::npos);
             return true;
         });
+        fs::remove(script_path);
     }
     {
         // Unable to parse JSON
