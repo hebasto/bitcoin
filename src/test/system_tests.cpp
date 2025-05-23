@@ -5,6 +5,7 @@
 
 #include <bitcoin-build-config.h> // IWYU pragma: keep
 #include <test/util/setup_common.h>
+#include <common/args.h>
 #include <common/run_command.h>
 #include <univalue.h>
 #include <util/fs.h>
@@ -70,8 +71,7 @@ BOOST_AUTO_TEST_CASE(run_command)
 #ifdef WIN32
         const std::string command{strprintf("cmd.exe /c \"echo %s 1>&2 && exit 1\"", expected_message)};
 #else
-        // Not using the test data dir to avoid a space in the path.
-        const fs::path script_path{fs::temp_directory_path() / "script.sh"};
+        const fs::path script_path{m_args.GetDataDirBase() / "script.sh"};
         const std::string script_name{fs::PathToString(script_path)};
         std::ofstream script{script_path};
         BOOST_REQUIRE_MESSAGE(script, strprintf("failed to create: %s", script_name));
@@ -86,9 +86,6 @@ BOOST_AUTO_TEST_CASE(run_command)
         const std::string expected_error{strprintf("RunCommandParseJSON error: process(%s) returned 1: ", command)};
         BOOST_CHECK_EXCEPTION(RunCommandParseJSON(command), std::runtime_error, [&](const std::runtime_error& e) {
             std::string what(e.what());
-
-            BOOST_TEST_MESSAGE(strprintf("==== what: %s", what));
-
             BOOST_CHECK(what.find(expected_error) != std::string::npos);
             what.erase(0, expected_error.size());
             BOOST_CHECK(what.find(expected_message) != std::string::npos);
