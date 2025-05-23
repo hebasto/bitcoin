@@ -36,7 +36,7 @@ void RunShell(const std::string& str_command)
         auto c = sp::Popen("cmd.exe /c " + str_command);
 #else
         // Emulate system(3) behavior, but don't leak file descriptors.
-        auto c = sp::Popen({"/bin/sh", "-c", str_command}, sp::close_fds{true});
+        auto c = sp::Popen(str_command, sp::close_fds{true});
 #endif
         int err = c.wait();
         if (err) {
