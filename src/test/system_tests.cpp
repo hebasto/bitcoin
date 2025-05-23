@@ -28,6 +28,8 @@ BOOST_AUTO_TEST_CASE(run_command)
 {
     BOOST_TEST_MESSAGE(strprintf("==== m_args: %s", fs::PathToString(m_args.GetDataDirBase())));
 
+    BOOST_TEST_MESSAGE(strprintf("==== cwd: %s", fs::PathToString(std::filesystem::current_path())));
+
     {
         const UniValue result = RunCommandParseJSON("");
         BOOST_CHECK(result.isNull());
@@ -72,20 +74,27 @@ BOOST_AUTO_TEST_CASE(run_command)
         const std::string command{strprintf("cmd.exe /c \"echo %s 1>&2 && exit 1\"", expected_message)};
 #else
         const fs::path script_path{m_args.GetDataDirBase() / "script.sh"};
-        const std::string script_name{fs::PathToString(script_path)};
+        std::string script_name{fs::PathToString(script_path)};
+        util::ReplaceAll(script_name, " ", "\\ ");
+        BOOST_TEST_MESSAGE(strprintf("==== script_name: %s", script_name));
+
+
         std::ofstream script{script_path};
         BOOST_REQUIRE_MESSAGE(script, strprintf("failed to create: %s", script_name));
         script << "#!/bin/sh\n";
         script << "echo $1 >&2\n";
         script << "exit 1\n";
         script.close();
-        int exit_status = std::system(("chmod +x \"" + script_name + "\"").data());
+        int exit_status = std::system(("chmod +x " + script_name + "").data());
         BOOST_REQUIRE_MESSAGE(exit_status == 0, strprintf("failed to chmod: %s", script_name));
         const std::string command{script_name + " " + expected_message};
 #endif
         const std::string expected_error{strprintf("RunCommandParseJSON error: process(%s) returned 1: ", command)};
         BOOST_CHECK_EXCEPTION(RunCommandParseJSON(command), std::runtime_error, [&](const std::runtime_error& e) {
             std::string what(e.what());
+
+            BOOST_TEST_MESSAGE(strprintf("==== what: %s", what));
+
             BOOST_CHECK(what.find(expected_error) != std::string::npos);
             what.erase(0, expected_error.size());
             BOOST_CHECK(what.find(expected_message) != std::string::npos);
