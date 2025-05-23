@@ -5,8 +5,10 @@
 
 #include <bitcoin-build-config.h> // IWYU pragma: keep
 #include <test/util/setup_common.h>
+#include <common/args.h>
 #include <common/run_command.h>
 #include <univalue.h>
+#include <util/fs.h>
 
 #ifdef ENABLE_EXTERNAL_SIGNER
 #include <util/subprocess.h>
@@ -14,12 +16,16 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <fstream>
+
 BOOST_FIXTURE_TEST_SUITE(system_tests, BasicTestingSetup)
 
 #ifdef ENABLE_EXTERNAL_SIGNER
 
 BOOST_AUTO_TEST_CASE(run_command)
 {
+    BOOST_TEST_MESSAGE(strprintf("==== m_args: %s", fs::PathToString(m_args.GetDataDirBase())));
+
     {
         const UniValue result = RunCommandParseJSON("");
         BOOST_CHECK(result.isNull());
@@ -63,6 +69,11 @@ BOOST_AUTO_TEST_CASE(run_command)
 #ifdef WIN32
         const std::string command{strprintf("cmd.exe /c \"echo %s 1>&2 && exit 1\"", expected_message)};
 #else
+        fs::path script_path{m_args.GetDataDirBase() + "script.sh"};
+        std::ofstream script(script_path);
+        BOOST_CHECK_MESSAGE(script, strprintf("failed to create: %s", fs::PathToString(script_path)));
+        script.close();
+
         const std::string command{PRINT_ERR_AND_FAIL_SCRIPT_PATH " " + expected_message};
 #endif
         const std::string expected_error{strprintf("RunCommandParseJSON error: process(%s) returned 1: ", command)};
