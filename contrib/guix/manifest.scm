@@ -123,13 +123,47 @@ desirable for building Bitcoin Core release binaries."
   (package-with-extra-patches mingw-w64-x86_64-winpthreads
     (search-our-patches "winpthreads-remap-guix-store.patch")))
 
+
+
+(define* (make-mingw-w64-ucrt-sans-winpthreads machine #:key xgcc xbinutils)
+  (let ((base-mingw-w64-sans-winpthreads (make-mingw-w64 machine
+                                                         #:xgcc xgcc
+                                                         #:xbinutils xbinutils
+                                                         #:with-winpthreads? #f)))
+    (package
+      (inherit base-mingw-w64-sans-winpthreads)
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-mingw-w64-sans-winpthreads)
+         ((#:configure-flags cf #~'())
+          #~(delete "--with-default-msvcrt=msvcrt" #$cf)))))))
+
+(define* (make-mingw-w64-ucrt-winpthreads machine #:key xgcc xbinutils)
+  (let ((base-mingw-w64-winpthreads (make-mingw-w64 machine
+                                                    #:xgcc xgcc
+                                                    #:xbinutils xbinutils
+                                                    #:with-winpthreads? #t)))
+    (package
+      (inherit base-mingw-w64-winpthreads)
+      (native-inputs `(("xgcc-core" ,(if xgcc xgcc (cross-gcc triplet)))
+                       ("xbinutils" ,(if xbinutils xbinutils
+                                         (cross-binutils triplet)))
+                       ("xlibc" ,(make-mingw-w64-ucrt-sans-winpthreads machine
+                                                                       #:xgcc xgcc
+                                                                       #:xbinutils xbinutils))))
+      (arguments
+       (substitute-keyword-arguments (package-arguments base-mingw-w64-winpthreads)
+         ((#:configure-flags cf #~'())
+          #~(delete "--with-default-msvcrt=msvcrt" #$cf)))))))
+
+
+
+
 (define (make-mingw-pthreads-cross-toolchain target)
   "Create a cross-compilation toolchain package for TARGET"
   (let* ((xbinutils (binutils-mingw-patches (cross-binutils target)))
          (machine (substring target 0 (string-index target #\-)))
-         (pthreads-xlibc (winpthreads-patches (make-mingw-w64 machine
-                                         #:xgcc (cross-gcc target #:xgcc (gcc-mingw-patches base-gcc))
-                                         #:with-winpthreads? #t)))
+         (pthreads-xlibc (winpthreads-patches (make-mingw-w64-ucrt-winpthreads machine
+                                         #:xgcc (cross-gcc target #:xgcc (gcc-mingw-patches base-gcc)))))
          (pthreads-xgcc (cross-gcc target
                                     #:xgcc (gcc-mingw-patches mingw-w64-base-gcc)
                                     #:xbinutils xbinutils
