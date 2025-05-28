@@ -423,6 +423,7 @@ inspecting signatures in Mach-O binaries.")
             (list "--enable-threads=posix",
                   "--enable-default-ssp=yes",
                   "--disable-gcov",
+                  "--disable-multilib",
                   building-on)))))))
 
 (define-public linux-base-gcc
