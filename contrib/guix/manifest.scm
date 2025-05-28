@@ -91,7 +91,7 @@ chain for " target " development."))
       (home-page (package-home-page xgcc))
       (license (package-license xgcc)))))
 
-(define base-gcc gcc-13) ;; 13.3.0
+(define base-gcc gcc-14) ;; 13.3.0
 
 (define base-linux-kernel-headers linux-libre-headers-6.1)
 
