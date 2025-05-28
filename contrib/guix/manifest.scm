@@ -133,8 +133,11 @@ desirable for building Bitcoin Core release binaries."
       (inherit base-mingw-w64)
       (arguments
        (substitute-keyword-arguments (package-arguments base-mingw-w64)
-         ((#:configure-flags flags)
-          #~(filter (lambda (flag) (not (string-prefix? "--with-default-msvcrt=" flag))) #$flags)))))))
+         ((#:configure-flags flags) #~(append
+                                      (list "--with-default-msvcrt=ucrt"
+                                            "--disable-lib32"
+                                            "--enable-lib64")
+                                      (delete "--with-default-msvcrt=msvcrt" #$flags))))))))
 
 
 
