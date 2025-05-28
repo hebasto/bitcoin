@@ -128,7 +128,7 @@ desirable for building Bitcoin Core release binaries."
   (let ((base-mingw-w64 (make-mingw-w64 machine
                                #:xgcc xgcc
                                #:xbinutils xbinutils
-                               #:with-winpthreads? #t)))
+                               #:with-winpthreads? #f)))
     (package
       (inherit base-mingw-w64)
       (arguments
