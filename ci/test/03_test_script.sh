@@ -178,9 +178,8 @@ if [ "${RUN_TIDY}" = "true" ]; then
            -- -Xiwyu --cxx17ns -Xiwyu --mapping_file="${BASE_ROOT_DIR}/contrib/devtools/iwyu/bitcoin.core.imp" \
            -Xiwyu --max_line_length=160 \
            2>&1 | tee /tmp/iwyu_ci.out
-  cd "${BASE_ROOT_DIR}/src"
   python3 "/include-what-you-use/fix_includes.py" --nosafe_headers < /tmp/iwyu_ci.out
-  git --no-pager diff
+  git --no-pager diff -- ':(exclude)src/leveldb/db/db_impl.cc'
 fi
 
 if [ "$RUN_FUZZ_TESTS" = "true" ]; then
