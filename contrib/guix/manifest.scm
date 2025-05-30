@@ -167,21 +167,13 @@ chain for " target " development."))
                     (url "https://github.com/lief-project/LIEF")
                     (commit version)))
               (file-name (git-file-name name version))
-              (modules '((guix build utils)))
-              (snippet
-               '(begin
-                  ;; Configure build for Python bindings.
-                  (substitute* "api/python/config-default.toml"
-                    (("(ninja         = )true" all m)
-                     (string-append m "false"))
-                    (("(parallel-jobs = )0" all m)
-                     (string-append m (number->string (parallel-job-count)))))))
               (sha256
                (base32
                 "1pq9nagrnkl1x943bqnpiyxmkd9vk99znfxiwqp6vf012b50bz2a"))
               (patches (search-our-patches "lief-scikit-0-9.patch"))))
     (build-system pyproject-build-system)
     (native-inputs (list cmake-minimal
+                         ninja
                          python-scikit-build-core
                          python-pydantic-2))
     (arguments
