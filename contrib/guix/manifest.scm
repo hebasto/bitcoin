@@ -18,7 +18,7 @@
              ((gnu packages python-build) #:select (python-poetry-core))
              ((gnu packages python-crypto) #:select (python-asn1crypto))
              ((gnu packages python-science) #:select (python-scikit-build-core))
-             ((gnu packages python-xyz) #:select (python-pydantic-2 python-pydantic-core))
+             ((gnu packages python-xyz) #:select (python-pydantic-2))
              ((gnu packages tls) #:select (openssl))
              ((gnu packages version-control) #:select (git-minimal))
              (guix build-system cmake)
@@ -183,18 +183,12 @@ chain for " target " development."))
     (build-system pyproject-build-system)
     (native-inputs (list cmake-minimal
                          python-scikit-build-core
-                         python-pydantic-core
                          python-pydantic-2))
     (arguments
      (list
       #:tests? #f                  ;needs network
       #:phases #~(modify-phases %standard-phases
-                   (add-before 'build 'set-pythonpath
-                     (lambda _
-                       (setenv "PYTHONPATH"
-                         (string-append (string-append (getcwd) "/api/python/backend")
-                                      ":" (or (getenv "PYTHONPATH") "")))))
-                  (add-after 'set-pythonpath 'change-directory
+                   (add-before 'build 'change-directory
                      (lambda _
                        (chdir "api/python"))))))
     (home-page "https://github.com/lief-project/LIEF")
