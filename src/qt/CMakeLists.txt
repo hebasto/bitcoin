@@ -80,13 +80,20 @@ add_custom_command(
 )
 unset(qm_files)
 
-set_property(
-  SOURCE
-    ${CMAKE_CURRENT_BINARY_DIR}/qrc_bitcoin.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/qrc_bitcoin_locale.cpp
-  PROPERTY COMPILE_OPTIONS
-    -Wno-trailing-whitespace
+include(TryAppendCXXFlags)
+try_append_cxx_flags("-Wtrailing-whitespace"
+  RESULT_VAR cxx_supports_w_trailing_whitespace
+  SKIP_LINK
 )
+if(cxx_supports_w_trailing_whitespace)
+  set_property(
+    SOURCE
+      ${CMAKE_CURRENT_BINARY_DIR}/qrc_bitcoin.cpp
+      ${CMAKE_CURRENT_BINARY_DIR}/qrc_bitcoin_locale.cpp
+    PROPERTY COMPILE_OPTIONS
+      -Wno-trailing-whitespace
+  )
+endif()
 
 # The bitcoinqt sources have to include headers in
 # order to parse them to collect translatable strings.
