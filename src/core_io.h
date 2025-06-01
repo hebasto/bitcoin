@@ -8,9 +8,8 @@
 #include <consensus/amount.h>
 #include <util/result.h>
 
+#include <functional>
 #include <string>
-#include <vector>
-#include <optional>
 
 class CBlock;
 class CBlockHeader;
