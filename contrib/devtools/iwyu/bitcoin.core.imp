@@ -7,5 +7,4 @@
   # False positive warnings
   # See: https://github.com/include-what-you-use/include-what-you-use/issues/1616
   { include: [ "<iterator>", public, "<utility>", public ] },
-  { include: [ "<tuple>", public, "<array>", public ] },
 ]
