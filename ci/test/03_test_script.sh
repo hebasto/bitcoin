@@ -33,7 +33,9 @@ echo "=== BEGIN env ==="
 env
 echo "=== END env ==="
 
-(
+if [ "$RUN_TIDY" != "true" ]; then
+  # The tidy task has no UB detector, so skip the patch there to avoid issues
+  # later on in the task.
   # compact->outputs[i].file_size is uninitialized memory, so reading it is UB.
   # The statistic bytes_written is only used for logging, which is disabled in
   # CI, so as a temporary minimal fix to work around UB and CI failures, leave
@@ -54,7 +56,7 @@ echo "=== END env ==="
    mutex_.Lock();
    stats_[compact->compaction->level() + 1].Add(stats);
 EOF
-)
+fi
 
 if [ "$RUN_FUZZ_TESTS" = "true" ]; then
   export DIR_FUZZ_IN=${DIR_QA_ASSETS}/fuzz_corpora/
