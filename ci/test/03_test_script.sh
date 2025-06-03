@@ -161,11 +161,11 @@ if [ "${RUN_TIDY}" = "true" ]; then
   # cmake --build /tidy-build "$MAKEJOBS"
   # cmake --build /tidy-build --target bitcoin-tidy-tests "$MAKEJOBS"
 
-  set -eo pipefail
-  # Filter out:
-  # * qt qrc and moc generated files
-  jq 'map(select(.file | test("src/qt/.*_autogen/.*\\.cpp$") | not))' "${BASE_BUILD_DIR}/compile_commands.json" > tmp.json
-  mv tmp.json "${BASE_BUILD_DIR}/compile_commands.json"
+  # set -eo pipefail
+  # # Filter out:
+  # # * qt qrc and moc generated files
+  # jq 'map(select(.file | test("src/qt/.*_autogen/.*\\.cpp$") | not))' "${BASE_BUILD_DIR}/compile_commands.json" > tmp.json
+  # mv tmp.json "${BASE_BUILD_DIR}/compile_commands.json"
 
   # cd "${BASE_BUILD_DIR}/src/"
   # if ! ( run-clang-tidy-"${TIDY_LLVM_V}" -quiet -load="/tidy-build/libbitcoin-tidy.so" "${MAKEJOBS}" | tee tmp.tidy-out.txt ); then
