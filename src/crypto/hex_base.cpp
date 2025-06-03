@@ -8,8 +8,8 @@
 #include <cassert>
 #include <cstdint>
 #include <cstring>
-#include <span>
 #include <string>
+#include <span>
 
 namespace {
 
@@ -67,4 +67,3 @@ signed char HexDigit(char c)
 {
     return p_util_hexdigit[(unsigned char)c];
 }
-
