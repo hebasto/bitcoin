@@ -182,9 +182,9 @@ if [ "${RUN_TIDY}" = "true" ]; then
   cd "${BASE_ROOT_DIR}"
 
   run_iwyu() {
-    mv "${BASE_BUILD_DIR}/$1" "${BASE_BUILD_DIR}/compile_commands.json"
+    # mv "${BASE_BUILD_DIR}/$1" "${BASE_BUILD_DIR}/compile_commands.json"
     iwyu_tool.py \
-             -p "${BASE_BUILD_DIR}" "${MAKEJOBS}" \
+             "${MAKEJOBS}" -p "${BASE_BUILD_DIR}" src/crypto/hex_base.cpp \
              -- -Xiwyu --cxx17ns -Xiwyu --mapping_file="${BASE_ROOT_DIR}/contrib/devtools/iwyu/bitcoin.core.imp" \
              -Xiwyu --max_line_length=160 \
              2>&1 | tee /tmp/iwyu_ci.out
