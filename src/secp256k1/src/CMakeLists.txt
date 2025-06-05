@@ -10,6 +10,11 @@ add_library(secp256k1_precomputed OBJECT EXCLUDE_FROM_ALL
 # from being exported.
 add_library(secp256k1 secp256k1.c $<TARGET_OBJECTS:secp256k1_precomputed>)
 
+# Create a helper lib that parent projects can use to link secp256k1 into a
+# static lib.
+add_library(secp256k1_objs INTERFACE)
+target_sources(secp256k1_objs INTERFACE $<TARGET_OBJECTS:secp256k1> $<TARGET_OBJECTS:secp256k1_precomputed>)
+
 add_library(secp256k1_asm INTERFACE)
 if(SECP256K1_ASM STREQUAL "arm32")
   add_library(secp256k1_asm_arm OBJECT EXCLUDE_FROM_ALL)
@@ -17,6 +22,7 @@ if(SECP256K1_ASM STREQUAL "arm32")
     asm/field_10x26_arm.s
   )
   target_sources(secp256k1 PRIVATE $<TARGET_OBJECTS:secp256k1_asm_arm>)
+  target_sources(secp256k1_objs INTERFACE $<TARGET_OBJECTS:secp256k1_asm_arm>)
   target_link_libraries(secp256k1_asm INTERFACE secp256k1_asm_arm)
 endif()
 
@@ -31,11 +37,20 @@ endif()
 get_target_property(use_pic secp256k1 POSITION_INDEPENDENT_CODE)
 set_target_properties(secp256k1_precomputed PROPERTIES POSITION_INDEPENDENT_CODE ${use_pic})
 
-target_include_directories(secp256k1 INTERFACE
-  # Add the include path for parent projects so that they don't have to manually add it.
+# Add the include path for parent projects so that they don't have to manually add it.
+set(_include_directory_for_parent_projects
   $<BUILD_INTERFACE:$<$<NOT:$<BOOL:${PROJECT_IS_TOP_LEVEL}>>:${PROJECT_SOURCE_DIR}/include>>
+)
+
+target_include_directories(secp256k1 INTERFACE
+  ${_include_directory_for_parent_projects}
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
+
+target_include_directories(secp256k1_objs INTERFACE
+  ${_include_directory_for_parent_projects}
+)
+unset(_include_directory_for_parent_projects)
 
 # This emulates Libtool to make sure Libtool and CMake agree on the ABI version,
 # see below "Calculate the version variables" in build-aux/ltmain.sh.
@@ -48,20 +63,12 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     VERSION ${${PROJECT_NAME}_soversion}.${${PROJECT_NAME}_LIB_VERSION_AGE}.${${PROJECT_NAME}_LIB_VERSION_REVISION}
   )
 elseif(APPLE)
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.17)
-    math(EXPR ${PROJECT_NAME}_compatibility_version "${${PROJECT_NAME}_LIB_VERSION_CURRENT} + 1")
-    set_target_properties(secp256k1 PROPERTIES
-      MACHO_COMPATIBILITY_VERSION ${${PROJECT_NAME}_compatibility_version}
-      MACHO_CURRENT_VERSION ${${PROJECT_NAME}_compatibility_version}.${${PROJECT_NAME}_LIB_VERSION_REVISION}
-    )
-    unset(${PROJECT_NAME}_compatibility_version)
-  elseif(BUILD_SHARED_LIBS)
-    message(WARNING
-      "The 'compatibility version' and 'current version' values of the DYLIB "
-      "will diverge from the values set by the GNU Libtool. To ensure "
-      "compatibility, it is recommended to upgrade CMake to at least version 3.17."
-    )
-  endif()
+  math(EXPR ${PROJECT_NAME}_compatibility_version "${${PROJECT_NAME}_LIB_VERSION_CURRENT} + 1")
+  set_target_properties(secp256k1 PROPERTIES
+    MACHO_COMPATIBILITY_VERSION ${${PROJECT_NAME}_compatibility_version}
+    MACHO_CURRENT_VERSION ${${PROJECT_NAME}_compatibility_version}.${${PROJECT_NAME}_LIB_VERSION_REVISION}
+  )
+  unset(${PROJECT_NAME}_compatibility_version)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Windows")
   set(${PROJECT_NAME}_windows "secp256k1")
   if(MSVC)
