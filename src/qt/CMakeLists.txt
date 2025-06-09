@@ -358,3 +358,5 @@ else()
     VERBATIM
   )
 endif()
+
+add_subdirectory(locale)
