@@ -40,6 +40,18 @@ find_package_handle_standard_args(Qt
   VERSION_VAR Qt${Qt_FIND_VERSION_MAJOR}_VERSION
 )
 
-foreach(component IN LISTS Qt_FIND_COMPONENTS ITEMS "")
-  mark_as_advanced(Qt${Qt_FIND_VERSION_MAJOR}${component}_DIR)
+# Mark all variables as advanced, except Qt6_DIR.
+# The latter can be helpful on some systems.
+# See: https://github.com/bitcoin/bitcoin/issues/32536.
+foreach(component IN LISTS Qt_FIND_COMPONENTS)
+  mark_as_advanced(
+    Qt${Qt_FIND_VERSION_MAJOR}${component}_DIR
+    Qt${Qt_FIND_VERSION_MAJOR}${component}Tools_DIR
+  )
 endforeach()
+mark_as_advanced(
+  QT_ADDITIONAL_HOST_PACKAGES_PREFIX_PATH
+  QT_ADDITIONAL_PACKAGES_PREFIX_PATH
+  XKB_INCLUDE_DIR
+  XKB_LIBRARY
+)
