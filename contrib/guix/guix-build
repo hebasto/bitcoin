@@ -395,6 +395,12 @@ EOF
         #     Running in an isolated container minimizes build-time differences
         #     between machines and improves reproducibility
         #
+        #   --writable-root    provide a writable root file system
+        #
+        #     When --container is specified, the default behavior is to provide
+        #     a read-only root file system. --writable-root enables creation of
+        #     the conventional `/usr/bin/env` for script shebangs.
+        #
         #   --pure             unset existing environment variables
         #
         #     Same rationale as --container
@@ -453,6 +459,7 @@ EOF
         # shellcheck disable=SC2086,SC2031
         time-machine shell --manifest="${PWD}/contrib/guix/manifest.scm" \
                                  --container \
+                                 --writable-root \
                                  --pure \
                                  --no-cwd \
                                  --share="$PWD"=/bitcoin \
