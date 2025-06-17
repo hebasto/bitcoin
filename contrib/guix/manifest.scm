@@ -493,11 +493,19 @@ inspecting signatures in Mach-O binaries.")
                    (("^install-others =.*$")
                     (string-append "install-others = " out "/etc/rpc\n")))))))))))))
 
-(define-public libcxx-18
+(define-public libcxx-18 ;; 18.1.8
   (package
     (inherit libcxx) ;; 15.0.7
     (version (package-version llvm-18))
-    (source (llvm-monorepo version))
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/llvm/llvm-project")
+                    (commit (string-append "llvmorg-" version))))
+              (file-name (git-file-name "llvm-project" version))
+              (sha256 (base32 "1l9wm0g9jrpdf309kxjx7xrzf13h81kz8bbp0md14nrz38qll9la"))
+              (patches (map search-patch ("clang-18.0-libc-search-path.patch"
+                                          "clang-17.0-link-dsymutil-latomic.patch")))))
     (native-inputs
          (list clang-18 llvm-18 python))))
 
