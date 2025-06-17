@@ -507,7 +507,13 @@ inspecting signatures in Mach-O binaries.")
               (patches (map search-patch '("clang-18.0-libc-search-path.patch"
                                            "clang-17.0-link-dsymutil-latomic.patch")))))
     (native-inputs
-         (list clang-18 llvm-18 python-minimal))))
+         (list clang-18 llvm-18 python-minimal))
+    (arguments
+     '(#:configure-flags
+       #~(list "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi;libunwind"
+               "-DCMAKE_C_COMPILER=clang"
+               "-DCMAKE_CXX_COMPILER=clang++"
+               "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")))))
 
 ;; The sponge tool from moreutils.
 (define-public sponge
