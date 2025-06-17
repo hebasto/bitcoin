@@ -509,11 +509,12 @@ inspecting signatures in Mach-O binaries.")
     (native-inputs
          (list clang-18 llvm-18 python-minimal))
     (arguments
-     '(#:configure-flags
-       #~(list "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi;libunwind"
-               "-DCMAKE_C_COMPILER=clang"
-               "-DCMAKE_CXX_COMPILER=clang++"
-               "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")))))
+     (list
+      #:configure-flags
+      #~(list "-DLLVM_ENABLE_RUNTIMES=libcxx;libcxxabi;libunwind"
+              "-DCMAKE_C_COMPILER=clang"
+              "-DCMAKE_CXX_COMPILER=clang++"
+              "-DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE")))))
 
 ;; The sponge tool from moreutils.
 (define-public sponge
