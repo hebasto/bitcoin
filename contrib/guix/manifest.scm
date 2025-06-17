@@ -504,8 +504,8 @@ inspecting signatures in Mach-O binaries.")
                     (commit (string-append "llvmorg-" version))))
               (file-name (git-file-name "llvm-project" version))
               (sha256 (base32 "1l9wm0g9jrpdf309kxjx7xrzf13h81kz8bbp0md14nrz38qll9la"))
-              (patches (map search-patch ("clang-18.0-libc-search-path.patch"
-                                          "clang-17.0-link-dsymutil-latomic.patch")))))
+              (patches (map search-patch '("clang-18.0-libc-search-path.patch"
+                                           "clang-17.0-link-dsymutil-latomic.patch")))))
     (native-inputs
          (list clang-18 llvm-18 python-minimal))))
 
