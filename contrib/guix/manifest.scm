@@ -493,6 +493,14 @@ inspecting signatures in Mach-O binaries.")
                    (("^install-others =.*$")
                     (string-append "install-others = " out "/etc/rpc\n")))))))))))))
 
+(define-public libcxx-18
+  (package
+    (inherit libcxx) ;; 15.0.7
+    (version (package-version llvm-18))
+    (source (llvm-monorepo version))
+    (native-inputs
+         (list clang-18 llvm-18 python))))
+
 ;; The sponge tool from moreutils.
 (define-public sponge
   (package
@@ -567,6 +575,7 @@ inspecting signatures in Mach-O binaries.")
                  (make-bitcoin-cross-toolchain target)))
           ((string-contains target "darwin")
            (list clang-toolchain-18
+                 libcxx-18
                  lld-18
                  (make-lld-wrapper lld-18 #:lld-as-ld? #t)
                  python-signapple
