@@ -17,6 +17,23 @@ function(add_boost_if_needed)
   directory and other added INTERFACE properties.
   ]=]
 
+  if(CMAKE_HOST_APPLE)
+    find_program(HOMEBREW_EXECUTABLE brew)
+    if(HOMEBREW_EXECUTABLE)
+      execute_process(
+        COMMAND ${HOMEBREW_EXECUTABLE} --prefix boost
+        OUTPUT_VARIABLE _Boost_homebrew_prefix
+        ERROR_QUIET
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+      )
+      find_path(Boost_INCLUDE_DIR
+        NAMES boost/config.hpp
+        HINTS ${_Boost_homebrew_prefix}/include
+      )
+      unset(_Boost_homebrew_prefix)
+    endif()
+  endif()
+
   # We cannot rely on find_package(Boost ...) to work properly without
   # Boost_NO_BOOST_CMAKE set until we require a more recent Boost because
   # upstream did not ship proper CMake files until 1.82.0.
