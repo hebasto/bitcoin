@@ -12,15 +12,6 @@ add_library(test_bitcoinqt STATIC EXCLUDE_FROM_ALL
   util.cpp
 )
 
-if(ENABLE_WALLET)
-  target_sources(test_bitcoinqt
-    PRIVATE
-      addressbooktests.cpp
-      wallettests.cpp
-      ../../wallet/test/wallet_test_fixture.cpp
-  )
-endif()
-
 set_target_properties(test_bitcoinqt PROPERTIES
   AUTOMOC ON
   AUTORCC ON
@@ -28,7 +19,7 @@ set_target_properties(test_bitcoinqt PROPERTIES
 )
 
 target_compile_definitions(test_bitcoinqt
-  PRIVATE
+  PUBLIC
     QT_NO_KEYWORDS
     QT_USE_QSTRINGBUILDER
 )
@@ -37,13 +28,21 @@ target_link_libraries(test_bitcoinqt
   core_interface
   Qt6::Test
   Qt6::Widgets
-  # bitcoinqt
-  # test_util
-  # bitcoin_node
-  # Boost::headers
   bitcoin_common
   univalue
 )
+
+if(ENABLE_WALLET)
+  target_sources(test_bitcoinqt
+    PRIVATE
+      addressbooktests.cpp
+      wallettests.cpp
+      ../../wallet/test/wallet_test_fixture.cpp
+  )
+  target_link_libraries(test_bitcoinqt
+    Boost::headers
+  )
+endif()
 
 add_executable(test_bitcoin-qt
   test_main.cpp
@@ -56,7 +55,7 @@ target_link_libraries(test_bitcoin-qt
   bitcoinqt
   test_util
   bitcoin_node
-  Boost::headers
+  # Boost::headers
   Qt6::Test
 )
 
