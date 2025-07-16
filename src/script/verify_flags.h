@@ -14,7 +14,7 @@ enum class script_verify_flag_name : uint8_t;
 class script_verify_flags
 {
 public:
-    using value_type = uint32_t;
+    using value_type = uint64_t;
 
     // default constructor is SCRIPT_VERIFY_NONE
     consteval script_verify_flags() : m_value{0} { }
