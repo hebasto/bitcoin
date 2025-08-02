@@ -594,8 +594,15 @@ public:
     //! search for a given byte in the stream, and remain positioned on it
     void FindByte(std::byte byte)
     {
+        std::cerr << "=== BufferedFile::FindByte - byte=0x" << std::hex << std::to_integer<int>(byte) << '\n';
+
+        std::cerr << "=== BufferedFile::FindByte - m_read_pos=" << m_read_pos << '\n';
+        std::cerr << "=== BufferedFile::FindByte - vchBuf.size()=" << std::dec <<  vchBuf.size() << '\n';
+
         // For best performance, avoid mod operation within the loop.
         size_t buf_offset{size_t(m_read_pos % uint64_t(vchBuf.size()))};
+        std::cerr << "=== BufferedFile::FindByte - buf_offset=" << buf_offset << '\n';
+
         while (true) {
             if (m_read_pos == nSrcPos) {
                 // No more bytes available; read from the file into the buffer,
@@ -604,13 +611,19 @@ public:
                 Fill();
             }
             const size_t len{std::min<size_t>(vchBuf.size() - buf_offset, nSrcPos - m_read_pos)};
+            std::cerr << "=== BufferedFile::FindByte - len=" << std::dec << len << '\n';
+
             const auto it_start{vchBuf.begin() + buf_offset};
             const auto it_find{std::find(it_start, it_start + len, byte)};
             const size_t inc{size_t(std::distance(it_start, it_find))};
+            std::cerr << "=== BufferedFile::FindByte - inc=" << std::dec << inc << '\n';
+
             m_read_pos += inc;
             if (inc < len) break;
             buf_offset += inc;
+            std::cerr << "=== BufferedFile::FindByte - buf_offset=" << buf_offset << '\n';
             if (buf_offset >= vchBuf.size()) buf_offset = 0;
+            std::cerr << "=== BufferedFile::FindByte - buf_offset=" << buf_offset << '\n';
         }
     }
 };
