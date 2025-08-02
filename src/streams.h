@@ -644,6 +644,8 @@ public:
                 // setting nSrcPos to one beyond the end of the new data.
                 // Throws exception if end-of-file reached.
                 Fill();
+                std::cerr << "=== BufferedFile::FindByte - !!!!!!!!!!!!!!!! the buffer has been FILLED\n";
+                print_xxd(vchBuf, 20);
             }
             const size_t len{std::min<size_t>(vchBuf.size() - buf_offset, nSrcPos - m_read_pos)};
             std::cerr << "=== BufferedFile::FindByte - len=" << std::dec << len << '\n';
