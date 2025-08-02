@@ -68,6 +68,7 @@
 #include <cassert>
 #include <chrono>
 #include <deque>
+#include <fstream>
 #include <numeric>
 #include <optional>
 #include <ranges>
@@ -5044,46 +5045,64 @@ void ChainstateManager::LoadExternalBlockFile(
     FlatFilePos* dbp,
     std::multimap<uint256, FlatFilePos>* blocks_with_unknown_parent)
 {
+    std::ofstream validation_log_file("/home/hebasto/load_external_blockfile.log", std::ios::binary);
+
     // Either both should be specified (-reindex), or neither (-loadblock).
     assert(!dbp == !blocks_with_unknown_parent);
 
     const auto start{SteadyClock::now()};
     const CChainParams& params{GetParams()};
 
+    validation_log_file << __func__ << " : " << __LINE__ << '\n';
     int nLoaded = 0;
     try {
+        validation_log_file << __func__ << " : " << __LINE__ << '\n';
         BufferedFile blkdat{file_in, 2 * MAX_BLOCK_SERIALIZED_SIZE, MAX_BLOCK_SERIALIZED_SIZE + 8};
         // nRewind indicates where to resume scanning in case something goes wrong,
         // such as a block fails to deserialize.
         uint64_t nRewind = blkdat.GetPos();
+        validation_log_file << __func__ << " : " << __LINE__ << '\n';
         while (!blkdat.eof()) {
-            if (m_interrupt) return;
+            validation_log_file << __func__ << " : " << __LINE__ << '\n';
+            if (m_interrupt) {
+                validation_log_file << __func__ << " : " << __LINE__ << '\n';
+                return;
+            }
 
             blkdat.SetPos(nRewind);
             nRewind++; // start one byte further next time, in case of failure
             blkdat.SetLimit(); // remove former limit
             unsigned int nSize = 0;
+            validation_log_file << __func__ << " : " << __LINE__ << '\n';
             try {
                 // locate a header
                 MessageStartChars buf;
                 blkdat.FindByte(std::byte(params.MessageStart()[0]));
                 nRewind = blkdat.GetPos() + 1;
                 blkdat >> buf;
+                validation_log_file << __func__ << " : " << __LINE__ << '\n';
                 if (buf != params.MessageStart()) {
+                    validation_log_file << __func__ << " : " << __LINE__ << '\n';
                     continue;
                 }
                 // read size
                 blkdat >> nSize;
-                if (nSize < 80 || nSize > MAX_BLOCK_SERIALIZED_SIZE)
+                validation_log_file << __func__ << " : " << __LINE__ << '\n';
+                if (nSize < 80 || nSize > MAX_BLOCK_SERIALIZED_SIZE) {
+                    validation_log_file << __func__ << " : " << __LINE__ << '\n';
                     continue;
+                }
             } catch (const std::exception&) {
+                validation_log_file << __func__ << " : " << __LINE__ << '\n';
                 // no valid block header found; don't complain
                 // (this happens at the end of every blk.dat file)
                 break;
             }
+            validation_log_file << __func__ << " : " << __LINE__ << '\n';
             try {
                 // read block header
                 const uint64_t nBlockPos{blkdat.GetPos()};
+                validation_log_file << __func__ << " : " << __LINE__ << '\n';
                 if (dbp)
                     dbp->nPos = nBlockPos;
                 blkdat.SetLimit(nBlockPos + nSize);
@@ -5098,9 +5117,11 @@ void ChainstateManager::LoadExternalBlockFile(
                 std::shared_ptr<CBlock> pblock{}; // needs to remain available after the cs_main lock is released to avoid duplicate reads from disk
 
                 {
+                    validation_log_file << __func__ << " : " << __LINE__ << '\n';
                     LOCK(cs_main);
                     // detect out of order blocks, and store them for later
                     if (hash != params.GetConsensus().hashGenesisBlock && !m_blockman.LookupBlockIndex(header.hashPrevBlock)) {
+                        validation_log_file << __func__ << " : " << __LINE__ << '\n';
                         LogDebug(BCLog::REINDEX, "%s: Out of order block %s, parent %s not known\n", __func__, hash.ToString(),
                                  header.hashPrevBlock.ToString());
                         if (dbp && blocks_with_unknown_parent) {
@@ -5109,9 +5130,11 @@ void ChainstateManager::LoadExternalBlockFile(
                         continue;
                     }
 
+                    validation_log_file << __func__ << " : " << __LINE__ << '\n';
                     // process in case the block isn't known yet
                     const CBlockIndex* pindex = m_blockman.LookupBlockIndex(hash);
                     if (!pindex || (pindex->nStatus & BLOCK_HAVE_DATA) == 0) {
+                        validation_log_file << __func__ << " : " << __LINE__ << '\n';
                         // This block can be processed immediately; rewind to its start, read and deserialize it.
                         blkdat.SetPos(nBlockPos);
                         pblock = std::make_shared<CBlock>();
@@ -5120,15 +5143,19 @@ void ChainstateManager::LoadExternalBlockFile(
 
                         BlockValidationState state;
                         if (AcceptBlock(pblock, state, nullptr, true, dbp, nullptr, true)) {
+                            validation_log_file << __func__ << " : " << __LINE__ << '\n';
                             nLoaded++;
                         }
                         if (state.IsError()) {
+                            validation_log_file << __func__ << " : " << __LINE__ << '\n';
                             break;
                         }
                     } else if (hash != params.GetConsensus().hashGenesisBlock && pindex->nHeight % 1000 == 0) {
+                        validation_log_file << __func__ << " : " << __LINE__ << '\n';
                         LogDebug(BCLog::REINDEX, "Block Import: already had block %s at height %d\n", hash.ToString(), pindex->nHeight);
                     }
                 }
+                validation_log_file << __func__ << " : " << __LINE__ << '\n';
 
                 // Activate the genesis block so normal node progress can continue
                 // During first -reindex, this will only connect Genesis since
@@ -5138,8 +5165,10 @@ void ChainstateManager::LoadExternalBlockFile(
                 // without assumevalid in the case of a continuation of a reindex that
                 // was interrupted by the user.
                 if (hash == params.GetConsensus().hashGenesisBlock && WITH_LOCK(::cs_main, return ActiveHeight()) == -1) {
+                    validation_log_file << __func__ << " : " << __LINE__ << '\n';
                     BlockValidationState state;
                     if (!ActiveChainstate().ActivateBestChain(state, nullptr)) {
+                        validation_log_file << __func__ << " : " << __LINE__ << '\n';
                         break;
                     }
                 }
@@ -5166,6 +5195,7 @@ void ChainstateManager::LoadExternalBlockFile(
                     }
                 }
 
+                validation_log_file << __func__ << " : " << __LINE__ << '\n';
                 NotifyHeaderTip();
 
                 if (!blocks_with_unknown_parent) continue;
