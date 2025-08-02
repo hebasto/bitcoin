@@ -1245,7 +1245,11 @@ void ImportBlocks(ChainstateManager& chainman, std::span<const fs::path> import_
             }
             import_log_file << __func__ << " : " << __LINE__ << '\n';
             LogInfo("Reindexing block file blk%05u.dat...", (unsigned int)nFile);
+
+            import_log_file << __func__ << " : " << __LINE__ << ": height=" << chainman.ActiveChain().Height() << '\n';
             chainman.LoadExternalBlockFile(file, &pos, &blocks_with_unknown_parent);
+            import_log_file << __func__ << " : " << __LINE__ << ": height=" << chainman.ActiveChain().Height() << '\n';
+
             if (chainman.m_interrupt) {
                 LogInfo("Interrupt requested. Exit reindexing.");
                 return;
@@ -1258,6 +1262,8 @@ void ImportBlocks(ChainstateManager& chainman, std::span<const fs::path> import_
         LogInfo("Reindexing finished");
         // To avoid ending up in a situation without genesis block, re-try initializing (no-op if reindexing worked):
         chainman.ActiveChainstate().LoadGenesisBlock();
+
+        import_log_file << __func__ << " : " << __LINE__ << ": height=" << chainman.ActiveChain().Height() << '\n';
     }
 
     // -loadblock=
