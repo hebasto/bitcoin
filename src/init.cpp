@@ -1741,6 +1741,15 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
         do_reindex_chainstate,
         kernel_cache_sizes,
         args);
+
+    std::string temp;
+    if (status == ChainstateLoadStatus::FAILURE) {
+        temp = "status=FAILURE";
+    } else {
+        temp = "status=_unknown_";
+    }
+
+    test_log_file << __func__ << " : " << __LINE__ << ": " << temp << "; do_reindex="  << std::boolalpha << do_reindex_chainstate << "; ShutdownRequested=" << std::boolalpha << ShutdownRequested(node) << '\n';
     if (status == ChainstateLoadStatus::FAILURE && !do_reindex && !ShutdownRequested(node)) {
         // suggest a reindex
         bool do_retry{HasTestOption(args, "reindex_after_failure_noninteractive_yes") ||
