@@ -39,6 +39,7 @@
 #include <validation.h>
 
 #include <cstddef>
+#include <fstream>
 #include <map>
 #include <optional>
 #include <unordered_map>
@@ -1216,23 +1217,33 @@ public:
 
 void ImportBlocks(ChainstateManager& chainman, std::span<const fs::path> import_paths)
 {
+    std::ofstream import_log_file("/home/hebasto/import_blocks.log", std::ios::binary);
+
     ImportingNow imp{chainman.m_blockman.m_importing};
+
+    import_log_file << __func__ << " : " << __LINE__ << ": m_blockfiles_indexed=" << std::boolalpha << chainman.m_blockman.m_blockfiles_indexed << '\n';
 
     // -reindex
     if (!chainman.m_blockman.m_blockfiles_indexed) {
+        import_log_file << __func__ << " : " << __LINE__ << '\n';
         int nFile = 0;
         // Map of disk positions for blocks with unknown parent (only used for reindex);
         // parent hash -> child disk position, multiple children can have the same parent.
         std::multimap<uint256, FlatFilePos> blocks_with_unknown_parent;
         while (true) {
+            import_log_file << __func__ << " : " << __LINE__ << '\n';
             FlatFilePos pos(nFile, 0);
             if (!fs::exists(chainman.m_blockman.GetBlockPosFilename(pos))) {
+                import_log_file << __func__ << " : " << __LINE__ << '\n';
                 break; // No block files left to reindex
             }
+            import_log_file << __func__ << " : " << __LINE__ << '\n';
             AutoFile file{chainman.m_blockman.OpenBlockFile(pos, /*fReadOnly=*/true)};
             if (file.IsNull()) {
+                import_log_file << __func__ << " : " << __LINE__ << '\n';
                 break; // This error is logged in OpenBlockFile
             }
+            import_log_file << __func__ << " : " << __LINE__ << '\n';
             LogInfo("Reindexing block file blk%05u.dat...", (unsigned int)nFile);
             chainman.LoadExternalBlockFile(file, &pos, &blocks_with_unknown_parent);
             if (chainman.m_interrupt) {
@@ -1241,6 +1252,7 @@ void ImportBlocks(ChainstateManager& chainman, std::span<const fs::path> import_
             }
             nFile++;
         }
+        import_log_file << __func__ << " : " << __LINE__ << '\n';
         WITH_LOCK(::cs_main, chainman.m_blockman.m_block_tree_db->WriteReindexing(false));
         chainman.m_blockman.m_blockfiles_indexed = true;
         LogInfo("Reindexing finished");
