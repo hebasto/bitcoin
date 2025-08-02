@@ -5069,6 +5069,7 @@ void ChainstateManager::LoadExternalBlockFile(
                 return;
             }
 
+            validation_log_file << __func__ << " : " << __LINE__ << ": nRewind=" << nRewind << '\n';
             blkdat.SetPos(nRewind);
             nRewind++; // start one byte further next time, in case of failure
             blkdat.SetLimit(); // remove former limit
@@ -5079,6 +5080,7 @@ void ChainstateManager::LoadExternalBlockFile(
                 MessageStartChars buf;
                 blkdat.FindByte(std::byte(params.MessageStart()[0]));
                 nRewind = blkdat.GetPos() + 1;
+                validation_log_file << __func__ << " : " << __LINE__ << ": nRewind=" << nRewind << '\n';
                 blkdat >> buf;
                 validation_log_file << __func__ << " : " << __LINE__ << '\n';
                 if (buf != params.MessageStart()) {
@@ -5112,6 +5114,7 @@ void ChainstateManager::LoadExternalBlockFile(
                 // Skip the rest of this block (this may read from disk into memory); position to the marker before the
                 // next block, but it's still possible to rewind to the start of the current block (without a disk read).
                 nRewind = nBlockPos + nSize;
+                validation_log_file << __func__ << " : " << __LINE__ << ": nRewind=" << nRewind << '\n';
                 blkdat.SkipTo(nRewind);
 
                 std::shared_ptr<CBlock> pblock{}; // needs to remain available after the cs_main lock is released to avoid duplicate reads from disk
@@ -5140,6 +5143,7 @@ void ChainstateManager::LoadExternalBlockFile(
                         pblock = std::make_shared<CBlock>();
                         blkdat >> TX_WITH_WITNESS(*pblock);
                         nRewind = blkdat.GetPos();
+                        validation_log_file << __func__ << " : " << __LINE__ << ": nRewind=" << nRewind << '\n';
 
                         BlockValidationState state;
                         if (AcceptBlock(pblock, state, nullptr, true, dbp, nullptr, true)) {
