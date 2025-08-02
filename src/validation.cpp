@@ -5078,7 +5078,17 @@ void ChainstateManager::LoadExternalBlockFile(
             try {
                 // locate a header
                 MessageStartChars buf;
-                blkdat.FindByte(std::byte(params.MessageStart()[0]));
+
+                try {
+                    blkdat.FindByte(std::byte(params.MessageStart()[0]));
+                } catch (const std::exception& e) {
+                    std::cerr << "======================== Caught exception: " << e.what() << '\n';
+                    throw;
+                } catch (...) {
+                    std::cerr << "======================== Caught unknown exception\n";
+                    throw;
+                }
+
                 nRewind = blkdat.GetPos() + 1;
                 validation_log_file << __func__ << " : " << __LINE__ << ": nRewind=" << nRewind << '\n';
                 blkdat >> buf;
