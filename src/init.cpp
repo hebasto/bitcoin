@@ -1884,10 +1884,15 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
         vImportFiles.push_back(fs::PathFromString(strFile));
     }
 
+    test_log_file << __func__ << " : " << __LINE__ << '\n';
     node.background_init_thread = std::thread(&util::TraceThread, "initload", [=, &chainman, &args, &node] {
+        std::ofstream thread_log_file("/home/hebasto/initload_thread.log", std::ios::binary);
+        thread_log_file << __func__ << " : " << __LINE__ << '\n';
         ScheduleBatchPriority();
+        thread_log_file << __func__ << " : " << __LINE__ << '\n';
         // Import blocks and ActivateBestChain()
         ImportBlocks(chainman, vImportFiles);
+        thread_log_file << __func__ << " : " << __LINE__ << '\n';
         if (args.GetBoolArg("-stopafterblockimport", DEFAULT_STOPAFTERBLOCKIMPORT)) {
             LogInfo("Stopping after block import");
             if (!(Assert(node.shutdown_request))()) {
