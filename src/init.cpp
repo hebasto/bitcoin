@@ -1723,11 +1723,16 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
     }
     LogInfo("* Using %.1f MiB for chain state database", kernel_cache_sizes.coins_db * (1.0 / 1024 / 1024));
 
+    std::ofstream test_log_file("/home/hebasto/appinitmain.log", std::ios::binary);
+
     assert(!node.mempool);
     assert(!node.chainman);
 
     bool do_reindex{args.GetBoolArg("-reindex", false)};
+    test_log_file << __LINE__ << ": "  << std::boolalpha << do_reindex << '\n';
+
     const bool do_reindex_chainstate{args.GetBoolArg("-reindex-chainstate", false)};
+    test_log_file << __LINE__ << ": "  << std::boolalpha << do_reindex_chainstate << '\n';
 
     // Chainstate initialization and loading may be retried once with reindexing by GUI users
     auto [status, error] = InitAndLoadChainstate(
@@ -1743,6 +1748,8 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
             error + Untranslated(".\n\n") + _("Do you want to rebuild the databases now?"),
             error.original + ".\nPlease restart with -reindex or -reindex-chainstate to recover.",
             "", CClientUIInterface::MSG_ERROR | CClientUIInterface::BTN_ABORT)};
+        test_log_file << __LINE__ << ": "  << std::boolalpha << do_retry << '\n';
+
         if (!do_retry) {
             return false;
         }
