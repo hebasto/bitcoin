@@ -4674,6 +4674,7 @@ bool Chainstate::LoadChainTip()
     // Load pointer to end of best chain
     CBlockIndex* pindex = m_blockman.LookupBlockIndex(coins_cache.GetBestBlock());
     if (!pindex) {
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         return false;
     }
     m_chain.SetTip(*pindex);

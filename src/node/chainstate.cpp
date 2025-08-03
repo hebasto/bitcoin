@@ -63,6 +63,7 @@ static ChainstateLoadResult CompleteChainstateInitialization(
     // (otherwise we use the one already on disk).
     // This is called again in ImportBlocks after the reindex completes.
     if (chainman.m_blockman.m_blockfiles_indexed && !chainman.ActiveChainstate().LoadGenesisBlock()) {
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         return {ChainstateLoadStatus::FAILURE, _("Error initializing block database")};
     }
 
@@ -120,7 +121,8 @@ static ChainstateLoadResult CompleteChainstateInitialization(
         if (!is_coinsview_empty(chainstate)) {
             // LoadChainTip initializes the chain based on CoinsTip()'s best block
             if (!chainstate->LoadChainTip()) {
-                return {ChainstateLoadStatus::FAILURE, _("Error initializing block database")};
+                std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
+                return {ChainstateLoadStatus::FAILURE, _("Error initializing block database")}; // HERE.
             }
             assert(chainstate->m_chain.Tip() != nullptr);
         }
@@ -178,8 +180,10 @@ ChainstateLoadResult LoadChainstate(ChainstateManager& chainman, const CacheSize
         }
     }
 
+    std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
     auto [init_status, init_error] = CompleteChainstateInitialization(chainman, options);
     if (init_status != ChainstateLoadStatus::SUCCESS) {
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         return {init_status, init_error};
     }
 
@@ -214,8 +218,10 @@ ChainstateLoadResult LoadChainstate(ChainstateManager& chainman, const CacheSize
         // for the fully validated chainstate.
         chainman.ActiveChainstate().ClearBlockIndexCandidates();
 
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         auto [init_status, init_error] = CompleteChainstateInitialization(chainman, options);
         if (init_status != ChainstateLoadStatus::SUCCESS) {
+            std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
             return {init_status, init_error};
         }
     } else {
