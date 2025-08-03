@@ -1109,10 +1109,13 @@ FlatFilePos BlockManager::WriteBlock(const CBlock& block, int nHeight)
         BufferedWriter fileout{file};
 
         // Write index header
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         fileout << GetParams().MessageStart() << block_size;
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         pos.nPos += STORAGE_HEADER_BYTES;
         // Write block
         fileout << TX_WITH_WITNESS(block);
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
     }
 
     if (file.fclose() != 0) {
