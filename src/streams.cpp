@@ -22,6 +22,10 @@ static std::string get_filename_from_FILE(FILE* fp) {
     return std::string(buf.data());
 }
 
+static bool is_blk_dat(FILE* fp) {
+    return get_filename_from_FILE(fp) == "/home/hebasto/.bitcoin/regtest/blocks/blk00000.dat";
+}
+
 AutoFile::AutoFile(std::FILE* file, const Obfuscation& obfuscation) : m_file{file}, m_obfuscation{obfuscation}
 {
     if (!IsNull()) {
@@ -94,17 +98,26 @@ void AutoFile::ignore(size_t nSize)
 
 void AutoFile::write(std::span<const std::byte> src)
 {
-    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ <<  '\n';
+    bool should_lod = is_blk_dat(m_file);
+
+    if (should_lod) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ <<  '\n';
+    }
+
     if (!m_file) throw std::ios_base::failure("AutoFile::write: file handle is nullptr");
     if (!m_obfuscation) {
-        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ <<  '\n';
+        if (should_lod) {
+            std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ <<  '\n';
+        }
         if (std::fwrite(src.data(), 1, src.size(), m_file) != src.size()) {
             throw std::ios_base::failure("AutoFile::write: write failed");
         }
         m_was_written = true;
         if (m_position.has_value()) *m_position += src.size();
     } else {
-        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ <<  '\n';
+        if (should_lod) {
+            std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ <<  '\n';
+        }
         std::array<std::byte, 4096> buf;
         while (src.size()) {
             auto buf_now{std::span{buf}.first(std::min<size_t>(src.size(), buf.size()))};
