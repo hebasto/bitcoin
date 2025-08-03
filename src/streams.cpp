@@ -80,14 +80,17 @@ void AutoFile::ignore(size_t nSize)
 
 void AutoFile::write(std::span<const std::byte> src)
 {
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ <<  '\n';
     if (!m_file) throw std::ios_base::failure("AutoFile::write: file handle is nullptr");
     if (!m_obfuscation) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ <<  '\n';
         if (std::fwrite(src.data(), 1, src.size(), m_file) != src.size()) {
             throw std::ios_base::failure("AutoFile::write: write failed");
         }
         m_was_written = true;
         if (m_position.has_value()) *m_position += src.size();
     } else {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ <<  '\n';
         std::array<std::byte, 4096> buf;
         while (src.size()) {
             auto buf_now{std::span{buf}.first(std::min<size_t>(src.size(), buf.size()))};

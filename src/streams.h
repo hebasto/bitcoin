@@ -719,12 +719,17 @@ public:
 
     void flush()
     {
-        if (m_buf_pos) m_dst.write_buffer(std::span{m_buf}.first(m_buf_pos));
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_buf_pos=" << m_buf_pos << "; m_buf.size()=" << m_buf.size() << '\n';
+        if (m_buf_pos) {
+            std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ <<  '\n';
+            m_dst.write_buffer(std::span{m_buf}.first(m_buf_pos));
+        }
         m_buf_pos = 0;
     }
 
     void write(std::span<const std::byte> src)
     {
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_buf_pos=" << m_buf_pos << "; m_buf.size()=" << m_buf.size() << "; src.size()=" << src.size() << '\n';
         while (const auto available{std::min(src.size(), m_buf.size() - m_buf_pos)}) {
             std::copy_n(src.begin(), available, m_buf.begin() + m_buf_pos);
             m_buf_pos += available;
