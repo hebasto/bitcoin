@@ -5015,6 +5015,7 @@ bool ChainstateManager::LoadBlockIndex()
 bool Chainstate::LoadGenesisBlock()
 {
     LOCK(cs_main);
+    std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
 
     const CChainParams& params{m_chainman.GetParams()};
 
@@ -5022,23 +5023,30 @@ bool Chainstate::LoadGenesisBlock()
     // m_blockman.m_block_index. Note that we can't use m_chain here, since it is
     // set based on the coins db, not the block index db, which is the only
     // thing loaded at this point.
-    if (m_blockman.m_block_index.count(params.GenesisBlock().GetHash()))
+    if (m_blockman.m_block_index.count(params.GenesisBlock().GetHash())) {
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         return true;
+    }
 
+    std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
     try {
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         const CBlock& block = params.GenesisBlock();
         FlatFilePos blockPos{m_blockman.WriteBlock(block, 0)};
         if (blockPos.IsNull()) {
             LogError("%s: writing genesis block to disk failed\n", __func__);
+            std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
             return false;
         }
         CBlockIndex* pindex = m_blockman.AddToBlockIndex(block, m_chainman.m_best_header);
         m_chainman.ReceivedBlockTransactions(block, pindex, blockPos);
     } catch (const std::runtime_error& e) {
         LogError("%s: failed to write genesis block: %s\n", __func__, e.what());
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         return false;
     }
 
+    std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
     return true;
 }
 
