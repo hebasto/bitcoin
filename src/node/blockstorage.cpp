@@ -1089,16 +1089,20 @@ bool BlockManager::ReadRawBlock(std::vector<std::byte>& block, const FlatFilePos
 
 FlatFilePos BlockManager::WriteBlock(const CBlock& block, int nHeight)
 {
+    std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
+
     const unsigned int block_size{static_cast<unsigned int>(GetSerializeSize(TX_WITH_WITNESS(block)))};
     FlatFilePos pos{FindNextBlockPos(block_size + STORAGE_HEADER_BYTES, nHeight, block.GetBlockTime())};
     if (pos.IsNull()) {
         LogError("FindNextBlockPos failed for %s while writing block", pos.ToString());
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         return FlatFilePos();
     }
     AutoFile file{OpenBlockFile(pos, /*fReadOnly=*/false)};
     if (file.IsNull()) {
         LogError("OpenBlockFile failed for %s while writing block", pos.ToString());
         m_opts.notifications.fatalError(_("Failed to write block."));
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         return FlatFilePos();
     }
     {
@@ -1114,9 +1118,11 @@ FlatFilePos BlockManager::WriteBlock(const CBlock& block, int nHeight)
     if (file.fclose() != 0) {
         LogError("Failed to close block file %s: %s", pos.ToString(), SysErrorString(errno));
         m_opts.notifications.fatalError(_("Failed to close file when writing block."));
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         return FlatFilePos();
     }
 
+    std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
     return pos;
 }
 

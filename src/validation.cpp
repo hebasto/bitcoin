@@ -5032,7 +5032,15 @@ bool Chainstate::LoadGenesisBlock()
     try {
         std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         const CBlock& block = params.GenesisBlock();
+
+        // assert(0);
+        // blk00000.dat is not touched.
+
         FlatFilePos blockPos{m_blockman.WriteBlock(block, 0)};
+
+        // blk00000.dat has been MODIFIED.
+        // assert(0);
+
         if (blockPos.IsNull()) {
             LogError("%s: writing genesis block to disk failed\n", __func__);
             std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
