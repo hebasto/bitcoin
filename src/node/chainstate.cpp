@@ -35,6 +35,8 @@ static ChainstateLoadResult CompleteChainstateInitialization(
     ChainstateManager& chainman,
     const ChainstateLoadOptions& options) EXCLUSIVE_LOCKS_REQUIRED(::cs_main)
 {
+    std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
+
     if (chainman.m_interrupt) return {ChainstateLoadStatus::INTERRUPTED, {}};
 
     // LoadBlockIndex will load m_have_pruned if we've ever removed a
@@ -118,7 +120,9 @@ static ChainstateLoadResult CompleteChainstateInitialization(
         chainstate->InitCoinsCache(chainman.m_total_coinstip_cache * init_cache_fraction);
         assert(chainstate->CanFlushToDisk());
 
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         if (!is_coinsview_empty(chainstate)) {
+            std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
             // LoadChainTip initializes the chain based on CoinsTip()'s best block
             if (!chainstate->LoadChainTip()) {
                 std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
@@ -180,7 +184,8 @@ ChainstateLoadResult LoadChainstate(ChainstateManager& chainman, const CacheSize
         }
     }
 
-    std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
+    // blk00000.dat is not touched.
+    std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n'; // HERE.
     auto [init_status, init_error] = CompleteChainstateInitialization(chainman, options);
     if (init_status != ChainstateLoadStatus::SUCCESS) {
         std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
