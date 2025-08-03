@@ -98,6 +98,7 @@ void AutoFile::ignore(size_t nSize)
 
 void AutoFile::write(std::span<const std::byte> src)
 {
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_file=" << get_filename_from_FILE(m_file) << '\n';
     bool should_lod = is_blk_dat(m_file);
 
     if (should_lod) {
