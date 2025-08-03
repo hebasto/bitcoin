@@ -10,9 +10,23 @@
 
 #include <array>
 
+static std::string get_filename_from_FILE(FILE* fp) {
+    int fd = fileno(fp);
+    if (fd == -1) return {};
+
+    std::vector<char> buf(1024);
+    ssize_t len = readlink(("/proc/self/fd/" + std::to_string(fd)).c_str(), buf.data(), buf.size() - 1);
+    if (len == -1) return {};
+
+    buf[len] = '\0';
+    return std::string(buf.data());
+}
+
 AutoFile::AutoFile(std::FILE* file, const Obfuscation& obfuscation) : m_file{file}, m_obfuscation{obfuscation}
 {
     if (!IsNull()) {
+        std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_file=" << get_filename_from_FILE(m_file) << '\n';
+
         auto pos{std::ftell(m_file)};
         if (pos >= 0) m_position = pos;
     }
