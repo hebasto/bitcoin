@@ -27,6 +27,49 @@
 #include <string>
 #include <vector>
 
+
+void static print_xxd(const std::vector<std::byte>& data, std::size_t max_lines) {
+    // Save formatting state
+    std::ios::fmtflags f(std::cerr.flags());
+    char fill_char = std::cerr.fill();
+
+    std::cerr << "================================================== print_xxd - BEGIN\n";
+    constexpr std::size_t bytes_per_line = 16;
+    std::size_t lines_printed = 0;
+
+    for (std::size_t i = 0; i < data.size() && lines_printed < max_lines; i += bytes_per_line, ++lines_printed) {
+        // Print offset
+        std::cerr << std::setw(8) << std::setfill('0') << std::hex << i << ": ";
+
+        // Print hex bytes
+        for (std::size_t j = 0; j < bytes_per_line; ++j) {
+            if (i + j < data.size()) {
+                std::cerr << std::setw(2) << std::setfill('0')
+                          << std::to_integer<int>(data[i + j]) << ' ';
+            } else {
+                std::cerr << "   ";
+            }
+        }
+
+        // Print ASCII representation
+        std::cerr << " ";
+        for (std::size_t j = 0; j < bytes_per_line && (i + j) < data.size(); ++j) {
+            char c = static_cast<char>(std::to_integer<unsigned char>(data[i + j]));
+            std::cerr << (std::isprint(static_cast<unsigned char>(c)) ? c : '.');
+        }
+
+        std::cerr << '\n';
+    }
+
+    // Restore formatting state
+    std::cerr.flags(f);
+    std::cerr.fill(fill_char);
+
+    std::cerr << "================================================== print_xxd - END\n";
+}
+
+
+
 /* Minimal stream for overwriting and/or appending to an existing byte vector
  *
  * The referenced vector will grow as necessary
