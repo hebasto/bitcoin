@@ -54,6 +54,9 @@ static ChainstateLoadResult CompleteChainstateInitialization(
         return {ChainstateLoadStatus::FAILURE_INCOMPATIBLE_DB, _("Incorrect or no genesis block found. Wrong datadir for network?")};
     }
 
+    // assert(0);
+    // blk00000.dat is not touched.
+
     // Check for changed -prune state.  What we are concerned about is a user who has pruned blocks
     // in the past, but is now trying to run unpruned.
     if (chainman.m_blockman.m_have_pruned && !options.prune) {
@@ -68,6 +71,9 @@ static ChainstateLoadResult CompleteChainstateInitialization(
         std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         return {ChainstateLoadStatus::FAILURE, _("Error initializing block database")};
     }
+
+    // blk00000.dat has been MODIFIED.
+    // assert(0);
 
     auto is_coinsview_empty = [&](Chainstate* chainstate) EXCLUSIVE_LOCKS_REQUIRED(::cs_main) {
         return options.wipe_chainstate_db || chainstate->CoinsTip().GetBestBlock().IsNull();
@@ -85,6 +91,9 @@ static ChainstateLoadResult CompleteChainstateInitialization(
 
     // At this point we're either in reindex or we've loaded a useful
     // block tree into BlockIndex()!
+
+    // blk00000.dat has been MODIFIED.
+    // assert(0);
 
     for (Chainstate* chainstate : chainman.GetAll()) {
         LogInfo("Initializing chainstate %s", chainstate->ToString());
@@ -119,6 +128,9 @@ static ChainstateLoadResult CompleteChainstateInitialization(
         // The on-disk coinsdb is now in a good state, create the cache
         chainstate->InitCoinsCache(chainman.m_total_coinstip_cache * init_cache_fraction);
         assert(chainstate->CanFlushToDisk());
+
+        // blk00000.dat has been MODIFIED.
+        // assert(0);
 
         std::cerr << "================== " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         if (!is_coinsview_empty(chainstate)) {
