@@ -5065,15 +5065,19 @@ void ChainstateManager::LoadExternalBlockFile(
                 nRewind = blkdat.GetPos() + 1;
                 blkdat >> buf;
                 if (buf != params.MessageStart()) {
+                    LogInfo("blkdat.size()=%d\n", blkdat.size());
                     continue;
                 }
                 // read size
                 blkdat >> nSize;
-                if (nSize < 80 || nSize > MAX_BLOCK_SERIALIZED_SIZE)
+                if (nSize < 80 || nSize > MAX_BLOCK_SERIALIZED_SIZE) {
+                    LogInfo("blkdat.size()=%d\n", blkdat.size());
                     continue;
+                }
             } catch (const std::exception&) {
                 // no valid block header found; don't complain
                 // (this happens at the end of every blk.dat file)
+                LogInfo("blkdat.size()=%d\n", blkdat.size());
                 break;
             }
             try {
@@ -5101,6 +5105,7 @@ void ChainstateManager::LoadExternalBlockFile(
                         if (dbp && blocks_with_unknown_parent) {
                             blocks_with_unknown_parent->emplace(header.hashPrevBlock, *dbp);
                         }
+                        LogInfo("blkdat.size()=%d\n", blkdat.size());
                         continue;
                     }
 
@@ -5118,6 +5123,7 @@ void ChainstateManager::LoadExternalBlockFile(
                             nLoaded++;
                         }
                         if (state.IsError()) {
+                            LogInfo("blkdat.size()=%d\n", blkdat.size());
                             break;
                         }
                     } else if (hash != params.GetConsensus().hashGenesisBlock && pindex->nHeight % 1000 == 0) {
@@ -5135,6 +5141,7 @@ void ChainstateManager::LoadExternalBlockFile(
                 if (hash == params.GetConsensus().hashGenesisBlock && WITH_LOCK(::cs_main, return ActiveHeight()) == -1) {
                     BlockValidationState state;
                     if (!ActiveChainstate().ActivateBestChain(state, nullptr)) {
+                        LogInfo("blkdat.size()=%d\n", blkdat.size());
                         break;
                     }
                 }
@@ -5153,14 +5160,17 @@ void ChainstateManager::LoadExternalBlockFile(
                         if (!c->ActivateBestChain(state, pblock)) {
                             LogDebug(BCLog::REINDEX, "failed to activate chain (%s)\n", state.ToString());
                             activation_failure = true;
+                            LogInfo("blkdat.size()=%d\n", blkdat.size());
                             break;
                         }
                     }
                     if (activation_failure) {
+                        LogInfo("blkdat.size()=%d\n", blkdat.size());
                         break;
                     }
                 }
 
+                LogInfo("blkdat.size()=%d\n", blkdat.size());
                 NotifyHeaderTip();
 
                 if (!blocks_with_unknown_parent) continue;
