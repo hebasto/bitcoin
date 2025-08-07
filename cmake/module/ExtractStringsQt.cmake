@@ -26,3 +26,19 @@ endif()
 
 message("XGETTEXT_OUTPUT:\n${XGETTEXT_OUTPUT}")
 message("XGETTEXT_STATUS: ${XGETTEXT_STATUS}")
+
+
+# string(REGEX MATCHALL "msgid \"[^\n\"]*\"" MSGID_LINES "${XGETTEXT_OUTPUT}")
+string(REGEX MATCHALL "msgid \"([^\"\\\\]|\\\\.)*\"" MSGID_LINES "${XGETTEXT_OUTPUT}")
+
+
+foreach(M IN LISTS MSGID_LINES)
+    string(REGEX REPLACE "^msgid " "" M_CLEAN "${M}")
+    if(M_CLEAN STREQUAL [[""]])
+      message("The M_CLEAN is empty: ${M_CLEAN}")
+    else()
+      message("M_CLEAN:\n${M_CLEAN}")
+    endif()
+endforeach()
+
+message("MSGID_LINES:\n${MSGID_LINES}")
