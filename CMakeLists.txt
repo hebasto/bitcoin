@@ -89,6 +89,18 @@ if (NOT DEFINED CMAKE_OPTIMIZE_DEPENDENCIES)
   set(CMAKE_OPTIMIZE_DEPENDENCIES TRUE)
 endif()
 
+
+
+
+include(cmake/module/ExtractStringsQt.cmake)
+
+
+
+
+return()
+
+
+
 #=============================
 # Configurable options
 #=============================
