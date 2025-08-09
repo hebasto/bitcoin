@@ -5020,6 +5020,7 @@ bool Chainstate::LoadGenesisBlock()
     try {
         const CBlock& block = params.GenesisBlock();
         FlatFilePos blockPos{m_blockman.WriteBlock(block, 0)};
+        LogInfo("blockPos=%d\n", blockPos.ToString());
         if (blockPos.IsNull()) {
             LogError("%s: writing genesis block to disk failed\n", __func__);
             return false;
