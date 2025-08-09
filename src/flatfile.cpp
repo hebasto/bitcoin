@@ -32,25 +32,32 @@ fs::path FlatFileSeq::FileName(const FlatFilePos& pos) const
 
 FILE* FlatFileSeq::Open(const FlatFilePos& pos, bool read_only) const
 {
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
     if (pos.IsNull()) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         return nullptr;
     }
     fs::path path = FileName(pos);
     fs::create_directories(path.parent_path());
     FILE* file = fsbridge::fopen(path, read_only ? "rb": "rb+");
-    if (!file && !read_only)
+    if (!file && !read_only) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         file = fsbridge::fopen(path, "wb+");
+    }
     if (!file) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         LogPrintf("Unable to open file %s\n", fs::PathToString(path));
         return nullptr;
     }
     if (pos.nPos && fseek(file, pos.nPos, SEEK_SET)) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         LogPrintf("Unable to seek to position %u of %s\n", pos.nPos, fs::PathToString(path));
         if (fclose(file) != 0) {
             LogError("Unable to close file %s", fs::PathToString(path));
         }
         return nullptr;
     }
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
     return file;
 }
 
