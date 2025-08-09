@@ -701,4 +701,50 @@ public:
     }
 };
 
+template <typename S>
+class SpecialBufferedWriter
+{
+    S& m_dst;
+    DataBuffer m_buf;
+    size_t m_buf_pos{0};
+
+public:
+    explicit SpecialBufferedWriter(S& stream LIFETIMEBOUND, size_t size = 1 << 16) : m_dst{stream}, m_buf(size)
+    {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_buf.size()=" << m_buf.size() << " m_buf_pos=" << m_buf_pos << '\n';
+    }
+
+    ~SpecialBufferedWriter()
+    {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_buf.size()=" << m_buf.size() << " m_buf_pos=" << m_buf_pos << '\n';
+        flush();
+    }
+
+    void flush()
+    {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_buf.size()=" << m_buf.size() << " m_buf_pos=" << m_buf_pos << '\n';
+        if (m_buf_pos) m_dst.write_buffer(std::span{m_buf}.first(m_buf_pos));
+        m_buf_pos = 0;
+    }
+
+    void write(std::span<const std::byte> src)
+    {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_buf.size()=" << m_buf.size() << " m_buf_pos=" << m_buf_pos << '\n';
+        while (const auto available{std::min(src.size(), m_buf.size() - m_buf_pos)}) {
+            std::copy_n(src.begin(), available, m_buf.begin() + m_buf_pos);
+            m_buf_pos += available;
+            if (m_buf_pos == m_buf.size()) flush();
+            src = src.subspan(available);
+        }
+    }
+
+    template <typename T>
+    SpecialBufferedWriter& operator<<(const T& obj)
+    {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_buf.size()=" << m_buf.size() << " m_buf_pos=" << m_buf_pos << '\n';
+        Serialize(*this, obj);
+        return *this;
+    }
+};
+
 #endif // BITCOIN_STREAMS_H

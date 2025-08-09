@@ -1103,7 +1103,7 @@ FlatFilePos BlockManager::WriteBlock(const CBlock& block, int nHeight)
         return FlatFilePos();
     }
     {
-        BufferedWriter fileout{file};
+        SpecialBufferedWriter fileout{file};
 
         // Write index header
         fileout << GetParams().MessageStart() << block_size;
