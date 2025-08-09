@@ -798,9 +798,14 @@ FlatFilePos BlockManager::FindNextBlockPos(unsigned int nAddSize, unsigned int n
 {
     LOCK(cs_LastBlockFile);
 
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " nAddSize=" << nAddSize << '\n';
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " nHeight=" << nHeight << '\n';
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " nTime=" << nTime << '\n';
+
     const BlockfileType chain_type = BlockfileTypeForHeight(nHeight);
 
     if (!m_blockfile_cursors[chain_type]) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         // If a snapshot is loaded during runtime, we may not have initialized this cursor yet.
         assert(chain_type == BlockfileType::ASSUMED);
         const auto new_cursor = BlockfileCursor{this->MaxBlockfileNum() + 1};
@@ -811,6 +816,7 @@ FlatFilePos BlockManager::FindNextBlockPos(unsigned int nAddSize, unsigned int n
 
     int nFile = last_blockfile;
     if (static_cast<int>(m_blockfile_info.size()) <= nFile) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         m_blockfile_info.resize(nFile + 1);
     }
 
@@ -819,15 +825,19 @@ FlatFilePos BlockManager::FindNextBlockPos(unsigned int nAddSize, unsigned int n
     // Use smaller blockfiles in test-only -fastprune mode - but avoid
     // the possibility of having a block not fit into the block file.
     if (m_opts.fast_prune) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         max_blockfile_size = 0x10000; // 64kiB
         if (nAddSize >= max_blockfile_size) {
+            std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
             // dynamically adjust the blockfile size to be larger than the added size
             max_blockfile_size = nAddSize + 1;
         }
     }
     assert(nAddSize < max_blockfile_size);
 
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
     while (m_blockfile_info[nFile].nSize + nAddSize >= max_blockfile_size) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         // when the undo file is keeping up with the block file, we want to flush it explicitly
         // when it is lagging behind (more blocks arrive than are being connected), we let the
         // undo block write case handle it
@@ -840,6 +850,7 @@ FlatFilePos BlockManager::FindNextBlockPos(unsigned int nAddSize, unsigned int n
         m_blockfile_cursors[chain_type] = BlockfileCursor{nFile};
 
         if (static_cast<int>(m_blockfile_info.size()) <= nFile) {
+            std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
             m_blockfile_info.resize(nFile + 1);
         }
     }
@@ -847,7 +858,9 @@ FlatFilePos BlockManager::FindNextBlockPos(unsigned int nAddSize, unsigned int n
     pos.nFile = nFile;
     pos.nPos = m_blockfile_info[nFile].nSize;
 
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
     if (nFile != last_blockfile) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         LogDebug(BCLog::BLOCKSTORAGE, "Leaving block file %i: %s (onto %i) (height %i)\n",
                  last_blockfile, m_blockfile_info[last_blockfile].ToString(), nFile, nHeight);
 
@@ -859,6 +872,7 @@ FlatFilePos BlockManager::FindNextBlockPos(unsigned int nAddSize, unsigned int n
         // a reindex. A flush error might also leave some of the data files
         // untrimmed.
         if (!FlushBlockFile(last_blockfile, /*fFinalize=*/true, finalize_undo)) {
+            std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
             LogPrintLevel(BCLog::BLOCKSTORAGE, BCLog::Level::Warning,
                           "Failed to flush previous block file %05i (finalize=1, finalize_undo=%i) before opening new block file %05i\n",
                           last_blockfile, finalize_undo, nFile);
@@ -871,16 +885,25 @@ FlatFilePos BlockManager::FindNextBlockPos(unsigned int nAddSize, unsigned int n
     m_blockfile_info[nFile].nSize += nAddSize;
 
     bool out_of_space;
+
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " pos.ToString()=" << pos.ToString() << '\n';
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " nAddSize=" << nAddSize << '\n';
+    // The next line opens a block file.
     size_t bytes_allocated = m_block_file_seq.Allocate(pos, nAddSize, out_of_space);
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
+
     if (out_of_space) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         m_opts.notifications.fatalError(_("Disk space is too low!"));
         return {};
     }
     if (bytes_allocated != 0 && IsPruneMode()) {
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
         m_check_for_pruning = true;
     }
 
     m_dirty_fileinfo.insert(nFile);
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
     return pos;
 }
 
