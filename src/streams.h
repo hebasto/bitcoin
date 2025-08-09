@@ -766,7 +766,11 @@ public:
     {
         std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_buf.size()=" << m_buf.size() << " m_buf_pos=" << m_buf_pos << '\n';
         std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_dst.size()=" << m_dst.size() << '\n';
-        if (m_buf_pos) m_dst.write_buffer(std::span{m_buf}.first(m_buf_pos));
+
+        auto buf_view = std::span{m_buf}.first(m_buf_pos);
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " buf_view.size()=" << buf_view.size() << '\n';
+        print_xxd({buf_view.begin(), buf_view.end()}, 20);
+        if (m_buf_pos) m_dst.write_buffer(buf_view);
         std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_dst.size()=" << m_dst.size() << '\n';
         m_buf_pos = 0;
     }
