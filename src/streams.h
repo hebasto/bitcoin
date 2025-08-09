@@ -616,6 +616,8 @@ public:
             if (buf_offset >= vchBuf.size()) buf_offset = 0;
         }
     }
+
+    int64_t size() { return m_src.size(); }
 };
 
 /**
