@@ -5008,6 +5008,8 @@ bool Chainstate::LoadGenesisBlock()
 {
     LOCK(cs_main);
 
+    std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << '\n';
+
     const CChainParams& params{m_chainman.GetParams()};
 
     // Check whether we're already initialized by checking for genesis in
@@ -5020,6 +5022,9 @@ bool Chainstate::LoadGenesisBlock()
     try {
         const CBlock& block = params.GenesisBlock();
         FlatFilePos blockPos{m_blockman.WriteBlock(block, 0)};
+
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " blockPos=" << blockPos.ToString() << '\n';
+
         if (blockPos.IsNull()) {
             LogError("%s: writing genesis block to disk failed\n", __func__);
             return false;
