@@ -701,20 +701,19 @@ public:
     }
 };
 
-template <typename S>
-class SpecialBufferedWriter
+class AutoFileBufferedWriter
 {
-    S& m_dst;
+    AutoFile& m_dst;
     DataBuffer m_buf;
     size_t m_buf_pos{0};
 
 public:
-    explicit SpecialBufferedWriter(S& stream LIFETIMEBOUND, size_t size = 1 << 16) : m_dst{stream}, m_buf(size)
+    explicit AutoFileBufferedWriter(AutoFile& stream LIFETIMEBOUND, size_t size = 1 << 16) : m_dst{stream}, m_buf(size)
     {
         std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_buf.size()=" << m_buf.size() << " m_buf_pos=" << m_buf_pos << '\n';
     }
 
-    ~SpecialBufferedWriter()
+    ~AutoFileBufferedWriter()
     {
         std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_buf.size()=" << m_buf.size() << " m_buf_pos=" << m_buf_pos << '\n';
         flush();
@@ -723,7 +722,9 @@ public:
     void flush()
     {
         std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_buf.size()=" << m_buf.size() << " m_buf_pos=" << m_buf_pos << '\n';
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_dst.size()=" << m_dst.size() << '\n';
         if (m_buf_pos) m_dst.write_buffer(std::span{m_buf}.first(m_buf_pos));
+        std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_dst.size()=" << m_dst.size() << '\n';
         m_buf_pos = 0;
     }
 
@@ -739,7 +740,7 @@ public:
     }
 
     template <typename T>
-    SpecialBufferedWriter& operator<<(const T& obj)
+    AutoFileBufferedWriter& operator<<(const T& obj)
     {
         std::cerr << "++++++++++++++++++ " << __FILE__ << ":" << __LINE__ << " : " << __func__ << " m_buf.size()=" << m_buf.size() << " m_buf_pos=" << m_buf_pos << '\n';
         Serialize(*this, obj);
