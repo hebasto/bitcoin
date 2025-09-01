@@ -10,10 +10,6 @@
         <translation type="unfinished">Cruthaich seòladh ùr</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">Dèan lethbhreac den t-seòladh a chaidh a thaghadh an-dràsta gu cairt-bhòrd an t-siostaim</translation>
-    </message>
-    <message>
         <source>Delete the currently selected address from the list</source>
         <translation type="unfinished">Thoir às an seòladh a chaidh a thaghadh an-dràsta bhon liosta</translation>
     </message>
@@ -182,7 +178,7 @@
         <source>Error</source>
         <translation type="unfinished">Mearachd</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ModalOverlay</name>
     <message>

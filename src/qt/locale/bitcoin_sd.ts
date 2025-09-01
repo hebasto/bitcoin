@@ -124,6 +124,10 @@
 <context>
     <name>Intro</name>
     <message>
+        <source>Welcome</source>
+        <translation type="unfinished">ڀليڪار</translation>
+    </message>
+    <message>
         <source>Bitcoin</source>
         <translation type="unfinished">بٽڪوائن</translation>
     </message>
@@ -155,10 +159,6 @@
             <numerusform />
             <numerusform />
         </translation>
-    </message>
-    <message>
-        <source>Welcome</source>
-        <translation type="unfinished">ڀليڪار</translation>
     </message>
     </context>
 <context>

@@ -14,10 +14,6 @@
         <translation type="unfinished">&amp;အသစ်</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">လက်ရှိရွေးထားတဲ့ လိပ်စာကို clipboard ပေါ်တင်မယ်။</translation>
-    </message>
-    <message>
         <source>&amp;Copy</source>
         <translation type="unfinished">&amp;ကူးမယ်</translation>
     </message>
@@ -229,7 +225,7 @@
         <source>Error</source>
         <translation type="unfinished">အမှား</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>OptionsDialog</name>
     <message>

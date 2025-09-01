@@ -14,10 +14,6 @@
         <translation type="unfinished">يېڭى(&amp;N)</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">نۆۋەتتە تاللىغان ئادرېسنى سىستېما چاپلاش تاختىسىغا كۆچۈرىدۇ</translation>
-    </message>
-    <message>
         <source>&amp;Copy</source>
         <translation type="unfinished">كۆچۈر(&amp;C)</translation>
     </message>
@@ -300,7 +296,7 @@ Signing is only possible with addresses of the type 'legacy'.</source>
         <source>Error</source>
         <translation type="unfinished">خاتالىق</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>OptionsDialog</name>
     <message>

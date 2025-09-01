@@ -205,6 +205,14 @@
     </context>
 <context>
     <name>Intro</name>
+    <message>
+        <source>Welcome</source>
+        <translation type="unfinished">Tikilluarit</translation>
+    </message>
+    <message>
+        <source>Welcome to %1.</source>
+        <translation type="unfinished">Tikilluarit uunga %1</translation>
+    </message>
     <message numerus="yes">
         <source>%n GB of space available</source>
         <translation type="unfinished">
@@ -233,14 +241,6 @@
             <numerusform />
             <numerusform />
         </translation>
-    </message>
-    <message>
-        <source>Welcome</source>
-        <translation type="unfinished">Tikilluarit</translation>
-    </message>
-    <message>
-        <source>Welcome to %1.</source>
-        <translation type="unfinished">Tikilluarit uunga %1</translation>
     </message>
     </context>
 <context>

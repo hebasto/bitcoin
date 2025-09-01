@@ -1,5 +1,42 @@
 <TS version="2.1" language="la">
 <context>
+    <name>AddressBookPage</name>
+    <message>
+        <source>Right-click to edit address or label</source>
+        <translation type="unfinished">Dextro preme ut inscriptionem vel titulum emendes</translation>
+    </message>
+    <message>
+        <source>Create a new address</source>
+        <translation type="unfinished">Novam inscriptionem
+ 
+ 
+ 
+ 
+ 
+ </translation>
+    </message>
+    <message>
+        <source>&amp;New</source>
+        <translation type="unfinished">&amp;Novus</translation>
+    </message>
+    <message>
+        <source>&amp;Copy</source>
+        <translation type="unfinished">&amp;Transcribe</translation>
+    </message>
+    <message>
+        <source>C&amp;lose</source>
+        <translation type="unfinished">C&amp;laude</translation>
+    </message>
+    <message>
+        <source>Delete the currently selected address from the list</source>
+        <translation type="unfinished">Dele active selectam inscriptionem ex enumeratione</translation>
+    </message>
+    <message>
+        <source>Enter address or label to search</source>
+        <translation type="unfinished">Insere inscriptionem vel titulum ut quaeras</translation>
+    </message>
+    </context>
+<context>
     <name>QObject</name>
     <message>
         <source>Amount</source>
@@ -242,6 +279,13 @@
     </message>
     </context>
 <context>
+    <name>ModalOverlay</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Schema</translation>
+    </message>
+    </context>
+<context>
     <name>OptionsDialog</name>
     <message>
         <source>Reset all client options to default.</source>
@@ -254,6 +298,10 @@
     <message>
         <source>&amp;Network</source>
         <translation type="unfinished">&amp;Rete</translation>
+    </message>
+    <message>
+        <source>W&amp;allet</source>
+        <translation type="unfinished">Cassidile</translation>
     </message>
     <message>
         <source>Proxy &amp;IP:</source>
@@ -357,6 +405,11 @@
 <context>
     <name>PeerTableModel</name>
     <message>
+        <source>Address</source>
+        <extracomment>Title of Peers Table column which contains the IP/Onion/I2P address of the connected peer.</extracomment>
+        <translation type="unfinished">Inscriptio</translation>
+    </message>
+    <message>
         <source>Type</source>
         <extracomment>Title of Peers Table column which describes the type of peer connection. The "type" describes why the connection exists.</extracomment>
         <translation type="unfinished">Typus</translation>
@@ -364,6 +417,13 @@
     <message>
         <source>Network</source>
         <extracomment>Title of Peers Table column which states the network the peer connected through.</extracomment>
+        <translation type="unfinished">Rete</translation>
+    </message>
+    </context>
+<context>
+    <name>RPCConsole</name>
+    <message>
+        <source>Network</source>
         <translation type="unfinished">Rete</translation>
     </message>
     </context>
@@ -423,6 +483,10 @@
     </context>
 <context>
     <name>TransactionView</name>
+    <message>
+        <source>Confirmed</source>
+        <translation type="unfinished">Confirmatum</translation>
+    </message>
     <message>
         <source>Type</source>
         <translation type="unfinished">Typus</translation>

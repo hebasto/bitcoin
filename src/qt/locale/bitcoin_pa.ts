@@ -14,10 +14,6 @@
         <translation type="unfinished">&amp;ਨਵਾਂ</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">ਚੁਣੇ ਪਤੇ ਦੀ ਸਿਸਟਮ ਦੀ ਚੂੰਢੀ-ਤਖਤੀ 'ਤੇ ਨਕਲ ਲਾਹੋ</translation>
-    </message>
-    <message>
         <source>&amp;Copy</source>
         <translation type="unfinished">&amp;ਨਕਲ ਲਾਹੋ</translation>
     </message>
@@ -90,7 +86,7 @@ Signing is only possible with addresses of the type 'legacy'.</source>
     <message>
         <source>There was an error trying to save the address list to %1. Please try again.</source>
         <extracomment>An error message. %1 is a stand-in argument for the name of the file we attempted to save to.</extracomment>
-        <translation type="unfinished"> %1 ਤੇ ਪਤੇ ਦੀ ਲਿਸਟ ਸੇਵ ਕਰਨੀ ਅਸਫਲ ਹੋਈ। ਫੇਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ। </translation>
+        <translation type="unfinished"> %1 ਤੇ ਪਤੇ ਦੀ ਲਿਸਟ ਸੇਵ ਕਰਨੀ ਨਾਕਾਮ ਰਹੀ। ਫੇਰ ਕੋਸ਼ਿਸ਼ ਕਰੋ। </translation>
     </message>
     <message>
         <source>Exporting Failed</source>

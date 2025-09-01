@@ -14,10 +14,6 @@
         <translation type="unfinished">&amp;Secha</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">Kopitsa aterese e e kgethilweng jaanong mo clipboard ya tsamaiso</translation>
-    </message>
-    <message>
         <source>&amp;Copy</source>
         <translation type="unfinished">&amp;Kopi</translation>
     </message>

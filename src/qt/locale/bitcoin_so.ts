@@ -14,10 +14,6 @@
         <translation type="unfinished">&amp;Hormarin</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">Nuqul ka dhig cinwaanka hadda la soo xulay ee clipboard system</translation>
-    </message>
-    <message>
         <source>&amp;Copy</source>
         <translation type="unfinished">&amp;Nuqul</translation>
     </message>
