@@ -14,10 +14,6 @@
         <translation type="unfinished">&amp;नवा</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">सध्याचा निवडलेला पत्ता सिस्टीम क्लिपबोर्डावर कॉपी करा</translation>
-    </message>
-    <message>
         <source>&amp;Copy</source>
         <translation type="unfinished">&amp;कॉपी</translation>
     </message>

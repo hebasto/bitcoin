@@ -14,10 +14,6 @@
         <translation type="unfinished">&amp;Яңа</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">Хәзерге вакытта сайланган адресны алмашу системалы буферына күчерегез</translation>
-    </message>
-    <message>
         <source>&amp;Copy</source>
         <translation type="unfinished">&amp;Күчерү</translation>
     </message>

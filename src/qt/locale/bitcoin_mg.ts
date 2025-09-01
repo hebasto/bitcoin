@@ -312,7 +312,7 @@
         <source>Error</source>
         <translation type="unfinished">Fahadisoana</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>OptionsDialog</name>
     <message>

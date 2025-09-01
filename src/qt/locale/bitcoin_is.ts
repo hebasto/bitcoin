@@ -14,10 +14,6 @@
         <translation type="unfinished">&amp;Nýtt</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">Afrita valið veski í klemmuspjald</translation>
-    </message>
-    <message>
         <source>&amp;Copy</source>
         <translation type="unfinished">&amp;Afrita</translation>
     </message>
@@ -799,7 +795,7 @@ Signing is only possible with addresses of the type 'legacy'.</source>
         <source>Error</source>
         <translation type="unfinished">Villa</translation>
     </message>
-    </context>
+</context>
 <context>
     <name>ModalOverlay</name>
     <message>
@@ -884,22 +880,6 @@ Signing is only possible with addresses of the type 'legacy'.</source>
     <message>
         <source>Mined balance that has not yet matured</source>
         <translation type="unfinished">Námuunnin innistæða sem hefur enn ekki komið fram</translation>
-    </message>
-    <message>
-        <source>Your current balance in watch-only addresses</source>
-        <translation type="unfinished">Innistæða færslugilda sem eru einungis til skoðunar</translation>
-    </message>
-    <message>
-        <source>Unconfirmed transactions to watch-only addresses</source>
-        <translation type="unfinished">Óstaðfestar færslur til færslugilda sem eru einungis til skoðunar</translation>
-    </message>
-    <message>
-        <source>Mined balance in watch-only addresses that has not yet matured</source>
-        <translation type="unfinished">Námuunnin innistæða á færslugildum sem eru einungis til skoðunar og hafa ekki komið fram</translation>
-    </message>
-    <message>
-        <source>Current total balance in watch-only addresses</source>
-        <translation type="unfinished">Innistæða á færslugildum sem eru einungis til skoðunar</translation>
     </message>
     </context>
 <context>
@@ -1211,10 +1191,6 @@ Signing is only possible with addresses of the type 'legacy'.</source>
         <translation type="unfinished">Prune háttur er ósamrýmanlegur -reindex-chainstate. Notaðu fulla -reindex í staðinn.</translation>
     </message>
     <message>
-        <source>Prune: last wallet synchronisation goes beyond pruned data. You need to -reindex (download the whole blockchain again in case of pruned node)</source>
-        <translation type="unfinished">Prune: síðasta samstilling veskis fer út fyrir klippt gögn. Þú þarft að endurtryggja (hala niður öllu blockchain aftur ef um er að ræða klipptan hnút)</translation>
-    </message>
-    <message>
         <source>Rename of '%s' -&gt; '%s' failed. You should resolve this by manually moving or deleting the invalid snapshot directory %s, otherwise you will encounter the same error again on the next startup.</source>
         <translation type="unfinished">Mistókst að endurnefna '%s' -&gt; '%s'. Þú ættir að leysa þetta með því að færa handvirkt eða eyða ógildu skyndimyndamöppunni %s, annars muntu lenda í sömu villu aftur við næstu ræsingu.</translation>
     </message>
@@ -1257,10 +1233,6 @@ Signing is only possible with addresses of the type 'legacy'.</source>
     <message>
         <source>Error loading %s: External signer wallet being loaded without external signer support compiled</source>
         <translation type="unfinished">Villa við að hlaða %s: Ytra undirritaraveski verið hlaðið án þess að utanaðkomandi undirritarastuðningur hafi verið settur saman</translation>
-    </message>
-    <message>
-        <source>Failed to calculate bump fees, because unconfirmed UTXOs depend on enormous cluster of unconfirmed transactions.</source>
-        <translation type="unfinished">Mistókst að reikna út högggjöld vegna þess að óstaðfest UTXO er háð gríðarlegum hópi óstaðfestra viðskipta.</translation>
     </message>
     </context>
 </TS>

@@ -112,6 +112,7 @@ set(ts_files
   bitcoin_uz@Latn.ts
   bitcoin_ve.ts
   bitcoin_vi.ts
+  bitcoin_xh.ts
   bitcoin_yi.ts
   bitcoin_yo.ts
   bitcoin_yue.ts

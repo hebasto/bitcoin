@@ -14,10 +14,6 @@
         <translation type="unfinished">&amp;Nova</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">Kopirajte trenutno odabranu adresu u sistemski meduspremnik</translation>
-    </message>
-    <message>
         <source>&amp;Copy</source>
         <translation type="unfinished">&amp;Kopirajte</translation>
     </message>
@@ -993,7 +989,57 @@ Signing is only possible with addresses of the type 'legacy'.</source>
     </message>
 </context>
 <context>
+    <name>HelpMessageDialog</name>
+    <message>
+        <source>version</source>
+        <translation type="unfinished">verzija</translation>
+    </message>
+    <message>
+        <source>About %1</source>
+        <translation type="unfinished">O %1</translation>
+    </message>
+    <message>
+        <source>Command-line options</source>
+        <translation type="unfinished">Opcije komandne linije</translation>
+    </message>
+</context>
+<context>
+    <name>ShutdownWindow</name>
+    <message>
+        <source>Do not shut down the computer until this window disappears.</source>
+        <translation type="unfinished">Ne isključujte računar dok ovaj prozor ne nestane.</translation>
+    </message>
+</context>
+<context>
     <name>Intro</name>
+    <message>
+        <source>Welcome</source>
+        <translation type="unfinished">Dobrodošli</translation>
+    </message>
+    <message>
+        <source>Welcome to %1.</source>
+        <translation type="unfinished">Dobrodošli u %1.</translation>
+    </message>
+    <message>
+        <source>As this is the first time the program is launched, you can choose where %1 will store its data.</source>
+        <translation type="unfinished">Zato što je ovo prvi put da se program pokreće, možete odabrati gdje će %1 čuvati svoje podatke.</translation>
+    </message>
+    <message>
+        <source>Reverting this setting requires re-downloading the entire blockchain. It is faster to download the full chain first and prune it later. Disables some advanced features.</source>
+        <translation type="unfinished">Vraćanje ove postavke zahtijeva ponovno preuzimanje cijelog lanca blokova. Brže je prvo preuzeti čitav lanac i kasnije ga obrezati. Onemogućava neke napredne funkcije.</translation>
+    </message>
+    <message>
+        <source>If you have chosen to limit block chain storage (pruning), the historical data must still be downloaded and processed, but will be deleted afterward to keep your disk usage low.</source>
+        <translation type="unfinished">Ako ste odlučili ograničiti skladištenje lanca blokova (obrezivanje), povijesni podaci i dalje se moraju preuzeti i obraditi, ali će se nakon toga izbrisati kako bi se smanjila upotreba diska.</translation>
+    </message>
+    <message>
+        <source>Use the default data directory</source>
+        <translation type="unfinished">Koristite zadani direktorij podataka</translation>
+    </message>
+    <message>
+        <source>Use a custom data directory:</source>
+        <translation type="unfinished">Koristite prilagođeni direktorij podataka:</translation>
+    </message>
     <message numerus="yes">
         <source>%n GB of space available</source>
         <translation type="unfinished">
@@ -1050,56 +1096,6 @@ Signing is only possible with addresses of the type 'legacy'.</source>
     <message>
         <source>Error</source>
         <translation type="unfinished">Greška</translation>
-    </message>
-    <message>
-        <source>Welcome</source>
-        <translation type="unfinished">Dobrodošli</translation>
-    </message>
-    <message>
-        <source>Welcome to %1.</source>
-        <translation type="unfinished">Dobrodošli u %1.</translation>
-    </message>
-    <message>
-        <source>As this is the first time the program is launched, you can choose where %1 will store its data.</source>
-        <translation type="unfinished">Zato što je ovo prvi put da se program pokreće, možete odabrati gdje će %1 čuvati svoje podatke.</translation>
-    </message>
-    <message>
-        <source>Reverting this setting requires re-downloading the entire blockchain. It is faster to download the full chain first and prune it later. Disables some advanced features.</source>
-        <translation type="unfinished">Vraćanje ove postavke zahtijeva ponovno preuzimanje cijelog lanca blokova. Brže je prvo preuzeti čitav lanac i kasnije ga obrezati. Onemogućava neke napredne funkcije.</translation>
-    </message>
-    <message>
-        <source>If you have chosen to limit block chain storage (pruning), the historical data must still be downloaded and processed, but will be deleted afterward to keep your disk usage low.</source>
-        <translation type="unfinished">Ako ste odlučili ograničiti skladištenje lanca blokova (obrezivanje), povijesni podaci i dalje se moraju preuzeti i obraditi, ali će se nakon toga izbrisati kako bi se smanjila upotreba diska.</translation>
-    </message>
-    <message>
-        <source>Use the default data directory</source>
-        <translation type="unfinished">Koristite zadani direktorij podataka</translation>
-    </message>
-    <message>
-        <source>Use a custom data directory:</source>
-        <translation type="unfinished">Koristite prilagođeni direktorij podataka:</translation>
-    </message>
-</context>
-<context>
-    <name>HelpMessageDialog</name>
-    <message>
-        <source>version</source>
-        <translation type="unfinished">verzija</translation>
-    </message>
-    <message>
-        <source>About %1</source>
-        <translation type="unfinished">O %1</translation>
-    </message>
-    <message>
-        <source>Command-line options</source>
-        <translation type="unfinished">Opcije komandne linije</translation>
-    </message>
-</context>
-<context>
-    <name>ShutdownWindow</name>
-    <message>
-        <source>Do not shut down the computer until this window disappears.</source>
-        <translation type="unfinished">Ne isključujte računar dok ovaj prozor ne nestane.</translation>
     </message>
 </context>
 <context>
@@ -1512,6 +1508,10 @@ Signing is only possible with addresses of the type 'legacy'.</source>
 <context>
     <name>bitcoin-core</name>
     <message>
+        <source>default wallet</source>
+        <translation type="unfinished">zadani novčanik</translation>
+    </message>
+    <message>
         <source>Replaying blocks…</source>
         <translation type="unfinished">Reprodukcija blokova…</translation>
     </message>
@@ -1618,14 +1618,6 @@ Signing is only possible with addresses of the type 'legacy'.</source>
     <message>
         <source>Unable to create the PID file '%s': %s</source>
         <translation type="unfinished">Nije moguće kreirati PID fajl '%s': %s</translation>
-    </message>
-    <message>
-        <source>Unable to generate initial keys</source>
-        <translation type="unfinished">Nije moguće generirati početne ključeve</translation>
-    </message>
-    <message>
-        <source>Unable to generate keys</source>
-        <translation type="unfinished">Nije moguće generirati ključeve</translation>
     </message>
     <message>
         <source>Unable to open %s for writing</source>
