@@ -113,6 +113,7 @@
         <file alias="uz@Latn">locale/bitcoin_uz@Latn.qm</file>
         <file alias="ve">locale/bitcoin_ve.qm</file>
         <file alias="vi">locale/bitcoin_vi.qm</file>
+        <file alias="xh">locale/bitcoin_xh.qm</file>
         <file alias="yi">locale/bitcoin_yi.qm</file>
         <file alias="yo">locale/bitcoin_yo.qm</file>
         <file alias="yue">locale/bitcoin_yue.qm</file>

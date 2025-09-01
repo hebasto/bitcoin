@@ -14,10 +14,6 @@
         <translation type="unfinished">&amp;Nei</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">Kopéiert déi aktuell ausgewielte Adress an de System-Zwëschenofklaaf.</translation>
-    </message>
-    <message>
         <source>Delete the currently selected address from the list</source>
         <translation type="unfinished">Läscht déi aktuell ausgewielte Adress aus der Lëscht.</translation>
     </message>
@@ -100,6 +96,10 @@ D'Signatur ass nëmmen mat Adressen vum Typ 'legacy' méiglech.</translation>
     </context>
 <context>
     <name>QObject</name>
+    <message>
+        <source>Error: %1</source>
+        <translation type="unfinished">Feeler: %1</translation>
+    </message>
     <message numerus="yes">
         <source>%n second(s)</source>
         <translation type="unfinished">
@@ -188,6 +188,10 @@ D'Signatur ass nëmmen mat Adressen vum Typ 'legacy' méiglech.</translation>
             <numerusform />
             <numerusform />
         </translation>
+    </message>
+    <message>
+        <source>Error: %1</source>
+        <translation type="unfinished">Feeler: %1</translation>
     </message>
     </context>
 <context>

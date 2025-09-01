@@ -14,10 +14,6 @@
         <translation type="unfinished">नवम्</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">वर्तमानतः चयनितं पताक्षेत्रं प्रणाली क्लिपबोर्डे प्रतिलिप्यताम्।</translation>
-    </message>
-    <message>
         <source>&amp;Copy</source>
         <translation type="unfinished">प्रतिलिप्य</translation>
     </message>
@@ -95,6 +91,10 @@ Signing is only possible with addresses of the type 'legacy'.</source>
     <message>
         <source>Sending addresses - %1</source>
         <translation type="unfinished">पताक्षेत्राणि प्रेषणं कुर्वन्ति - %1</translation>
+    </message>
+    <message>
+        <source>Receiving addresses - %1</source>
+        <translation type="unfinished">पताक्षेत्राणि प्राप्तिं कुर्वन्ति - %1</translation>
     </message>
     <message>
         <source>Exporting Failed</source>

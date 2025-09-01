@@ -153,6 +153,13 @@
     </message>
     </context>
 <context>
+    <name>HelpMessageDialog</name>
+    <message>
+        <source>version</source>
+        <translation type="unfinished">версия</translation>
+    </message>
+    </context>
+<context>
     <name>Intro</name>
     <message numerus="yes">
         <source>%n GB of space available</source>
@@ -187,14 +194,7 @@
         <source>Error</source>
         <translation type="unfinished">Ката</translation>
     </message>
-    </context>
-<context>
-    <name>HelpMessageDialog</name>
-    <message>
-        <source>version</source>
-        <translation type="unfinished">версия</translation>
-    </message>
-    </context>
+</context>
 <context>
     <name>OpenURIDialog</name>
     <message>

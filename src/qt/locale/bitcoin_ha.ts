@@ -10,10 +10,6 @@
         <translation type="unfinished">&amp;Sabonta</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">Kwafi adireshin da aka zaɓa a halin yanzu domin yin amfani dashi</translation>
-    </message>
-    <message>
         <source>&amp;Copy</source>
         <translation type="unfinished">&amp;Kwafi</translation>
     </message>

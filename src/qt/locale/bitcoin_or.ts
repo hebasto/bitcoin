@@ -14,10 +14,6 @@
         <translation type="unfinished">&amp;ନୂତନ</translation>
     </message>
     <message>
-        <source>Copy the currently selected address to the system clipboard</source>
-        <translation type="unfinished">ବର୍ତ୍ତମାନ ଚୟନିତ ଠିକଣାକୁ ସିଷ୍ଟମ୍ କ୍ଲିପ୍‌ବୋର୍ଡକୁ କପି କରନ୍ତୁ</translation>
-    </message>
-    <message>
         <source>&amp;Copy</source>
         <translation type="unfinished">&amp;କପି</translation>
     </message>
