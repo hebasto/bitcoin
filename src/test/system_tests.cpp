@@ -51,6 +51,7 @@ BOOST_AUTO_TEST_CASE(run_command)
         const std::string expected{"err"};
         BOOST_CHECK_EXCEPTION(RunCommandParseJSON(command), std::runtime_error, [&](const std::runtime_error& e) {
             const std::string what(e.what());
+            BOOST_TEST_MESSAGE(strprintf("+++++++++++++++++++ e.what()=%s", e.what()));
             BOOST_CHECK(what.find(strprintf("RunCommandParseJSON error: process(%s) returned", command)) != std::string::npos);
             BOOST_CHECK(what.find(expected) != std::string::npos);
             return true;
