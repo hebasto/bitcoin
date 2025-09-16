@@ -126,3 +126,19 @@ jobs:
           QT_PLUGIN_PATH: '${{ github.workspace }}\build\vcpkg_installed\x64-windows\Qt6\plugins'
         run: |
           ctest --output-on-failure --stop-on-failure -j $NUMBER_OF_PROCESSORS -C Release
+
+      - name: Clone corpora
+        if: matrix.job-type == 'fuzz'
+        run: |
+          git clone --depth=1 https://github.com/bitcoin-core/qa-assets "${RUNNER_TEMP}/qa-assets"
+          cd "${RUNNER_TEMP}/qa-assets"
+          echo "Using qa-assets repo from commit ..."
+          git log -1
+
+      - name: Run fuzz tests
+        if: matrix.job-type == 'fuzz'
+        working-directory: build
+        env:
+          BITCOINFUZZ: '${{ github.workspace }}\build\bin\Release\fuzz.exe'
+        run: |
+          py -3 test/fuzz/test_runner.py --par $NUMBER_OF_PROCESSORS --loglevel DEBUG "${RUNNER_TEMP}/qa-assets/fuzz_corpora"
