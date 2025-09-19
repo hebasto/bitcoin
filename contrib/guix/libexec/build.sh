@@ -280,10 +280,10 @@ mkdir -p "$DISTSRC"
     # Perform basic security checks on INSTALLED executables.
     # These checks now happen after installation, so RPATHs point to final locations.
     echo "Checking binary security on installed executables..."
-    python3 "${DISTSRC}/contrib/guix/security-check.py" "${INSTALLPATH}/bin/"*
+    python3 "${DISTSRC}/contrib/guix/security-check.py" "${INSTALLPATH}/bin/"* "${INSTALLPATH}/libexec/"*
     # Check that executables only contain allowed version symbols.
     echo "Running symbol and dynamic library checks on installed executables..."
-    python3 "${DISTSRC}/contrib/guix/symbol-check.py" "${INSTALLPATH}/bin/"*
+    python3 "${DISTSRC}/contrib/guix/symbol-check.py" "${INSTALLPATH}/bin/"* "${INSTALLPATH}/libexec/"*
 
     (
         cd installed
