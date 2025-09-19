@@ -116,7 +116,7 @@ std::optional<size_t> GetTotalRAM()
     auto clamp{[](uint64_t v) { return size_t(std::min(v, uint64_t{std::numeric_limits<size_t>::max()})); }};
 #ifdef WIN32
     if (MEMORYSTATUSEX m{}; (m.dwLength = sizeof(m), GlobalMemoryStatusEx(&m))) return clamp(m.ullTotalPhys);
-#elif defined(__linux__) || defined(__APPLE__)
+#else
     if (long p{sysconf(_SC_PHYS_PAGES)}, s{sysconf(_SC_PAGESIZE)}; p > 0 && s > 0) return clamp(1ULL * p * s);
 #endif
     return std::nullopt;
