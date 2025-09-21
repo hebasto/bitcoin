@@ -106,7 +106,6 @@ ELF_ALLOWED_LIBRARIES = {
 'ld64.so.2', # POWER64 ABIv2 dynamic linker
 'ld-linux-riscv64-lp64d.so.1', # 64-bit RISC-V dynamic linker
 # bitcoin-qt only
-'libxcb.so.1', # part of X11
 'libxkbcommon.so.0', # keyboard keymapping
 'libxkbcommon-x11.so.0', # keyboard keymapping
 'libfontconfig.so.1', # font support
@@ -234,6 +233,7 @@ def check_RUNPATH(binary) -> bool:
 def check_ELF_libraries(binary) -> bool:
     ok: bool = True
     for library in binary.libraries:
+        print(f'================== {filename}: {library}')
         if library not in ELF_ALLOWED_LIBRARIES:
             print(f'{filename}: {library} is not in ALLOWED_LIBRARIES!')
             ok = False
