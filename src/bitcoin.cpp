@@ -5,6 +5,7 @@
 #include <bitcoin-build-config.h> // IWYU pragma: keep
 
 #include <clientversion.h>
+#include <common/system.h>
 #include <util/fs.h>
 #include <util/exec.h>
 #include <util/strencodings.h>
@@ -59,6 +60,8 @@ static void ExecCommand(const std::vector<const char*>& args, std::string_view a
 
 int main(int argc, char* argv[])
 {
+    SetupEnvironment();
+
     try {
         CommandLine cmd{ParseCommandLine(argc, argv)};
         if (cmd.show_version) {

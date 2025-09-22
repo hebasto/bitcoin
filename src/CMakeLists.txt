@@ -292,7 +292,7 @@ if(BUILD_BITCOIN_BIN)
   add_executable(bitcoin bitcoin.cpp)
   add_windows_resources(bitcoin bitcoin-res.rc)
   add_windows_application_manifest(bitcoin)
-  target_link_libraries(bitcoin core_interface bitcoin_util)
+  target_link_libraries(bitcoin core_interface bitcoin_common bitcoin_util)
   install_binary_component(bitcoin HAS_MANPAGE)
 endif()
 
@@ -410,6 +410,7 @@ if(BUILD_UTIL_CHAINSTATE)
   add_executable(bitcoin-chainstate
     bitcoin-chainstate.cpp
   )
+  add_windows_application_manifest(bitcoin-chainstate)
   # TODO: The `SKIP_BUILD_RPATH` property setting can be deleted
   #       in the future after reordering Guix script commands to
   #       perform binary checks after the installation step.
