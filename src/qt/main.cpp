@@ -1,25 +1,28 @@
-// Copyright (c) 2018-2022 The Bitcoin Core developers
-// Distributed under the MIT software license, see the accompanying
-// file COPYING or http://www.opensource.org/licenses/mit-license.php.
-
-#include <qt/bitcoin.h>
-
 #include <compat/compat.h>
-#include <util/translation.h>
 
-#include <QCoreApplication>
-
-#include <functional>
-#include <string>
-
-/** Translate string to current locale using Qt. */
-extern const TranslateFn G_TRANSLATION_FUN = [](const char* psz) {
-    return QCoreApplication::translate("bitcoin-core", psz).toStdString();
-};
-
-const std::function<std::string()> G_TEST_GET_FULL_NAME{};
+#include <QApplication>
+#include <QDebug>
+#include <QFontDatabase>
+#include <QStringList>
 
 MAIN_FUNCTION
 {
-    return GuiMain(argc, argv);
+    QApplication app(argc, argv);
+
+    // Get the font Qt chose for the app
+    QFont defaultFont = QApplication::font();
+    qDebug() << "Default application font:";
+    qDebug() << "  Family:" << defaultFont.family();
+    qDebug() << "  Point size:" << defaultFont.pointSize();
+    qDebug() << "  Weight:" << defaultFont.weight();
+    qDebug() << "  Style:" << (defaultFont.italic() ? "Italic" : "Normal");
+
+    QFontDatabase db;
+    QStringList families = db.families();
+    qDebug().noquote() << "=== Available fonts ===";
+    for (const QString& family : families) {
+        qDebug().noquote() << family;
+    }
+
+    return 0;
 }
