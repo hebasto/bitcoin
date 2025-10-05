@@ -54,6 +54,8 @@ public:
     // Disallow std::string conversion method to avoid locale-dependent encoding on windows.
     std::string string() const = delete;
 
+    operator std::string() const = delete;
+
     /**
      * Return a UTF-8 representation of the path as a std::string, for
      * compatibility with code using std::string. For code using the newer
