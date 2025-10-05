@@ -128,9 +128,8 @@ desirable for building Bitcoin Core release binaries."
     (inherit (make-mingw-w64 "x86_64" #:xgcc (cross-gcc "x86_64-w64-mingw32" #:xgcc (gcc-mingw-patches base-gcc)) #:with-winpthreads? #t))
     (arguments
       (substitute-keyword-arguments (package-arguments (make-mingw-w64 "x86_64" #:xgcc (cross-gcc "x86_64-w64-mingw32" #:xgcc (gcc-mingw-patches base-gcc)) #:with-winpthreads? #t))
-        ((#:configure-flags flags)
-         #~(remove (lambda (f) (string=? f "--with-default-msvcrt=msvcrt"))
-                   #$flags))))))
+        ((#:configure-flags flags #~'())
+         #~(delete "--with-default-msvcrt=msvcrt" #$flags))))))
 
 (define (make-mingw-pthreads-cross-toolchain target)
   "Create a cross-compilation toolchain package for TARGET"
