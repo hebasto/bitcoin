@@ -36,7 +36,7 @@ InitWalletDirTestingSetup::InitWalletDirTestingSetup(const ChainType chainType) 
     fs::create_directories(m_walletdir_path_cases["default"]);
     fs::create_directories(m_walletdir_path_cases["custom"]);
     fs::create_directories(m_walletdir_path_cases["relative"]);
-    std::ofstream f{m_walletdir_path_cases["file"]};
+    std::ofstream f{std::filesystem::path{m_walletdir_path_cases["file"]}};
     f.close();
 }
 

@@ -447,7 +447,7 @@ bool openBitcoinConf()
     fs::path pathConfig = gArgs.GetConfigFilePath();
 
     /* Create the file */
-    std::ofstream configFile{pathConfig, std::ios_base::app};
+    std::ofstream configFile{std::filesystem::path{pathConfig}, std::ios_base::app};
 
     if (!configFile.good())
         return false;

@@ -179,7 +179,7 @@ static fs::path GetPidFile(const ArgsManager& args)
 {
     if (args.IsArgNegated("-pid")) return true;
 
-    std::ofstream file{GetPidFile(args)};
+    std::ofstream file{std::filesystem::path{GetPidFile(args)}};
     if (file) {
 #ifdef WIN32
         tfm::format(file, "%d\n", GetCurrentProcessId());
