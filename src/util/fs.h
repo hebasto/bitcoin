@@ -34,6 +34,9 @@ class path : public std::filesystem::path
 public:
     using std::filesystem::path::path;
 
+    // Explicitly convert to std::filesystem::path.
+    const std::filesystem::path& std_path() const { return *this; }
+
     // Allow path objects arguments for compatibility.
     path(std::filesystem::path path) : std::filesystem::path::path(std::move(path)) {}
     path& operator=(std::filesystem::path path) { std::filesystem::path::operator=(std::move(path)); return *this; }
