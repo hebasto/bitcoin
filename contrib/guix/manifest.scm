@@ -141,7 +141,8 @@ desirable for building Bitcoin Core release binaries."
   (let ((base-mingw-w64-winpthreads (make-mingw-w64 machine
                                                     #:xgcc xgcc
                                                     #:xbinutils xbinutils
-                                                    #:with-winpthreads? #t)))
+                                                    #:with-winpthreads? #t))
+        (triplet (string-append machine "-" "w64-mingw32")))
     (package
       (inherit base-mingw-w64-winpthreads)
       (native-inputs `(("xgcc-core" ,(if xgcc xgcc (cross-gcc triplet)))
