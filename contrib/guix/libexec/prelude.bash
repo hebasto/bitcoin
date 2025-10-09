@@ -70,8 +70,9 @@ fi
 # across time.
 time-machine() {
     # shellcheck disable=SC2086
-    guix time-machine --url=https://codeberg.org/guix/guix.git \
-                      --commit=53396a22afc04536ddf75d8f82ad2eafa5082725 \
+    guix time-machine --url=https://codeberg.org/hebasto/guix.git \
+                      --commit=e69ec7590c04c5ff539c75aec55f714c04484de2 \
+                      --disable-authentication \
                       --cores="$JOBS" \
                       --keep-failed \
                       --fallback \
