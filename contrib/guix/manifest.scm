@@ -126,7 +126,7 @@ desirable for building Bitcoin Core release binaries."
 
 ;; While mingw-w64 is packaged in Guix, we maintain our own package,
 ;; to use UCRT runtime.
-(define* (make-mingw-w64-ucrt/implementation machine
+(define* (make-mingw-w64/implementation machine
                                              #:key
                                              xgcc
                                              xbinutils
@@ -136,7 +136,7 @@ use that gcc or binutils when cross-compiling.  If WITH-WINPTHREADS? is
 specified, recurse and return a mingw-w64 with support for winpthreads."
   (let* ((triplet (string-append machine "-" "w64-mingw32")))
     (package
-      (name (string-append "mingw-w64-ucrt" "-" machine
+      (name (string-append "mingw-w64" "-" machine
                            (if with-winpthreads? "-winpthreads" "")))
       (version "12.0.0")
       (source
@@ -151,7 +151,7 @@ specified, recurse and return a mingw-w64 with support for winpthreads."
                        ("xbinutils" ,(if xbinutils xbinutils
                                          (cross-binutils triplet)))
                        ,@(if with-winpthreads?
-                             `(("xlibc" ,(make-mingw-w64-ucrt
+                             `(("xlibc" ,(make-mingw-w64
                                           machine
                                           #:xgcc xgcc
                                           #:xbinutils xbinutils)))
@@ -218,14 +218,14 @@ Mingw-w64 is an advancement of the original mingw.org project and provides
 several new APIs such as DirectX and DDK, and 64-bit support.")
       (license license:fdl1.3+))))
 
-(define make-mingw-w64-ucrt
-  (memoize make-mingw-w64-ucrt/implementation))
+(define make-mingw-w64
+  (memoize make-mingw-w64/implementation))
 
 (define (make-mingw-pthreads-cross-toolchain target)
   "Create a cross-compilation toolchain package for TARGET"
   (let* ((xbinutils (binutils-mingw-patches (cross-binutils target)))
          (machine (substring target 0 (string-index target #\-)))
-         (pthreads-xlibc (winpthreads-patches (make-mingw-w64-ucrt machine
+         (pthreads-xlibc (winpthreads-patches (make-mingw-w64 machine
                                          #:xgcc (cross-gcc target #:xgcc (gcc-mingw-patches base-gcc))
                                          #:with-winpthreads? #t)))
          (pthreads-xgcc (cross-gcc target
