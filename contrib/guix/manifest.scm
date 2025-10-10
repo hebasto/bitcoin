@@ -129,6 +129,7 @@ desirable for building Bitcoin Core release binaries."
          (machine (substring target 0 (string-index target #\-)))
          (pthreads-xlibc (winpthreads-patches (make-mingw-w64 machine
                                          #:xgcc (cross-gcc target #:xgcc (gcc-mingw-patches base-gcc))
+                                         #:runtime "ucrt"
                                          #:with-winpthreads? #t)))
          (pthreads-xgcc (cross-gcc target
                                     #:xgcc (gcc-mingw-patches mingw-w64-base-gcc)
