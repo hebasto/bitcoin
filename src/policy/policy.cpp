@@ -18,9 +18,11 @@
 #include <script/solver.h>
 #include <serialize.h>
 #include <span.h>
+#include <util/check.h>
 
 #include <algorithm>
 #include <cstddef>
+#include <span>
 #include <vector>
 
 CAmount GetDustThreshold(const CTxOut& txout, const CFeeRate& dustRelayFeeIn)
