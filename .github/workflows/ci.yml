@@ -53,7 +53,7 @@ jobs:
 
     env:
       FILE_ENV: './ci/test/00_setup_env_win64.sh'
-      DANGER_CI_ON_HOST_FOLDERS: 1
+      # DANGER_CI_ON_HOST_FOLDERS: 1
 
     steps:
       - &CHECKOUT
