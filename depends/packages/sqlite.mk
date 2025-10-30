@@ -7,6 +7,7 @@ $(package)_sha256_hash=67d3fe6d268e6eaddcae3727fce58fcc8e9c53869bdd07a0c61e38ddf
 define $(package)_set_vars
 $(package)_config_opts=--disable-shared --disable-readline --disable-dynamic-extensions --enable-option-checking
 $(package)_config_opts+= --disable-rtree --disable-fts4 --disable-fts5
+$(package)_config_opts+= --disable-dependency-tracking
 # We avoid using `--enable-debug` because it overrides CFLAGS, a behavior we want to prevent.
 $(package)_cppflags_debug += -DSQLITE_DEBUG
 $(package)_cppflags+=-DSQLITE_DQS=0 -DSQLITE_DEFAULT_MEMSTATUS=0 -DSQLITE_OMIT_DEPRECATED
