@@ -8,7 +8,7 @@ export LC_ALL=C.UTF-8
 
 export CONTAINER_NAME=ci_win64
 export CI_IMAGE_NAME_TAG="docker.io/fedora:42"  # Check that https://fedora.pkgs.org/42/fedora-x86_64/ucrt64-gcc-c++-14.2.1-4.fc42.x86_64.rpm.html can cross-compile
-export CI_BASE_PACKAGES="cmake gawk make patch ucrt64-gcc-c++ which"
+export CI_BASE_PACKAGES="cmake gawk make patch rsync ucrt64-gcc-c++ which"
 export HOST=x86_64-w64-mingw32ucrt
 export DEP_OPTS="CC=/usr/bin/${HOST}-gcc mingw32_CXX=/usr/bin/${HOST}-g++ NO_QT=1"
 export RUN_UNIT_TESTS=false
