@@ -36,6 +36,9 @@ if [[ $CI_IMAGE_NAME_TAG == *alpine* ]]; then
   ${CI_RETRY_EXE} apk update
   # shellcheck disable=SC2086
   ${CI_RETRY_EXE} apk add --no-cache $CI_BASE_PACKAGES $PACKAGES
+if [[ $CI_IMAGE_NAME_TAG == *fedora* ]]; then
+  # shellcheck disable=SC2086
+  ${CI_RETRY_EXE} dnf install -y $CI_BASE_PACKAGES $PACKAGES
 elif [ "$CI_OS_NAME" != "macos" ]; then
   if [[ -n "${APPEND_APT_SOURCES_LIST}" ]]; then
     echo "${APPEND_APT_SOURCES_LIST}" >> /etc/apt/sources.list
