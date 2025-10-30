@@ -107,7 +107,7 @@ if [ -z "$NO_DEPENDS" ]; then
   else
     SHELL_OPTS="CONFIG_SHELL="
   fi
-  bash -c "$SHELL_OPTS make $MAKEJOBS -C depends HOST=$HOST $DEP_OPTS LOG=1"
+  bash -c "$SHELL_OPTS gmake $MAKEJOBS -C depends HOST=$HOST $DEP_OPTS LOG=1"
 fi
 if [ "$DOWNLOAD_PREVIOUS_RELEASES" = "true" ]; then
   test/get_previous_releases.py --target-dir "$PREVIOUS_RELEASES_DIR"
