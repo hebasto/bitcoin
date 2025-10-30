@@ -107,9 +107,9 @@ if [ -z "$NO_DEPENDS" ]; then
   else
     SHELL_OPTS="CONFIG_SHELL="
   fi
-  $SHELL_OPTS gmake $MAKEJOBS -C depends HOST=$HOST $DEP_OPTS sqlite_configured
+  env $SHELL_OPTS gmake $MAKEJOBS -C depends HOST=$HOST $DEP_OPTS sqlite_configured
   echo "=========================================="
-  $SHELL_OPTS gmake $MAKEJOBS -C depends HOST=$HOST $DEP_OPTS sqlite_built
+  env $SHELL_OPTS gmake $MAKEJOBS -C depends HOST=$HOST $DEP_OPTS sqlite_built
 fi
 if [ "$DOWNLOAD_PREVIOUS_RELEASES" = "true" ]; then
   test/get_previous_releases.py --target-dir "$PREVIOUS_RELEASES_DIR"
