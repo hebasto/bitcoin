@@ -6,7 +6,7 @@
 
 export LC_ALL=C.UTF-8
 
-export CONTAINER_NAME=ci_win64
+export CONTAINER_NAME=ci_win64_msvcrt
 export CI_IMAGE_NAME_TAG="mirror.gcr.io/debian:trixie"  # Check that https://packages.debian.org/trixie/g++-mingw-w64-x86-64-posix (version 14.x, similar to guix) can cross-compile
 export HOST=x86_64-w64-mingw32
 export PACKAGES="g++-mingw-w64-x86-64-posix nsis"
