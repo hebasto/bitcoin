@@ -22,4 +22,21 @@ target_link_libraries(bitcoin_ipc
     univalue
 )
 
+if(BUILD_TESTS)
+  add_library(bitcoin_ipc_test STATIC EXCLUDE_FROM_ALL
+    test/ipc_test.cpp
+  )
+  target_capnp_sources(bitcoin_ipc_test ${PROJECT_SOURCE_DIR}
+    test/ipc_test.capnp
+  )
+  add_dependencies(bitcoin_ipc_test bitcoin_ipc_headers)
+
+  target_link_libraries(bitcoin_ipc_test
+    PRIVATE
+      core_interface
+      univalue
+      Boost::headers
+  )
+endif()
+
 configure_file(.clang-tidy.in .clang-tidy USE_SOURCE_PERMISSIONS COPYONLY)
