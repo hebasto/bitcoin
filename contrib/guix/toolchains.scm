@@ -14,7 +14,7 @@
   #:use-module (guix packages)
   #:use-module ((guix utils) #:select (substitute-keyword-arguments))
   #:export (building-on
-            glibc-2.31
+            glibc-2.43
             make-bitcoin-cross-toolchain
             make-mingw-pthreads-cross-toolchain))
 
@@ -247,3 +247,37 @@ chain for " target " development."))
                     (string-append out "/etc/rpc" suffix "\n"))
                    (("^install-others =.*$")
                     (string-append "install-others = " out "/etc/rpc\n")))))))))))))
+
+;; --enable-static-nss isn't used yet, because it has been broken
+;; since 2.33: https://sourceware.org/bugzilla/show_bug.cgi?id=27959.
+(define glibc-2.43
+  (let ((commit "4070d808bea1c077eb7e7d52b52b91cae98205d5"))
+  (package
+    (inherit glibc) ;; 2.39
+    (version "2.43")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://sourceware.org/git/glibc.git")
+                    (commit commit)))
+              (file-name (git-file-name "glibc" commit))
+              (sha256
+               (base32
+                "14f6ayljaja5wjz1bm4fwabxrjqbwh39781gx00l9ksvxnvqjp8c"))
+              (patches (search-our-patches "glibc-guix-2.43-prefix.patch"
+                                           "glibc-nss-nodlopen.patch"))))
+    (arguments
+      (substitute-keyword-arguments (package-arguments glibc)
+        ((#:configure-flags flags)
+          `(append ,flags
+            ;; https://www.gnu.org/software/libc/manual/html_node/Configuring-and-compiling.html
+            (list "--enable-bind-now",
+                  "--enable-cet=yes",
+                  "--enable-fortify-source",
+                  "--enable-stack-protector=all",
+                  "--disable-nscd",
+                  "--disable-profile",
+                  "--disable-pt_chown",
+                  "--disable-timezone-tools",
+                  "--disable-werror",
+                  building-on))))))))
