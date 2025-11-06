@@ -432,6 +432,7 @@ inspecting signatures in Mach-O binaries.")
             (list "--enable-threads=posix",
                   "--enable-default-ssp=yes",
                   "--enable-host-pie=yes",
+                  "--enable-host-bind-now=yes",
                   "--disable-gcov",
                   building-on)))))))
 
@@ -449,6 +450,7 @@ inspecting signatures in Mach-O binaries.")
                   "--enable-standard-branch-protection=yes",
                   "--enable-cet=yes",
                   "--enable-host-pie=yes",
+                  "--enable-host-bind-now=yes",
                   "--disable-gcov",
                   "--disable-libsanitizer",
                   building-on)))
