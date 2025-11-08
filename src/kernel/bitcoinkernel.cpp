@@ -8,13 +8,12 @@
 
 #include <chain.h>
 #include <coins.h>
-#include <consensus/amount.h>
 #include <consensus/validation.h>
+#include <dbwrapper.h>
 #include <kernel/caches.h>
 #include <kernel/chainparams.h>
 #include <kernel/checks.h>
 #include <kernel/context.h>
-#include <kernel/cs_main.h>
 #include <kernel/notifications_interface.h>
 #include <kernel/warning.h>
 #include <logging.h>
@@ -27,7 +26,6 @@
 #include <serialize.h>
 #include <streams.h>
 #include <sync.h>
-#include <tinyformat.h>
 #include <uint256.h>
 #include <undo.h>
 #include <util/fs.h>
@@ -43,9 +41,11 @@
 #include <cstring>
 #include <exception>
 #include <functional>
+#include <iterator>
 #include <list>
 #include <memory>
 #include <span>
+#include <stdexcept>
 #include <string>
 #include <tuple>
 #include <utility>

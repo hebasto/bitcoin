@@ -5,12 +5,19 @@
 #ifndef BITCOIN_KERNEL_BITCOINKERNEL_WRAPPER_H
 #define BITCOIN_KERNEL_BITCOINKERNEL_WRAPPER_H
 
-#include <kernel/bitcoinkernel.h>
+#include <kernel/bitcoinkernel.h> // IWYU pragma: export
+// IWYU pragma: no_include "kernel/bitcoinkernel.h"
 
 #include <array>
+#include <concepts>
+#include <cstddef>
+#include <cstdint>
+#include <exception>
 #include <functional>
+#include <iterator>
 #include <memory>
 #include <optional>
+#include <ranges>
 #include <span>
 #include <stdexcept>
 #include <string>
@@ -19,7 +26,13 @@
 #include <utility>
 #include <vector>
 
+class TestKernelNotifications;
+class TestValidationInterface;
+
 namespace btck {
+class Block;
+class BlockSpentOutputs;
+class ChainView;
 
 enum class LogCategory : btck_LogCategory {
     ALL = btck_LogCategory_ALL,

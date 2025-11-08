@@ -1,12 +1,17 @@
-#include <kernel/bitcoinkernel_wrapper.h>
+#include <kernel/bitcoinkernel_wrapper.h> // IWYU pragma: associated
 
-#include <cassert>
 #include <charconv>
+#include <cstddef>
+#include <exception>
 #include <filesystem>
 #include <iostream>
+#include <memory>
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <string_view>
+#include <system_error>
+#include <type_traits>
 #include <vector>
 
 using namespace btck;
