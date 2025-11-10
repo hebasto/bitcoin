@@ -57,6 +57,8 @@ set(CMAKE_AUTORCC OFF)
 configure_file(bitcoin_locale.qrc bitcoin_locale.qrc USE_SOURCE_PERMISSIONS COPYONLY)
 qt6_add_resources(BITCOIN_QRC bitcoin.qrc)
 qt6_add_resources(BITCOIN_LOCALE_QRC ${CMAKE_CURRENT_BINARY_DIR}/bitcoin_locale.qrc)
+# See: https://bugreports.qt.io/browse/QTBUG-141858.
+set_source_files_properties(${BITCOIN_QRC} ${BITCOIN_LOCALE_QRC} PROPERTIES COMPILE_OPTIONS -Wno-trailing-whitespace)
 
 # The bitcoinqt sources have to include headers in
 # order to parse them to collect translatable strings.
