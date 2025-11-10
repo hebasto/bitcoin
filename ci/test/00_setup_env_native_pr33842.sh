@@ -19,8 +19,7 @@ export RUN_CHECK_DEPS=flase
 export RUN_TIDY=false
 export GOAL="install"
 export BITCOIN_CONFIG="\
- --preset dev-mode \
- -DENABLE_IPC=OFF \
+-DENABLE_IPC=OFF \
  -DCMAKE_C_COMPILER=clang-${TIDY_LLVM_V} \
  -DCMAKE_CXX_COMPILER=clang++-${TIDY_LLVM_V} \
 "
