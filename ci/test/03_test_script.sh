@@ -171,6 +171,10 @@ if [ "$RUN_CHECK_DEPS" = "true" ]; then
   "${BASE_ROOT_DIR}/contrib/devtools/check-deps.sh" "${BASE_BUILD_DIR}"
 fi
 
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+clang++ -v
+echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+
 if [ "$RUN_UNIT_TESTS" = "true" ]; then
   DIR_UNIT_TEST_DATA="${DIR_UNIT_TEST_DATA}" \
   LD_LIBRARY_PATH="${DEPENDS_DIR}/${HOST}/lib" \
