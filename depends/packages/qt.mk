@@ -122,7 +122,6 @@ ifeq ($(host),$(build))
 $(package)_config_opts += -feature-linguist
 $(package)_config_opts += -no-feature-assistant
 $(package)_config_opts += -no-feature-clang
-$(package)_config_opts += -no-feature-clangcpp
 $(package)_config_opts += -no-feature-designer
 $(package)_config_opts += -no-feature-pixeltool
 $(package)_config_opts += -no-feature-qdoc
@@ -143,7 +142,7 @@ $(package)_config_opts_linux += -no-feature-xlib
 $(package)_config_opts_linux += -no-xcb-xlib
 $(package)_config_opts_linux += -pkg-config
 $(package)_config_opts_linux += -system-freetype
-$(package)_config_opts_linux += -xcb
+# $(package)_config_opts_linux += -xcb
 ifneq ($(LTO),)
 $(package)_config_opts_linux += -ltcg
 endif
