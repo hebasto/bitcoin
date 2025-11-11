@@ -9,16 +9,16 @@ $(package)_dependencies := native_$(package)
 endif
 $(package)_linux_dependencies := freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
 $(package)_freebsd_dependencies := $($(package)_linux_dependencies)
-$(package)_patches_path := $(qt_details_patches_path)
-$(package)_patches := dont_hardcode_pwd.patch
-$(package)_patches += qtbase-moc-ignore-gcc-macro.patch
-$(package)_patches += qtbase_avoid_native_float16.patch
-$(package)_patches += qtbase_avoid_qmain.patch
-$(package)_patches += qtbase_platformsupport.patch
-$(package)_patches += qtbase_plugins_cocoa.patch
-$(package)_patches += qtbase_skip_tools.patch
-$(package)_patches += rcc_hardcode_timestamp.patch
-$(package)_patches += qttools_skip_dependencies.patch
+# $(package)_patches_path := $(qt_details_patches_path)
+# $(package)_patches := dont_hardcode_pwd.patch
+# $(package)_patches += qtbase-moc-ignore-gcc-macro.patch
+# $(package)_patches += qtbase_avoid_native_float16.patch
+# $(package)_patches += qtbase_avoid_qmain.patch
+# $(package)_patches += qtbase_platformsupport.patch
+# $(package)_patches += qtbase_plugins_cocoa.patch
+# $(package)_patches += qtbase_skip_tools.patch
+# $(package)_patches += rcc_hardcode_timestamp.patch
+# $(package)_patches += qttools_skip_dependencies.patch
 
 $(package)_qttranslations_file_name=$(qt_details_qttranslations_file_name)
 $(package)_qttranslations_sha256_hash=$(qt_details_qttranslations_sha256_hash)
@@ -253,19 +253,19 @@ define $(package)_extract_cmds
 endef
 endif
 
-define $(package)_preprocess_cmds
-  patch -p1 -i $($(package)_patch_dir)/dont_hardcode_pwd.patch && \
-  patch -p1 -i $($(package)_patch_dir)/qtbase-moc-ignore-gcc-macro.patch && \
-  patch -p1 -i $($(package)_patch_dir)/qtbase_avoid_native_float16.patch && \
-  patch -p1 -i $($(package)_patch_dir)/qtbase_avoid_qmain.patch && \
-  patch -p1 -i $($(package)_patch_dir)/qtbase_platformsupport.patch && \
-  patch -p1 -i $($(package)_patch_dir)/qtbase_plugins_cocoa.patch && \
-  patch -p1 -i $($(package)_patch_dir)/qtbase_skip_tools.patch && \
-  patch -p1 -i $($(package)_patch_dir)/rcc_hardcode_timestamp.patch
-endef
-ifeq ($(host),$(build))
-  $(package)_preprocess_cmds += && patch -p1 -i $($(package)_patch_dir)/qttools_skip_dependencies.patch
-endif
+# define $(package)_preprocess_cmds
+#   patch -p1 -i $($(package)_patch_dir)/dont_hardcode_pwd.patch && \
+#   patch -p1 -i $($(package)_patch_dir)/qtbase-moc-ignore-gcc-macro.patch && \
+#   patch -p1 -i $($(package)_patch_dir)/qtbase_avoid_native_float16.patch && \
+#   patch -p1 -i $($(package)_patch_dir)/qtbase_avoid_qmain.patch && \
+#   patch -p1 -i $($(package)_patch_dir)/qtbase_platformsupport.patch && \
+#   patch -p1 -i $($(package)_patch_dir)/qtbase_plugins_cocoa.patch && \
+#   patch -p1 -i $($(package)_patch_dir)/qtbase_skip_tools.patch && \
+#   patch -p1 -i $($(package)_patch_dir)/rcc_hardcode_timestamp.patch
+# endef
+# ifeq ($(host),$(build))
+#   $(package)_preprocess_cmds += && patch -p1 -i $($(package)_patch_dir)/qttools_skip_dependencies.patch
+# endif
 
 define $(package)_config_cmds
   cd qtbase && \
