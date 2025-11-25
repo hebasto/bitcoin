@@ -307,6 +307,15 @@ jobs:
             & mt.exe -nologo -inputresource:$_.FullName -validate_manifest
           }
 
+      - name: Run GUI test
+        if: matrix.job-type == 'standard'
+        working-directory: build
+        env:
+          QT_QPA_PLATFORM: 'windows'
+          QT_PLUGIN_PATH: '${{ github.workspace }}\build\vcpkg_installed\x64-windows\Qt6\plugins'
+        run: |
+          ./bin/Release/test_bitcoin-qt.exe
+
       - name: Run test suite
         if: matrix.job-type == 'standard'
         working-directory: build
