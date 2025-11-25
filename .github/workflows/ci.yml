@@ -307,6 +307,12 @@ jobs:
             & mt.exe -nologo -inputresource:$_.FullName -validate_manifest
           }
 
+      - name: Run GUI test
+        if: matrix.job-type == 'standard'
+        working-directory: build
+        run: |
+          ./bin/Release/test_bitcoin-qt.exe
+
       - name: Run test suite
         if: matrix.job-type == 'standard'
         working-directory: build
