@@ -90,26 +90,26 @@ int main(int argc, char* argv[])
         std::cerr << "cerr: +++ line 88\n";
 
         AppTests app_tests(app);
-        num_test_failures += QTest::qExec(&app_tests);
+        num_test_failures += QTest::qExec(&app_tests, argc, argv);
 
         std::cout << "cout: +++ line 93\n";
         std::cerr << "cerr: +++ line 94\n";
 
         OptionTests options_tests(app.node());
-        num_test_failures += QTest::qExec(&options_tests);
+        num_test_failures += QTest::qExec(&options_tests, argc, argv);
 
         URITests test1;
-        num_test_failures += QTest::qExec(&test1);
+        num_test_failures += QTest::qExec(&test1, argc, argv);
 
         RPCNestedTests test3(app.node());
-        num_test_failures += QTest::qExec(&test3);
+        num_test_failures += QTest::qExec(&test3, argc, argv);
 
 #ifdef ENABLE_WALLET
         WalletTests test5(app.node());
-        num_test_failures += QTest::qExec(&test5);
+        num_test_failures += QTest::qExec(&test5, argc, argv);
 
         AddressBookTests test6(app.node());
-        num_test_failures += QTest::qExec(&test6);
+        num_test_failures += QTest::qExec(&test6, argc, argv);
 #endif
 
         if (num_test_failures) {
