@@ -27,6 +27,7 @@
 #include <QTest>
 
 #include <functional>
+#include <iostream>
 
 const std::function<void(const std::string&)> G_TEST_LOG_FUN{};
 
@@ -37,6 +38,9 @@ const std::function<std::string()> G_TEST_GET_FULL_NAME{};
 // This is all you need to run all the tests
 int main(int argc, char* argv[])
 {
+    std::cout << "cout: +++ line 40\n";
+    std::cerr << "cerr: +++ line 41\n";
+
     // Initialize persistent globals with the testing setup state for sanity.
     // E.g. -datadir in gArgs is set to a temp directory dummy value (instead
     // of defaulting to the default datadir), or globalChainParams is set to
@@ -68,6 +72,8 @@ int main(int argc, char* argv[])
         setenv("QT_QPA_PLATFORM", "minimal", 0 /* overwrite */);
     #endif
 
+    std::cout << "cout: +++ line 75\n";
+    std::cerr << "cerr: +++ line 76\n";
 
     QCoreApplication::setOrganizationName(QAPP_ORG_NAME);
     QCoreApplication::setApplicationName(QAPP_APP_NAME_DEFAULT "-test");
@@ -78,8 +84,14 @@ int main(int argc, char* argv[])
         BitcoinApplication app;
         app.createNode(*init);
 
+        std::cout << "cout: +++ line 87\n";
+        std::cerr << "cerr: +++ line 88\n";
+
         AppTests app_tests(app);
         num_test_failures += QTest::qExec(&app_tests);
+
+        std::cout << "cout: +++ line 93\n";
+        std::cerr << "cerr: +++ line 94\n";
 
         OptionTests options_tests(app.node());
         num_test_failures += QTest::qExec(&options_tests);
@@ -107,6 +119,9 @@ int main(int argc, char* argv[])
 
     QSettings settings;
     settings.clear();
+
+    std::cout << "cout: +++ line 123\n";
+    std::cerr << "cerr: +++ line 124\n";
 
     return num_test_failures;
 }
