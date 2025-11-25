@@ -81,7 +81,9 @@ int main(int argc, char* argv[])
     int num_test_failures{0};
 
     {
-        BitcoinApplication app;
+        // Don't remove this, it's needed to access
+        // QApplication:: and QCoreApplication:: in the tests
+        BitcoinApplication app(argc, argv);
         app.createNode(*init);
 
         std::cout << "cout: +++ line 87\n";

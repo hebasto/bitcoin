@@ -35,7 +35,7 @@ class BitcoinApplication: public QApplication
 {
     Q_OBJECT
 public:
-    explicit BitcoinApplication();
+    explicit BitcoinApplication(int &argc, char **argv);
     ~BitcoinApplication();
 
 #ifdef ENABLE_WALLET
