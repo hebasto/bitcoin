@@ -272,6 +272,13 @@ public:
 
     friend class CSubNet;
 
+// Windows and POSIX provide differently braced forms of IN6ADDR_LOOPBACK_INIT.
+#ifdef _MSC_VER
+    constexpr static in6_addr ipv6_loopback{{IN6ADDR_LOOPBACK_INIT}};
+#else
+    constexpr static in6_addr ipv6_loopback IN6ADDR_LOOPBACK_INIT;
+#endif
+
 private:
     /**
      * Parse a Tor address and set this object to it.
