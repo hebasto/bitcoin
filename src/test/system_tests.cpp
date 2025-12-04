@@ -23,7 +23,18 @@ BOOST_FIXTURE_TEST_SUITE(system_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(run_command)
 {
-    const std::string test_executable = std::string(boost::unit_test::framework::master_test_suite().argv[0]).append(" --log_level=nothing --report_level=no --run_test=mock_process/");
+    std::string raw_test_executable = std::string(boost::unit_test::framework::master_test_suite().argv[0]);
+    std::string test_executable; // properly escaped.
+    test_executable.reserve(raw_test_executable.size() * 2);
+    for (char c : raw_test_executable) {
+        if (c == ' ') {
+            test_executable += "\\ ";
+        } else {
+            test_executable += c;
+        }
+    }
+    test_executable += " --log_level=nothing --report_level=no --run_test=mock_process/";
+
     {
         const UniValue result = RunCommandParseJSON("");
         BOOST_CHECK(result.isNull());

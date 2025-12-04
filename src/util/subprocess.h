@@ -307,14 +307,15 @@ namespace util
    * Parameters:
    * [in] str : Input string which needs to be split based upon the
    *            delimiters provided.
-   * [in] deleims : Delimiter characters based upon which the string needs
-   *                to be split. Default constructed to ' '(space) and '\t'(tab)
-   * [out] vector<string> : Vector of strings split at deleimiter.
+   * [in] delims : Delimiter characters based upon which the string needs
+   *               to be split. Default constructed to ' '(space) and '\t'(tab)
+   * [out] vector<string> : Vector of strings split at delimiter.
    */
   static inline std::vector<std::string>
   split(const std::string& str, const std::string& delims=" \t")
   {
     std::vector<std::string> res;
+#ifdef __USING_WINDOWS__
     size_t init = 0;
 
     while (true) {
@@ -327,7 +328,30 @@ namespace util
       pos++;
       init = pos;
     }
+#else
+    std::string cur;
+    cur.reserve(str.size());
+    bool escaped = false;
+    for (char c : str) {
+      if (escaped) {
+        cur.push_back(c);
+        escaped = false;
+      } else if (c == '\\') {
+        escaped = true;
+      } else if (delims.find(c) != std::string::npos) {
+        if (!cur.empty()) {
+          res.push_back(std::move(cur));
+          cur.clear();
+        }
+      } else {
+        cur.push_back(c);
+      }
+    }
 
+    if (!cur.empty()) {
+      res.push_back(std::move(cur));
+    }
+#endif
     return res;
   }
 
