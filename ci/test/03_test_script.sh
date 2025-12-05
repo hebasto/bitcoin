@@ -226,17 +226,12 @@ if [ "${RUN_IWYU}" == "true" ]; then
              -Xiwyu --max_line_length=160 \
              2>&1 | tee /tmp/iwyu_ci.out
     python3 "/include-what-you-use/fix_includes.py" --nosafe_headers < /tmp/iwyu_ci.out
+    git diff -U0 | ./contrib/devtools/clang-format-diff.py -p1 -i -v
   }
 
   run_iwyu "compile_commands_iwyu_errors.json"
   if ! ( git --no-pager diff --exit-code ); then
     echo "^^^ ⚠️ Failure generated from IWYU"
-    echo
-    echo "Some adjustments to the diff may be needed:"
-    echo
-    echo "* Use the C++ headers: E.g. <cerrno> over <errno.h>"
-    echo "* Sort the headers, so that they are in the right pre-existing section, if"
-    echo "  there are any."
     false
   fi
 
