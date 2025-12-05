@@ -5,11 +5,12 @@
 #ifndef BITCOIN_CRYPTO_CHACHA20_H
 #define BITCOIN_CRYPTO_CHACHA20_H
 
+#include <span.h>
+
 #include <array>
 #include <cstddef>
 #include <cstdint>
-#include <iterator>
-#include <span>
+#include <cstdlib>
 #include <utility>
 
 // classes for ChaCha20 256-bit stream cipher developed by Daniel J. Bernstein

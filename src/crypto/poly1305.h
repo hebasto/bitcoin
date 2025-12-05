@@ -8,9 +8,8 @@
 #include <span.h>
 
 #include <cassert>
-#include <cstddef>
 #include <cstdint>
-#include <span>
+#include <cstdlib>
 
 #define POLY1305_BLOCK_SIZE 16
 

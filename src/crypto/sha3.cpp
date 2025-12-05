@@ -9,9 +9,9 @@
 #include <crypto/common.h>
 
 #include <algorithm>
+#include <array>
 #include <bit>
-#include <cassert>
-#include <iterator>
+#include <cstdint>
 #include <span>
 
 void KeccakF(uint64_t (&st)[25])

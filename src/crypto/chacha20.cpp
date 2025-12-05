@@ -8,10 +8,11 @@
 #include <crypto/common.h>
 #include <crypto/chacha20.h>
 #include <support/cleanse.h>
+#include <span.h>
 
 #include <algorithm>
 #include <bit>
-#include <cassert>
+#include <cstring>
 
 #define QUARTERROUND(a,b,c,d) \
   a += b; d = std::rotl(d ^ a, 16); \

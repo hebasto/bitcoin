@@ -6,9 +6,9 @@
 #define BITCOIN_CRYPTO_SIPHASH_H
 
 #include <cstdint>
-#include <span>
 
-class uint256;
+#include <span.h>
+#include <uint256.h>
 
 /** SipHash-2-4 */
 class CSipHasher
