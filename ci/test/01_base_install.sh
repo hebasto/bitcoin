@@ -79,7 +79,7 @@ if [[ -n "${USE_INSTRUMENTED_LIBCPP}" ]]; then
   rm -rf /llvm-project
 fi
 
-if [[ "${RUN_TIDY}" == "true" ]]; then
+if [[ "${RUN_IWYU}" == true ]]; then
   ${CI_RETRY_EXE} git clone --depth=1 https://github.com/include-what-you-use/include-what-you-use -b clang_"${TIDY_LLVM_V}" /include-what-you-use
   # Prefer angled brackets over quotes for include directives.
   # See: https://en.cppreference.com/w/cpp/preprocessor/include.html.
