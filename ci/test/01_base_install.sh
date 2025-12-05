@@ -81,6 +81,22 @@ fi
 
 if [[ "${RUN_TIDY}" == "true" ]]; then
   ${CI_RETRY_EXE} git clone --depth=1 https://github.com/include-what-you-use/include-what-you-use -b clang_"${TIDY_LLVM_V}" /include-what-you-use
+  # Prefer angled brackets over quotes for include directives.
+  # See: https://en.cppreference.com/w/cpp/preprocessor/include.html.
+  tee >(cd /include-what-you-use && patch -p1) <<'EOF'
+--- a/iwyu_path_util.cc
++++ b/iwyu_path_util.cc
+@@ -211,7 +211,7 @@ bool IsQuotedInclude(const string& s) {
+ }
+
+ string AddQuotes(string include_name, bool angled) {
+-  if (angled) {
++  if (true) {
+       return "<" + include_name + ">";
+   }
+   return "\"" + include_name + "\"";
+EOF
+
   cmake -B /iwyu-build/ -G 'Unix Makefiles' -DCMAKE_PREFIX_PATH=/usr/lib/llvm-"${TIDY_LLVM_V}" -S /include-what-you-use
   make -C /iwyu-build/ install "$MAKEJOBS"
 fi
