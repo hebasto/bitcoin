@@ -82,8 +82,8 @@ fi
 if [ "${RUN_IWYU}" == "true" ]; then
   ${CI_RETRY_EXE} git clone --depth=1 https://github.com/include-what-you-use/include-what-you-use -b clang_"${TIDY_LLVM_V}" /include-what-you-use
   tee >(cd /include-what-you-use && patch -p1) <<'EOF'
-Prefer angled brackets for includes.
-See: https://en.cppreference.com/w/cpp/preprocessor/include.html.
+Prefer angled brackets over quotes for include directives
+See: https://en.cppreference.com/w/cpp/preprocessor/include.html
 
 --- a/iwyu_path_util.cc
 +++ b/iwyu_path_util.cc
@@ -98,7 +98,7 @@ See: https://en.cppreference.com/w/cpp/preprocessor/include.html.
    return "\"" + include_name + "\"";
 EOF
   tee >(cd /include-what-you-use && patch -p1) <<'EOF'
-Prefer C++ headers over their C counterparts.
+Prefer C++ headers over C counterparts
 
 --- a/iwyu_include_picker.cc
 +++ b/iwyu_include_picker.cc
