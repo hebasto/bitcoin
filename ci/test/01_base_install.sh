@@ -81,10 +81,9 @@ fi
 
 if [ "${RUN_IWYU}" == "true" ]; then
   ${CI_RETRY_EXE} git clone --depth=1 https://github.com/include-what-you-use/include-what-you-use -b clang_"${TIDY_LLVM_V}" /include-what-you-use
+  # Prefer angled brackets over quotes for include directives.
+  # See: https://en.cppreference.com/w/cpp/preprocessor/include.html.
   tee >(cd /include-what-you-use && patch -p1) <<'EOF'
-Prefer angled brackets over quotes for include directives
-See: https://en.cppreference.com/w/cpp/preprocessor/include.html
-
 --- a/iwyu_path_util.cc
 +++ b/iwyu_path_util.cc
 @@ -211,7 +211,7 @@ bool IsQuotedInclude(const string& s) {
@@ -97,71 +96,34 @@ See: https://en.cppreference.com/w/cpp/preprocessor/include.html
    }
    return "\"" + include_name + "\"";
 EOF
-  tee >(cd /include-what-you-use && patch -p1) <<'EOF'
-Prefer C++ headers over C counterparts
-
---- a/iwyu_include_picker.cc
-+++ b/iwyu_include_picker.cc
-@@ -600,32 +600,32 @@ const IncludeMapEntry stdlib_c_include_map[] = {
-   // https://github.com/cplusplus/draft/blob/c+%2B20/source/lib-intro.tex
-   //
-   // $ curl -s -N https://raw.githubusercontent.com/cplusplus/draft/c%2B%2B20/source/lib-intro.tex | sed -n '/begin{multicolfloattable}.*{headers.cpp.c}/,/end{multicolfloattable}/p' | grep tcode | perl -nle 'm/tcode{<c(.*)>}/ && print qq@  { "<$1.h>", kPublic, "<c$1>", kPublic },@' | sort
--  { "<assert.h>", kPublic, "<cassert>", kPublic },
--  { "<complex.h>", kPublic, "<ccomplex>", kPublic },
--  { "<ctype.h>", kPublic, "<cctype>", kPublic },
--  { "<errno.h>", kPublic, "<cerrno>", kPublic },
--  { "<fenv.h>", kPublic, "<cfenv>", kPublic },
--  { "<float.h>", kPublic, "<cfloat>", kPublic },
--  { "<inttypes.h>", kPublic, "<cinttypes>", kPublic },
--  { "<iso646.h>", kPublic, "<ciso646>", kPublic },
--  { "<limits.h>", kPublic, "<climits>", kPublic },
--  { "<locale.h>", kPublic, "<clocale>", kPublic },
--  { "<math.h>", kPublic, "<cmath>", kPublic },
--  { "<setjmp.h>", kPublic, "<csetjmp>", kPublic },
--  { "<signal.h>", kPublic, "<csignal>", kPublic },
--  { "<stdalign.h>", kPublic, "<cstdalign>", kPublic },
--  { "<stdarg.h>", kPublic, "<cstdarg>", kPublic },
--  { "<stdbool.h>", kPublic, "<cstdbool>", kPublic },
--  { "<stddef.h>", kPublic, "<cstddef>", kPublic },
--  { "<stdint.h>", kPublic, "<cstdint>", kPublic },
--  { "<stdio.h>", kPublic, "<cstdio>", kPublic },
--  { "<stdlib.h>", kPublic, "<cstdlib>", kPublic },
--  { "<string.h>", kPublic, "<cstring>", kPublic },
--  { "<tgmath.h>", kPublic, "<ctgmath>", kPublic },
--  { "<time.h>", kPublic, "<ctime>", kPublic },
--  { "<uchar.h>", kPublic, "<cuchar>", kPublic },
--  { "<wchar.h>", kPublic, "<cwchar>", kPublic },
--  { "<wctype.h>", kPublic, "<cwctype>", kPublic },
-+  { "<assert.h>", kPrivate, "<cassert>", kPublic },
-+  { "<complex.h>", kPrivate, "<ccomplex>", kPublic },
-+  { "<ctype.h>", kPrivate, "<cctype>", kPublic },
-+  { "<errno.h>", kPrivate, "<cerrno>", kPublic },
-+  { "<fenv.h>", kPrivate, "<cfenv>", kPublic },
-+  { "<float.h>", kPrivate, "<cfloat>", kPublic },
-+  { "<inttypes.h>", kPrivate, "<cinttypes>", kPublic },
-+  { "<iso646.h>", kPrivate, "<ciso646>", kPublic },
-+  { "<limits.h>", kPrivate, "<climits>", kPublic },
-+  { "<locale.h>", kPrivate, "<clocale>", kPublic },
-+  { "<math.h>", kPrivate, "<cmath>", kPublic },
-+  { "<setjmp.h>", kPrivate, "<csetjmp>", kPublic },
-+  { "<signal.h>", kPrivate, "<csignal>", kPublic },
-+  { "<stdalign.h>", kPrivate, "<cstdalign>", kPublic },
-+  { "<stdarg.h>", kPrivate, "<cstdarg>", kPublic },
-+  { "<stdbool.h>", kPrivate, "<cstdbool>", kPublic },
-+  { "<stddef.h>", kPrivate, "<cstddef>", kPublic },
-+  { "<stdint.h>", kPrivate, "<cstdint>", kPublic },
-+  { "<stdio.h>", kPrivate, "<cstdio>", kPublic },
-+  { "<stdlib.h>", kPrivate, "<cstdlib>", kPublic },
-+  { "<string.h>", kPrivate, "<cstring>", kPublic },
-+  { "<tgmath.h>", kPrivate, "<ctgmath>", kPublic },
-+  { "<time.h>", kPrivate, "<ctime>", kPublic },
-+  { "<uchar.h>", kPrivate, "<cuchar>", kPublic },
-+  { "<wchar.h>", kPrivate, "<cwchar>", kPublic },
-+  { "<wctype.h>", kPrivate, "<cwctype>", kPublic },
- };
-
- const char* stdlib_cpp_public_headers[] = {
-EOF
+  # Prefer C++ headers over C counterparts.
+  # See: https://github.com/include-what-you-use/include-what-you-use/blob/clang_21/iwyu_include_picker.cc#L587-L629.
+  sed -i "s|\"<assert.h>\", kPublic|\"<assert.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<complex.h>\", kPublic|\"<complex.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<ctype.h>\", kPublic|\"<ctype.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<errno.h>\", kPublic|\"<errno.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<fenv.h>\", kPublic|\"<fenv.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<float.h>\", kPublic|\"<float.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<inttypes.h>\", kPublic|\"<inttypes.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<iso646.h>\", kPublic|\"<iso646.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<limits.h>\", kPublic|\"<limits.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<locale.h>\", kPublic|\"<locale.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<math.h>\", kPublic|\"<math.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<setjmp.h>\", kPublic|\"<setjmp.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<signal.h>\", kPublic|\"<signal.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<stdalign.h>\", kPublic|\"<stdalign.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<stdarg.h>\", kPublic|\"<stdarg.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<stdbool.h>\", kPublic|\"<stdbool.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<stddef.h>\", kPublic|\"<stddef.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<stdint.h>\", kPublic|\"<stdint.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<stdio.h>\", kPublic|\"<stdio.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<stdlib.h>\", kPublic|\"<stdlib.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<string.h>\", kPublic|\"<string.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<tgmath.h>\", kPublic|\"<tgmath.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<time.h>\", kPublic|\"<time.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<uchar.h>\", kPublic|\"<uchar.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<wchar.h>\", kPublic|\"<wchar.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
+  sed -i "s|\"<wctype.h>\", kPublic|\"<wctype.h>\", kPrivate|g" /include-what-you-use/iwyu_include_picker.cc
 
   cmake -B /iwyu-build/ -G 'Unix Makefiles' -DCMAKE_PREFIX_PATH=/usr/lib/llvm-"${TIDY_LLVM_V}" -S /include-what-you-use
   make -C /iwyu-build/ install "$MAKEJOBS"
