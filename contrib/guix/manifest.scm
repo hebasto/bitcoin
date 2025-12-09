@@ -593,7 +593,6 @@ inspecting signatures in Mach-O binaries.")
         gzip
         xz
         ;; Build tools
-        gcc-toolchain-13
         cmake-minimal
         gnu-make
         ninja
@@ -606,6 +605,7 @@ inspecting signatures in Mach-O binaries.")
   (let ((target (getenv "HOST")))
     (cond ((string-suffix? "-mingw32" target)
            (list zip
+                 gcc-toolchain-13
                  (make-mingw-pthreads-cross-toolchain "x86_64-w64-mingw32")
                  nsis-x86_64
                  nss-certs
@@ -613,6 +613,7 @@ inspecting signatures in Mach-O binaries.")
           ((string-contains target "-linux-")
            (list bison
                  pkg-config
+                 gcc-toolchain-13
                  (list gcc-toolchain-13 "static")
                  (make-bitcoin-cross-toolchain target)))
           ((string-contains target "darwin")
