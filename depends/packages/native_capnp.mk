@@ -9,6 +9,7 @@ define $(package)_set_vars
   $(package)_config_opts := -DBUILD_TESTING=OFF
   $(package)_config_opts += -DWITH_OPENSSL=OFF
   $(package)_config_opts += -DWITH_ZLIB=OFF
+  $(package)_config_opts_solaris := -DWITH_FIBERS=OFF
 endef
 
 define $(package)_config_cmds
