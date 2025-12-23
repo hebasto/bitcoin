@@ -2,6 +2,10 @@ package=native_libmultiprocess
 $(package)_local_dir=../src/ipc/libmultiprocess
 $(package)_dependencies=native_capnp
 
+define $(package)_set_vars
+  $(package)_ldflags_solaris += -lxnet
+endef
+
 define $(package)_config_cmds
   $($(package)_cmake) .
 endef
