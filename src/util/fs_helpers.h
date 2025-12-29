@@ -93,6 +93,21 @@ std::string PermsToSymbolicString(fs::perms p);
  */
 std::optional<fs::perms> InterpretPermString(const std::string& s);
 
+/** Check if a file is writable by opening in append mode.
+ *
+ * @param[in] file_path path of the file to test
+ * @throw std::runtime_error if file_path does not exist or is a directory.
+ */
+bool IsFileWritable(const fs::path& file_path);
+
+/** Check if a directory is writable by creating a temporary file on it.
+ *
+ * @param[in] dir_path path of the directory to test
+ * @return true if a temporary file could be created and removed, false otherwise.
+ * @throw std::runtime_error if dir_path is not a directory.
+ */
+bool IsDirWritable(const fs::path& dir_path);
+
 #ifdef WIN32
 fs::path GetSpecialFolderPath(int nFolder, bool fCreate = true);
 #endif
