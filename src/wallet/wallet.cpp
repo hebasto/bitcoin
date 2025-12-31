@@ -3800,39 +3800,58 @@ bool CWallet::MigrateToSQLite(bilingual_str& error)
         return false;
     }
 
-    // Close this database and delete the file
-    fs::path db_path = fs::PathFromString(m_database->Filename());
+    // Close this database and delete the files.
+    fs::path origin_db_path = fs::PathFromString(m_database->Filename());
     m_database->Close();
-    fs::remove(db_path);
 
     // Generate the path for the location of the migrated wallet
     // Wallets that are plain files rather than wallet directories will be migrated to be wallet directories.
-    const fs::path wallet_path = fsbridge::AbsPathJoin(GetWalletDir(), fs::PathFromString(m_name));
+    const fs::path dst_wallet_path = fs::weakly_canonical(fsbridge::AbsPathJoin(GetWalletDir(), fs::PathFromString(m_name)));
+    // After importing all records, the new DB at tmp_wallet_path will replace the original wallet at dst_wallet_path.
+    std::string new_db_name = strprintf("tmp_sqlite_%d", FastRandomContext().rand64());
+    const fs::path tmp_wallet_path = fsbridge::AbsPathJoin(GetWalletDir(), fs::PathFromString(new_db_name));
 
     // Make new DB
     DatabaseOptions opts;
     opts.require_create = true;
     opts.require_format = DatabaseFormat::SQLITE;
     DatabaseStatus db_status;
-    std::unique_ptr<WalletDatabase> new_db = MakeDatabase(wallet_path, opts, db_status, error);
-    assert(new_db); // This is to prevent doing anything further with this wallet. The original file was deleted, but a backup exists.
+    std::unique_ptr<WalletDatabase> new_db = MakeDatabase(tmp_wallet_path, opts, db_status, error);
+    assert(new_db); // This is to prevent doing anything further with this wallet. The original db is untouched, so we can abort safely.
     m_database.reset();
     m_database = std::move(new_db);
 
     // Write existing records into the new DB
     batch = m_database->MakeBatch();
     bool began = batch->TxnBegin();
-    assert(began); // This is a critical error, the new db could not be written to. The original db exists as a backup, but we should not continue execution.
+    assert(began); // This is a critical error, the new db could not be written to. The original db is untouched, so we can abort safely.
     for (const auto& [key, value] : records) {
         if (!batch->Write(std::span{key}, std::span{value})) {
             batch->TxnAbort();
             m_database->Close();
             fs::remove(m_database->Filename());
-            assert(false); // This is a critical error, the new db could not be written to. The original db exists as a backup, but we should not continue execution.
+            assert(false); // This is a critical error, the new db could not be written to. The original db is untouched, so we can abort safely.
         }
     }
     bool committed = batch->TxnCommit();
     assert(committed); // This is a critical error, the new db could not be written to. The original db exists as a backup, but we should not continue execution.
+    batch.reset();
+
+    // ######################################################################
+    // At this point, the new database has all records.                     #
+    // We can remove the old db file and move the new db inside the wallet  #
+    // ######################################################################
+    fs::remove(origin_db_path);
+    m_database.reset(); // reset sqlite connection so it can be moved to the new folder
+
+    // Copy the new sqlite database into the original location
+    fs::copy(tmp_wallet_path, dst_wallet_path, fs::copy_options::recursive | fs::copy_options::overwrite_existing);
+    fs::remove_all(tmp_wallet_path);
+
+    // Reload sqlite connection
+    opts.require_create = false;
+    m_database = Assert(MakeDatabase(dst_wallet_path, opts, db_status, error));
+
     return true;
 }
 
