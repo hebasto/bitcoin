@@ -22,6 +22,7 @@
 #include <optional>
 #include <string_view>
 
+#include <sqlite3.h>
 
 namespace wallet {
 
@@ -379,6 +380,25 @@ static RPCHelpMan createwallet()
         },
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
 {
+
+    {
+        sqlite3* db = nullptr;
+
+        int ret = sqlite3_open_v2(
+            "test.db",
+            &db,
+            SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_EXRESCODE,
+            nullptr
+        );
+
+        if (ret != SQLITE_OK) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
+            throw;
+        }
+
+        sqlite3_close(db);
+    }
+
     WalletContext& context = EnsureWalletContext(request.context);
     uint64_t flags = 0;
     if (!request.params[1].isNull() && request.params[1].get_bool()) {
