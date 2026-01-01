@@ -19,6 +19,7 @@
 #include <sqlite3.h>
 
 #include <cstdint>
+#include <fstream>
 #include <optional>
 #include <utility>
 #include <vector>
@@ -690,16 +691,20 @@ bool SQLiteBatch::TxnAbort()
 
 std::unique_ptr<SQLiteDatabase> MakeSQLiteDatabase(const fs::path& path, const DatabaseOptions& options, DatabaseStatus& status, bilingual_str& error)
 {
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     try {
         fs::path data_file = SQLiteDataFile(path);
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- data_file=" << fs::PathToString(data_file) << "\n";
         auto db = std::make_unique<SQLiteDatabase>(data_file.parent_path(), data_file, options);
         if (options.verify && !db->Verify(error)) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
             status = DatabaseStatus::FAILED_VERIFY;
             return nullptr;
         }
         status = DatabaseStatus::SUCCESS;
         return db;
     } catch (const std::runtime_error& e) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         status = DatabaseStatus::FAILED_LOAD;
         error = Untranslated(e.what());
         return nullptr;

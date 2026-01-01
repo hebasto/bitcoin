@@ -1379,22 +1379,29 @@ std::unique_ptr<WalletDatabase> MakeDatabase(const fs::path& path, const Databas
     std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
 
     // Format is not set when a db doesn't already exist, so use the format specified by the options if it is set.
-    if (!format && options.require_format) format = options.require_format;
+    if (!format && options.require_format) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
+        format = options.require_format;
+    }
 
     if (!format) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         format = DatabaseFormat::SQLITE;
     }
 
     if (format == DatabaseFormat::SQLITE) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         return MakeSQLiteDatabase(path, options, status, error);
     }
 
     if (format == DatabaseFormat::BERKELEY_RO) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         return MakeBerkeleyRODatabase(path, options, status, error);
     }
 
     error = Untranslated(STR_INTERNAL_BUG("Could not determine wallet format"));
     status = DatabaseStatus::FAILED_BAD_FORMAT;
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     return nullptr;
 }
 } // namespace wallet
