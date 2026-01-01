@@ -278,6 +278,10 @@ void SQLiteDatabase::Open()
         struct passwd* pw = getpwuid(getuid());
         std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- user=" << pw->pw_name << "\n";
 
+        for (char **env = environ; *env; env++) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- " << *env << "\n";
+        }
+
         // WTF??
         int ret = sqlite3_open_v2(m_file_path.c_str(), &m_db, flags, nullptr);
 
