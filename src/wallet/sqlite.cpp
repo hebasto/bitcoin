@@ -274,7 +274,7 @@ void SQLiteDatabase::Open()
         if (ret != SQLITE_OK) {
             int ext = sqlite3_extended_errcode(m_db);
             std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
-            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- ext=" << sqlite3_errstr(ext) << "\n";
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- ext=" << ext << "\n";
             throw std::runtime_error(strprintf("SQLiteDatabase: Failed to open database: %s\n", sqlite3_errstr(ret)));
         }
         ret = sqlite3_extended_result_codes(m_db, 1);
