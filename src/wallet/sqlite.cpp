@@ -272,6 +272,7 @@ void SQLiteDatabase::Open()
         std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- m_file_path=" << m_file_path << "\n";
         int ret = sqlite3_open_v2(m_file_path.c_str(), &m_db, flags, nullptr);
         if (ret != SQLITE_OK) {
+            sqlite3_extended_result_codes(m_db, 1);
             int ext = sqlite3_extended_errcode(m_db);
             std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
             std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- ext=" << ext << "\n";
