@@ -283,8 +283,22 @@ void SQLiteDatabase::Open()
         }
 
         auto dir_path = fs::PathToString(m_dir_path).c_str();
-        if (access(dir_path, W_OK) != 0) {
-            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- Directory not writable: " << strerror(errno) << "\n";
+        if (access(dir_path, W_OK) == 0) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- Directory IS writable\n";
+        } else {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- Directory NOT writable: " << strerror(errno) << "\n";
+        }
+
+        if (access("/tmp", W_OK) == 0) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- /tmp IS writable\n";
+        } else {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- /tmp NOT writable: " << strerror(errno) << "\n";
+        }
+
+        if (access(".", W_OK) == 0) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- CWD IS writable\n";
+        } else {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- CWD NOT writable: " << strerror(errno) << "\n";
         }
 
         std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- m_file_path=" << m_file_path << "\n";
