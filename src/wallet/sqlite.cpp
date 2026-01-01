@@ -28,6 +28,14 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#if defined(__APPLE__) || \
+    defined(__FreeBSD__) || \
+    defined(__NetBSD__) || \
+    defined(__OpenBSD__) || \
+    defined(__illumos__)
+extern char** environ; // Necessary on the above platforms
+#endif
+
 namespace wallet {
 static constexpr int32_t WALLET_SCHEMA_VERSION = 0;
 
