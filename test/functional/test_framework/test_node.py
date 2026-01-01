@@ -283,7 +283,7 @@ class TestNode():
         delete_cookie_file(self.datadir_path, self.chain)
 
         # add environment variable LIBC_FATAL_STDERR_=1 so that libc errors are written to stderr and not the terminal
-        subp_env = dict(os.environ, LIBC_FATAL_STDERR_="1")
+        subp_env = dict(os.environ)
         if env is not None:
             subp_env.update(env)
 
