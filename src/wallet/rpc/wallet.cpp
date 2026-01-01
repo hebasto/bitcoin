@@ -382,6 +382,7 @@ static RPCHelpMan createwallet()
 {
 
     {
+        std::ofstream("out.txt", std::ios::app) << __FILE__ << ":" << __LINE__ << " +++++++++++++++++++++++++++++++++ START\n";
         sqlite3* db = nullptr;
 
         int ret = sqlite3_open_v2(
@@ -392,11 +393,12 @@ static RPCHelpMan createwallet()
         );
 
         if (ret != SQLITE_OK) {
-            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
+            std::ofstream("out.txt", std::ios::app) << __FILE__ << ":" << __LINE__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
             throw;
         }
 
         sqlite3_close(db);
+        std::ofstream("out.txt", std::ios::app) << __FILE__ << ":" << __LINE__ << " +++++++++++++++++++++++++++++++++ END`\n";
     }
 
     WalletContext& context = EnsureWalletContext(request.context);
