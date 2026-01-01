@@ -32,6 +32,9 @@
 #include <functional>
 #include <optional>
 
+#include <sqlite3.h>
+#include <fstream>
+
 using node::NodeContext;
 
 const TranslateFn G_TRANSLATION_FUN{nullptr};
@@ -259,6 +262,25 @@ static bool AppInit(NodeContext& node)
 
 MAIN_FUNCTION
 {
+    {
+        sqlite3* db = nullptr;
+
+        int ret = sqlite3_open_v2(
+            "test.db",
+            &db,
+            SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_EXRESCODE,
+            nullptr
+        );
+
+        if (ret != SQLITE_OK) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
+            return 1;
+        }
+
+        sqlite3_close(db);
+    }
+
+
     NodeContext node;
     int exit_status;
     std::unique_ptr<interfaces::Init> init = interfaces::MakeNodeInit(node, argc, argv, exit_status);
