@@ -2862,11 +2862,13 @@ static util::Result<fs::path> GetWalletPath(const std::string& name)
               "or (for backwards compatibility) the name of an existing data file in -walletdir (%s)",
               name, fs::quoted(fs::PathToString(GetWalletDir()))))};
     }
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- wallet_path=" << fs::PathToString(wallet_path) << "\n";
     return wallet_path;
 }
 
 std::unique_ptr<WalletDatabase> MakeWalletDatabase(const std::string& name, const DatabaseOptions& options, DatabaseStatus& status, bilingual_str& error_string)
 {
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     const auto& wallet_path = GetWalletPath(name);
     if (!wallet_path) {
         error_string = util::ErrorString(wallet_path);
