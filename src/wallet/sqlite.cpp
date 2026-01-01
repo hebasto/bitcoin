@@ -24,6 +24,8 @@
 #include <utility>
 #include <vector>
 
+#include <pwd.h>
+
 namespace wallet {
 static constexpr int32_t WALLET_SCHEMA_VERSION = 0;
 
@@ -270,7 +272,13 @@ void SQLiteDatabase::Open()
             TryCreateDirectories(m_dir_path);
         }
         std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- m_file_path=" << m_file_path << "\n";
+
+        struct passwd* pw = getpwuid(getuid());
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- user=" << pw->pw_name << "\n";
+
+        // WTF??
         int ret = sqlite3_open_v2(m_file_path.c_str(), &m_db, flags, nullptr);
+
         if (ret != SQLITE_OK) {
             sqlite3_extended_result_codes(m_db, 1);
             int ext = sqlite3_extended_errcode(m_db);
