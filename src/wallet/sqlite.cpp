@@ -256,7 +256,7 @@ bool SQLiteDatabase::Verify(bilingual_str& error)
 void SQLiteDatabase::Open()
 {
     std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
-    int flags = SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+    int flags = SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_EXRESCODE;
     std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- flags=" << flags << "\n";
     if (m_mock) {
         flags |= SQLITE_OPEN_MEMORY; // In memory database for mock db
