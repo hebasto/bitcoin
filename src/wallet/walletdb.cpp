@@ -24,6 +24,7 @@
 #include <wallet/wallet.h>
 
 #include <atomic>
+#include <fstream>
 #include <optional>
 #include <string>
 
@@ -1309,6 +1310,7 @@ void WalletBatch::RegisterTxnListener(const DbTxnListener& l)
 
 std::unique_ptr<WalletDatabase> MakeDatabase(const fs::path& path, const DatabaseOptions& options, DatabaseStatus& status, bilingual_str& error)
 {
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     bool exists;
     try {
         exists = fs::symlink_status(path).type() != fs::file_type::not_found;
@@ -1318,13 +1320,19 @@ std::unique_ptr<WalletDatabase> MakeDatabase(const fs::path& path, const Databas
         return nullptr;
     }
 
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << std::boolalpha << " -- exists=" << exists << "\n";
+
     std::optional<DatabaseFormat> format;
     if (exists) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         if (IsBDBFile(BDBDataFile(path))) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
             format = DatabaseFormat::BERKELEY_RO;
         }
         if (IsSQLiteFile(SQLiteDataFile(path))) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
             if (format) {
+                std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
                 error = Untranslated(strprintf("Failed to load database path '%s'. Data is in ambiguous format.", fs::PathToString(path)));
                 status = DatabaseStatus::FAILED_BAD_FORMAT;
                 return nullptr;
@@ -1332,18 +1340,21 @@ std::unique_ptr<WalletDatabase> MakeDatabase(const fs::path& path, const Databas
             format = DatabaseFormat::SQLITE;
         }
     } else if (options.require_existing) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         error = Untranslated(strprintf("Failed to load database path '%s'. Path does not exist.", fs::PathToString(path)));
         status = DatabaseStatus::FAILED_NOT_FOUND;
         return nullptr;
     }
 
     if (!format && options.require_existing) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         error = Untranslated(strprintf("Failed to load database path '%s'. Data is not in recognized format.", fs::PathToString(path)));
         status = DatabaseStatus::FAILED_BAD_FORMAT;
         return nullptr;
     }
 
     if (format && options.require_create) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         error = Untranslated(strprintf("Failed to create database path '%s'. Database already exists.", fs::PathToString(path)));
         status = DatabaseStatus::FAILED_ALREADY_EXISTS;
         return nullptr;
@@ -1351,6 +1362,7 @@ std::unique_ptr<WalletDatabase> MakeDatabase(const fs::path& path, const Databas
 
     // BERKELEY_RO can only be opened if require_format was set, which only occurs in migration.
     if (format && format == DatabaseFormat::BERKELEY_RO && (!options.require_format || options.require_format != DatabaseFormat::BERKELEY_RO)) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         error = Untranslated(strprintf("Failed to open database path '%s'. The wallet appears to be a Legacy wallet, please use the wallet migration tool (migratewallet RPC or the GUI option).", fs::PathToString(path)));
         status = DatabaseStatus::FAILED_LEGACY_DISABLED;
         return nullptr;
@@ -1358,10 +1370,13 @@ std::unique_ptr<WalletDatabase> MakeDatabase(const fs::path& path, const Databas
 
     // A db already exists so format is set, but options also specifies the format, so make sure they agree
     if (format && options.require_format && format != options.require_format) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         error = Untranslated(strprintf("Failed to load database path '%s'. Data is not in required format.", fs::PathToString(path)));
         status = DatabaseStatus::FAILED_BAD_FORMAT;
         return nullptr;
     }
+
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
 
     // Format is not set when a db doesn't already exist, so use the format specified by the options if it is set.
     if (!format && options.require_format) format = options.require_format;
