@@ -75,6 +75,7 @@
 #include <cassert>
 #include <condition_variable>
 #include <exception>
+#include <fstream>
 #include <optional>
 #include <stdexcept>
 #include <thread>
@@ -376,6 +377,8 @@ std::shared_ptr<CWallet> LoadWallet(WalletContext& context, const std::string& n
 
 std::shared_ptr<CWallet> CreateWallet(WalletContext& context, const std::string& name, std::optional<bool> load_on_start, DatabaseOptions& options, DatabaseStatus& status, bilingual_str& error, std::vector<bilingual_str>& warnings)
 {
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
+
     uint64_t wallet_creation_flags = options.create_flags;
     const SecureString& passphrase = options.create_passphrase;
 
@@ -386,10 +389,15 @@ std::shared_ptr<CWallet> CreateWallet(WalletContext& context, const std::string&
     // Indicate that the wallet is actually supposed to be blank and not just blank to make it encrypted
     bool create_blank = (wallet_creation_flags & WALLET_FLAG_BLANK_WALLET);
 
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
+
     // Born encrypted wallets need to be created blank first.
     if (!passphrase.empty()) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         wallet_creation_flags |= WALLET_FLAG_BLANK_WALLET;
     }
+
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
 
     // Private keys must be disabled for an external signer wallet
     if ((wallet_creation_flags & WALLET_FLAG_EXTERNAL_SIGNER) && !(wallet_creation_flags & WALLET_FLAG_DISABLE_PRIVATE_KEYS)) {
@@ -398,12 +406,16 @@ std::shared_ptr<CWallet> CreateWallet(WalletContext& context, const std::string&
         return nullptr;
     }
 
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
+
     // Do not allow a passphrase when private keys are disabled
     if (!passphrase.empty() && (wallet_creation_flags & WALLET_FLAG_DISABLE_PRIVATE_KEYS)) {
         error = Untranslated("Passphrase provided but private keys are disabled. A passphrase is only used to encrypt private keys, so cannot be used for wallets with private keys disabled.");
         status = DatabaseStatus::FAILED_CREATE;
         return nullptr;
     }
+
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
 
     // Wallet::Verify will check if we're trying to create a wallet with a duplicate name.
     std::unique_ptr<WalletDatabase> database = MakeWalletDatabase(name, options, status, error);
@@ -412,6 +424,8 @@ std::shared_ptr<CWallet> CreateWallet(WalletContext& context, const std::string&
         status = DatabaseStatus::FAILED_VERIFY;
         return nullptr;
     }
+
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
 
     // Make the wallet
     context.chain->initMessage(_("Loading wallet…"));
@@ -422,6 +436,8 @@ std::shared_ptr<CWallet> CreateWallet(WalletContext& context, const std::string&
         return nullptr;
     }
 
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
+
     // Encrypt the wallet
     if (!passphrase.empty() && !(wallet_creation_flags & WALLET_FLAG_DISABLE_PRIVATE_KEYS)) {
         if (!wallet->EncryptWallet(passphrase)) {
@@ -429,6 +445,9 @@ std::shared_ptr<CWallet> CreateWallet(WalletContext& context, const std::string&
             status = DatabaseStatus::FAILED_ENCRYPT;
             return nullptr;
         }
+
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
+
         if (!create_blank) {
             // Unlock the wallet
             if (!wallet->Unlock(passphrase)) {
@@ -436,6 +455,8 @@ std::shared_ptr<CWallet> CreateWallet(WalletContext& context, const std::string&
                 status = DatabaseStatus::FAILED_ENCRYPT;
                 return nullptr;
             }
+
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
 
             // Set a seed for the wallet
             {
@@ -448,6 +469,8 @@ std::shared_ptr<CWallet> CreateWallet(WalletContext& context, const std::string&
         }
     }
 
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
+
     NotifyWalletLoaded(context, wallet);
     AddWallet(context, wallet);
     wallet->postInitProcess();
@@ -456,6 +479,7 @@ std::shared_ptr<CWallet> CreateWallet(WalletContext& context, const std::string&
     UpdateWalletSetting(*context.chain, name, load_on_start, warnings);
 
     status = DatabaseStatus::SUCCESS;
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     return wallet;
 }
 
