@@ -144,6 +144,7 @@ SQLiteDatabase::SQLiteDatabase(const fs::path& dir_path, const fs::path& file_pa
     std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     try {
         std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
+        // PROBLEM is HERE.
         Open();
         std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     } catch (const std::runtime_error&) {
@@ -254,17 +255,24 @@ bool SQLiteDatabase::Verify(bilingual_str& error)
 
 void SQLiteDatabase::Open()
 {
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     int flags = SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- flags=" << flags << "\n";
     if (m_mock) {
         flags |= SQLITE_OPEN_MEMORY; // In memory database for mock db
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- flags=" << flags << "\n";
     }
 
     if (m_db == nullptr) {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         if (!m_mock) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- m_dir_path=" << fs::PathToString(m_dir_path) << "\n";
             TryCreateDirectories(m_dir_path);
         }
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- m_file_path=" << m_file_path << "\n";
         int ret = sqlite3_open_v2(m_file_path.c_str(), &m_db, flags, nullptr);
         if (ret != SQLITE_OK) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
             throw std::runtime_error(strprintf("SQLiteDatabase: Failed to open database: %s\n", sqlite3_errstr(ret)));
         }
         ret = sqlite3_extended_result_codes(m_db, 1);
