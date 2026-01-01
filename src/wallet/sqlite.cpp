@@ -127,6 +127,26 @@ int SQLiteDatabase::g_sqlite_count = 0;
 SQLiteDatabase::SQLiteDatabase(const fs::path& dir_path, const fs::path& file_path, const DatabaseOptions& options, bool mock)
     : WalletDatabase(), m_mock(mock), m_dir_path(dir_path), m_file_path(fs::PathToString(file_path)), m_write_semaphore(1), m_use_unsafe_sync(options.use_unsafe_sync)
 {
+    {
+        sqlite3* db = nullptr;
+
+        int ret = sqlite3_open_v2(
+            "test.db",
+            &db,
+            SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_EXRESCODE,
+            nullptr
+        );
+
+        if (ret != SQLITE_OK) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
+            throw;
+        }
+
+        sqlite3_close(db);
+    }
+
+
+
     std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     {
         LOCK(g_sqlite_mutex);
