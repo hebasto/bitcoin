@@ -25,6 +25,8 @@
 #include <vector>
 
 #include <pwd.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 namespace wallet {
 static constexpr int32_t WALLET_SCHEMA_VERSION = 0;
