@@ -115,31 +115,41 @@ int SQLiteDatabase::g_sqlite_count = 0;
 SQLiteDatabase::SQLiteDatabase(const fs::path& dir_path, const fs::path& file_path, const DatabaseOptions& options, bool mock)
     : WalletDatabase(), m_mock(mock), m_dir_path(dir_path), m_file_path(fs::PathToString(file_path)), m_write_semaphore(1), m_use_unsafe_sync(options.use_unsafe_sync)
 {
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     {
         LOCK(g_sqlite_mutex);
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- g_sqlite_count=" << g_sqlite_count << "\n";
         if (++g_sqlite_count == 1) {
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- g_sqlite_count=" << g_sqlite_count << "\n";
             // Setup logging
             int ret = sqlite3_config(SQLITE_CONFIG_LOG, ErrorLogCallback, nullptr);
             if (ret != SQLITE_OK) {
                 throw std::runtime_error(strprintf("SQLiteDatabase: Failed to setup error log: %s\n", sqlite3_errstr(ret)));
             }
+            std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
             // Force serialized threading mode
             ret = sqlite3_config(SQLITE_CONFIG_SERIALIZED);
             if (ret != SQLITE_OK) {
                 throw std::runtime_error(strprintf("SQLiteDatabase: Failed to configure serialized threading mode: %s\n", sqlite3_errstr(ret)));
             }
         }
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         int ret = sqlite3_initialize(); // This is a no-op if sqlite3 is already initialized
         if (ret != SQLITE_OK) {
             throw std::runtime_error(strprintf("SQLiteDatabase: Failed to initialize SQLite: %s\n", sqlite3_errstr(ret)));
         }
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     }
 
+    std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     try {
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         Open();
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
     } catch (const std::runtime_error&) {
         // If open fails, cleanup this object and rethrow the exception
         Cleanup();
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         throw;
     }
 }
@@ -696,6 +706,7 @@ std::unique_ptr<SQLiteDatabase> MakeSQLiteDatabase(const fs::path& path, const D
         fs::path data_file = SQLiteDataFile(path);
         std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << " -- data_file=" << fs::PathToString(data_file) << "\n";
         auto db = std::make_unique<SQLiteDatabase>(data_file.parent_path(), data_file, options);
+        std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
         if (options.verify && !db->Verify(error)) {
             std::ofstream("out.txt", std::ios::app) << __func__ << ":" << __LINE__ << "\n";
             status = DatabaseStatus::FAILED_VERIFY;
