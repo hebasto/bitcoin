@@ -311,7 +311,9 @@ void SQLiteDatabase::Open()
         }
 
         // WTF??
+        LogWarning("+++++++++++++++++++++++++++++++++++++++");
         int ret = sqlite3_open_v2(m_file_path.c_str(), &m_db, flags, nullptr);
+        LogWarning("+++++++++++++++++++++++++++++++++++++++");
 
         if (ret != SQLITE_OK) {
             sqlite3_extended_result_codes(m_db, 1);
