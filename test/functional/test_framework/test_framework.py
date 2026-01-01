@@ -402,10 +402,13 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
 
     def init_wallet(self, *, node):
         wallet_name = self.default_wallet_name if self.wallet_names is None else self.wallet_names[node] if node < len(self.wallet_names) else False
+        print(f"[{__import__('sys')._getframe(1).f_code.co_name}:{__import__('sys')._getframe(1).f_lineno}] wallet: '{wallet_name}'", file=__import__('sys').stderr)
         if wallet_name is not False:
             n = self.nodes[node]
             if wallet_name is not None:
+                print(f"[{__import__('sys')._getframe(1).f_code.co_name}:{__import__('sys')._getframe(1).f_lineno}] BEFORE createwallet wallet_name={wallet_name}", file=__import__('sys').stderr)
                 n.createwallet(wallet_name=wallet_name, load_on_startup=True)
+                print(f"[{__import__('sys')._getframe(1).f_code.co_name}:{__import__('sys')._getframe(1).f_lineno}] AFTER createwallet wallet_name={wallet_name}", file=__import__('sys').stderr)
             wallet_importprivkey(n.get_wallet_rpc(wallet_name), n.get_deterministic_priv_key().key, 0, label="coinbase")
 
     def run_test(self):
@@ -844,7 +847,10 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
             def cache_path(*paths):
                 return os.path.join(cache_node_dir, self.chain, *paths)
 
+            print(f"[{__import__('sys')._getframe(1).f_code.co_name}:{__import__('sys')._getframe(1).f_lineno}] BEFORE os.rmdir(cache_path('wallets'))", file=__import__('sys').stderr)
             os.rmdir(cache_path('wallets'))  # Remove empty wallets dir
+            print(f"[{__import__('sys')._getframe(1).f_code.co_name}:{__import__('sys')._getframe(1).f_lineno}] AFTER os.rmdir(cache_path('wallets'))", file=__import__('sys').stderr)
+
             for entry in os.listdir(cache_path()):
                 if entry not in ['chainstate', 'blocks', 'indexes']:  # Only indexes, chainstate and blocks folders
                     os.remove(cache_path(entry))
@@ -853,7 +859,9 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
             self.log.debug("Copy cache directory {} to node {}".format(cache_node_dir, i))
             to_dir = get_datadir_path(self.options.tmpdir, i)
             shutil.copytree(cache_node_dir, to_dir)
+            print(f"[{__import__('sys')._getframe(1).f_code.co_name}:{__import__('sys')._getframe(1).f_lineno}] BEFORE initialize_datadir", file=__import__('sys').stderr)
             initialize_datadir(self.options.tmpdir, i, self.chain, self.disable_autoconnect)  # Overwrite port/rpcport in bitcoin.conf
+            print(f"[{__import__('sys')._getframe(1).f_code.co_name}:{__import__('sys')._getframe(1).f_lineno}] AFTER initialize_datadir", file=__import__('sys').stderr)
 
     def _initialize_chain_clean(self):
         """Initialize empty blockchain for use by the test.
@@ -861,7 +869,9 @@ class BitcoinTestFramework(metaclass=BitcoinTestMetaClass):
         Create an empty blockchain and num_nodes wallets.
         Useful if a test case wants complete control over initialization."""
         for i in range(self.num_nodes):
+            print(f"[{__import__('sys')._getframe(1).f_code.co_name}:{__import__('sys')._getframe(1).f_lineno}] BEFORE initialize_datadir", file=__import__('sys').stderr)
             initialize_datadir(self.options.tmpdir, i, self.chain, self.disable_autoconnect)
+            print(f"[{__import__('sys')._getframe(1).f_code.co_name}:{__import__('sys')._getframe(1).f_lineno}] AFTER initialize_datadir", file=__import__('sys').stderr)
 
     def skip_if_no_py3_zmq(self):
         """Attempt to import the zmq package and skip the test if the import fails."""
