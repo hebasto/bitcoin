@@ -7,6 +7,16 @@ The full include-list for /ci_container_base/src/core_read.cpp:
 #include <primitives/block.h> // IWYU pragma: keep
 #include <streams.h>
 
+template <class T, class Stream>
+concept Unserializable = requires(T a, Stream s) { a.Unserialize(s); };
+
+template <typename Stream, typename T>
+    requires Unserializable<T, Stream>
+void Unserialize(Stream& is, T&& a)
+{
+    a.Unserialize(is);
+}
+
 void f(DataStream& ser_header, A& a)
 {
     ser_header >> a;

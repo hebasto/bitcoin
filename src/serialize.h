@@ -745,14 +745,14 @@ void Serialize(Stream& os, const T& a)
     a.Serialize(os);
 }
 
-template <class T, class Stream>
-concept Unserializable = requires(T a, Stream s) { a.Unserialize(s); };
-template <typename Stream, typename T>
-    requires Unserializable<T, Stream>
-void Unserialize(Stream& is, T&& a)
-{
-    a.Unserialize(is);
-}
+// template <class T, class Stream>
+// concept Unserializable = requires(T a, Stream s) { a.Unserialize(s); };
+// template <typename Stream, typename T>
+//     requires Unserializable<T, Stream>
+// void Unserialize(Stream& is, T&& a)
+// {
+//     a.Unserialize(is);
+// }
 
 /** Default formatter. Serializes objects as themselves.
  *
