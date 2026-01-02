@@ -35,22 +35,11 @@ public:
     }
 
     template <typename Stream>
-    void Serialize(Stream& s) const
-    {
-        static_assert(std::is_same_v<const CBlockHeader&, decltype(*this)>, "Serialize type mismatch");
-        Ser(s, *this);
-    }
-    template <typename Stream>
     void Unserialize(Stream& s)
     {
-        static_assert(std::is_same_v<CBlockHeader&, decltype(*this)>, "Unserialize type mismatch");
-        Unser(s, *this);
+        SerializationOps(*this, s, ActionUnserialize{});
     }
 
-    template<typename Stream>
-    static void Ser(Stream& s, const CBlockHeader& obj) { SerializationOps(obj, s, ActionSerialize{}); }
-    template<typename Stream>
-    static void Unser(Stream& s, CBlockHeader& obj) { SerializationOps(obj, s, ActionUnserialize{}); }
     template<typename Stream, typename Type, typename Operation>
     static void SerializationOps(Type& obj, Stream& s, Operation ser_action)
     {
