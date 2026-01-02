@@ -1,17 +1,17 @@
 #ifndef BITCOIN_PRIMITIVES_BLOCK_H
 #define BITCOIN_PRIMITIVES_BLOCK_H
 
-#include <serialize.h>
+#include <cstdint>
+#include <span>
 
 struct CBlockHeader
 {
-    int32_t n;
+    uint32_t n;
 
     template <typename Stream>
     void Unserialize(Stream& s)
     {
-        auto ser_action = ActionUnserialize{};
-        ser_action.SerReadWriteMany(s, n);
+        s.read(std::as_writable_bytes(std::span{&n, 1}));
     }
 };
 
