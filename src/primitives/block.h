@@ -8,11 +8,11 @@ struct A
 {
     uint32_t n;
 
-    // template <typename Stream>
-    // void Unserialize(Stream& s)
-    // {
-    //     s.read(std::as_writable_bytes(std::span{&n, 1}));
-    // }
+    template <typename Stream>
+    void Unserialize(Stream& s)
+    {
+        s.read(std::as_writable_bytes(std::span{&n, 1}));
+    }
 };
 
 #endif // BITCOIN_PRIMITIVES_BLOCK_H
