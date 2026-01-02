@@ -6,6 +6,7 @@ The full include-list for /ci_container_base/src/core_read.cpp:
 
 #include <primitives/block.h> // IWYU pragma: keep
 
+#include <ios>
 #include <optional>
 #include <span>
 #include <string>
@@ -35,7 +36,7 @@ public:
 
     std::string str() const
     {
-        return std::string{UCharCast(data()), UCharCast(data() + size())};
+        return std::string{data(), data() + size()};
     }
 
 
