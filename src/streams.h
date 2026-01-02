@@ -7,6 +7,7 @@
 #define BITCOIN_STREAMS_H
 
 #include <logging.h>
+#include <primitives/block.h>
 #include <serialize.h>
 #include <span.h>
 #include <support/allocators/zeroafterfree.h>

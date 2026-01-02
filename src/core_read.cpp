@@ -4,7 +4,6 @@
 
 #include <core_io.h>
 
-#include <primitives/block.h> // IWYU pragma: keep
 #include <primitives/transaction.h>
 #include <script/interpreter.h>
 #include <script/script.h>
@@ -25,6 +24,9 @@
 #include <stdexcept>
 #include <utility>
 #include <vector>
+
+class CBlock;
+class CBlockHeader;
 
 using util::SplitString;
 

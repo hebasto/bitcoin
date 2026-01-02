@@ -64,6 +64,17 @@ public:
     }
 };
 
+template <typename Stream>
+void Serialize(Stream& os, const CBlockHeader& a)
+{
+    a.Serialize(os);
+}
+
+template <typename Stream>
+void Unserialize(Stream& is, const CBlockHeader& a)
+{
+    a.Unserialize(is);
+}
 
 class CBlock : public CBlockHeader
 {
