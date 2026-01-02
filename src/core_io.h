@@ -23,6 +23,6 @@ class UniValue;
 class CTxUndo;
 class CTxOut;
 
-bool DecodeHexBlockHeader(CBlockHeader&, const std::string& hex_header);
+void DecodeHexBlockHeader(CBlockHeader&, const std::string& hex_header);
 
 #endif // BITCOIN_CORE_IO_H
