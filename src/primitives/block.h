@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <span>
 
-struct CBlockHeader
+struct A
 {
     uint32_t n;
 
