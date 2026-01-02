@@ -6,6 +6,7 @@ The full include-list for /ci_container_base/src/core_read.cpp:
 
 #include <primitives/block.h> // IWYU pragma: keep
 
+#include <cstring>
 #include <ios>
 #include <optional>
 #include <span>
@@ -23,12 +24,24 @@ void Unserialize(Stream& s, uint32_t& a)
 class DataStream
 {
 public:
+    void read(std::span<std::uint32_t> dst)
+    {
+        const std::size_t bytes = dst.size_bytes();
+        std::memcpy(dst.data(), m_data.data() + m_pos, bytes);
+        m_pos += bytes;
+    }
+
     template <typename T>
     DataStream& operator>>(T&& obj)
     {
         ::Unserialize(*this, obj);
         return *this;
     }
+
+private:
+    std::vector<std::byte> m_data;
+    std::size_t m_pos;
+
 };
 
 
