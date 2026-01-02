@@ -37,13 +37,8 @@ public:
     template <typename Stream>
     void Unserialize(Stream& s)
     {
-        SerializationOps(*this, s, ActionUnserialize{});
-    }
-
-    template<typename Stream, typename Type, typename Operation>
-    static void SerializationOps(Type& obj, Stream& s, Operation ser_action)
-    {
-        READWRITE(obj.nVersion, obj.hashPrevBlock, obj.hashMerkleRoot, obj.nTime, obj.nBits, obj.nNonce);
+        auto ser_action = ActionUnserialize{};
+        ser_action.SerReadWriteMany(s, nVersion, hashPrevBlock, hashMerkleRoot, nTime, nBits, nNonce);
     }
 
     void SetNull()
