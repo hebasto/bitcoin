@@ -368,9 +368,9 @@ std::vector<CNetAddr> GetLocalAddresses()
     }
 #elif defined(HAVE_IFADDRS)
     struct ifaddrs* myaddrs;
-    std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
+    std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - Before getifaddrs\n";
     if (getifaddrs(&myaddrs) == 0) {
-        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - After getifaddrs\n";
         for (struct ifaddrs* ifa = myaddrs; ifa != nullptr; ifa = ifa->ifa_next) {
             std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
             if (ifa->ifa_addr == nullptr) continue;
@@ -383,7 +383,9 @@ std::vector<CNetAddr> GetLocalAddresses()
                 addresses.push_back(*addr);
             }
         }
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - Before freeifaddrs\n";
         freeifaddrs(myaddrs);
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - After freeifaddrs\n";
     }
 #endif
     std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - addresses.size()=" << addresses.size() << "\n";

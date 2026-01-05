@@ -7,6 +7,11 @@
 
 #include <randomenv.h>
 
+
+#include <fstream>
+#include <unistd.h>
+
+
 #include <clientversion.h>
 #include <compat/compat.h>
 #include <compat/cpuid.h>
@@ -337,7 +342,9 @@ void RandAddStaticEnv(CSHA512& hasher)
 #ifdef HAVE_IFADDRS
     // Network interfaces
     struct ifaddrs *ifad = nullptr;
+    std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - Before getifaddrs\n";
     getifaddrs(&ifad);
+    std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - After getifaddrs\n";
     struct ifaddrs *ifit = ifad;
     while (ifit != nullptr) {
         hasher.Write((const unsigned char*)&ifit, sizeof(ifit));
@@ -348,7 +355,9 @@ void RandAddStaticEnv(CSHA512& hasher)
         AddSockaddr(hasher, ifit->ifa_dstaddr);
         ifit = ifit->ifa_next;
     }
+    std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - Before freeifaddrs\n";
     freeifaddrs(ifad);
+    std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - After freeifaddrs\n";
 #endif
 
 #ifndef WIN32
