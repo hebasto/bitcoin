@@ -2131,6 +2131,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
     if (connOptions.bind_on_any) {
         // Only add all IP addresses of the machine if we would be listening on
         // any address - 0.0.0.0 (IPv4) and :: (IPv6).
+        // HERE IS THE CULPRIT !!
         Discover();
     }
 
