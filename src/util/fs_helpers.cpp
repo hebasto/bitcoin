@@ -21,6 +21,11 @@
 #include <system_error>
 #include <utility>
 
+
+#include <fstream>
+#include <unistd.h>
+
+
 #ifndef WIN32
 #include <fcntl.h>
 #include <sys/resource.h>
@@ -256,15 +261,22 @@ bool TryCreateDirectories(const fs::path& p)
 {
     bool rc{false};
     try {
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " -- path=" << fs::PathToString(p)  << "\n";
         rc = fs::create_directories(p);
     } catch (const fs::filesystem_error&) {
-        if (!fs::exists(p) || !fs::is_directory(p))
+        std::ofstream("out.txt", std::ios::app) << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - CATCH\n";
+        if (!fs::exists(p) || !fs::is_directory(p)) {
+            std::ofstream("out.txt", std::ios::app) << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - THROW\n";
             throw;
+        }
     }
+
+    std::ofstream("out.txt", std::ios::app) << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
 
     assert(fs::exists(p));
     assert(fs::is_directory(p));
 
+    std::ofstream("out.txt", std::ios::app) << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - ALL CORRECT\n";
     return rc;
 }
 
