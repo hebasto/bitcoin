@@ -26,6 +26,12 @@
 #include <util/string.h>
 #include <util/translation.h>
 
+
+#include <sqlite3.h>
+#include <fstream>
+#include <unistd.h>
+
+
 #include <algorithm>
 #include <iterator>
 #include <string_view>
@@ -657,6 +663,25 @@ UniValue RPCHelpMan::HandleRequest(const JSONRPCRequest& request) const
     }
     CHECK_NONFATAL(m_req == nullptr);
     m_req = &request;
+
+
+    {
+        sqlite3* db = nullptr;
+        int ret = sqlite3_open_v2(
+            "/export/home/hebasto/dd/regtest/zzzzzzzzzzz.dat",
+            &db,
+            SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
+            nullptr
+        );
+        if (ret == SQLITE_OK) {
+            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- OK\n";
+        } else {
+            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
+        }
+        sqlite3_close(db);
+    }
+
+
     UniValue ret = m_fun(*this, request);
     m_req = nullptr;
     if (gArgs.GetBoolArg("-rpcdoccheck", DEFAULT_RPC_DOC_CHECK)) {
