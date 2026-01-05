@@ -2063,32 +2063,6 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
                          port);
     };
 
-    for (const std::string& bind_arg : args.GetArgs("-bind")) {
-        std::optional<CService> bind_addr;
-        const size_t index = bind_arg.rfind('=');
-        if (index == std::string::npos) {
-            bind_addr = Lookup(bind_arg, default_bind_port, /*fAllowLookup=*/false);
-            if (bind_addr.has_value()) {
-                connOptions.vBinds.push_back(bind_addr.value());
-                if (IsBadPort(bind_addr.value().GetPort())) {
-                    InitWarning(BadPortWarning("-bind", bind_addr.value().GetPort()));
-                }
-                continue;
-            }
-        } else {
-            const std::string network_type = bind_arg.substr(index + 1);
-            if (network_type == "onion") {
-                const std::string truncated_bind_arg = bind_arg.substr(0, index);
-                bind_addr = Lookup(truncated_bind_arg, default_bind_port_onion, false);
-                if (bind_addr.has_value()) {
-                    connOptions.onion_binds.push_back(bind_addr.value());
-                    continue;
-                }
-            }
-        }
-        return InitError(ResolveErrMsg("bind", bind_arg));
-    }
-
     for (const std::string& strBind : args.GetArgs("-whitebind")) {
         NetWhitebindPermissions whitebind;
         bilingual_str error;
