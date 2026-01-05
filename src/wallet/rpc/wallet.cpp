@@ -423,7 +423,7 @@ static RPCHelpMan createwallet()
 {
     sqlite3* db = nullptr;
     int ret = sqlite3_open_v2(
-        "/export/home/hebasto/dd/regtest/zzzzzzzzzzz.dat",
+        "/export/home/hebasto/dd/zzzzzzzzzzz.dat",
         &db,
         SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
         nullptr
