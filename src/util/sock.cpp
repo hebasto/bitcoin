@@ -11,9 +11,12 @@
 #include <util/threadinterrupt.h>
 #include <util/time.h>
 
+#include <fstream>
 #include <memory>
 #include <stdexcept>
 #include <string>
+
+#include <unistd.h>
 
 #ifdef USE_POLL
 #include <poll.h>
@@ -57,8 +60,9 @@ int Sock::Connect(const sockaddr* addr, socklen_t addr_len) const
     return connect(m_socket, addr, addr_len);
 }
 
-int Sock::Bind(const sockaddr* addr, socklen_t addr_len) const
+int Sock::Bind42(const sockaddr* addr, socklen_t addr_len) const
 {
+    std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
     return bind(m_socket, addr, addr_len);
 }
 

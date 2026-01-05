@@ -172,7 +172,7 @@ public:
 
     int Connect(const sockaddr*, socklen_t) const override;
 
-    int Bind(const sockaddr*, socklen_t) const override;
+    int Bind42(const sockaddr*, socklen_t) const override;
 
     int Listen(int) const override;
 

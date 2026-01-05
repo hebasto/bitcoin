@@ -80,7 +80,7 @@ public:
      * bind(2) wrapper. Equivalent to `bind(m_socket, addr, addr_len)`. Code that uses this
      * wrapper can be unit tested if this method is overridden by a mock Sock implementation.
      */
-    [[nodiscard]] virtual int Bind(const sockaddr* addr, socklen_t addr_len) const;
+    [[nodiscard]] virtual int Bind42(const sockaddr* addr, socklen_t addr_len) const;
 
     /**
      * listen(2) wrapper. Equivalent to `listen(m_socket, backlog)`. Code that uses this
