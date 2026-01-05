@@ -3294,21 +3294,29 @@ bool CConnman::Bind(const CService& addr_, unsigned int flags, NetPermissionFlag
 bool CConnman::InitBinds(const Options& options)
 {
     for (const auto& addrBind : options.vBinds) {
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
         if (!Bind(addrBind, BF_REPORT_ERROR, NetPermissionFlags::None)) {
             return false;
         }
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - Bound to " << addrBind.ToStringAddrPort() << "\n";
     }
     for (const auto& addrBind : options.vWhiteBinds) {
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
         if (!Bind(addrBind.m_service, BF_REPORT_ERROR, addrBind.m_flags)) {
             return false;
         }
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - Bound to " << addrBind.m_service.ToStringAddrPort() << "\n";
     }
     for (const auto& addr_bind : options.onion_binds) {
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
         if (!Bind(addr_bind, BF_REPORT_ERROR | BF_DONT_ADVERTISE, NetPermissionFlags::None)) {
             return false;
         }
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - Bound to " << addr_bind.ToStringAddrPort() << "\n";
     }
+    std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - bind_on_any " << std::boolalpha << options.bind_on_any << "\n";
     if (options.bind_on_any) {
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
         // Don't consider errors to bind on IPv6 "::" fatal because the host OS
         // may not have IPv6 support and the user did not explicitly ask us to
         // bind on that.
@@ -3319,9 +3327,11 @@ bool CConnman::InitBinds(const Options& options)
         inaddr_any.s_addr = htonl(INADDR_ANY);
         const CService ipv4_any{inaddr_any, GetListenPort()}; // 0.0.0.0
         if (!Bind(ipv4_any, BF_REPORT_ERROR, NetPermissionFlags::None)) {
+            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
             return false;
         }
     }
+    std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
     return true;
 }
 
