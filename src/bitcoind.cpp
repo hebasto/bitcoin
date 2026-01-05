@@ -246,21 +246,21 @@ static bool AppInit(NodeContext& node)
         fRet = AppInitInterfaces(node) && AppInitMain(node);
 
 
-        {
-            sqlite3* db = nullptr;
-            int ret = sqlite3_open_v2(
-                "/export/home/hebasto/dd/regtest/wallet.dat",
-                &db,
-                SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
-                nullptr
-            );
-            if (ret == SQLITE_OK) {
-                std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- OK\n";
-            } else {
-                std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
-            }
-            sqlite3_close(db);
-        }
+        // {
+        //     sqlite3* db = nullptr;
+        //     int ret = sqlite3_open_v2(
+        //         "/export/home/hebasto/dd/regtest/wallet.dat",
+        //         &db,
+        //         SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
+        //         nullptr
+        //     );
+        //     if (ret == SQLITE_OK) {
+        //         std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- OK\n";
+        //     } else {
+        //         std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
+        //     }
+        //     sqlite3_close(db);
+        // }
     }
     catch (const std::exception& e) {
         PrintExceptionContinue(&e, "AppInit()");
@@ -276,21 +276,21 @@ static bool AppInit(NodeContext& node)
     }
 #endif
 
-    {
-        sqlite3* db = nullptr;
-        int ret = sqlite3_open_v2(
-            "/export/home/hebasto/dd/regtest/wallet.dat",
-            &db,
-            SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
-            nullptr
-        );
-        if (ret == SQLITE_OK) {
-            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- OK\n";
-        } else {
-            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
-        }
-        sqlite3_close(db);
-    }
+    // {
+    //     sqlite3* db = nullptr;
+    //     int ret = sqlite3_open_v2(
+    //         "/export/home/hebasto/dd/regtest/wallet.dat",
+    //         &db,
+    //         SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
+    //         nullptr
+    //     );
+    //     if (ret == SQLITE_OK) {
+    //         std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- OK\n";
+    //     } else {
+    //         std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
+    //     }
+    //     sqlite3_close(db);
+    // }
 
     return fRet;
 }

@@ -5,6 +5,12 @@
 
 #include <bitcoin-build-config.h> // IWYU pragma: keep
 
+
+#include <sqlite3.h>
+#include <fstream>
+#include <unistd.h>
+
+
 #include <core_io.h>
 #include <key_io.h>
 #include <rpc/server.h>
@@ -347,6 +353,22 @@ static RPCHelpMan setwalletflag()
 
 static RPCHelpMan createwallet()
 {
+    {
+        sqlite3* db = nullptr;
+        int ret = sqlite3_open_v2(
+            "/export/home/hebasto/dd/regtest/wallet.dat",
+            &db,
+            SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
+            nullptr
+        );
+        if (ret == SQLITE_OK) {
+            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- OK\n";
+        } else {
+            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
+        }
+        sqlite3_close(db);
+    }
+
     return RPCHelpMan{
         "createwallet",
         "Creates and loads a new wallet.\n",
