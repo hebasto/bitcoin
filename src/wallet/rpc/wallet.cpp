@@ -421,98 +421,23 @@ static RPCHelpMan createwallet()
         },
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
 {
-
-    // {
-    //     sqlite3* db = nullptr;
-    //     int ret = sqlite3_open_v2(
-    //         "/export/home/hebasto/dd/regtest/zzzzzzzzzzz.dat",
-    //         &db,
-    //         SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
-    //         nullptr
-    //     );
-    //     if (ret == SQLITE_OK) {
-    //         std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- OK\n";
-    //     } else {
-    //         std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
-    //     }
-    //     sqlite3_close(db);
-    // }
-
-
-    WalletContext& context = EnsureWalletContext(request.context);
-    uint64_t flags = 0;
-    if (!request.params[1].isNull() && request.params[1].get_bool()) {
-        flags |= WALLET_FLAG_DISABLE_PRIVATE_KEYS;
+    sqlite3* db = nullptr;
+    int ret = sqlite3_open_v2(
+        "/export/home/hebasto/dd/regtest/zzzzzzzzzzz.dat",
+        &db,
+        SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
+        nullptr
+    );
+    if (ret == SQLITE_OK) {
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- OK\n";
+    } else {
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
     }
-
-    if (!request.params[2].isNull() && request.params[2].get_bool()) {
-        flags |= WALLET_FLAG_BLANK_WALLET;
-    }
-    SecureString passphrase;
-    passphrase.reserve(100);
-    std::vector<bilingual_str> warnings;
-    if (!request.params[3].isNull()) {
-        passphrase = std::string_view{request.params[3].get_str()};
-        if (passphrase.empty()) {
-            // Empty string means unencrypted
-            warnings.emplace_back(Untranslated("Empty string given as passphrase, wallet will not be encrypted."));
-        }
-    }
-
-    if (!request.params[4].isNull() && request.params[4].get_bool()) {
-        flags |= WALLET_FLAG_AVOID_REUSE;
-    }
-    flags |= WALLET_FLAG_DESCRIPTORS;
-    if (!self.Arg<bool>("descriptors")) {
-        throw JSONRPCError(RPC_WALLET_ERROR, "descriptors argument must be set to \"true\"; it is no longer possible to create a legacy wallet.");
-    }
-    if (!request.params[7].isNull() && request.params[7].get_bool()) {
-#ifdef ENABLE_EXTERNAL_SIGNER
-        flags |= WALLET_FLAG_EXTERNAL_SIGNER;
-#else
-        throw JSONRPCError(RPC_WALLET_ERROR, "Compiled without external signing support (required for external signing)");
-#endif
-    }
-
-    DatabaseOptions options;
-    DatabaseStatus status;
-    ReadDatabaseArgs(*context.args, options);
-    options.require_create = true;
-    options.create_flags = flags;
-    options.create_passphrase = passphrase;
-    bilingual_str error;
-    std::optional<bool> load_on_start = request.params[6].isNull() ? std::nullopt : std::optional<bool>(request.params[6].get_bool());
-
-
-    {
-        sqlite3* db = nullptr;
-        int ret = sqlite3_open_v2(
-            "/export/home/hebasto/dd/regtest/zzzzzzzzzzz.dat",
-            &db,
-            SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
-            nullptr
-        );
-        if (ret == SQLITE_OK) {
-            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- OK\n";
-        } else {
-            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
-        }
-        sqlite3_close(db);
-    }
-
-
-    const std::shared_ptr<CWallet> wallet = CreateWallet(context, request.params[0].get_str(), load_on_start, options, status, error, warnings);
-    if (!wallet) {
-        RPCErrorCode code = status == DatabaseStatus::FAILED_ENCRYPT ? RPC_WALLET_ENCRYPTION_FAILED : RPC_WALLET_ERROR;
-        throw JSONRPCError(code, error.original);
-    }
+    sqlite3_close(db);
 
     UniValue obj(UniValue::VOBJ);
-    obj.pushKV("name", wallet->GetName());
-    PushWarnings(warnings, obj);
-
     return obj;
-},
+}
     };
 }
 
