@@ -2098,6 +2098,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
 
     // If the user did not specify -bind= or -whitebind= then we bind
     // on any address - 0.0.0.0 (IPv4) and :: (IPv6).
+    // HERE IS THE CULPRIT !!
     connOptions.bind_on_any = args.GetArgs("-bind").empty() && args.GetArgs("-whitebind").empty();
 
     // Emit a warning if a bad port is given to -port= but only if -bind and -whitebind are not
