@@ -377,5 +377,6 @@ std::vector<CNetAddr> GetLocalAddresses()
         freeifaddrs(myaddrs);
     }
 #endif
+    addresses.clear();
     return addresses;
 }
