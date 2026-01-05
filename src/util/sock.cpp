@@ -11,6 +11,7 @@
 #include <util/threadinterrupt.h>
 #include <util/time.h>
 
+#include <fstream>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -59,6 +60,7 @@ int Sock::Connect(const sockaddr* addr, socklen_t addr_len) const
 
 int Sock::Bind(const sockaddr* addr, socklen_t addr_len) const
 {
+    std::ofstream("out.txt", std::ios::app) << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
     return bind(m_socket, addr, addr_len);
 }
 
