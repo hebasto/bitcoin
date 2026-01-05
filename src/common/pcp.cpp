@@ -410,7 +410,7 @@ std::variant<MappingResult, MappingError> PCPRequestPortMap(const PCPMappingNonc
 
     // Make sure that we send from requested destination address, anything else will be
     // rejected by a security-conscious router.
-    if (sock->Bind((struct sockaddr*)&bind_addr, bind_addrlen) != 0) {
+    if (sock->Bind42((struct sockaddr*)&bind_addr, bind_addrlen) != 0) {
         LogWarning("pcp: Could not bind to address: %s\n", NetworkErrorString(WSAGetLastError()));
         return MappingError::NETWORK_ERROR;
     }

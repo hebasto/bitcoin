@@ -149,7 +149,7 @@ public:
         return -1;
     }
 
-    int Bind(const sockaddr* sa, socklen_t sa_len) const override {
+    int Bind42(const sockaddr* sa, socklen_t sa_len) const override {
         CService service;
         if (service.SetSockAddr(sa, sa_len)) {
             // Can only bind to one of our local ips

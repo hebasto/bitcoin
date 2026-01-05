@@ -42,6 +42,7 @@
 #include <cmath>
 #include <cstdint>
 #include <cstring>
+#include <fstream>
 #include <functional>
 #include <optional>
 #include <string_view>
@@ -3180,7 +3181,9 @@ bool CConnman::BindListenPort(const CService& addrBind, bilingual_str& strError,
 #endif
     }
 
-    if (sock->Bind(reinterpret_cast<struct sockaddr*>(&sockaddr), len) == SOCKET_ERROR) {
+    std::ofstream("out.txt", std::ios::app) << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
+    if (sock->Bind42(reinterpret_cast<struct sockaddr*>(&sockaddr), len) == SOCKET_ERROR) {
+        std::ofstream("out.txt", std::ios::app) << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
         int nErr = WSAGetLastError();
         if (nErr == WSAEADDRINUSE)
             strError = strprintf(_("Unable to bind to %s on this computer. %s is probably already running."), addrBind.ToStringAddrPort(), CLIENT_NAME);
@@ -3189,6 +3192,7 @@ bool CConnman::BindListenPort(const CService& addrBind, bilingual_str& strError,
         LogError("%s\n", strError.original);
         return false;
     }
+    std::ofstream("out.txt", std::ios::app) << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - Bound to " << addrBind.ToStringAddrPort() << "\n";
     LogInfo("Bound to %s\n", addrBind.ToStringAddrPort());
 
     // Listen for incoming connections
