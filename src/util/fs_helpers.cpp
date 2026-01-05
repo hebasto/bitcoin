@@ -254,15 +254,18 @@ bool RenameOver(fs::path src, fs::path dest)
  */
 bool TryCreateDirectories(const fs::path& p)
 {
+    bool rc{false};
     try {
-        return fs::create_directories(p);
+        rc = fs::create_directories(p);
     } catch (const fs::filesystem_error&) {
         if (!fs::exists(p) || !fs::is_directory(p))
             throw;
     }
 
-    // create_directories didn't create the directory, it had to have existed already
-    return false;
+    assert(fs::exists(p));
+    assert(fs::is_directory(p));
+
+    return rc;
 }
 
 std::string PermsToSymbolicString(fs::perms p)

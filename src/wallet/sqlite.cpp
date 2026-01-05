@@ -253,6 +253,7 @@ void SQLiteDatabase::Open()
 
     if (m_db == nullptr) {
         if (!m_mock) {
+            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " -- m_dir_path=" << fs::PathToString(m_dir_path)  << "\n";
             TryCreateDirectories(m_dir_path);
         }
 
