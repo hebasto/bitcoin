@@ -253,11 +253,11 @@ void SQLiteDatabase::Open()
 
     if (m_db == nullptr) {
         if (!m_mock) {
-            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " -- m_dir_path=" << fs::PathToString(m_dir_path)  << "\n";
+            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- m_dir_path=" << fs::PathToString(m_dir_path)  << "\n";
             TryCreateDirectories(m_dir_path);
         }
 
-        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " -- m_file_path=" << m_file_path << "\n";
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- m_file_path=" << m_file_path << "\n";
         int ret = sqlite3_open_v2(m_file_path.c_str(), &m_db, flags, nullptr);
 
         if (ret != SQLITE_OK) {
