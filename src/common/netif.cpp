@@ -12,6 +12,11 @@
 #include <util/sock.h>
 #include <util/syserror.h>
 
+
+#include <fstream>
+#include <unistd.h>
+
+
 #if defined(__linux__)
 #include <linux/rtnetlink.h>
 #elif defined(__FreeBSD__)
@@ -363,19 +368,24 @@ std::vector<CNetAddr> GetLocalAddresses()
     }
 #elif defined(HAVE_IFADDRS)
     struct ifaddrs* myaddrs;
+    std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
     if (getifaddrs(&myaddrs) == 0) {
-        for (struct ifaddrs* ifa = myaddrs; ifa != nullptr; ifa = ifa->ifa_next)
-        {
+        std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
+        for (struct ifaddrs* ifa = myaddrs; ifa != nullptr; ifa = ifa->ifa_next) {
+            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
             if (ifa->ifa_addr == nullptr) continue;
             if ((ifa->ifa_flags & IFF_UP) == 0) continue;
             if ((ifa->ifa_flags & IFF_LOOPBACK) != 0) continue;
 
+            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << "\n";
             if (std::optional<CNetAddr> addr = FromSockAddr(ifa->ifa_addr, std::nullopt)) {
+                std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - " << (*addr).ToStringAddr() << "\n";
                 addresses.push_back(*addr);
             }
         }
         freeifaddrs(myaddrs);
     }
 #endif
+    std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " - addresses.size()=" << addresses.size() << "\n";
     return addresses;
 }
