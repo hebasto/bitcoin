@@ -665,21 +665,21 @@ UniValue RPCHelpMan::HandleRequest(const JSONRPCRequest& request) const
     m_req = &request;
 
 
-    {
-        sqlite3* db = nullptr;
-        int ret = sqlite3_open_v2(
-            "/export/home/hebasto/dd/regtest/zzzzzzzzzzz.dat",
-            &db,
-            SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
-            nullptr
-        );
-        if (ret == SQLITE_OK) {
-            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- OK\n";
-        } else {
-            std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
-        }
-        sqlite3_close(db);
-    }
+    // {
+    //     sqlite3* db = nullptr;
+    //     int ret = sqlite3_open_v2(
+    //         "/export/home/hebasto/dd/regtest/zzzzzzzzzzz.dat",
+    //         &db,
+    //         SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE,
+    //         nullptr
+    //     );
+    //     if (ret == SQLITE_OK) {
+    //         std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- OK\n";
+    //     } else {
+    //         std::ofstream("out.txt", std::ios::app) << "PID: " << getpid() << " - " << __FILE__ << ":" << __LINE__ << " - " << __func__ << " -- ret=" << sqlite3_errstr(ret) << "\n";
+    //     }
+    //     sqlite3_close(db);
+    // }
 
 
     UniValue ret = m_fun(*this, request);
