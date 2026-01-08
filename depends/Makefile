@@ -110,6 +110,9 @@ host_prefix=$($(host_arch)_$(host_os)_prefix)
 build_prefix=$(host_prefix)/native
 build_host=$(build)
 
+$(host_arch)_$(host_os)_cachedir=$(BASE_CACHE)/$(host)
+build_cachedir=$(BASE_CACHE)/native
+
 all: install
 
 include hosts/$(host_os).mk
@@ -181,7 +184,8 @@ endif
 
 all_packages = $(packages) $(native_packages)
 
-meta_depends = Makefile config.guess config.sub funcs.mk builders/default.mk hosts/default.mk hosts/$(host_os).mk builders/$(build_os).mk
+meta_depends_build = Makefile config.guess config.sub funcs.mk builders/default.mk builders/$(build_os).mk
+meta_depends_$(host_arch)_$(host_os) = $(meta_depends_build) hosts/default.mk hosts/$(host_os).mk
 
 include funcs.mk
 
