@@ -2,6 +2,7 @@
              ((gnu packages bash) #:select (bash-minimal))
              (gnu packages bison)
              ((gnu packages certs) #:select (nss-certs))
+             ((gnu packages check) #:select (libfaketime))
              ((gnu packages cmake) #:select (cmake-minimal))
              (gnu packages commencement)
              (gnu packages compression)
@@ -208,7 +209,33 @@ and abstract ELF, PE and MachO formats.")
                (base32
                 "1j47vwq4caxfv0xw68kw5yh00qcpbd56d7rq6c483ma3y7s96yyz"))))
     (build-system cmake-build-system)
-    (inputs (list openssl))
+    (arguments
+     (list
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'patch-source-shebangs 'patch-dates
+            (lambda _
+              ;; Add 5 years to dates in tests.
+              (substitute* "cmake/CMakeTest.cmake"
+                (("1556708400") "1714561200")
+                (("1567296000") "1725148800")
+                (("2051222400") "2208988800"))
+              (substitute* "tests/conf/makecerts.sh"
+                (("@2017-01-01 00:00:00") "@2022-01-01 00:00:00")
+                (("@2018-01-01 00:00:00") "@2023-01-01 00:00:00")
+                (("@2019-01-01 00:00:00") "@2024-01-01 00:00:00")
+                (("/bin/bash") (which "bash")))
+              (substitute* "tests/conf/openssl_intermediate.cnf"
+                (("180101000000Z") "230101000000Z")
+                (("241231000000Z") "291231000000Z"))
+              (substitute* "tests/conf/openssl_root.cnf"
+                (("180101000000Z") "230101000000Z")
+                (("260101000000Z") "310101000000Z"))
+              (substitute* "tests/conf/openssl_intermediate.cnf"
+                (("20180101000000Z") "20230101000000Z")
+                (("20280101000000Z") "20280101000000Z")))))
+      #:parallel-tests? #f))
+    (inputs (list libfaketime openssl))
     (home-page "https://github.com/mtrojnar/osslsigncode")
     (synopsis "Authenticode signing and timestamping tool")
     (description "osslsigncode is a small tool that implements part of the
