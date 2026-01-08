@@ -1,6 +1,6 @@
 packages:=
 
-boost_packages = boost
+boost_noarch_packages = boost
 
 libevent_packages = libevent
 

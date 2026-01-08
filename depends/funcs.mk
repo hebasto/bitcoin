@@ -316,6 +316,7 @@ endef
 
 #set the type for host/build packages.
 $(foreach native_package,$(native_packages),$(eval $(native_package)_type=build))
+$(foreach noarch_package,$(noarch_packages),$(eval $(noarch_package)_type=noarch))
 $(foreach package,$(packages),$(eval $(package)_type=$(host_arch)_$(host_os)))
 
 #set overridable defaults
@@ -323,6 +324,7 @@ $(foreach package,$(all_packages),$(eval $(call int_vars,$(package))))
 
 #include package files
 $(foreach native_package,$(native_packages),$(eval include packages/$(native_package).mk))
+$(foreach noarch_package,$(noarch_packages),$(eval include packages/$(noarch_package).mk))
 $(foreach package,$(packages),$(eval include packages/$(package).mk))
 
 #set build properties for included package files

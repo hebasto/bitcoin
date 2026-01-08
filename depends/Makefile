@@ -108,10 +108,12 @@ $(host_arch)_$(host_os)_prefix=$(BASEDIR)/$(host)
 $(host_arch)_$(host_os)_host=$(host)
 host_prefix=$($(host_arch)_$(host_os)_prefix)
 build_prefix=$(host_prefix)/native
+noarch_prefix=$(host_prefix)/noarch
 build_host=$(build)
 
 $(host_arch)_$(host_os)_cachedir=$(BASE_CACHE)/$(host)
 build_cachedir=$(BASE_CACHE)/native
+noarch_cachedir=$(BASE_CACHE)/noarch
 
 all: install
 
@@ -155,7 +157,7 @@ $(host_arch)_$(host_os)_id:=$(shell env CC='$(host_CC)' C_STANDARD='$(C_STANDARD
                                         DEBUG='$(DEBUG)' LTO='$(LTO)' \
                                         ./gen_id '$(HOST_ID_SALT)' 'GUIX_ENVIRONMENT=$(realpath $(GUIX_ENVIRONMENT))')
 
-boost_packages_$(NO_BOOST) = $(boost_packages)
+boost_noarch_packages_$(NO_BOOST) = $(boost_noarch_packages)
 
 libevent_packages_$(NO_LIBEVENT) = $(libevent_packages)
 
@@ -170,8 +172,9 @@ zmq_packages_$(NO_ZMQ) = $(zmq_packages)
 ipc_packages_$(NO_IPC) = $(ipc_packages)
 usdt_packages_$(NO_USDT) = $(usdt_$(host_os)_packages)
 
-packages += $($(host_arch)_$(host_os)_packages) $($(host_os)_packages) $(boost_packages_) $(libevent_packages_) $(qt_packages_) $(wallet_packages_) $(usdt_packages_)
+packages += $($(host_arch)_$(host_os)_packages) $($(host_os)_packages) $(libevent_packages_) $(qt_packages_) $(wallet_packages_) $(usdt_packages_)
 native_packages += $($(host_arch)_$(host_os)_native_packages) $($(host_os)_native_packages) $(qt_native_packages_)
+noarch_packages += $($(host_arch)_$(host_os)_noarch_packages) $($(host_os)_noarch_packages) $(boost_noarch_packages_)
 
 ifneq ($(zmq_packages_),)
 packages += $(zmq_packages)
@@ -182,16 +185,17 @@ packages += $(ipc_packages)
 native_packages += $(multiprocess_native_packages)
 endif
 
-all_packages = $(packages) $(native_packages)
+all_packages = $(packages) $(native_packages) $(noarch_packages)
 
 meta_depends_build = Makefile config.guess config.sub funcs.mk builders/default.mk builders/$(build_os).mk
+meta_depends_noarch = $(meta_depends_build)
 meta_depends_$(host_arch)_$(host_os) = $(meta_depends_build) hosts/default.mk hosts/$(host_os).mk
 
 include funcs.mk
 
 final_build_id_long+=$(shell $(build_SHA256SUM) toolchain.cmake.in)
 final_build_id+=$(shell echo -n "$(final_build_id_long)" | $(build_SHA256SUM) | cut -c-$(HASH_LENGTH))
-$(host_prefix)/.stamp_$(final_build_id): $(native_packages) $(packages)
+$(host_prefix)/.stamp_$(final_build_id): $(native_packages) $(noarch_packages) $(packages)
 	rm -rf $(@D)
 	mkdir -p $(@D)
 	echo copying packages: $^
