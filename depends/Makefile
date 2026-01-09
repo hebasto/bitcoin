@@ -110,6 +110,9 @@ host_prefix=$($(host_arch)_$(host_os)_prefix)
 build_prefix=$(host_prefix)/native
 build_host=$(build)
 
+$(host_arch)_$(host_os)_cachedir=$(BASE_CACHE)/$(host)
+build_cachedir=$(BASE_CACHE)/native
+
 all: install
 
 include hosts/$(host_os).mk
@@ -181,7 +184,8 @@ endif
 
 all_packages = $(packages) $(native_packages)
 
-meta_depends = Makefile config.guess config.sub funcs.mk builders/default.mk hosts/default.mk hosts/$(host_os).mk builders/$(build_os).mk
+meta_depends_build = Makefile config.guess config.sub funcs.mk builders/default.mk builders/$(build_os).mk
+meta_depends_$(host_arch)_$(host_os) = $(meta_depends_build) hosts/default.mk hosts/$(host_os).mk
 
 include funcs.mk
 
@@ -239,7 +243,7 @@ $(host_prefix)/toolchain.cmake : toolchain.cmake.in $(host_prefix)/.stamp_$(fina
 	touch $@
 
 define check_or_remove_cached
-  mkdir -p $(BASE_CACHE)/$(host)/$(package) && cd $(BASE_CACHE)/$(host)/$(package); \
+  mkdir -p $($($(1)_type)_cachedir)/$(package) && cd $($($(1)_type)_cachedir)/$(package); \
   $(build_SHA256SUM) -c $($(package)_cached_checksum) >/dev/null 2>/dev/null || \
   ( rm -f $($(package)_cached_checksum); \
     if test -f "$($(package)_cached)"; then echo "Checksum mismatch for $(package). Forcing rebuild.."; rm -f $($(package)_cached_checksum) $($(package)_cached); fi )
