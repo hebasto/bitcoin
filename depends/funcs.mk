@@ -60,7 +60,7 @@ endef
 
 define int_get_build_recipe_hash
 $(eval $(1)_patches_path?=$(PATCHES_PATH)/$(1))
-$(eval $(1)_all_file_checksums:=$(shell $(build_SHA256SUM) $(meta_depends) packages/$(1).mk $(addprefix $($(1)_patches_path)/,$($(1)_patches)) | cut -d" " -f1))
+$(eval $(1)_all_file_checksums:=$(shell $(build_SHA256SUM) $(meta_depends_$($(1)_type)) packages/$(1).mk $(addprefix $($(1)_patches_path)/,$($(1)_patches)) | cut -d" " -f1))
 # If $(1)_local_dir is set, create a tarball of the local directory contents to
 # use as the source of the package, and include a hash of the tarball in the
 # package id, so if directory contents change, the package and packages
@@ -83,9 +83,9 @@ $(1)_staging_dir=$(base_staging_dir)/$(host)/$(1)/$($(1)_version)-$($(1)_build_i
 $(1)_staging_prefix_dir:=$$($(1)_staging_dir)$($($(1)_type)_prefix)
 $(1)_extract_dir:=$(base_build_dir)/$(host)/$(1)/$($(1)_version)-$($(1)_build_id)
 $(1)_build_dir:=$$($(1)_extract_dir)/$$($(1)_build_subdir)
-$(1)_cached_checksum:=$(BASE_CACHE)/$(host)/$(1)/$(1)-$($(1)_version)-$($(1)_build_id).tar.gz.hash
 $(1)_patch_dir:=$(base_build_dir)/$(host)/$(1)/$($(1)_version)-$($(1)_build_id)/.patches-$($(1)_build_id)
-$(1)_cached:=$(BASE_CACHE)/$(host)/$(1)/$(1)-$($(1)_version)-$($(1)_build_id).tar.gz
+$(1)_cached_checksum:=$($($(1)_type)_cachedir)/$(1)/$(1)-$($(1)_version)-$($(1)_build_id).tar.gz.hash
+$(1)_cached:=$($($(1)_type)_cachedir)/$(1)/$(1)-$($(1)_version)-$($(1)_build_id).tar.gz
 $(1)_build_log:=$(BASEDIR)/$(1)-$($(1)_version)-$($(1)_build_id).log
 endef
 
