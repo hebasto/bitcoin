@@ -39,7 +39,7 @@ public:
     bool IdIsXprv(uint8_t idx) const { return idx % KEY_TYPES_COUNT == 5; }
 
     //! When initializing the target, populate the list of keys.
-    // void Init();
+    void Init();
 
     //! Parse an id in the keys vectors from a 2-characters hex string.
     std::optional<uint8_t> IdxFromHex(std::string_view hex_characters) const;
