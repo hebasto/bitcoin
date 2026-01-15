@@ -396,6 +396,14 @@ inline void LogPrintFormatInternal(SourceLocation&& source_loc, BCLog::LogFlags 
 #define LogWarning(...) LogPrintLevel_(BCLog::LogFlags::ALL, BCLog::Level::Warning, /*should_ratelimit=*/true, __VA_ARGS__)
 #define LogError(...) LogPrintLevel_(BCLog::LogFlags::ALL, BCLog::Level::Error, /*should_ratelimit=*/true, __VA_ARGS__)
 
+template <typename... Args>
+static inline void detail_LogDispatch(const BCLog::LogFlags& category, BCLog::Level level, Args&&... args)
+{
+    bool rate_limit{level >= BCLog::Level::Info};
+    Assume(!rate_limit); // Only called with the levels below.
+    LogPrintLevel_(category, level, rate_limit, std::forward<Args>(args)...);
+}
+
 // Use a macro instead of a function for conditional logging to prevent
 // evaluating arguments when logging for the category is not enabled.
 
@@ -405,9 +413,7 @@ inline void LogPrintFormatInternal(SourceLocation&& source_loc, BCLog::LogFlags 
 #define detail_LogIfCategoryAndLevelEnabled(category, level, ...)     \
     do {                                                              \
         if (LogAcceptCategory((category), (level))) {                 \
-            bool rate_limit{level >= BCLog::Level::Info};             \
-            Assume(!rate_limit);/*Only called with the levels below*/ \
-            LogPrintLevel_(category, level, rate_limit, __VA_ARGS__); \
+            detail_LogDispatch((category), (level), __VA_ARGS__);     \
         }                                                             \
     } while (0)
 
