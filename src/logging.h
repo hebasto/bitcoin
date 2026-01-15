@@ -9,10 +9,7 @@
 #include <crypto/siphash.h>
 #include <threadsafety.h>
 #include <tinyformat.h>
-// LogDebug and LogTrace expand to use Assume() from util/check.h.
-// We export this include so consumers of these macros implicitly
-// satisfy that dependency.
-#include <util/check.h> // IWYU pragma: export
+#include <util/check.h>
 #include <util/fs.h>
 #include <util/string.h>
 #include <util/time.h>
