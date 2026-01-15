@@ -26,21 +26,21 @@ void MockedDescriptorConverter::Init() {
             privkey.Set(key_data.begin(), key_data.end(), !IdIsUnCompPubKey(i));
             if (IdIsCompPubKey(i) || IdIsUnCompPubKey(i)) {
                 CPubKey pubkey{privkey.GetPubKey()};
-                keys_str[i] = HexStr(pubkey);
+                // keys_str[i] = HexStr(pubkey);
             } else if (IdIsXOnlyPubKey(i)) {
                 const XOnlyPubKey pubkey{privkey.GetPubKey()};
-                keys_str[i] = HexStr(pubkey);
+                // keys_str[i] = HexStr(pubkey);
             } else {
-                keys_str[i] = EncodeSecret(privkey);
+                // keys_str[i] = EncodeSecret(privkey);
             }
         } else {
             CExtKey ext_privkey;
             ext_privkey.SetSeed(key_data);
             if (IdIsXprv(i)) {
-                keys_str[i] = EncodeExtKey(ext_privkey);
+                // keys_str[i] = EncodeExtKey(ext_privkey);
             } else {
                 const CExtPubKey ext_pubkey{ext_privkey.Neuter()};
-                keys_str[i] = EncodeExtPubKey(ext_pubkey);
+                // keys_str[i] = EncodeExtPubKey(ext_pubkey);
             }
         }
     }
@@ -66,7 +66,7 @@ std::optional<std::string> MockedDescriptorConverter::GetDescriptor(std::string_
         if (mocked_desc[i] == '%') {
             if (i + 3 >= mocked_desc.size()) return {};
             if (const auto idx = IdxFromHex(mocked_desc.substr(i + 1, 2))) {
-                desc += keys_str[*idx];
+                // desc += keys_str[*idx];
                 i += 3;
             } else {
                 return {};
