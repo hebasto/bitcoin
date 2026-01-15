@@ -1,10 +1,9 @@
 #include <key.h>
-#include <util/strencodings.h>
 
-#include <ranges>
-#include <stack>
+#include <array>
+#include <cstddef>
 
-static void foo()
+[[maybe_unused]] static void foo()
 {
     std::array<std::byte, 32> key_data{std::byte{1}};
     CKey privkey;
