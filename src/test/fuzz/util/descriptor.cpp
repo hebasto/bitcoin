@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <test/fuzz/util/descriptor.h>
+#include <test/fuzz/util/descriptor.h> // IWYU pragma: associated
 
 #include <key.h>
 #include <key_io.h>
