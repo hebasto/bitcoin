@@ -4,6 +4,9 @@
 
 #include <core_io.h>
 
+// IWYU incorrectly suggests replacing this header
+// with forward declarations.
+// See https://github.com/include-what-you-use/include-what-you-use/issues/1886.
 #include <primitives/block.h> // IWYU pragma: keep
 #include <primitives/transaction.h>
 #include <script/interpreter.h>
