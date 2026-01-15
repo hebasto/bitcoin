@@ -17,7 +17,7 @@ void MockedDescriptorConverter::Init() {
     std::array<std::byte, 32> key_data{std::byte{1}};
     // Generate keys of all kinds and store them in the keys array.
     for (size_t i{0}; i < TOTAL_KEYS_GENERATED; i++) {
-        key_data[31] = std::byte(i);
+        // key_data[31] = std::byte(i);
 
         // If this is a "raw" key, generate a normal privkey. Otherwise generate
         // an extended one.
