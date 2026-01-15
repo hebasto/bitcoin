@@ -17,22 +17,22 @@ void MockedDescriptorConverter::Init() {
     std::array<std::byte, 32> key_data{std::byte{1}};
     // Generate keys of all kinds and store them in the keys array.
     for (size_t i{0}; i < TOTAL_KEYS_GENERATED; i++) {
-        // key_data[31] = std::byte(i);
+        key_data[31] = std::byte(i);
 
-        // // If this is a "raw" key, generate a normal privkey. Otherwise generate
-        // // an extended one.
-        // if (IdIsCompPubKey(i) || IdIsUnCompPubKey(i) || IdIsXOnlyPubKey(i) || IdIsConstPrivKey(i)) {
-        //     CKey privkey;
-        //     privkey.Set(key_data.begin(), key_data.end(), !IdIsUnCompPubKey(i));
-        //     if (IdIsCompPubKey(i) || IdIsUnCompPubKey(i)) {
-        //         CPubKey pubkey{privkey.GetPubKey()};
-        //         // keys_str[i] = HexStr(pubkey);
-        //     } else if (IdIsXOnlyPubKey(i)) {
-        //         const XOnlyPubKey pubkey{privkey.GetPubKey()};
-        //         // keys_str[i] = HexStr(pubkey);
-        //     } else {
-        //         // keys_str[i] = EncodeSecret(privkey);
-        //     }
+        // If this is a "raw" key, generate a normal privkey. Otherwise generate
+        // an extended one.
+        if (IdIsCompPubKey(i) || IdIsUnCompPubKey(i) || IdIsXOnlyPubKey(i) || IdIsConstPrivKey(i)) {
+            CKey privkey;
+            privkey.Set(key_data.begin(), key_data.end(), !IdIsUnCompPubKey(i));
+            if (IdIsCompPubKey(i) || IdIsUnCompPubKey(i)) {
+                CPubKey pubkey{privkey.GetPubKey()};
+                // keys_str[i] = HexStr(pubkey);
+            } else if (IdIsXOnlyPubKey(i)) {
+                const XOnlyPubKey pubkey{privkey.GetPubKey()};
+                // keys_str[i] = HexStr(pubkey);
+            } else {
+                // keys_str[i] = EncodeSecret(privkey);
+            }
         // } else {
         //     CExtKey ext_privkey;
         //     ext_privkey.SetSeed(key_data);
@@ -42,7 +42,7 @@ void MockedDescriptorConverter::Init() {
         //         const CExtPubKey ext_pubkey{ext_privkey.Neuter()};
         //         // keys_str[i] = EncodeExtPubKey(ext_pubkey);
         //     }
-        // }
+        }
     }
 }
 
