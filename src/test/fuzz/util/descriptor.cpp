@@ -5,8 +5,6 @@
 #include <test/fuzz/util/descriptor.h> // IWYU pragma: associated
 
 #include <key.h>
-#include <key_io.h>
-#include <pubkey.h>
 #include <util/strencodings.h>
 
 #include <ranges>
@@ -24,15 +22,15 @@ void MockedDescriptorConverter::Init() {
         if (IdIsCompPubKey(i) || IdIsUnCompPubKey(i) || IdIsXOnlyPubKey(i) || IdIsConstPrivKey(i)) {
             CKey privkey;
             privkey.Set(key_data.begin(), key_data.end(), !IdIsUnCompPubKey(i));
-            if (IdIsCompPubKey(i) || IdIsUnCompPubKey(i)) {
-            //     CPubKey pubkey{privkey.GetPubKey()};
-            //     // keys_str[i] = HexStr(pubkey);
-            // } else if (IdIsXOnlyPubKey(i)) {
-            //     const XOnlyPubKey pubkey{privkey.GetPubKey()};
-            //     // keys_str[i] = HexStr(pubkey);
-            // } else {
-            //     // keys_str[i] = EncodeSecret(privkey);
-            }
+            // if (IdIsCompPubKey(i) || IdIsUnCompPubKey(i)) {
+            // //     CPubKey pubkey{privkey.GetPubKey()};
+            // //     // keys_str[i] = HexStr(pubkey);
+            // // } else if (IdIsXOnlyPubKey(i)) {
+            // //     const XOnlyPubKey pubkey{privkey.GetPubKey()};
+            // //     // keys_str[i] = HexStr(pubkey);
+            // // } else {
+            // //     // keys_str[i] = EncodeSecret(privkey);
+            // }
         // } else {
         //     CExtKey ext_privkey;
         //     ext_privkey.SetSeed(key_data);
