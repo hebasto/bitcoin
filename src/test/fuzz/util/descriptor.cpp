@@ -1,12 +1,13 @@
 #include <array>
 #include <cstddef>
+#include <cstring>
 #include <memory>
 
 template <typename T>
 void Set(const T pbegin, const T pend, bool fCompressedIn)
 {
     std::unique_ptr<std::array<unsigned char, 32>> keydata;
-    memcpy(keydata->data(), (unsigned char*)&pbegin[0], keydata->size());
+    std::memcpy(keydata->data(), (unsigned char*)&pbegin[0], keydata->size());
 }
 
 [[maybe_unused]] static void foo()
