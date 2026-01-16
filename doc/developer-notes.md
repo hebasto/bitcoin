@@ -558,6 +558,25 @@ llvm-cov show \
 
 The generated coverage report can be accessed at `build/coverage_report/index.html`.
 
+### Using IWYU
+
+The [`include-what-you-use`](https://github.com/include-what-you-use/include-what-you-use) tool (IWYU)
+helps to enforce the source code organization [policy](#source-code-organization) in this repository.
+
+When running IWYU locally, it is recommended to use the same version as the [CI](/ci/test/00_setup_env_native_iwyu.sh)
+to ensure consistency. When building IWYU from source, you may also need to apply the [patch](/ci/test/01_iwyu.patch)
+used by the CI.
+
+In some cases, IWYU might suggest headers that seem unnecessary at first glance, but are actually required.
+For example, a macro may use a symbol that requires its own include. Another example is passing a string literal
+to a function that accepts a `std::string` parameter: an implicit conversion occurs at the callsite using the
+`std::string` constructor, which makes the corresponding header required.
+
+We accept these suggestions, and no further action is required to silence them.
+
+Use `IWYU pragma: export` very sparingly, as this enforces transitive inclusion of headers
+and undermines the specific purpose of IWYU.
+
 ### Performance profiling with perf
 
 Profiling is a good way to get a precise idea of where time is being spent in
@@ -1057,7 +1076,7 @@ Write scripts in Python or Rust rather than bash, when possible.
 
   - *Rationale*: Excluding headers because they are already indirectly included results in compilation
     failures when those indirect dependencies change. Furthermore, it obscures what the real code
-    dependencies are.
+    dependencies are. The [Using IWYU](#using-iwyu) section describes a tool to help enforce this.
 
 - Don't import anything into the global namespace (`using namespace ...`). Use
   fully specified types such as `std::string`.
