@@ -20,8 +20,25 @@ def run(cmd, **kwargs):
         sys.exit(str(e))
 
 
+ENV_VARS = {
+    "standard": [],
+    "clang-cl": [
+        "cmake", "-E", "env",
+        "CXXFLAGS='-Wno-return-type -Wno-error=conditional-uninitialized'",
+    ],
+    "fuzz": [],
+}
+
+
 GENERATE_OPTIONS = {
     "standard": [
+        "-DBUILD_BENCH=ON",
+        "-DBUILD_KERNEL_LIB=ON",
+        "-DBUILD_UTIL_CHAINSTATE=ON",
+        "-DCMAKE_COMPILE_WARNING_AS_ERROR=ON",
+    ],
+    "clang-cl": [
+        "-T", "ClangCL",
         "-DBUILD_BENCH=ON",
         "-DBUILD_KERNEL_LIB=ON",
         "-DBUILD_UTIL_CHAINSTATE=ON",
@@ -46,8 +63,8 @@ def generate(ci_type):
         "-Werror=dev",
         "--preset",
         "vs2026",
-    ] + GENERATE_OPTIONS[ci_type]
-    run(command)
+    ]
+    run(ENV_VARS[ci_type] + command + GENERATE_OPTIONS[ci_type])
 
 
 def build():

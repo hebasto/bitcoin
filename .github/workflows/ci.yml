@@ -219,6 +219,8 @@ jobs:
         include:
           - job-type: standard
             job-name: 'Windows native, VS'
+          - job-type: clang-cl
+            job-name: 'Windows native, clang-cl'
           - job-type: fuzz
             job-name: 'Windows native, fuzz, VS'
 
