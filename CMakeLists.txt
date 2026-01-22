@@ -281,6 +281,11 @@ if(WIN32)
       /Zc:__cplusplus
       /sdl
     )
+    target_link_libraries(core_interface INTERFACE
+      # __int128 division when using clang-cl requires the builtins library.
+      # See https://clang.llvm.org/docs/UsersManual.html#finding-clang-runtime-libraries.
+      $<$<CXX_COMPILER_ID:Clang>:clang_rt.builtins-x86_64>
+    )
     target_link_options(core_interface INTERFACE
       # We embed our own manifests.
       /MANIFEST:NO
