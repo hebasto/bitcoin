@@ -218,15 +218,12 @@ jobs:
         job-type: [standard, fuzz]
         include:
           - job-type: standard
-            env_vars: {}
             generate-options: '-DBUILD_BENCH=ON -DBUILD_KERNEL_LIB=ON -DBUILD_UTIL_CHAINSTATE=ON -DWERROR=ON'
             job-name: 'Windows native, MSVC'
           - job-type: clang-cl
-            env_vars: { CXXFLAGS: '-Wno-return-type -Wno-error=unused-private-field -Wno-error=conditional-uninitialized' }
-            generate-options: '-T ClangCL -DBUILD_BENCH=ON -DBUILD_KERNEL_LIB=ON -DBUILD_UTIL_CHAINSTATE=ON -DWERROR=ON'
+            generate-options: '-T ClangCL -DBUILD_BENCH=ON -DBUILD_KERNEL_LIB=ON -DBUILD_UTIL_CHAINSTATE=ON -DWERROR=ON -DAPPEND_CXXFLAGS="-Wno-error=return-type -Wno-unused-private-field -Wno-conditional-uninitialized"'
             job-name: 'Windows native, clang-cl'
           - job-type: fuzz
-            env_vars: {}
             generate-options: '-DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DVCPKG_MANIFEST_FEATURES="wallet" -DBUILD_GUI=OFF -DWITH_ZMQ=OFF -DBUILD_FOR_FUZZING=ON -DWERROR=ON'
             job-name: 'Windows native, fuzz, MSVC'
 
@@ -277,7 +274,6 @@ jobs:
           key: ${{ github.job }}-vcpkg-binary-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
 
       - name: Generate build system
-        env: ${{ matrix.env_vars }}
         run: |
           cmake -B build -Werror=dev --preset vs2022 -DCMAKE_TOOLCHAIN_FILE="${VCPKG_INSTALLATION_ROOT}/scripts/buildsystems/vcpkg.cmake" ${{ matrix.generate-options }}
 
