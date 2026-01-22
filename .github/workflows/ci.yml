@@ -222,7 +222,7 @@ jobs:
             generate-options: '-DBUILD_BENCH=ON -DBUILD_KERNEL_LIB=ON -DBUILD_UTIL_CHAINSTATE=ON -DWERROR=ON'
             job-name: 'Windows native, MSVC'
           - job-type: clang-cl
-            env_vars: { CXXFLAGS: '-Wno-return-type -Wno-error=unused-private-field -Wno-error=conditional-uninitialized' }
+            env_vars: { CXXFLAGS: '-Wno-error=return-type -Wno-unused-private-field -Wno-conditional-uninitialized' }
             generate-options: '-T ClangCL -DBUILD_BENCH=ON -DBUILD_KERNEL_LIB=ON -DBUILD_UTIL_CHAINSTATE=ON -DWERROR=ON'
             job-name: 'Windows native, clang-cl'
           - job-type: fuzz
