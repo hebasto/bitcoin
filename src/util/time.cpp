@@ -5,15 +5,15 @@
 
 #include <util/time.h>
 
-#include <compat/compat.h>
 #include <tinyformat.h>
 #include <util/check.h>
 #include <util/strencodings.h>
 
 #include <array>
 #include <atomic>
-#include <chrono>
+#include <compare>
 #include <optional>
+#include <ratio>
 #include <string>
 #include <string_view>
 #include <thread>
