@@ -6,8 +6,15 @@
 #ifndef BITCOIN_UTIL_TIME_H
 #define BITCOIN_UTIL_TIME_H
 
+#ifdef WIN32
+#include <winsock2.h>
+#else
+#include <sys/time.h>
+#endif
+
 #include <chrono> // IWYU pragma: export
 #include <cstdint>
+#include <ctime>
 #include <optional>
 #include <string>
 #include <string_view>
