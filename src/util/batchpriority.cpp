@@ -2,15 +2,19 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <util/batchpriority.h>
+
 #include <logging.h>
 #include <util/syserror.h>
 
+#include <string>
+
 #if (defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__DragonFly__))
-#include <pthread.h>
 #include <pthread_np.h>
 #endif
 
 #ifndef WIN32
+#include <pthread.h>
 #include <sched.h>
 #endif
 
