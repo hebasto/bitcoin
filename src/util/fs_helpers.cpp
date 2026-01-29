@@ -3,27 +3,19 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <util/fs_helpers.h>
-
 #include <bitcoin-build-config.h> // IWYU pragma: keep
+
+#include <util/fs_helpers.h>
 
 #include <logging.h>
 #include <sync.h>
 #include <util/fs.h>
 #include <util/syserror.h>
 
-#include <cerrno>
-#include <fstream>
-#include <map>
-#include <memory>
-#include <optional>
-#include <string>
-#include <system_error>
-#include <utility>
-
 #ifndef WIN32
 #include <fcntl.h>
 #include <sys/resource.h>
+#include <sys/types.h>
 #include <unistd.h>
 #else
 #include <io.h>
@@ -34,6 +26,15 @@
 #include <sys/mount.h>
 #include <sys/param.h>
 #endif
+
+#include <cerrno>
+#include <fstream>
+#include <map>
+#include <memory>
+#include <optional>
+#include <string>
+#include <system_error>
+#include <utility>
 
 /** Mutex to protect dir_locks. */
 static GlobalMutex cs_dir_locks;
