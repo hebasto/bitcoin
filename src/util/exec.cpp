@@ -5,10 +5,6 @@
 #include <util/exec.h>
 
 #include <util/fs.h>
-#include <util/subprocess.h>
-
-#include <string>
-#include <vector>
 
 #ifdef WIN32
 #include <process.h>
@@ -16,6 +12,10 @@
 #else
 #include <unistd.h>
 #endif
+
+#include <cstdlib>
+#include <string>
+#include <system_error>
 
 namespace util {
 int ExecVp(const char* file, char* const argv[])

@@ -4,15 +4,16 @@
 
 #include <bitcoin-build-config.h> // IWYU pragma: keep
 
-#include <tinyformat.h>
 #include <util/syserror.h>
 
-#include <cstring>
-#include <string>
+#include <tinyformat.h>
 
 #if defined(WIN32)
 #include <windows.h>
 #endif
+
+#include <cstring>
+#include <string>
 
 std::string SysErrorString(int err)
 {
