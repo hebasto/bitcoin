@@ -41,6 +41,7 @@
 #include <sys/types.h>
 
 #ifndef WIN32
+#include <sys/socket.h>
 #include <sys/wait.h>
 #endif
 

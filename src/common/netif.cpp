@@ -6,13 +6,21 @@
 
 #include <common/netif.h>
 
+#include <compat/compat.h>
 #include <logging.h>
 #include <netbase.h>
 #include <util/check.h>
 #include <util/sock.h>
-#include <util/syserror.h>
+
+#include <cerrno>
+#include <cstdint>
+#include <cstring>
+#include <functional>
+#include <memory>
+#include <string>
 
 #if defined(__linux__)
+#include <linux/netlink.h>
 #include <linux/rtnetlink.h>
 #elif defined(__FreeBSD__)
 #include <osreldate.h>
@@ -30,7 +38,7 @@
 #endif
 
 #ifdef HAVE_IFADDRS
-#include <sys/types.h>
+#include <sys/types.h> // IWYU pragma: keep
 #include <ifaddrs.h>
 #endif
 

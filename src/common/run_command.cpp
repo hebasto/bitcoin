@@ -8,10 +8,14 @@
 
 #include <tinyformat.h>
 #include <univalue.h>
-
 #ifdef ENABLE_EXTERNAL_SIGNER
 #include <util/subprocess.h>
 #endif // ENABLE_EXTERNAL_SIGNER
+
+#include <sstream>
+#include <stdexcept>
+#include <utility>
+#include <vector>
 
 UniValue RunCommandParseJSON(const std::string& str_command, const std::string& str_std_in)
 {

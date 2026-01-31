@@ -4,6 +4,8 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <common/signmessage.h>
+
+#include <addresstype.h>
 #include <hash.h>
 #include <key.h>
 #include <key_io.h>
@@ -13,6 +15,7 @@
 
 #include <cassert>
 #include <optional>
+#include <span>
 #include <string>
 #include <variant>
 #include <vector>

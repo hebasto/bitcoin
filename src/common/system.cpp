@@ -12,12 +12,14 @@
 #include <util/time.h>
 
 #ifdef WIN32
-#include <cassert>
-#include <codecvt>
 #include <compat/compat.h>
 #include <windows.h>
+
+#include <cassert>
+#include <codecvt>
 #else
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 #endif
 
@@ -29,6 +31,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <limits>
 #include <locale>
 #include <optional>
 #include <stdexcept>
