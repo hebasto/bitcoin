@@ -236,9 +236,6 @@ if [[ "${RUN_IWYU}" == true ]]; then
     echo "^^^ ⚠️ Failure generated from IWYU"
     false
   fi
-
-  run_iwyu "compile_commands_iwyu_warnings.json"
-  git --no-pager diff
 fi
 
 if [ "$RUN_FUZZ_TESTS" = "true" ]; then
