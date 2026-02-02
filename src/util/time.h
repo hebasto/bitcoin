@@ -8,9 +8,16 @@
 
 #include <chrono> // IWYU pragma: export
 #include <cstdint>
+#include <ctime>
 #include <optional>
 #include <string>
 #include <string_view>
+
+#ifdef WIN32
+#include <winsock2.h>
+#else
+#include <sys/time.h>
+#endif
 
 using namespace std::chrono_literals;
 
