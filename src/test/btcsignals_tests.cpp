@@ -15,10 +15,7 @@ struct moveonly_data
     moveonly_data(int data) : m_data(data){}
     moveonly_data(moveonly_data&&) = default;
 
-    // Boost requires this unnecessarily.
-    // See: https://github.com/boostorg/signals2/pull/85
-    moveonly_data& operator=(moveonly_data&&) = default;
-
+    moveonly_data& operator=(moveonly_data&&) = delete;
     moveonly_data(const moveonly_data&) = delete;
     moveonly_data& operator=(const moveonly_data&) = default;
     int m_data;
