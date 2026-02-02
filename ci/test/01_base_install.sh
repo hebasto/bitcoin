@@ -29,6 +29,10 @@ if [ -n "${APT_LLVM_V}" ]; then
     # shellcheck disable=SC2034
     source /etc/os-release
     echo "deb http://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME}-${APT_LLVM_V} main" > "/etc/apt/sources.list.d/llvm-toolchain-${VERSION_CODENAME}-${APT_LLVM_V}.list"
+    # Temporarily work around Sequoia PGP policy deadline for legacy repositories.
+    # See https://github.com/llvm/llvm-project/issues/153385.
+    sed -i 's/\(sha1\.second_preimage_resistance =\).*/\1 9999-01-01/' /usr/share/apt/default-sequoia.config && \
+    apt-get update && \
   )
 fi
 
