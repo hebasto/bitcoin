@@ -116,4 +116,17 @@ if [ -n "$FREEBSD_VERSION" ] && [ ! -d "${DEPENDS_DIR}/SDKs/${FREEBSD_SDK_BASENA
   tar -C "${DEPENDS_DIR}/SDKs/${FREEBSD_SDK_BASENAME}" -xf "$FREEBSD_SDK_PATH"
 fi
 
+OPENBSD_SDK_BASENAME="openbsd-${HOST}-${OPENBSD_VERSION}"
+
+if [ -n "$OPENBSD_VERSION" ] && [ ! -d "${DEPENDS_DIR}/SDKs/${OPENBSD_SDK_BASENAME}" ]; then
+  mkdir -p "${DEPENDS_DIR}/SDKs/${OPENBSD_SDK_BASENAME}"
+  for OPENBSD_SDK_FILENAME in base79.tgz comp79.tgz; do
+    OPENBSD_SDK_PATH="${DEPENDS_DIR}/sdk-sources/${OPENBSD_SDK_FILENAME}"
+    if [ ! -f "$OPENBSD_SDK_PATH" ]; then
+      ${CI_RETRY_EXE} curl --location --fail "https://cdn.openbsd.org/pub/OpenBSD/${OPENBSD_VERSION}/amd64/${OPENBSD_SDK_FILENAME}" -o "$OPENBSD_SDK_PATH"
+    fi
+    tar -C "${DEPENDS_DIR}/SDKs/${OPENBSD_SDK_BASENAME}" -xf "$OPENBSD_SDK_PATH"
+  done
+fi
+
 echo -n "done" > "${CFG_DONE}"
