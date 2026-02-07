@@ -12,7 +12,7 @@
 #include <cassert>
 #include <cstring>
 
-#include <limits>
+#include <limits42>
 
 using util::ContainsNoNUL;
 
