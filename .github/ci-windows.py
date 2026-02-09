@@ -46,6 +46,7 @@ def generate(ci_type):
         "-Werror=dev",
         "--preset",
         "vs2022",
+        "-DCMAKE_VS_GLOBALS='UseMultiToolTask=false'",
     ] + GENERATE_OPTIONS[ci_type]
     run(command)
 
@@ -60,7 +61,7 @@ def build():
     ]
     if run(command + ["-j", str(os.process_cpu_count())], check=False).returncode != 0:
         print("Build failure. Verbose build follows.")
-        run(command + ["-j1", "--verbose"])
+        run(command + ["-j", "1", "--verbose"])
 
 
 def check_manifests(ci_type):

@@ -286,7 +286,9 @@ if(WIN32)
     )
     # Improve parallelism in MSBuild.
     # See: https://devblogs.microsoft.com/cppblog/improved-parallelism-in-msbuild/.
-    list(APPEND CMAKE_VS_GLOBALS "UseMultiToolTask=true")
+    if(NOT CMAKE_VS_GLOBALS MATCHES "(^|;)UseMultiToolTask=")
+      list(APPEND CMAKE_VS_GLOBALS UseMultiToolTask=true)
+    endif()
   endif()
 
   if(MINGW)
