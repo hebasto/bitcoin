@@ -1,6 +1,6 @@
-Bitcoin Core version 28.x is now available from:
+Bitcoin Core version 28.4rc1 is now available from:
 
-  <https://bitcoincore.org/bin/bitcoin-core-28.x/>
+  <https://bitcoincore.org/bin/bitcoin-core-28.4/test.rc1/>
 
 This release includes various bug fixes and performance
 improvements, as well as updated translations.
@@ -37,6 +37,12 @@ unsupported systems.
 Notable changes
 ===============
 
+### Wallet
+
+- #34156 wallet: fix unnamed legacy wallet migration failure
+- #34215 wallettool: fix unnamed createfromdump failure walletsdir deletion
+- #34226 wallet: test: Relative wallet failed migration cleanup
+
 ### P2P
 
 - #33723 chainparams: remove dnsseed.bitcoin.dashjr-list-of-p2p-nodes.us
@@ -60,7 +66,10 @@ Credits
 
 Thanks to everyone who directly contributed to this release:
 
+- achow101
+- davidgumberg
 - fanquake
+- furszy
 - Hennadii Stepanov
 - m3dwards
 - Padraic Slattery
