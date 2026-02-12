@@ -1,31 +1,30 @@
+OPENBSD_VERSION ?= 7.9
+OPENBSD_SDK=$(SDK_PATH)/openbsd-$(host)-$(OPENBSD_VERSION)/
+
+clang_prog=$(shell command -v clang)
+clangxx_prog=$(shell command -v clang++)
+
+openbsd_AR=$(shell command -v llvm-ar)
+openbsd_NM=$(shell command -v llvm-nm)
+openbsd_OBJCOPY=$(shell command -v llvm-objcopy)
+openbsd_OBJDUMP=$(shell command -v llvm-objdump)
+openbsd_RANLIB=$(shell command -v llvm-ranlib)
+openbsd_STRIP=$(shell command -v llvm-strip)
+
+openbsd_CC=$(clang_prog) --target=$(host) \
+              --sysroot=$(OPENBSD_SDK)
+
+openbsd_CXX=$(clangxx_prog) --target=$(host) \
+              --sysroot=$(OPENBSD_SDK) -stdlib=libc++
+
 openbsd_CFLAGS=
 openbsd_CXXFLAGS=
+openbsd_LDFLAGS=-fuse-ld=lld
 
 openbsd_release_CFLAGS=-O2
 openbsd_release_CXXFLAGS=$(openbsd_release_CFLAGS)
 
 openbsd_debug_CFLAGS=-O1 -g
 openbsd_debug_CXXFLAGS=$(openbsd_debug_CFLAGS)
-
-ifeq (86,$(findstring 86,$(build_arch)))
-i686_openbsd_CC=clang -m32
-i686_openbsd_CXX=clang++ -m32
-i686_openbsd_AR=ar
-i686_openbsd_RANLIB=ranlib
-i686_openbsd_NM=nm
-i686_openbsd_STRIP=strip
-
-x86_64_openbsd_CC=clang -m64
-x86_64_openbsd_CXX=clang++ -m64
-x86_64_openbsd_AR=ar
-x86_64_openbsd_RANLIB=ranlib
-x86_64_openbsd_NM=nm
-x86_64_openbsd_STRIP=strip
-else
-i686_openbsd_CC=$(default_host_CC) -m32
-i686_openbsd_CXX=$(default_host_CXX) -m32
-x86_64_openbsd_CC=$(default_host_CC) -m64
-x86_64_openbsd_CXX=$(default_host_CXX) -m64
-endif
 
 openbsd_cmake_system_name=OpenBSD
