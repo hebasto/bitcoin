@@ -10,14 +10,11 @@ endif
 $(package)_linux_dependencies := freetype fontconfig libxcb libxkbcommon libxcb_util libxcb_util_cursor libxcb_util_render libxcb_util_keysyms libxcb_util_image libxcb_util_wm
 $(package)_freebsd_dependencies := $($(package)_linux_dependencies)
 $(package)_patches_path := $(qt_details_patches_path)
-$(package)_patches := dont_hardcode_pwd.patch
-$(package)_patches += qtbase_avoid_qmain.patch
-$(package)_patches += qtbase_platformsupport.patch
-$(package)_patches += qtbase_plugins_cocoa.patch
-$(package)_patches += qtbase_plugins_windows11style.patch
+$(package)_patches := qtbase_avoid_qmain.patch
 $(package)_patches += qtbase_skip_tools.patch
-$(package)_patches += rcc_hardcode_timestamp.patch
+$(package)_patches += qtbase_xkbcommon_compat.patch
 $(package)_patches += qttools_skip_dependencies.patch
+$(package)_patches += rcc_hardcode_timestamp.patch
 $(package)_patches += static_fixes.patch
 
 $(package)_qttranslations_file_name=$(qt_details_qttranslations_file_name)
@@ -96,6 +93,7 @@ $(package)_config_opts += -no-feature-libresolv
 $(package)_config_opts += -no-feature-networkdiskcache
 $(package)_config_opts += -no-feature-networkproxy
 $(package)_config_opts += -no-feature-printsupport
+$(package)_config_opts += -no-feature-qtwaylandscanner
 $(package)_config_opts += -no-feature-sessionmanager
 $(package)_config_opts += -no-feature-socks5
 $(package)_config_opts += -no-feature-sql
@@ -110,6 +108,7 @@ $(package)_config_opts += -no-feature-undostack
 $(package)_config_opts += -no-feature-undoview
 $(package)_config_opts += -no-feature-vnc
 $(package)_config_opts += -no-feature-vulkan
+$(package)_config_opts += -no-feature-wayland
 
 # Core tools.
 $(package)_config_opts += -no-feature-androiddeployqt
@@ -122,7 +121,6 @@ ifeq ($(host),$(build))
 $(package)_config_opts += -feature-linguist
 $(package)_config_opts += -no-feature-assistant
 $(package)_config_opts += -no-feature-clang
-$(package)_config_opts += -no-feature-clangcpp
 $(package)_config_opts += -no-feature-designer
 $(package)_config_opts += -no-feature-pixeltool
 $(package)_config_opts += -no-feature-qdoc
@@ -133,11 +131,10 @@ endif
 
 $(package)_config_opts_darwin := -no-dbus
 $(package)_config_opts_darwin += -no-feature-printsupport
-$(package)_config_opts_darwin += -no-freetype
+$(package)_config_opts_darwin += -no-feature-freetype
 $(package)_config_opts_darwin += -no-pkg-config
 
-$(package)_config_opts_linux := -dbus-runtime
-$(package)_config_opts_linux += -fontconfig
+$(package)_config_opts_linux := -fontconfig
 $(package)_config_opts_linux += -no-feature-process
 $(package)_config_opts_linux += -no-feature-xlib
 $(package)_config_opts_linux += -no-xcb-xlib
@@ -161,7 +158,6 @@ $(package)_config_env_darwin += OBJCXX="$$($(package)_cxx)"
 
 $(package)_cmake_opts := -DCMAKE_PREFIX_PATH=$(host_prefix)
 $(package)_cmake_opts += -DQT_FEATURE_cxx20=ON
-$(package)_cmake_opts += -DQT_ENABLE_CXX_EXTENSIONS=OFF
 ifneq ($(V),)
 $(package)_cmake_opts += --log-level=STATUS
 endif
@@ -197,6 +193,9 @@ $(package)_cmake_opts += -DCMAKE_DISABLE_FIND_PACKAGE_Libb2=TRUE
 $(package)_cmake_opts += -DCMAKE_DISABLE_FIND_PACKAGE_WrapSystemDoubleConversion=TRUE
 $(package)_cmake_opts += -DCMAKE_DISABLE_FIND_PACKAGE_WrapSystemMd4c=TRUE
 $(package)_cmake_opts += -DCMAKE_DISABLE_FIND_PACKAGE_WrapZSTD=TRUE
+endif
+ifeq ($(host_os),linux)
+$(package)_cmake_opts += -DINPUT_dbus=runtime
 endif
 ifeq ($(host_os),darwin)
 $(package)_cmake_opts += -DCMAKE_INSTALL_NAME_TOOL=true
@@ -255,14 +254,11 @@ endef
 endif
 
 define $(package)_preprocess_cmds
-  patch -p1 -i $($(package)_patch_dir)/dont_hardcode_pwd.patch && \
   patch -p1 -i $($(package)_patch_dir)/qtbase_avoid_qmain.patch && \
-  patch -p1 -i $($(package)_patch_dir)/qtbase_platformsupport.patch && \
-  patch -p1 -i $($(package)_patch_dir)/qtbase_plugins_cocoa.patch && \
-  patch -p1 -i $($(package)_patch_dir)/qtbase_plugins_windows11style.patch && \
-  patch -p1 -i $($(package)_patch_dir)/static_fixes.patch && \
   patch -p1 -i $($(package)_patch_dir)/qtbase_skip_tools.patch && \
-  patch -p1 -i $($(package)_patch_dir)/rcc_hardcode_timestamp.patch
+  patch -p1 -i $($(package)_patch_dir)/qtbase_xkbcommon_compat.patch && \
+  patch -p1 -i $($(package)_patch_dir)/rcc_hardcode_timestamp.patch && \
+  patch -p1 -i $($(package)_patch_dir)/static_fixes.patch
 endef
 ifeq ($(host),$(build))
   $(package)_preprocess_cmds += && patch -p1 -i $($(package)_patch_dir)/qttools_skip_dependencies.patch
