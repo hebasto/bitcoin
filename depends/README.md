@@ -51,7 +51,7 @@ To build dependencies for the current arch+OS:
 
 ### OpenBSD
 
-    pkg_add bash cmake curl gmake gtar
+    pkg_add bash cmake curl gmake gtar llvm
 
 Skip the following packages if you don't intend to use the GUI and will build with [`NO_QT=1`](#dependency-options):
 
