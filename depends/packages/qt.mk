@@ -17,6 +17,7 @@ $(package)_patches += qtbase_xkbcommon_compat.patch
 $(package)_patches += qttools_skip_dependencies.patch
 $(package)_patches += rcc_hardcode_timestamp.patch
 $(package)_patches += static_fixes.patch
+$(package)_patches += fix-gcc16-qcompare.patch
 
 $(package)_qttranslations_file_name=$(qt_details_qttranslations_file_name)
 $(package)_qttranslations_sha256_hash=$(qt_details_qttranslations_sha256_hash)
@@ -260,7 +261,8 @@ define $(package)_preprocess_cmds
   patch -p1 -i $($(package)_patch_dir)/qtbase_skip_tools.patch && \
   patch -p1 -i $($(package)_patch_dir)/qtbase_xkbcommon_compat.patch && \
   patch -p1 -i $($(package)_patch_dir)/rcc_hardcode_timestamp.patch && \
-  patch -p1 -i $($(package)_patch_dir)/static_fixes.patch
+  patch -p1 -i $($(package)_patch_dir)/static_fixes.patch && \
+  patch -p1 -i $($(package)_patch_dir)/fix-gcc16-qcompare.patch
 endef
 ifeq ($(host),$(build))
   $(package)_preprocess_cmds += && patch -p1 -i $($(package)_patch_dir)/qttools_skip_dependencies.patch
