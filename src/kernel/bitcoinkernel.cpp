@@ -26,6 +26,7 @@
 #include <serialize.h>
 #include <streams.h>
 #include <sync.h>
+#include <threadsafety.h>
 #include <uint256.h>
 #include <undo.h>
 #include <util/check.h>
