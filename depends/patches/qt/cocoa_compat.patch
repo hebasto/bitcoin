@@ -1,0 +1,16 @@
+Disable macOS 15 features in QCocoaCursor
+
+Can be dropped once OSX_MIN_VERSION is updated to 15.0+.
+
+
+--- a/qtbase/src/plugins/platforms/cocoa/qcocoacursor.mm
++++ b/qtbase/src/plugins/platforms/cocoa/qcocoacursor.mm
+@@ -154,7 +154,7 @@ NSCursor *QCocoaCursor::convertCursor(QCursor *cursor)
+     case Qt::SizeHorCursor:
+     case Qt::SizeBDiagCursor:
+     case Qt::SizeFDiagCursor: {
+-#if QT_MACOS_PLATFORM_SDK_EQUAL_OR_ABOVE(150000)
++#if 0
+         if (@available(macOS 15, *)) {
+             auto position = [newShape]{
+                 switch (newShape) {
