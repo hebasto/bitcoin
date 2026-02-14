@@ -77,7 +77,7 @@ if(CMAKE_VERSION VERSION_LESS 4.2 AND CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND NO
   # - https://gitlab.kitware.com/cmake/cmake/-/issues/27069
   # - https://gitlab.kitware.com/cmake/cmake/-/merge_requests/10955
   # So disable this tool check in further enable_language() commands.
-  set(CMAKE_PLATFORM_HAS_INSTALLNAME FALSE)
+  set(CMAKE_INSTALL_NAME_TOOL "${CMAKE_COMMAND} -E true")
 endif()
 enable_language(CXX)
 set(CMAKE_CXX_STANDARD 20)
