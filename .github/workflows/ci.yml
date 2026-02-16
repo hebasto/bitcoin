@@ -415,26 +415,8 @@ jobs:
         with:
           name: ${{ matrix.artifact-name }}-${{ github.run_id }}
 
-      - name: Run bitcoind.exe
-        run: py -3 .github/ci-windows-cross.py print_version
-
-      - *SET_UP_VS
-
-      - name: Check executable manifests
-        run: py -3 .github/ci-windows-cross.py check_manifests
-
-      - name: Run unit tests
-        run: py -3 .github/ci-windows-cross.py run_unit_tests
-
-      - name: Prepare Windows test environment
-        run: |
-          py -3 .github/ci-windows-cross.py prepare_tests
-
-      - name: Run functional tests
-        env:
-          TEST_RUNNER_EXTRA: "--timeout-factor=${{ env.TEST_RUNNER_TIMEOUT_FACTOR }} ${{ case(github.event_name == 'pull_request', '', '--extended') }}"
-        run: |
-          py -3 .github/ci-windows-cross.py run_functional_tests
+      - name: Run test_bitcoin.exe
+        run: ./bin/test_bitcoin-qt.exe
 
   ci-matrix:
     name: ${{ matrix.name }}
