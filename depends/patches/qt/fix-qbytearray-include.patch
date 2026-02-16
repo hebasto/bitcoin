@@ -30,7 +30,7 @@ diff --git a/qtbase/src/corelib/text/qbytearrayview.h b/qtbase/src/corelib/text/
 index 7d3e82e72a02..b19f6fd5424e 100644
 --- a/qtbase/src/corelib/text/qbytearrayview.h
 +++ b/qtbase/src/corelib/text/qbytearrayview.h
-@@ -4,6 +4,7 @@
+@@ -5,6 +5,7 @@
  #define QBYTEARRAYVIEW_H
 
  #include <QtCore/qbytearrayalgorithms.h>
