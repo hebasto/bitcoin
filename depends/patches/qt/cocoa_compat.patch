@@ -12,7 +12,7 @@ resize cursors.
 
 --- a/qtbase/src/plugins/platforms/cocoa/qcocoacursor.mm
 +++ b/qtbase/src/plugins/platforms/cocoa/qcocoacursor.mm
-@@ -138,7 +138,7 @@ NSCursor *QCocoaCursor::convertCursor(QCursor *cursor)
+@@ -154,7 +154,7 @@ NSCursor *QCocoaCursor::convertCursor(QCursor *cursor)
      case Qt::SizeHorCursor:
      case Qt::SizeBDiagCursor:
      case Qt::SizeFDiagCursor: {

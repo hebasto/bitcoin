@@ -1,22 +1,22 @@
-qt_details_version := 6.8.4
-qt_details_download_path := https://download.qt.io/archive/qt/6.8/$(qt_details_version)/submodules
-qt_details_suffix := everywhere-opensource-src-$(qt_details_version).tar.xz
+qt_details_version := 6.10.2
+qt_details_download_path := https://download.qt.io/archive/qt/6.10/$(qt_details_version)/submodules
+qt_details_suffix := everywhere-src-$(qt_details_version).tar.xz
 
 qt_details_qtbase_file_name := qtbase-$(qt_details_suffix)
-qt_details_qtbase_sha256_hash := 532dfbf3fa3cbc68fa37441ea9e81c5009da044eaecda78ffaeafd8bd125532f
+qt_details_qtbase_sha256_hash := aeb78d29291a2b5fd53cb55950f8f5065b4978c25fb1d77f627d695ab9adf21e
 
 qt_details_qttranslations_file_name := qttranslations-$(qt_details_suffix)
-qt_details_qttranslations_sha256_hash := 33b1fd1d75598cbf54da12263957f18292c9fb01e42fcc3ab9bd2f8ac79763b7
+qt_details_qttranslations_sha256_hash := b3b3813bc9d76b545716dc8b6e659fa71b6e2bc14569e9fab6dab8b30650a644
 
 qt_details_qttools_file_name := qttools-$(qt_details_suffix)
-qt_details_qttools_sha256_hash := c6030ea66d7be1ca7e3b40578beb35b0f4ff4014277d8e051d3219759f6ab399
+qt_details_qttools_sha256_hash := 1e3d2c07c1fd76d2425c6eaeeaa62ffaff5f79210c4e1a5bc2a6a9db668d5b24
 
 qt_details_patches_path := $(PATCHES_PATH)/qt
 
-qt_details_top_download_path := https://raw.githubusercontent.com/qt/qt5/refs/tags/v$(qt_details_version)-lts-lgpl
+qt_details_top_download_path := https://raw.githubusercontent.com/qt/qt5/refs/tags/v$(qt_details_version)
 qt_details_top_cmakelists_file_name := CMakeLists.txt
 qt_details_top_cmakelists_download_file := $(qt_details_top_cmakelists_file_name)
-qt_details_top_cmakelists_sha256_hash := 54e9a4e554da37792446dda4f52bc308407b01a34bcc3afbad58e4e0f71fac9b
+qt_details_top_cmakelists_sha256_hash := e841d25050cfc7cac691755de225ded5f4ae0e2478ab2f597d1848b161d9dfe5
 qt_details_top_cmake_download_path := $(qt_details_top_download_path)/cmake
 qt_details_top_cmake_ecmoptionaladdsubdirectory_file_name := ECMOptionalAddSubdirectory.cmake
 qt_details_top_cmake_ecmoptionaladdsubdirectory_download_file := $(qt_details_top_cmake_ecmoptionaladdsubdirectory_file_name)

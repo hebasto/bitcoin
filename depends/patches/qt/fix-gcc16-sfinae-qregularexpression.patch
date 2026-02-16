@@ -38,7 +38,7 @@ diff --git a/qtbase/src/corelib/text/qregularexpression.h b/qtbase/src/corelib/t
 index 462786179cb5..ece094ca768f 100644
 --- a/qtbase/src/corelib/text/qregularexpression.h
 +++ b/qtbase/src/corelib/text/qregularexpression.h
-@@ -191,6 +191,11 @@ Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QRegularExpression &re);
+@@ -192,6 +192,11 @@ Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QRegularExpression &re);
  Q_CORE_EXPORT QDebug operator<<(QDebug debug, QRegularExpression::PatternOptions patternOptions);
  #endif
 
