@@ -1,0 +1,92 @@
+commit 137ea78f980fc8cb3d3a984ee4c139ca95141998
+Author: Joerg Bornemann <joerg.bornemann@qt.io>
+Date:   Tue Jan 6 15:33:14 2026 +0100
+
+    CMake: Fix skipping Xcode installation check
+    
+    ...if QT_NO_XCODE_MIN_VERSION_CHECK is set.
+    
+    This amends commit c17ae1096e0548041150b692b3458de19df2f534.
+    
+    Move the fatal error message out of the helper function such that it can
+    be called without triggering an error.
+    
+    Task-number: QTBUG-138427
+    Change-Id: Ie67a68154604fc3ca832fa5c46e71c623910acb1
+    Reviewed-by: Alexandru Croitor <alexandru.croitor@qt.io>
+    (cherry picked from commit d4330b071710b895e2ec45afad2c3e13228ebe3c)
+    Reviewed-by: Qt Cherry-pick Bot <cherrypick_bot@qt-project.org>
+    (cherry picked from commit 79bc0b6ca4f36d5b28840973272b2ee3c990e6e5)
+
+diff --git a/qtbase/cmake/QtAutoDetectHelpers.cmake b/qtbase/cmake/QtAutoDetectHelpers.cmake
+index 6e6473da641..3d3a6bc86b7 100644
+--- a/qtbase/cmake/QtAutoDetectHelpers.cmake
++++ b/qtbase/cmake/QtAutoDetectHelpers.cmake
+@@ -330,7 +330,9 @@ function(qt_auto_detect_apple)
+     set(QT_MAC_SDK_VERSION "${apple_sdk_version}" CACHE STRING "Darwin SDK version.")
+ 
+     _qt_internal_get_xcode_version_raw(xcode_version_raw)
+-    set(QT_MAC_XCODE_VERSION "${xcode_version_raw}" CACHE STRING "Xcode version.")
++    if(xcode_version_raw)
++        set(QT_MAC_XCODE_VERSION "${xcode_version_raw}" CACHE STRING "Xcode version.")
++    endif()
+ 
+     if(NOT CMAKE_SYSTEM_NAME)
+         # macOS
+diff --git a/qtbase/cmake/QtBaseConfigureTests.cmake b/qtbase/cmake/QtBaseConfigureTests.cmake
+index ade53369b46..00c304408e6 100644
+--- a/qtbase/cmake/QtBaseConfigureTests.cmake
++++ b/qtbase/cmake/QtBaseConfigureTests.cmake
+@@ -277,7 +277,9 @@ function(qt_internal_print_cmake_darwin_info)
+         message(STATUS "QT_APPLE_SDK_PATH: \"${QT_APPLE_SDK_PATH}\"")
+         message(STATUS "CMAKE_OSX_DEPLOYMENT_TARGET: \"${CMAKE_OSX_DEPLOYMENT_TARGET}\"")
+         message(STATUS "QT_MAC_SDK_VERSION: \"${QT_MAC_SDK_VERSION}\"")
+-        message(STATUS "QT_MAC_XCODE_VERSION: \"${QT_MAC_XCODE_VERSION}\"")
++        if(QT_MAC_XCODE_VERSION)
++            message(STATUS "QT_MAC_XCODE_VERSION: \"${QT_MAC_XCODE_VERSION}\"")
++        endif()
+ 
+         if(DEFINED CACHE{QT_IS_MACOS_UNIVERSAL})
+             message(STATUS "QT_IS_MACOS_UNIVERSAL: \"${QT_IS_MACOS_UNIVERSAL}\"")
+diff --git a/qtbase/cmake/QtPublicAppleHelpers.cmake b/qtbase/cmake/QtPublicAppleHelpers.cmake
+index b8f3fb4818e..5d90c454011 100644
+--- a/qtbase/cmake/QtPublicAppleHelpers.cmake
++++ b/qtbase/cmake/QtPublicAppleHelpers.cmake
+@@ -938,12 +938,6 @@ function(_qt_internal_get_xcode_version_raw out_var)
+ 
+         string(REPLACE "\n" " " xcode_version "${xcode_version}")
+         string(STRIP "${xcode_version}" xcode_version)
+-
+-        if(NOT xcode_version)
+-            message(FATAL_ERROR
+-                    "Can't determine Xcode version. Is Xcode installed?"
+-                    " Error details:\n${xcrun_error}")
+-        endif()
+     endif()
+     set(${out_var} "${xcode_version}" PARENT_SCOPE)
+ endfunction()
+@@ -984,7 +978,11 @@ function(_qt_internal_get_cached_xcode_version out_var)
+         set(xcode_version "${QT_INTERNAL_XCODE_VERSION}")
+     else()
+         _qt_internal_get_xcode_version(xcode_version)
+-        set(QT_INTERNAL_XCODE_VERSION "${xcode_version}" CACHE STRING "Xcode version")
++        if(QT_NO_XCODE_MIN_VERSION_CHECK)
++            set(xcode_version "")
++        else()
++            set(QT_INTERNAL_XCODE_VERSION "${xcode_version}" CACHE STRING "Xcode version")
++        endif()
+     endif()
+ 
+     set(${out_var} "${xcode_version}" PARENT_SCOPE)
+@@ -1076,6 +1074,11 @@ function(_qt_internal_check_apple_sdk_and_xcode_versions)
+ 
+     if(NOT QT_NO_XCODE_MIN_VERSION_CHECK)
+         _qt_internal_get_cached_xcode_version(xcode_version)
++        if(NOT xcode_version)
++            message(FATAL_ERROR
++                    "Can't determine Xcode version. Is Xcode installed?"
++                    " Error details:\n${xcrun_error}")
++        endif()
+         if(xcode_version VERSION_LESS min_xcode_version)
+             message(${message_type}
+                 "Qt requires at least version ${min_xcode_version} of Xcode, "
