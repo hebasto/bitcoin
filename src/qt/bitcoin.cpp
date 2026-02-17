@@ -45,7 +45,9 @@
 #endif // ENABLE_WALLET
 
 #include <boost/signals2/connection.hpp>
+
 #include <chrono>
+#include <iostream>
 #include <memory>
 
 #include <QApplication>
@@ -220,12 +222,18 @@ void BitcoinApplication::setupPlatformStyle()
 
 BitcoinApplication::~BitcoinApplication()
 {
+    std::cerr << __FILE__ << ":" << __LINE__ << "+++++++++++++++++++++++++\n";
     m_executor.reset();
+    std::cerr << __FILE__ << ":" << __LINE__ << "+++++++++++++++++++++++++\n";
 
     delete window;
+    std::cerr << __FILE__ << ":" << __LINE__ << "+++++++++++++++++++++++++\n";
     window = nullptr;
+    std::cerr << __FILE__ << ":" << __LINE__ << "+++++++++++++++++++++++++\n";
     delete platformStyle;
+    std::cerr << __FILE__ << ":" << __LINE__ << "+++++++++++++++++++++++++\n";
     platformStyle = nullptr;
+    std::cerr << __FILE__ << ":" << __LINE__ << "+++++++++++++++++++++++++ FINAL\n";
 }
 
 #ifdef ENABLE_WALLET
