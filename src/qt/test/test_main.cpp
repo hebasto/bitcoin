@@ -26,6 +26,7 @@
 #include <QSettings>
 #include <QTest>
 
+#include <iostream>
 #include <functional>
 
 const std::function<void(const std::string&)> G_TEST_LOG_FUN{};
@@ -103,10 +104,15 @@ int main(int argc, char* argv[])
         } else {
             qDebug("\nAll tests passed.\n");
         }
+
+        std::cerr << __FILE__ << ":" << __LINE__ << "+++++++++++++++++++++++++\n";
     }
 
+    std::cerr << __FILE__ << ":" << __LINE__ << "+++++++++++++++++++++++++\n";
     QSettings settings;
+    std::cerr << __FILE__ << ":" << __LINE__ << "+++++++++++++++++++++++++\n";
     settings.clear();
+    std::cerr << __FILE__ << ":" << __LINE__ << "+++++++++++++++++++++++++\n";
 
     return num_test_failures;
 }
