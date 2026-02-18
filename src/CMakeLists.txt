@@ -405,6 +405,8 @@ if(BUILD_KERNEL_LIB)
   endif()
 endif()
 
+add_executable(fs_parser fs_parser.cpp)
+target_link_libraries(fs_parser core_interface bitcoin_util)
 
 add_subdirectory(test/util)
 if(BUILD_BENCH)
