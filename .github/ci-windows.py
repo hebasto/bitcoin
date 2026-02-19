@@ -20,6 +20,10 @@ def run(cmd, **kwargs):
         sys.exit(str(e))
 
 
+def get_build_dir() -> Path:
+    return Path.cwd() / "build_ _"
+
+
 GENERATE_OPTIONS = {
     "standard": [
         "-DBUILD_BENCH=ON",
@@ -42,7 +46,7 @@ def generate(ci_type):
     command = [
         "cmake",
         "-B",
-        "build",
+        str(get_build_dir()),
         "-Werror=dev",
         "--preset",
         "vs2026",
@@ -54,7 +58,7 @@ def build():
     command = [
         "cmake",
         "--build",
-        "build",
+        str(get_build_dir()),
         "--config",
         "Release",
     ]
@@ -68,7 +72,7 @@ def check_manifests(ci_type):
         print(f"Skipping manifest validation for '{ci_type}' ci type.")
         return
 
-    release_dir = Path.cwd() / "build" / "bin" / "Release"
+    release_dir = get_build_dir() / "bin" / "Release"
     manifest_path = release_dir / "bitcoind.manifest"
     cmd_bitcoind_manifest = [
         "mt.exe",
@@ -120,7 +124,7 @@ def prepare_tests(ci_type):
 
 
 def run_tests(ci_type):
-    build_dir = Path.cwd() / "build"
+    build_dir = get_build_dir()
     num_procs = str(os.process_cpu_count())
     release_bin = build_dir / "bin" / "Release"
 
@@ -157,7 +161,7 @@ def run_tests(ci_type):
             "--jobs",
             num_procs,
             "--quiet",
-            f"--tmpdirprefix={Path.cwd()}",
+            f"--tmpdirprefix={Path.cwd() / '_ _'}",
             "--combinedlogslen=99999999",
             *shlex.split(os.environ.get("TEST_RUNNER_EXTRA", "").strip()),
         ]
