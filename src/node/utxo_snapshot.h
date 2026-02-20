@@ -9,7 +9,7 @@
 #include <kernel/chainparams.h>
 #include <kernel/cs_main.h>
 #include <kernel/messagestartchars.h>
-#include <sync.h>
+#include <threadsafety.h>
 #include <tinyformat.h>
 #include <uint256.h>
 #include <util/chaintype.h>

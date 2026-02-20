@@ -10,6 +10,7 @@
 #include <index/base.h>
 #include <interfaces/chain.h>
 #include <sync.h>
+#include <threadsafety.h>
 #include <uint256.h>
 #include <util/hasher.h>
 
