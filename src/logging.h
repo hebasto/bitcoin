@@ -7,7 +7,7 @@
 #define BITCOIN_LOGGING_H
 
 #include <crypto/siphash.h>
-#include <logging/categories.h> // IWYU pragma: export
+#include <logging/categories.h>
 #include <threadsafety.h>
 #include <util/fs.h>
 #include <util/log.h> // IWYU pragma: export

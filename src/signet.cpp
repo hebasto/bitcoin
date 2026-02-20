@@ -7,6 +7,7 @@
 #include <consensus/merkle.h>
 #include <consensus/params.h>
 #include <consensus/validation.h>
+#include <logging/categories.h>
 #include <primitives/block.h>
 #include <primitives/transaction.h>
 #include <script/interpreter.h>

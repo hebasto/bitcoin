@@ -8,6 +8,7 @@
 #include <kernel/mempool_entry.h>
 #include <kernel/types.h>
 #include <logging.h>
+#include <logging/categories.h>
 #include <netbase.h>
 #include <primitives/block.h>
 #include <primitives/transaction.h>

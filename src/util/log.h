@@ -5,7 +5,7 @@
 #ifndef BITCOIN_UTIL_LOG_H
 #define BITCOIN_UTIL_LOG_H
 
-#include <logging/categories.h> // IWYU pragma: export
+#include <logging/categories.h>
 #include <tinyformat.h>
 #include <util/check.h>
 
