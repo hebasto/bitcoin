@@ -5,6 +5,7 @@
 #include <zmq/zmqutil.h>
 
 #include <logging.h>
+#include <logging/categories.h>
 #include <util/check.h>
 
 #include <zmq.h>

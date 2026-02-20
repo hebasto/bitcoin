@@ -7,6 +7,7 @@
 #include <chain.h>
 #include <crypto/common.h>
 #include <logging.h>
+#include <logging/categories.h>
 #include <netaddress.h>
 #include <netbase.h>
 #include <primitives/transaction.h>
