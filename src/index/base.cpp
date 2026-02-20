@@ -31,6 +31,7 @@
 #include <validationinterface.h>
 
 #include <cassert>
+#include <chrono>
 #include <compare>
 #include <cstdint>
 #include <memory>
