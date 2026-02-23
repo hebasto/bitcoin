@@ -20,6 +20,18 @@ def run(cmd, **kwargs):
         sys.exit(str(e))
 
 
+ENV_VARS = {
+    "standard": [
+        "cmake", "-E", "env",
+        "CXXFLAGS=-Wno-return-type -Wno-error=conditional-uninitialized",
+    ],
+    "fuzz": [
+        "cmake", "-E", "env",
+        "CXXFLAGS=-Wno-return-type -Wno-error=conditional-uninitialized",
+    ],
+}
+
+
 GENERATE_OPTIONS = {
     "standard": [
         "-DBUILD_BENCH=ON",
@@ -45,9 +57,9 @@ def generate(ci_type):
         "build",
         "-Werror=dev",
         "--preset",
-        "vs2026",
-    ] + GENERATE_OPTIONS[ci_type]
-    run(command)
+        "windows",
+    ]
+    run(ENV_VARS[ci_type] + command + GENERATE_OPTIONS[ci_type])
 
 
 def build():
