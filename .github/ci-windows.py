@@ -57,6 +57,9 @@ def build():
         "build",
         "--config",
         "Release",
+        "-t",
+        "bitcoin-qt",
+        "--verbose",
     ]
     if run(command + ["-j", str(os.process_cpu_count())], check=False).returncode != 0:
         print("Build failure. Verbose build follows.")

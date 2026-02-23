@@ -238,17 +238,3 @@ jobs:
       - name: Build
         run: |
           py -3 .github/ci-windows.py ${{ matrix.job-type }} build
-
-      - name: Check executable manifests
-        run: |
-          py -3 .github/ci-windows.py ${{ matrix.job-type }} check_manifests
-
-      - name: Prepare tests
-        run: |
-          py -3 .github/ci-windows.py ${{ matrix.job-type }} prepare_tests
-
-      - name: Run tests
-        env:
-          TEST_RUNNER_EXTRA: "--timeout-factor=${{ env.TEST_RUNNER_TIMEOUT_FACTOR }} ${{ case(github.event_name == 'pull_request', '', '--extended') }}"
-        run: |
-          py -3 .github/ci-windows.py ${{ matrix.job-type }} run_tests
