@@ -70,7 +70,7 @@ def build():
         "--build",
         "build",
         "--config",
-        "Release",
+        "Debug",
     ]
     if run(command + ["-j", str(os.process_cpu_count())], check=False).returncode != 0:
         print("Build failure. Verbose build follows.")
@@ -82,7 +82,7 @@ def check_manifests(ci_type):
         print(f"Skipping manifest validation for '{ci_type}' ci type.")
         return
 
-    release_dir = Path.cwd() / "build" / "bin" / "Release"
+    release_dir = Path.cwd() / "build" / "bin" / "Debug"
     manifest_path = release_dir / "bitcoind.manifest"
     cmd_bitcoind_manifest = [
         "mt.exe",
@@ -136,7 +136,7 @@ def prepare_tests(ci_type):
 def run_tests(ci_type):
     build_dir = Path.cwd() / "build"
     num_procs = str(os.process_cpu_count())
-    release_bin = build_dir / "bin" / "Release"
+    release_bin = build_dir / "bin" / "Debug"
 
     if ci_type == "standard":
         test_envs = {
@@ -161,7 +161,7 @@ def run_tests(ci_type):
             "-j",
             num_procs,
             "--build-config",
-            "Release",
+            "Debug",
         ]
         run(ctest_cmd)
 
