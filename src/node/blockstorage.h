@@ -17,6 +17,7 @@
 #include <serialize.h>
 #include <streams.h>
 #include <sync.h>
+#include <threadsafety.h>
 #include <uint256.h>
 #include <util/expected.h>
 #include <util/fs.h>
@@ -45,6 +46,7 @@ class BlockValidationState;
 class CBlockUndo;
 class Chainstate;
 class ChainstateManager;
+
 namespace Consensus {
 struct Params;
 }

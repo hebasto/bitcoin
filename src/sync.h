@@ -10,7 +10,7 @@
 #include <logging/timer.h>
 #endif
 
-#include <threadsafety.h> // IWYU pragma: export
+#include <threadsafety.h>
 #include <util/macros.h>
 
 #include <cassert>
