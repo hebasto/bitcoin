@@ -7,6 +7,7 @@
 #define BITCOIN_LOGGING_H
 
 #include <crypto/siphash.h>
+// Export, as `logging/categories.h` is practically not used stand-alone.
 #include <logging/categories.h> // IWYU pragma: export
 #include <threadsafety.h>
 #include <util/fs.h>
