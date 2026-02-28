@@ -5,6 +5,7 @@
 #ifndef BITCOIN_UTIL_LOG_H
 #define BITCOIN_UTIL_LOG_H
 
+// Export, as `logging/categories.h` is practically not used stand-alone.
 #include <logging/categories.h> // IWYU pragma: export
 #include <tinyformat.h>
 #include <util/check.h>
