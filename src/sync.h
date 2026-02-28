@@ -10,6 +10,8 @@
 #include <logging/timer.h>
 #endif
 
+// This header declares threading primitives compatible with Clang
+// Thread Safety Analysis and provides appropriate annotation macros.
 #include <threadsafety.h> // IWYU pragma: export
 #include <util/macros.h>
 
