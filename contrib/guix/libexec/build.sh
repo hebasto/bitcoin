@@ -177,7 +177,11 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    x86_64_linux_AR=x86_64-linux-gnu-gcc-ar \
                                    x86_64_linux_RANLIB=x86_64-linux-gnu-gcc-ranlib \
                                    x86_64_linux_NM=x86_64-linux-gnu-gcc-nm \
-                                   x86_64_linux_STRIP=x86_64-linux-gnu-strip
+                                   x86_64_linux_STRIP=x86_64-linux-gnu-strip \
+                                   `# Without -ffile-prefix-map, the C++ standard library` \
+                                   `# paths compromise cross-platform reproducibility.` \
+                                   qt_cxxflags_linux=-ffile-prefix-map="${CROSS_GCC}=/usr" \
+                                   qt_cxxflags_mingw32=-ffile-prefix-map="${CROSS_GCC}=/usr"
 
 case "$HOST" in
     *darwin*)
