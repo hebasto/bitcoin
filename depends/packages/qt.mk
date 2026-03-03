@@ -167,17 +167,17 @@ $(package)_cmake_opts += --log-level=STATUS
 endif
 
 $(package)_cmake_opts += -DQT_USE_DEFAULT_CMAKE_OPTIMIZATION_FLAGS=ON
-$(package)_cmake_opts += -DCMAKE_C_FLAGS="$$($(package)_cppflags) $$($$($(package)_type)_CFLAGS) -ffile-prefix-map=$$($(package)_extract_dir)=/usr"
+$(package)_cmake_opts += -DCMAKE_C_FLAGS="$$($(package)_cppflags) $$($$($(package)_type)_CFLAGS) $$($(package)_cflags_$(host_os)) -ffile-prefix-map=$$($(package)_extract_dir)=/usr"
 $(package)_cmake_opts += -DCMAKE_C_FLAGS_RELEASE="$$($$($(package)_type)_release_CFLAGS)"
 $(package)_cmake_opts += -DCMAKE_C_FLAGS_DEBUG="$$($$($(package)_type)_debug_CFLAGS)"
-$(package)_cmake_opts += -DCMAKE_CXX_FLAGS="$$($(package)_cppflags) $$($$($(package)_type)_CXXFLAGS) -ffile-prefix-map=$$($(package)_extract_dir)=/usr"
+$(package)_cmake_opts += -DCMAKE_CXX_FLAGS="$$($(package)_cppflags) $$($$($(package)_type)_CXXFLAGS) $$($(package)_cxxflags_$(host_os)) -ffile-prefix-map=$$($(package)_extract_dir)=/usr"
 $(package)_cmake_opts += -DCMAKE_CXX_FLAGS_RELEASE="$$($$($(package)_type)_release_CXXFLAGS)"
 $(package)_cmake_opts += -DCMAKE_CXX_FLAGS_DEBUG="$$($$($(package)_type)_debug_CXXFLAGS)"
 ifeq ($(host_os),darwin)
-$(package)_cmake_opts += -DCMAKE_OBJC_FLAGS="$$($(package)_cppflags) $$($$($(package)_type)_CFLAGS) -ffile-prefix-map=$$($(package)_extract_dir)=/usr"
+$(package)_cmake_opts += -DCMAKE_OBJC_FLAGS="$$($(package)_cppflags) $$($$($(package)_type)_CFLAGS) $$($(package)_cflags_$(host_os)) -ffile-prefix-map=$$($(package)_extract_dir)=/usr"
 $(package)_cmake_opts += -DCMAKE_OBJC_FLAGS_RELEASE="$$($$($(package)_type)_release_CFLAGS)"
 $(package)_cmake_opts += -DCMAKE_OBJC_FLAGS_DEBUG="$$($$($(package)_type)_debug_CFLAGS)"
-$(package)_cmake_opts += -DCMAKE_OBJCXX_FLAGS="$$($(package)_cppflags) $$($$($(package)_type)_CXXFLAGS) -ffile-prefix-map=$$($(package)_extract_dir)=/usr"
+$(package)_cmake_opts += -DCMAKE_OBJCXX_FLAGS="$$($(package)_cppflags) $$($$($(package)_type)_CXXFLAGS) $$($(package)_cxxflags_$(host_os)) -ffile-prefix-map=$$($(package)_extract_dir)=/usr"
 $(package)_cmake_opts += -DCMAKE_OBJCXX_FLAGS_RELEASE="$$($$($(package)_type)_release_CXXFLAGS)"
 $(package)_cmake_opts += -DCMAKE_OBJCXX_FLAGS_DEBUG="$$($$($(package)_type)_debug_CXXFLAGS)"
 endif
