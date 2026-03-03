@@ -192,6 +192,7 @@ esac
 ####################
 
 # Build the depends tree, overriding variables that assume multilib gcc
+env CFLAGS="${HOST_CFLAGS}" CXXFLAGS="${HOST_CXXFLAGS}" LDFLAGS="${HOST_LDFLAGS}" \
 make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    ${V:+V=1} \
                                    ${SOURCES_PATH+SOURCES_PATH="$SOURCES_PATH"} \
@@ -243,7 +244,6 @@ mkdir -p "$DISTSRC"
 
     # Configure this DISTSRC for $HOST
     # shellcheck disable=SC2086
-    env CFLAGS="${HOST_CFLAGS}" CXXFLAGS="${HOST_CXXFLAGS}" LDFLAGS="${HOST_LDFLAGS}" \
     cmake -S . -B build \
           --toolchain "${BASEPREFIX}/${HOST}/toolchain.cmake" \
           -DWITH_CCACHE=OFF \
