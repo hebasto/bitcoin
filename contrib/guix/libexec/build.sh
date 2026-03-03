@@ -160,6 +160,33 @@ case "$HOST" in
         ;;
 esac
 
+# CFLAGS
+HOST_CFLAGS="-O2 -g"
+HOST_CFLAGS+=$(find /gnu/store -maxdepth 1 -mindepth 1 -type d -exec echo -n " -ffile-prefix-map={}=/usr" \;)
+HOST_CFLAGS+=" -fdebug-prefix-map=${DISTSRC}/src=."
+case "$HOST" in
+    *mingw*)  HOST_CFLAGS+=" -fno-ident" ;;
+    *darwin*) unset HOST_CFLAGS ;;
+esac
+
+# CXXFLAGS
+HOST_CXXFLAGS="$HOST_CFLAGS"
+
+case "$HOST" in
+    arm-linux-gnueabihf) HOST_CXXFLAGS="${HOST_CXXFLAGS} -Wno-psabi" ;;
+esac
+
+# LDFLAGS
+case "$HOST" in
+    *linux*)  HOST_LDFLAGS="-Wl,--as-needed -Wl,--dynamic-linker=$glibc_dynamic_linker -Wl,-O2" ;;
+    *mingw*)  HOST_LDFLAGS="-Wl,--no-insert-timestamp" ;;
+esac
+
+# EXE FLAGS
+case "$HOST" in
+    *linux*)  CMAKE_EXE_LINKER_FLAGS="-DCMAKE_EXE_LINKER_FLAGS=${HOST_LDFLAGS} -static-libstdc++ -static-libgcc" ;;
+esac
+
 ####################
 # Depends Building #
 ####################
@@ -206,33 +233,6 @@ mkdir -p "$OUTDIR"
 
 # CONFIGFLAGS
 CONFIGFLAGS="-DREDUCE_EXPORTS=ON -DBUILD_BENCH=OFF -DBUILD_GUI_TESTS=OFF -DBUILD_FUZZ_BINARY=OFF -DCMAKE_SKIP_RPATH=TRUE"
-
-# CFLAGS
-HOST_CFLAGS="-O2 -g"
-HOST_CFLAGS+=$(find /gnu/store -maxdepth 1 -mindepth 1 -type d -exec echo -n " -ffile-prefix-map={}=/usr" \;)
-HOST_CFLAGS+=" -fdebug-prefix-map=${DISTSRC}/src=."
-case "$HOST" in
-    *mingw*)  HOST_CFLAGS+=" -fno-ident" ;;
-    *darwin*) unset HOST_CFLAGS ;;
-esac
-
-# CXXFLAGS
-HOST_CXXFLAGS="$HOST_CFLAGS"
-
-case "$HOST" in
-    arm-linux-gnueabihf) HOST_CXXFLAGS="${HOST_CXXFLAGS} -Wno-psabi" ;;
-esac
-
-# LDFLAGS
-case "$HOST" in
-    *linux*)  HOST_LDFLAGS="-Wl,--as-needed -Wl,--dynamic-linker=$glibc_dynamic_linker -Wl,-O2" ;;
-    *mingw*)  HOST_LDFLAGS="-Wl,--no-insert-timestamp" ;;
-esac
-
-# EXE FLAGS
-case "$HOST" in
-    *linux*)  CMAKE_EXE_LINKER_FLAGS="-DCMAKE_EXE_LINKER_FLAGS=${HOST_LDFLAGS} -static-libstdc++ -static-libgcc" ;;
-esac
 
 mkdir -p "$DISTSRC"
 (
