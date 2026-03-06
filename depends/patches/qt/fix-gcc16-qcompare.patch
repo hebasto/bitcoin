@@ -68,7 +68,7 @@ index d82cf5ab4a4e..7eee69db66a3 100644
      Unordered =
          #if defined(_LIBCPP_VERSION) // libc++
                  -127
-@@ -43,8 +52,8 @@ enum class Uncomparable : CompareUnderlyingType
+@@ -43,12 +52,25 @@ enum class Uncomparable : CompareUnderlyingType
          #else                        // assume MSSTL
                  -128
          #endif
@@ -95,7 +95,7 @@ index d82cf5ab4a4e..7eee69db66a3 100644
  template <typename O>
  constexpr O reversed(O o) noexcept
  {
-@@ -73,6 +95,9 @@ constexpr O reversed(O o) noexcept
+@@ -60,6 +82,9 @@ constexpr O reversed(O o) noexcept
 
  } // namespace QtOrderingPrivate
 
@@ -181,7 +181,7 @@ index d82cf5ab4a4e..7eee69db66a3 100644
      }
 
      friend constexpr bool operator==(strong_ordering lhs, std::strong_ordering rhs) noexcept
-@@ -632,6 +662,8 @@ inline constexpr strong_ordering strong_ordering::greater(QtPrivate::Ordering::G
+@@ -621,6 +651,8 @@ inline constexpr strong_ordering strong_ordering::greater(QtPrivate::Ordering::G
 
  } // namespace Qt
 
