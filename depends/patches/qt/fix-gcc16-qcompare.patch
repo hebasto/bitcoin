@@ -81,8 +81,8 @@ index d82cf5ab4a4e..7eee69db66a3 100644
 
 +using QtPrivate::Ordering;
 +using QtPrivate::Uncomparable;
-+
 +#if defined(__cpp_lib_bit_cast) && defined(__cpp_lib_three_way_comparison)
++#error
 +inline constexpr bool OrderingValuesAreEqual =
 +        std::bit_cast<Ordering>(std::weak_ordering::equivalent) == Ordering::Equivalent &&
 +        std::bit_cast<Ordering>(std::strong_ordering::equal) == Ordering::Equal &&
