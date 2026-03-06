@@ -83,12 +83,12 @@ index d82cf5ab4a4e..7eee69db66a3 100644
 +using QtPrivate::Uncomparable;
 +
 +#if defined(__cpp_lib_bit_cast) && defined(__cpp_lib_three_way_comparison)
-+inline constexpr bool OrderingValuesAreEqual =
++constexpr bool OrderingValuesAreEqual =
 +        std::bit_cast<Ordering>(std::weak_ordering::equivalent) == Ordering::Equivalent &&
 +        std::bit_cast<Ordering>(std::strong_ordering::equal) == Ordering::Equal &&
 +        std::bit_cast<Ordering>(std::strong_ordering::less) == Ordering::Less &&
 +        std::bit_cast<Ordering>(std::strong_ordering::greater) == Ordering::Greater;
-+inline constexpr bool UnorderedValueIsEqual =
++constexpr bool UnorderedValueIsEqual =
 +        std::bit_cast<Uncomparable>(std::partial_ordering::unordered) == Uncomparable::Unordered;
 +#endif
 +
