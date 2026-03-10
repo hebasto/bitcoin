@@ -8,7 +8,7 @@
 
 #include <crypto/siphash.h>
 #include <logging/categories.h> // IWYU pragma: export
-#include <threadsafety.h>
+#include <util/sync_unlogged.h>
 #include <util/fs.h>
 #include <util/log.h> // IWYU pragma: export
 #include <util/string.h>
