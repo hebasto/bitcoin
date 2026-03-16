@@ -18,10 +18,11 @@ QtTools: Skip unnecessary dependencies:
 
 --- a/qttools/src/linguist/CMakeLists.txt
 +++ b/qttools/src/linguist/CMakeLists.txt
-@@ -9,15 +9,8 @@ if(NOT QT_FEATURE_linguist)
+@@ -8,16 +8,8 @@ qt_exclude_tool_directories_from_default_target(
+ if(NOT QT_FEATURE_linguist)
      return()
  endif()
- add_subdirectory(lconvert)
+-add_subdirectory(lconvert)
 -add_subdirectory(lprodump)
  add_subdirectory(lrelease)
 -add_subdirectory(lrelease-pro)
