@@ -16,8 +16,8 @@
 #include <QByteArray>
 #include <QCompleter>
 #include <QMimeData>
+#include <QPlainTextEdit>
 #include <QTextDocumentFragment>
-#include <QTextEdit>
 #include <QThread>
 #include <QWidget>
 
@@ -195,13 +195,13 @@ private Q_SLOTS:
 };
 
 /**
- * A version of QTextEdit that only populates plaintext mime data from a
+ * A version of QPlainTextEdit that only populates plaintext mime data from a
  * selection, this avoids some bad behavior in QT's HTML->Markdown conversion.
  */
-class PlainCopyTextEdit : public QTextEdit {
+class PlainCopyTextEdit : public QPlainTextEdit {
     Q_OBJECT
 public:
-    using QTextEdit::QTextEdit;
+    using QPlainTextEdit::QPlainTextEdit;
 protected:
     QMimeData* createMimeDataFromSelection() const override {
         auto md = new QMimeData();
