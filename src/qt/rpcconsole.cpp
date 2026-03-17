@@ -921,18 +921,27 @@ void RPCConsole::changeEvent(QEvent* e)
 
 void RPCConsole::message(int category, const QString &message, bool html)
 {
+    std::cerr << __FILE__ << ":" << __LINE__ << "\n";
     QTime time = QTime::currentTime();
     QString timeString = time.toString();
     QString out;
+    std::cerr << __FILE__ << ":" << __LINE__ << "\n";
     out += "<table><tr><td class=\"time\" width=\"65\">" + timeString + "</td>";
     out += "<td class=\"icon\" width=\"32\"><img src=\"" + categoryClass(category) + "\"></td>";
     out += "<td class=\"message " + categoryClass(category) + "\" valign=\"middle\">";
-    if(html)
+    std::cerr << __FILE__ << ":" << __LINE__ << "\n";
+    if(html) {
+        std::cerr << __FILE__ << ":" << __LINE__ << "\n";
         out += message;
-    else
+    } else {
+        std::cerr << __FILE__ << ":" << __LINE__ << "\n";
         out += GUIUtil::HtmlEscape(message, false);
+    }
+    std::cerr << __FILE__ << ":" << __LINE__ << "\n";
     out += "</td></tr></table>";
+    std::cerr << __FILE__ << ":" << __LINE__ << "\n";
     ui->messagesWidget->append(out);
+    std::cerr << __FILE__ << ":" << __LINE__ << "\n";
 }
 
 void RPCConsole::updateNetworkState()
