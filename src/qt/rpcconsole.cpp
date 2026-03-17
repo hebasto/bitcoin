@@ -940,7 +940,9 @@ void RPCConsole::message(int category, const QString &message, bool html)
     std::cerr << __FILE__ << ":" << __LINE__ << "\n";
     out += "</td></tr></table>";
     std::cerr << __FILE__ << ":" << __LINE__ << "\n";
+    ui->messagesWidget->setUndoRedoEnabled(false);
     ui->messagesWidget->append(out);
+    ui->messagesWidget->setUndoRedoEnabled(true);
     std::cerr << __FILE__ << ":" << __LINE__ << "\n";
 }
 
