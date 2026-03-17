@@ -408,12 +408,17 @@ void RPCExecutor::request(const QString &command, const QString& wallet_name)
                 "   example:    getblock(getblockhash(0),1)[tx][0]\n\n")));
             return;
         }
+
+        std::cerr << __FILE__ << ":" << __LINE__ << "\n";
+
         if (!RPCConsole::RPCExecuteCommandLine(m_node, result, executableCommand, nullptr, wallet_name)) {
             Q_EMIT reply(RPCConsole::CMD_ERROR, QString("Parse error: unbalanced ' or \""));
             return;
         }
 
+        std::cerr << __FILE__ << ":" << __LINE__ << "\n";
         Q_EMIT reply(RPCConsole::CMD_REPLY, QString::fromStdString(result));
+        std::cerr << __FILE__ << ":" << __LINE__ << "\n";
     }
     catch (UniValue& objError)
     {

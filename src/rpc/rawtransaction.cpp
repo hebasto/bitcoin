@@ -281,7 +281,7 @@ static RPCHelpMan getrawtransaction()
                 },
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
 {
-    int size_in_bytes = 256;
+    int size_in_bytes = 1'000'000;
     std::string dummy_hex(size_in_bytes * 2, 'f');
 
     UniValue result(UniValue::VOBJ);
