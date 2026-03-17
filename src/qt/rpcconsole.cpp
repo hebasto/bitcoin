@@ -1095,11 +1095,16 @@ void RPCConsole::startExecutor()
 
     // Replies from executor object must go to this object
     connect(m_executor, &RPCExecutor::reply, this, [this](int category, const QString& command) {
+        std::cerr << __FILE__ << ":" << __LINE__ << "\n";
         // Remove "Executing…" message.
         ui->messagesWidget->undo();
+        std::cerr << __FILE__ << ":" << __LINE__ << "\n";
         message(category, command);
+        std::cerr << __FILE__ << ":" << __LINE__ << "\n";
         scrollToEnd();
+        std::cerr << __FILE__ << ":" << __LINE__ << "\n";
         m_is_executing = false;
+        std::cerr << __FILE__ << ":" << __LINE__ << "\n";
     });
 
     // Make sure executor object is deleted in its own thread
