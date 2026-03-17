@@ -535,7 +535,7 @@ RPCConsole::RPCConsole(interfaces::Node& node, const PlatformStyle *_platformSty
     // Install event filter for up and down arrow
     ui->lineEdit->installEventFilter(this);
     ui->lineEdit->setMaxLength(16 * 1024 * 1024);
-    ui->messagesWidget->installEventFilter(this);
+    // ui->messagesWidget->installEventFilter(this);
 
     connect(ui->hidePeersDetailButton, &QAbstractButton::clicked, this, &RPCConsole::clearSelectedNode);
     connect(ui->clearButton, &QAbstractButton::clicked, [this] { clear(); });
