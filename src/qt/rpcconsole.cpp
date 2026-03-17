@@ -818,7 +818,8 @@ void RPCConsole::setFontSize(int newSize)
         return;
 
     // temp. store the console content
-    QString str = ui->messagesWidget->toHtml();
+    // QString str = ui->messagesWidget->toHtml();
+    QString str;
 
     // replace font tags size in current content
     str.replace(QString("font-size:%1pt").arg(consoleFontSize), QString("font-size:%1pt").arg(newSize));
@@ -830,7 +831,7 @@ void RPCConsole::setFontSize(int newSize)
     // clear console (reset icon sizes, default stylesheet) and re-add the content
     float oldPosFactor = 1.0 / ui->messagesWidget->verticalScrollBar()->maximum() * ui->messagesWidget->verticalScrollBar()->value();
     clear(/*keep_prompt=*/true);
-    ui->messagesWidget->setHtml(str);
+    // ui->messagesWidget->setHtml(str);
     ui->messagesWidget->verticalScrollBar()->setValue(oldPosFactor * ui->messagesWidget->verticalScrollBar()->maximum());
 }
 
@@ -941,7 +942,9 @@ void RPCConsole::message(int category, const QString &message, bool html)
     out += "</td></tr></table>";
     std::cerr << __FILE__ << ":" << __LINE__ << "\n";
     ui->messagesWidget->setUndoRedoEnabled(false);
-    ui->messagesWidget->append(out);
+    ui->messagesWidget->setUpdatesEnabled(false);
+    ui->messagesWidget->appendPlainText(out);
+    ui->messagesWidget->setUpdatesEnabled(true);
     ui->messagesWidget->setUndoRedoEnabled(true);
     std::cerr << __FILE__ << ":" << __LINE__ << "\n";
 }
