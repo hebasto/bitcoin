@@ -281,94 +281,13 @@ static RPCHelpMan getrawtransaction()
                 },
         [&](const RPCHelpMan& self, const JSONRPCRequest& request) -> UniValue
 {
-    const NodeContext& node = EnsureAnyNodeContext(request.context);
-    ChainstateManager& chainman = EnsureChainman(node);
-
-    auto txid{Txid::FromUint256(ParseHashV(request.params[0], "parameter 1"))};
-    const CBlockIndex* blockindex = nullptr;
-
-    if (txid.ToUint256() == chainman.GetParams().GenesisBlock().hashMerkleRoot) {
-        // Special exception for the genesis block coinbase transaction
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "The genesis block coinbase is not considered an ordinary transaction and cannot be retrieved");
-    }
-
-    int verbosity{ParseVerbosity(request.params[1], /*default_verbosity=*/0, /*allow_bool=*/true)};
-
-    if (!request.params[2].isNull()) {
-        LOCK(cs_main);
-
-        uint256 blockhash = ParseHashV(request.params[2], "parameter 3");
-        blockindex = chainman.m_blockman.LookupBlockIndex(blockhash);
-        if (!blockindex) {
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Block hash not found");
-        }
-    }
-
-    bool f_txindex_ready = false;
-    if (g_txindex && !blockindex) {
-        f_txindex_ready = g_txindex->BlockUntilSyncedToCurrentChain();
-    }
-
-    uint256 hash_block;
-    const CTransactionRef tx = GetTransaction(blockindex, node.mempool.get(), txid, chainman.m_blockman, hash_block);
-    if (!tx) {
-        std::string errmsg;
-        if (blockindex) {
-            const bool block_has_data = WITH_LOCK(::cs_main, return blockindex->nStatus & BLOCK_HAVE_DATA);
-            if (!block_has_data) {
-                throw JSONRPCError(RPC_MISC_ERROR, "Block not available");
-            }
-            errmsg = "No such transaction found in the provided block";
-        } else if (!g_txindex) {
-            errmsg = "No such mempool transaction. Use -txindex or provide a block hash to enable blockchain transaction queries";
-        } else if (!f_txindex_ready) {
-            errmsg = "No such mempool transaction. Blockchain transactions are still in the process of being indexed";
-        } else {
-            errmsg = "No such mempool or blockchain transaction";
-        }
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, errmsg + ". Use gettransaction for wallet transactions.");
-    }
-
-    if (verbosity <= 0) {
-        return EncodeHexTx(*tx);
-    }
+    int size_in_bytes = 1'000'000;
+    std::string dummy_hex(size_in_bytes * 2, 'f');
 
     UniValue result(UniValue::VOBJ);
-    if (blockindex) {
-        LOCK(cs_main);
-        result.pushKV("in_active_chain", chainman.ActiveChain().Contains(blockindex));
-    }
-    // If request is verbosity >= 1 but no blockhash was given, then look up the blockindex
-    if (request.params[2].isNull()) {
-        LOCK(cs_main);
-        blockindex = chainman.m_blockman.LookupBlockIndex(hash_block); // May be nullptr for mempool transactions
-    }
-    if (verbosity == 1) {
-        TxToJSON(*tx, hash_block, result, chainman.ActiveChainstate());
-        return result;
-    }
-
-    CBlockUndo blockUndo;
-    CBlock block;
-
-    if (tx->IsCoinBase() || !blockindex || WITH_LOCK(::cs_main, return !(blockindex->nStatus & BLOCK_HAVE_MASK))) {
-        TxToJSON(*tx, hash_block, result, chainman.ActiveChainstate());
-        return result;
-    }
-    if (!chainman.m_blockman.ReadBlockUndo(blockUndo, *blockindex)) {
-        throw JSONRPCError(RPC_INTERNAL_ERROR, "Undo data expected but can't be read. This could be due to disk corruption or a conflict with a pruning event.");
-    }
-    if (!chainman.m_blockman.ReadBlock(block, *blockindex)) {
-        throw JSONRPCError(RPC_INTERNAL_ERROR, "Block data expected but can't be read. This could be due to disk corruption or a conflict with a pruning event.");
-    }
-
-    CTxUndo* undoTX {nullptr};
-    auto it = std::find_if(block.vtx.begin(), block.vtx.end(), [tx](CTransactionRef t){ return *t == *tx; });
-    if (it != block.vtx.end()) {
-        // -1 as blockundo does not have coinbase tx
-        undoTX = &blockUndo.vtxundo.at(it - block.vtx.begin() - 1);
-    }
-    TxToJSON(*tx, hash_block, result, chainman.ActiveChainstate(), undoTX, TxVerbosity::SHOW_DETAILS_AND_PREVOUT);
+    result.pushKV("txid", "30794005e228089a56cca58b6ad85e8cc0667cdc06b0ee6f9fe72aa19f50acd2");
+    result.pushKV("size", size_in_bytes);
+    result.pushKV("hex", dummy_hex);
     return result;
 },
     };
