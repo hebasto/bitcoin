@@ -927,7 +927,9 @@ void RPCConsole::message(int category, const QString &message, bool html)
     else
         out += GUIUtil::HtmlEscape(message, false);
     out += "</td></tr></table>";
+    ui->messagesWidget->setUpdatesEnabled(false);
     ui->messagesWidget->append(out);
+    ui->messagesWidget->setUpdatesEnabled(true);
 }
 
 void RPCConsole::updateNetworkState()
