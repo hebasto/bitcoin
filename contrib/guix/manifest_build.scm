@@ -273,7 +273,6 @@ chain for " target " development."))
         gzip
         xz
         ;; Build tools
-        gcc-toolchain-14
         cmake-minimal
         gnu-make
         ninja
@@ -285,17 +284,19 @@ chain for " target " development."))
         python-lief)
   (let ((target (getenv "HOST")))
     (cond ((string-suffix? "-mingw32" target)
-           (list (make-mingw-pthreads-cross-toolchain "x86_64-w64-mingw32")
+           (list gcc-toolchain-14
+                 (make-mingw-pthreads-cross-toolchain "x86_64-w64-mingw32")
                  nsis-x86_64
                  zip))
           ((string-contains target "-linux-")
            (list bison
-                 pkg-config
+                 gcc-toolchain-14
                  (list gcc-toolchain-14 "static")
-                 (make-bitcoin-cross-toolchain target)))
+                 (make-bitcoin-cross-toolchain target)
+                 pkg-config))
           ((string-contains target "darwin")
            (list clang-toolchain-19
+                 libcxx ;; 19.1.7
                  lld-19
-                 (make-lld-wrapper lld-19 #:lld-as-ld? #t)
                  zip))
           (else '())))))
