@@ -23,11 +23,11 @@
 #include <serialize.h>
 #include <uint256.h>
 #include <undo.h>
-#include <util/check.h>
 #include <util/fs.h>
 #include <util/log.h>
 #include <validation.h>
 
+#include <cassert>
 #include <compare>
 #include <limits>
 #include <string>

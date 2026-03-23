@@ -8,11 +8,11 @@
 #include <attributes.h>
 
 #include <atomic>
-#include <cassert> // IWYU pragma: export
 #include <source_location>
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include <utility>
 
 constexpr bool G_FUZZING_BUILD{

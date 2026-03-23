@@ -12,6 +12,7 @@
 #include <util/check.h>
 
 #include <bit>
+#include <cassert>
 #include <cstring>
 #include <limits>
 
