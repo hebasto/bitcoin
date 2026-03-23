@@ -18,12 +18,12 @@
 #include <streams.h>
 #include <sync.h>
 #include <uint256.h>
-#include <util/check.h>
 #include <util/fs.h>
 #include <util/hasher.h>
 #include <util/log.h>
 #include <util/syserror.h>
 
+#include <cassert>
 #include <cerrno>
 #include <exception>
 #include <map>

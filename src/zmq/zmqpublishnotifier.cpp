@@ -13,11 +13,11 @@
 #include <serialize.h>
 #include <streams.h>
 #include <uint256.h>
-#include <util/check.h>
 #include <zmq/zmqutil.h>
 
 #include <zmq.h>
 
+#include <cassert>
 #include <cstdarg>
 #include <cstddef>
 #include <cstdint>

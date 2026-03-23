@@ -15,11 +15,11 @@
 #include <streams.h>
 #include <sync.h>
 #include <uint256.h>
-#include <util/check.h>
 #include <util/log.h>
 #include <util/overflow.h>
 #include <validation.h>
 
+#include <cassert>
 #include <map>
 #include <memory>
 #include <utility>
