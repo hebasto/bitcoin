@@ -9,7 +9,9 @@
 // to expose the complete logging interface.
 #include <logging/categories.h> // IWYU pragma: export
 #include <tinyformat.h>
-#include <util/check.h>
+// The LogDebug and LogTrace macros expand to code that
+// uses Assume from `util/check.h`.
+#include <util/check.h> // IWYU pragma: export
 
 #include <cstdint>
 #include <source_location>
