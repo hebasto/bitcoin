@@ -248,7 +248,7 @@ public:
         if (vch.size() > nMaxNumSize) {
             throw scriptnum_error("script number overflow");
         }
-        if (fRequireMinimal && vch.size() > 0) {
+        if (fRequireMinimal && !vch.empty()) {
             // Check that the number is encoded with the minimum possible
             // number of bytes.
             //
@@ -562,7 +562,7 @@ public:
      */
     bool IsUnspendable() const
     {
-        return (size() > 0 && *begin() == OP_RETURN) || (size() > MAX_SCRIPT_SIZE);
+        return (!empty() && *begin() == OP_RETURN) || (size() > MAX_SCRIPT_SIZE);
     }
 
     void clear()

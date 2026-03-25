@@ -1376,7 +1376,7 @@ BOOST_AUTO_TEST_CASE(v2transport_test)
         while (true) {
             ret = tester.Interact();
             if (!ret) break; // failure
-            BOOST_CHECK(ret->size() == 0); // no message can be delivered
+            BOOST_CHECK(ret->empty()); // no message can be delivered
             // Send another message.
             auto msg_data_3 = m_rng.randbytes<uint8_t>(m_rng.randrange(10000));
             tester.SendMessage(uint8_t(12), msg_data_3); // getheaders short id

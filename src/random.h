@@ -276,7 +276,7 @@ public:
             WriteLE32(span.data(), gen);
             span = span.subspan(4);
         }
-        while (span.size()) {
+        while (!span.empty()) {
             span[0] = std::byte(Impl().template randbits<8>());
             span = span.subspan(1);
         }

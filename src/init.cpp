@@ -784,7 +784,7 @@ void InitParameterInteraction(ArgsManager& args)
     }
 
     std::string proxy_arg = args.GetArg("-proxy", "");
-    if (proxy_arg != "" && proxy_arg != "0") {
+    if (!proxy_arg.empty() && proxy_arg != "0") {
         // to protect privacy, do not listen by default if a default proxy server is specified
         if (args.SoftSetBoolArg("-listen", false))
             LogInfo("parameter interaction: -proxy set -> setting -listen=0\n");
@@ -971,7 +971,7 @@ bool AppInitParameterInteraction(const ArgsManager& args)
 
     // parse and validate enabled filter types
     std::string blockfilterindex_value = args.GetArg("-blockfilterindex", DEFAULT_BLOCKFILTERINDEX);
-    if (blockfilterindex_value == "" || blockfilterindex_value == "1") {
+    if (blockfilterindex_value.empty() || blockfilterindex_value == "1") {
         g_enabled_filter_types = AllBlockFilterTypes();
     } else if (blockfilterindex_value != "0") {
         const std::vector<std::string> names = args.GetArgs("-blockfilterindex");
@@ -1763,7 +1763,7 @@ bool AppInitMain(NodeContext& node, interfaces::BlockAndHeaderTipInfo* tip_info)
     // -noonion (or -onion=0) disables connecting to .onion entirely
     // An empty string is used to not override the onion proxy (in which case it defaults to -proxy set above, or none)
     std::string onionArg = args.GetArg("-onion", "");
-    if (onionArg != "") {
+    if (!onionArg.empty()) {
         if (onionArg == "0") { // Handle -noonion/-onion=0
             onion_proxy = Proxy{};
             if (onlynet_used_with_onion) {

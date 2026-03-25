@@ -389,13 +389,13 @@ public:
     /** Returns the index entry for the genesis block of this chain, or nullptr if none. */
     CBlockIndex* Genesis() const
     {
-        return vChain.size() > 0 ? vChain[0] : nullptr;
+        return !vChain.empty() ? vChain[0] : nullptr;
     }
 
     /** Returns the index entry for the tip of this chain, or nullptr if none. */
     CBlockIndex* Tip() const
     {
-        return vChain.size() > 0 ? vChain[vChain.size() - 1] : nullptr;
+        return !vChain.empty() ? vChain[vChain.size() - 1] : nullptr;
     }
 
     /** Returns the index entry at a particular height in this chain, or nullptr if no such height exists. */

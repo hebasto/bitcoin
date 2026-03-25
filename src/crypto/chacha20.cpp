@@ -303,7 +303,7 @@ void ChaCha20::Crypt(std::span<const std::byte> input, std::span<std::byte> outp
 {
     assert(input.size() == output.size());
 
-    if (!input.size()) return;
+    if (input.empty()) return;
     if (m_bufleft) {
         unsigned reuse = std::min<size_t>(m_bufleft, input.size());
         for (unsigned i = 0; i < reuse; i++) {

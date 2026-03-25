@@ -1269,7 +1269,7 @@ RPCHelpMan send()
             CMutableTransaction rawTx = ConstructTransaction(options["inputs"], request.params[0], options["locktime"], rbf, coin_control.m_version);
             // Automatically select coins, unless at least one is manually selected. Can
             // be overridden by options.add_inputs.
-            coin_control.m_allow_other_inputs = rawTx.vin.size() == 0;
+            coin_control.m_allow_other_inputs = rawTx.vin.empty();
             if (options.exists("max_tx_weight")) {
                 coin_control.m_max_tx_weight = options["max_tx_weight"].getInt<int>();
             }
@@ -1389,7 +1389,7 @@ RPCHelpMan sendall()
                 }
             }
 
-            if (addresses_without_amount.size() == 0) {
+            if (addresses_without_amount.empty()) {
                 throw JSONRPCError(RPC_INVALID_PARAMETER, "Must provide at least one address without a specified amount");
             }
 
@@ -1755,7 +1755,7 @@ RPCHelpMan walletcreatefundedpsbt()
     );
     // Automatically select coins, unless at least one is manually selected. Can
     // be overridden by options.add_inputs.
-    coin_control.m_allow_other_inputs = rawTx.vin.size() == 0;
+    coin_control.m_allow_other_inputs = rawTx.vin.empty();
     SetOptionsInputWeights(request.params[0], options);
     // Clear tx.vout since it is not meant to be used now that we are passing outputs directly.
     // This sets us up for a future PR to completely remove tx from the function signature in favor of passing inputs directly

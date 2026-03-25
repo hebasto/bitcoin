@@ -42,7 +42,7 @@ namespace {
 
 std::vector<unsigned char> CheckedParseHex(const std::string& str)
 {
-    if (str.size() && !IsHex(str)) throw std::runtime_error("Non-hex input '" + str + "'");
+    if (!str.empty() && !IsHex(str)) throw std::runtime_error("Non-hex input '" + str + "'");
     return ParseHex(str);
 }
 

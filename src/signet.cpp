@@ -39,7 +39,7 @@ static bool FetchAndClearCommitmentSection(const std::span<const uint8_t> header
     CScript::const_iterator pc = witness_commitment.begin();
     std::vector<uint8_t> pushdata;
     while (witness_commitment.GetOp(pc, opcode, pushdata)) {
-        if (pushdata.size() > 0) {
+        if (!pushdata.empty()) {
             if (!found_header && pushdata.size() > header.size() && std::ranges::equal(std::span{pushdata}.first(header.size()), header)) {
                 // pushdata only counts if it has the header _and_ some data
                 result.insert(result.end(), pushdata.begin() + header.size(), pushdata.end());

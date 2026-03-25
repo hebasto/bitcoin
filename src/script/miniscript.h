@@ -619,7 +619,7 @@ private:
         for (const auto& sub : subs) {
             subsize += sub.ScriptSize();
         }
-        Type sub0type = subs.size() > 0 ? subs[0].GetType() : ""_mst;
+        Type sub0type = !subs.empty() ? subs[0].GetType() : ""_mst;
         return internal::ComputeScriptLen(fragment, sub0type, subsize, k, subs.size(), keys.size(), m_script_ctx);
     }
 
@@ -682,7 +682,7 @@ private:
          *        stack=[(A,3)] results=[B,C,F]
          * Final: stack=[] results=[A]
          */
-        while (stack.size()) {
+        while (!stack.empty()) {
             const Node& node = stack.back().node;
             if (stack.back().expanded < node.subs.size()) {
                 /* We encounter a tree node with at least one unexpanded child.
@@ -705,7 +705,7 @@ private:
             stack.pop_back();
         }
         // The final remaining results element is the root result, return it.
-        assert(results.size() >= 1);
+        assert(!results.empty());
         CHECK_NONFATAL(results.size() == 1);
         return std::move(results[0]);
     }
@@ -784,7 +784,7 @@ private:
             for (const auto& sub : subs) sub_types.push_back(sub.GetType());
         }
         // All other nodes than THRESH can be computed just from the types of the 0-3 subexpressions.
-        Type x = subs.size() > 0 ? subs[0].GetType() : ""_mst;
+        Type x = !subs.empty() ? subs[0].GetType() : ""_mst;
         Type y = subs.size() > 1 ? subs[1].GetType() : ""_mst;
         Type z = subs.size() > 2 ? subs[2].GetType() : ""_mst;
 

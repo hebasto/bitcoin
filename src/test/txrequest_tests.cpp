@@ -453,9 +453,9 @@ void TxRequestTest::BuildBigPriorityTest(Scenario& scenario, int peers)
             scenario.Check(peer, {}, 0, 0, 0, "b4");
         } else {
             scenario.ReceivedResponse(peer, gtxid.ToUint256());
-            scenario.Check(peer, {}, 0, 0, request_order.size() > 0, "b5");
+            scenario.Check(peer, {}, 0, 0, !request_order.empty(), "b5");
         }
-        if (request_order.size()) {
+        if (!request_order.empty()) {
             scenario.Check(request_order[0], {gtxid}, 1, 0, 0, "b6");
         }
     }
@@ -719,7 +719,7 @@ void TxRequestTest::TestInterleavedScenarios()
     Runner runner;
     auto starttime = RandomTime1y();
     // Construct many scenarios, and run (up to) 10 randomly-chosen tests consecutively in each.
-    while (builders.size()) {
+    while (!builders.empty()) {
         // Introduce some variation in the start time of each scenario, so they don't all start off
         // concurrently, but get a more random interleaving.
         auto scenario_start = starttime + RandomTime8s() + RandomTime8s() + RandomTime8s();

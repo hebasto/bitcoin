@@ -39,7 +39,7 @@ public:
         if (vch.size() > nMaxNumSize) {
             throw scriptnum10_error("script number overflow");
         }
-        if (fRequireMinimal && vch.size() > 0) {
+        if (fRequireMinimal && !vch.empty()) {
             // Check that the number is encoded with the minimum possible
             // number of bytes.
             //

@@ -103,7 +103,7 @@ public:
 
     void read(std::span<std::byte> dst)
     {
-        if (dst.size() == 0) {
+        if (dst.empty()) {
             return;
         }
 
@@ -202,7 +202,7 @@ public:
 
     void read(std::span<value_type> dst)
     {
-        if (dst.size() == 0) return;
+        if (dst.empty()) return;
 
         // Read from the beginning of the buffer
         auto next_read_pos{CheckedAdd(m_read_pos, dst.size())};
@@ -544,7 +544,7 @@ public:
     //! read a number of bytes
     void read(std::span<std::byte> dst)
     {
-        while (dst.size() > 0) {
+        while (!dst.empty()) {
             auto [buffer_pointer, length]{AdvanceStream(dst.size())};
             memcpy(dst.data(), buffer_pointer, length);
             dst = dst.subspan(length);
@@ -645,7 +645,7 @@ public:
             m_buf_pos += available;
             dst = dst.subspan(available);
         }
-        if (dst.size()) {
+        if (!dst.empty()) {
             assert(m_buf_pos == m_buf.size());
             m_src.read(dst);
 

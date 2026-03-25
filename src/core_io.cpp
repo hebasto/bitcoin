@@ -317,7 +317,7 @@ std::string FormatScript(const CScript& script)
                     continue;
                 }
             }
-            if (vch.size() > 0) {
+            if (!vch.empty()) {
                 ret += strprintf("0x%x 0x%x ", HexStr(std::vector<uint8_t>(it2, it - vch.size())),
                                                HexStr(std::vector<uint8_t>(it - vch.size(), it)));
             } else {

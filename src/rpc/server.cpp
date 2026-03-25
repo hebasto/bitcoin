@@ -84,7 +84,7 @@ std::string CRPCTable::help(std::string_view strCommand, const JSONRPCRequest& h
 
     for (const auto& [_, pcmd] : vCommands) {
         std::string strMethod = pcmd->name;
-        if ((strCommand != "" || pcmd->category == "hidden") && strMethod != strCommand)
+        if ((!strCommand.empty() || pcmd->category == "hidden") && strMethod != strCommand)
             continue;
         jreq.strMethod = strMethod;
         try
@@ -110,7 +110,7 @@ std::string CRPCTable::help(std::string_view strCommand, const JSONRPCRequest& h
             strRet += strHelp + "\n";
         }
     }
-    if (strRet == "")
+    if (strRet.empty())
         strRet = strprintf("help: unknown command: %s\n", strCommand);
     strRet = strRet.substr(0,strRet.size()-1);
     return strRet;

@@ -64,7 +64,7 @@ static bool TryParsePermissionFlags(const std::string& str, NetPermissionFlags& 
                 }
                 connection_direction |= ConnectionDirection::Out;
             }
-            else if (permission.length() == 0); // Allow empty entries
+            else if (permission.empty()); // Allow empty entries
             else {
                 error = strprintf(_("Invalid P2P permission: '%s'"), permission);
                 return false;

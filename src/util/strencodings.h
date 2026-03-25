@@ -129,7 +129,7 @@ T LocaleIndependentAtoi(std::string_view str)
     }
     auto [_, error_condition] = std::from_chars(s.data(), s.data() + s.size(), result);
     if (error_condition == std::errc::result_out_of_range) {
-        if (s.length() >= 1 && s[0] == '-') {
+        if (!s.empty() && s[0] == '-') {
             // Saturate underflow, per strtoll's behavior.
             return std::numeric_limits<T>::min();
         } else {

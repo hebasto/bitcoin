@@ -22,7 +22,7 @@ FUZZ_TARGET(span)
     (void)span.data();
     (void)span.begin();
     (void)span.end();
-    if (span.size() > 0) {
+    if (!span.empty()) {
         const std::ptrdiff_t idx = fuzzed_data_provider.ConsumeIntegralInRange<std::ptrdiff_t>(0U, span.size() - 1U);
         (void)span.first(idx);
         (void)span.last(idx);

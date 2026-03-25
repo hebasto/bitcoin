@@ -103,7 +103,7 @@ void AutoFile::write(std::span<const std::byte> src)
         if (m_position.has_value()) *m_position += src.size();
     } else {
         std::array<std::byte, 4096> buf;
-        while (src.size()) {
+        while (!src.empty()) {
             auto buf_now{std::span{buf}.first(std::min<size_t>(src.size(), buf.size()))};
             std::copy_n(src.begin(), buf_now.size(), buf_now.begin());
             write_buffer(buf_now);

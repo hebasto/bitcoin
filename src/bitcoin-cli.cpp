@@ -464,7 +464,7 @@ private:
     }
     static std::string ServicesList(const UniValue& services)
     {
-        std::string str{services.size() ? services[0].get_str() : ""};
+        std::string str{!services.empty() ? services[0].get_str() : ""};
         for (size_t i{1}; i < services.size(); ++i) {
             str += ", " + services[i].get_str();
         }
@@ -866,7 +866,7 @@ static UniValue CallRPC(BaseRequestHandler* rh, const std::string& strMethod, co
     // Get credentials
     std::string strRPCUserColonPass;
     bool failedToGetAuthCookie = false;
-    if (gArgs.GetArg("-rpcpassword", "") == "") {
+    if (gArgs.GetArg("-rpcpassword", "").empty()) {
         // Try fall back to cookie-based authentication if no password is provided
         if (!GetAuthCookie(&strRPCUserColonPass)) {
             failedToGetAuthCookie = true;
@@ -1197,7 +1197,7 @@ static UniValue GetNewAddress()
 static void SetGenerateToAddressArgs(const std::string& address, std::vector<std::string>& args)
 {
     if (args.size() > 2) throw std::runtime_error("too many arguments (maximum 2 for nblocks and maxtries)");
-    if (args.size() == 0) {
+    if (args.empty()) {
         args.emplace_back(DEFAULT_NBLOCKS);
     } else if (args.at(0) == "0") {
         throw std::runtime_error("the first argument (number of blocks to generate, default: " + DEFAULT_NBLOCKS + ") must be an integer value greater than zero");
@@ -1234,7 +1234,7 @@ static int CommandLineRPC(int argc, char *argv[])
         if (gArgs.GetBoolArg("-stdinwalletpassphrase", false)) {
             NO_STDIN_ECHO();
             std::string walletPass;
-            if (args.size() < 1 || !args[0].starts_with("walletpassphrase")) {
+            if (args.empty() || !args[0].starts_with("walletpassphrase")) {
                 throw std::runtime_error("-stdinwalletpassphrase is only applicable for walletpassphrase(change)");
             }
             if (!StdinReady()) {
@@ -1283,7 +1283,7 @@ static int CommandLineRPC(int argc, char *argv[])
             rh.reset(new AddrinfoRequestHandler());
         } else {
             rh.reset(new DefaultRequestHandler());
-            if (args.size() < 1) {
+            if (args.empty()) {
                 throw std::runtime_error("too few parameters (need at least command)");
             }
             method = args[0];
@@ -1318,7 +1318,7 @@ static int CommandLineRPC(int argc, char *argv[])
         throw;
     }
 
-    if (strPrint != "") {
+    if (!strPrint.empty()) {
         tfm::format(nRet == 0 ? std::cout : std::cerr, "%s\n", strPrint);
     }
     return nRet;

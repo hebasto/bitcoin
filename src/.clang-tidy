@@ -28,6 +28,7 @@ performance-*,
 readability-avoid-const-params-in-decls,
 readability-const-return-type,
 readability-container-contains,
+readability-container-size-empty,
 readability-redundant-declaration,
 readability-redundant-string-init,
 '

@@ -66,7 +66,7 @@ public:
 
     enum VType getType() const { return typ; }
     const std::string& getValStr() const { return val; }
-    bool empty() const { return (values.size() == 0); }
+    bool empty() const { return values.empty(); }
 
     size_t size() const { return values.size(); }
 
