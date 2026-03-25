@@ -8,6 +8,8 @@
 #include <tinyformat.h>
 #include <util/string.h>
 
+// Including <cassert> rather than <util/check.h>
+// to avoid a circular header dependency.
 #include <cassert>
 #include <functional>
 #include <string>
