@@ -13,6 +13,7 @@
 #include <validation.h>
 
 #include <cassert>
+#include <cstdint>
 #include <cstdio>
 #include <optional>
 #include <string>

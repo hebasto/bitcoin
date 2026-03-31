@@ -14,6 +14,22 @@ See: https://en.cppreference.com/w/cpp/preprocessor/include.html.
    return "\"" + include_name + "\"";
 
 
+Do not rely on transitive inclusions from associated headers.
+See: https://github.com/include-what-you-use/include-what-you-use/issues/919.
+
+--- a/iwyu_output.cc
++++ b/iwyu_output.cc
+@@ -617,7 +617,7 @@ IwyuFileInfo::IwyuFileInfo(OptionalFileEntryRef this_file,
+ void IwyuFileInfo::AddAssociatedHeader(const IwyuFileInfo* other) {
+   VERRS(6) << "Adding " << GetFilePath(other->file_)
+            << " as associated header for " << GetFilePath(file_) << "\n";
+-  associated_headers_.insert(other);
++  // associated_headers_.insert(other);
+ }
+ 
+ void IwyuFileInfo::AddInclude(OptionalFileEntryRef includee,
+
+
 Prefer C++ headers over C counterparts.
 See: https://github.com/include-what-you-use/include-what-you-use/blob/clang_21/iwyu_include_picker.cc#L587-L629.
 

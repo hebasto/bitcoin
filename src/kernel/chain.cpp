@@ -10,6 +10,8 @@
 #include <sync.h>
 #include <uint256.h>
 
+#include <ostream>
+
 class CBlock;
 
 using kernel::ChainstateRole;

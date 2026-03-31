@@ -25,12 +25,17 @@
 #include <util/syserror.h>
 
 #include <cerrno>
+#include <cstddef>
+#include <cstdint>
 #include <exception>
+#include <functional>
 #include <map>
+#include <memory>
 #include <optional>
 #include <stdexcept>
 #include <string>
 #include <tuple>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 

@@ -21,6 +21,7 @@
 #include <cstdint>
 #include <exception>
 #include <memory>
+#include <optional>
 #include <span>
 #include <utility>
 #include <vector>

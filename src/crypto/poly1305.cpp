@@ -2,8 +2,12 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <crypto/common.h>
 #include <crypto/poly1305.h>
+
+#include <crypto/common.h>
+
+#include <cstddef>
+#include <cstdint>
 
 namespace poly1305_donna {
 

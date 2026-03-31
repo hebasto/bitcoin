@@ -12,8 +12,10 @@
 #include <util/check.h>
 
 #include <bit>
+#include <cstdint>
 #include <cstring>
 #include <limits>
+#include <span>
 
 namespace {
 

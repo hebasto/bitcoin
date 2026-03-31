@@ -30,8 +30,10 @@
 #include <validation.h>
 #include <validationinterface.h>
 
+#include <atomic>
 #include <cassert>
 #include <compare>
+#include <cstddef>
 #include <cstdint>
 #include <functional>
 #include <memory>

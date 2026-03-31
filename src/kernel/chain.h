@@ -7,7 +7,7 @@
 
 #include <attributes.h>
 
-#include <iostream>
+#include <ostream>
 
 class CBlock;
 class CBlockIndex;

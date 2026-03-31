@@ -5,10 +5,14 @@
 
 #include <univalue.h>
 
+#include <cstddef>
+#include <cstdint>
 #include <iomanip>
 #include <map>
 #include <sstream>
+#include <stdexcept>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 

@@ -6,6 +6,7 @@
 
 #include <crypto/common.h>
 
+#include <cstdint>
 #include <cstring>
 
 // Internal implementation code.

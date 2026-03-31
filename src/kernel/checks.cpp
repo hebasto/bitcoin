@@ -11,6 +11,7 @@
 #include <string>
 
 namespace kernel {
+struct Context;
 
 util::Result<void> SanityChecks(const Context&)
 {
@@ -21,4 +22,4 @@ util::Result<void> SanityChecks(const Context&)
     return {};
 }
 
-}
+} // namespace kernel

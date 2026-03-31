@@ -20,12 +20,16 @@
 #include <streams.h>
 #include <tinyformat.h>
 #include <uint256.h>
+#include <util/expected.h>
 #include <util/fs.h>
 #include <validation.h>
 
+#include <cstdint>
 #include <cstdio>
 #include <exception>
 #include <ios>
+#include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>

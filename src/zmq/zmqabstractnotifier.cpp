@@ -5,6 +5,10 @@
 #include <zmq/zmqabstractnotifier.h>
 
 #include <cassert>
+#include <cstdint>
+
+class CBlockIndex;
+class CTransaction;
 
 const int CZMQAbstractNotifier::DEFAULT_ZMQ_SNDHWM;
 

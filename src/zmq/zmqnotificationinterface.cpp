@@ -18,10 +18,17 @@
 
 #include <zmq.h>
 
+#include <cstddef>
+#include <cstdint>
+#include <functional>
+#include <list>
 #include <map>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
+
+class CBlockIndex;
 
 using kernel::ChainstateRole;
 

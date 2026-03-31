@@ -6,8 +6,10 @@
 
 #include <uint256.h>
 
+#include <array>
 #include <bit>
 #include <cassert>
+#include <cstdint>
 #include <span>
 
 #define SIPROUND do { \

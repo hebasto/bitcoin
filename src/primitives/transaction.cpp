@@ -8,15 +8,18 @@
 #include <consensus/amount.h>
 #include <crypto/hex_base.h>
 #include <hash.h>
-#include <primitives/transaction_identifier.h>
 #include <script/script.h>
 #include <serialize.h>
 #include <tinyformat.h>
 
 #include <algorithm>
 #include <cassert>
+#include <cstdint>
 #include <span>
 #include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
 
 std::string COutPoint::ToString() const
 {

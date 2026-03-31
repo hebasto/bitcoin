@@ -4,14 +4,18 @@
 
 #include <kernel/disconnected_transactions.h>
 
-#include <cassert>
 #include <core_memusage.h>
 #include <memusage.h>
 #include <primitives/transaction.h>
 #include <util/hasher.h>
 
+#include <cassert>
+#include <cstddef>
+#include <list>
 #include <memory>
+#include <unordered_map>
 #include <utility>
+#include <vector>
 
 // It's almost certainly a logic bug if we don't clear out queuedTx before
 // destruction, as we add to it while disconnecting blocks, and then we

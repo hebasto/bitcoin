@@ -41,18 +41,30 @@
 #include <util/translation.h>
 #include <validation.h>
 
+#include <algorithm>
+#include <array>
+#include <atomic>
 #include <cerrno>
 #include <compare>
 #include <cstddef>
+#include <cstdint>
 #include <cstdio>
 #include <exception>
+#include <functional>
 #include <map>
+#include <memory>
 #include <optional>
 #include <ostream>
+#include <set>
 #include <span>
 #include <stdexcept>
+#include <string>
 #include <system_error>
 #include <unordered_map>
+#include <utility>
+#include <vector>
+
+class BlockValidationState;
 
 namespace kernel {
 static constexpr uint8_t DB_BLOCK_FILES{'f'};

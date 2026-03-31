@@ -6,10 +6,14 @@
 #include <primitives/block.h>
 
 #include <hash.h>
+#include <primitives/transaction.h>
 #include <tinyformat.h>
+#include <uint256.h>
 
 #include <memory>
 #include <sstream>
+#include <string>
+#include <vector>
 
 uint256 CBlockHeader::GetHash() const
 {

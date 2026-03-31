@@ -21,8 +21,11 @@
 #include <validation.h>
 
 #include <cstddef>
+#include <cstdint>
+#include <functional>
 #include <map>
 #include <memory>
+#include <optional>
 #include <utility>
 
 namespace kernel {

@@ -38,6 +38,7 @@
 #include <validationinterface.h>
 
 #include <cstddef>
+#include <cstdint>
 #include <cstring>
 #include <exception>
 #include <functional>
