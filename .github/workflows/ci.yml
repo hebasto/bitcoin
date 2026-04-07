@@ -116,6 +116,8 @@ jobs:
           key: ${{ github.job }}-vcpkg-binary-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
 
       - name: Generate build system
+        env:
+          VCPKG_DEFAULT_HOST_TRIPLET: x64-windows
         run: |
           py -3 .github/ci-windows.py ${{ matrix.job-type }} generate
 
