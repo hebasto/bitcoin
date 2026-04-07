@@ -66,13 +66,21 @@ def github_import_vs_env(_ci_type):
 
 
 def generate(ci_type):
+    # Using x64-windows-release for both host and target triplets
+    # to make vcpkg build only release packages to optimize build time.
+    # See https://github.com/microsoft/vcpkg/issues/50927.
+    triplet = "x64-windows-release"
     command = [
+        "cmake",
+        "-E",
+        "env",
+        f"VCPKG_DEFAULT_HOST_TRIPLET={triplet}",
         "cmake",
         "-B",
         "build",
         "-Werror=dev",
         "--preset=vs2026",
-        "-DVCPKG_TARGET_TRIPLET=x64-windows-release",
+        f"-DVCPKG_TARGET_TRIPLET={triplet}",
     ] + GENERATE_OPTIONS[ci_type]
     if run(command, check=False).returncode != 0:
         print("=== ⚠️ ===")
