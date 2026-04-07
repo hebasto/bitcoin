@@ -99,6 +99,13 @@ jobs:
           py -3 --version
           bash --version
 
+      - name: Set vcpkg build type
+        # Make vcpkg build only release packages to optimize build time.
+        # The `x64-windows-release` target triplet does not work as expected.
+        # See https://github.com/microsoft/vcpkg/issues/50927.
+        run: |
+          echo "set(VCPKG_BUILD_TYPE release)" >> "${VCPKG_ROOT}/triplets/x64-windows.cmake"
+
       - name: Restore vcpkg downloads cache
         id: vcpkg-downloads-cache
         uses: actions/cache/restore@v5

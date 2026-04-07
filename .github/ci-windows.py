@@ -72,7 +72,6 @@ def generate(ci_type):
         "build",
         "-Werror=dev",
         "--preset=vs2026",
-        "-DVCPKG_TARGET_TRIPLET=x64-windows-release",
     ] + GENERATE_OPTIONS[ci_type]
     if run(command, check=False).returncode != 0:
         print("=== ⚠️ ===")
