@@ -104,7 +104,7 @@ jobs:
         uses: actions/cache/restore@v5
         with:
           path: |
-            ~/AppData/Local/vcpkg/downloads
+            ~/AppData/Local/vcpkg/downloads/*
             !~/AppData/Local/vcpkg/downloads/tools
           key: ${{ github.job }}-vcpkg-downloads-${{ hashFiles('vcpkg.json') }}
 
@@ -131,7 +131,7 @@ jobs:
         if: steps.vcpkg-downloads-cache.outputs.cache-hit != 'true' && matrix.job-type == 'standard'
         with:
           path: |
-            ~/AppData/Local/vcpkg/downloads
+            ~/AppData/Local/vcpkg/downloads/*
             !~/AppData/Local/vcpkg/downloads/tools
           key: ${{ github.job }}-vcpkg-downloads-${{ hashFiles('vcpkg.json') }}
 
