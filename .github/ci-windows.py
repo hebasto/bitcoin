@@ -68,11 +68,6 @@ def github_import_vs_env(_ci_type):
 def generate(ci_type):
     command = [
         "cmake",
-        "-E",
-        "env",
-        # See https://github.com/microsoft/vcpkg/issues/50927.
-        "VCPKG_DEFAULT_HOST_TRIPLET=x64-windows",
-        "cmake",
         "-B",
         "build",
         "-Werror=dev",
