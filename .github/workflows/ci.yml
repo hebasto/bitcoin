@@ -134,10 +134,10 @@ jobs:
           key: ${{ github.job }}-vcpkg-tools-${{ github.run_id }}
 
       - run: |
-          dir $env:USERPROFILE\AppData\Local\vcpkg
+          ls -l ~/AppData/Local/vcpkg
 
       - run: |
-          dir $env:USERPROFILE\AppData\Local\vcpkg\downloads
+          ls -l ~/AppData/Local/vcpkg/downloads
 
       - run: |
-          dir $env:USERPROFILE\AppData\Local\vcpkg\downloads\tools
+          ls -l ~/AppData/Local/vcpkg/downloads/tools
