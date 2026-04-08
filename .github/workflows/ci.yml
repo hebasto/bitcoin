@@ -105,8 +105,16 @@ jobs:
         with:
           path: |
             ~/AppData/Local/vcpkg/downloads/*
-            !~/AppData/Local/vcpkg/downloads/tools
           key: ${{ github.job }}-vcpkg-downloads-${{ hashFiles('vcpkg.json') }}
+
+      - run: |
+          ls -l ~/AppData/Local/vcpkg || true
+
+      - run: |
+          ls -l ~/AppData/Local/vcpkg/downloads || true
+
+      - run: |
+          ls -l ~/AppData/Local/vcpkg/downloads/tools || true
 
       - name: Restore vcpkg binary cache
         uses: actions/cache/restore@v5
