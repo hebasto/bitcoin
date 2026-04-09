@@ -7,30 +7,11 @@
     "libevent"
   ],
   "default-features": [
-    "qt",
     "tests",
     "wallet",
     "zeromq"
   ],
   "features": {
-    "qt": {
-      "description": "Build GUI, Qt 6",
-      "dependencies": [
-        {
-          "name": "qtbase",
-          "default-features": false,
-          "features": [
-            "gui",
-            "network",
-            "png",
-            "testlib",
-            "widgets"
-          ]
-        },
-        "qttools",
-        "libqrencode"
-      ]
-    },
     "tests": {
       "description": "Build test_bitcoin.exe executable",
       "dependencies": [
