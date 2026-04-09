@@ -105,6 +105,7 @@ jobs:
         with:
           path: |
             ~/AppData/Local/vcpkg/downloads/*
+            !~/AppData/Local/vcpkg/downloads/tools
           key: ${{ github.job }}-vcpkg-downloads-${{ hashFiles('vcpkg.json') }}
 
       - run: |
