@@ -209,9 +209,6 @@ fi
 
 mkdir -p "$OUTDIR"
 
-
-exit 0
-
 ###########################
 # Binary Tarball Building #
 ###########################
@@ -266,6 +263,8 @@ mkdir -p "$DISTSRC"
 
     # Build Bitcoin Core
     cmake --build build -j "$JOBS" ${V:+--verbose}
+
+    exit 0
 
     mkdir -p "$OUTDIR"
 
