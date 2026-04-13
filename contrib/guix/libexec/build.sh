@@ -165,7 +165,7 @@ esac
 ####################
 
 # Build the depends tree, overriding variables that assume multilib gcc
-make -C depends --jobs="$JOBS" HOST="$HOST" \
+make -C depends --jobs="$JOBS" HOST="$HOST" NO_QT=1 \
                                    ${V:+V=1} \
                                    ${SOURCES_PATH+SOURCES_PATH="$SOURCES_PATH"} \
                                    ${BASE_CACHE+BASE_CACHE="$BASE_CACHE"} \
@@ -199,6 +199,9 @@ if [ ! -e "$GIT_ARCHIVE" ]; then
 fi
 
 mkdir -p "$OUTDIR"
+
+
+exit 0
 
 ###########################
 # Binary Tarball Building #
