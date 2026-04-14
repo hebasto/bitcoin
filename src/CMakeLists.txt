@@ -37,10 +37,17 @@ if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 endif()
 
-add_custom_target(generate_build_info
-  BYPRODUCTS ${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h
-  COMMAND ${CMAKE_COMMAND} -DBUILD_INFO_HEADER_PATH=${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h -DSOURCE_DIR=${PROJECT_SOURCE_DIR} -P ${PROJECT_SOURCE_DIR}/cmake/script/GenerateBuildInfo.cmake
-  COMMENT "Generating bitcoin-build-info.h"
+add_custom_target(generate_build_info_tmp
+  COMMAND ${CMAKE_COMMAND} -DBUILD_INFO_HEADER_PATH=${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h.tmp -DSOURCE_DIR=${PROJECT_SOURCE_DIR} -P ${PROJECT_SOURCE_DIR}/cmake/script/GenerateBuildInfo.cmake
+  BYPRODUCTS ${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h.tmp
+  COMMENT "Checking git info..."
+  VERBATIM
+)
+add_custom_command(
+  OUTPUT ${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different ${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h.tmp ${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h
+  DEPENDS generate_build_info_tmp ${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h.tmp
+  COMMENT "Updating bitcoin-build-info.h"
   VERBATIM
 )
 add_library(bitcoin_clientversion STATIC
