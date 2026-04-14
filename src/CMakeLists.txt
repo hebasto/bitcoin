@@ -37,9 +37,11 @@ if(NOT CMAKE_ARCHIVE_OUTPUT_DIRECTORY)
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 endif()
 
-add_custom_target(generate_build_info
-  BYPRODUCTS ${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h
+add_custom_target(force_build_info)
+add_custom_command(
+  OUTPUT ${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h
   COMMAND ${CMAKE_COMMAND} -DBUILD_INFO_HEADER_PATH=${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h -DSOURCE_DIR=${PROJECT_SOURCE_DIR} -P ${PROJECT_SOURCE_DIR}/cmake/script/GenerateBuildInfo.cmake
+  DEPENDS force_build_info
   COMMENT "Generating bitcoin-build-info.h"
   VERBATIM
 )
