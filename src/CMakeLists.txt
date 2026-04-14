@@ -44,13 +44,13 @@ add_custom_target(generate_build_info
   VERBATIM
 )
 add_library(bitcoin_clientversion STATIC
+  ${PROJECT_BINARY_DIR}/src/bitcoin-build-info.h
   clientversion.cpp
 )
 target_link_libraries(bitcoin_clientversion
   PRIVATE
     core_interface
 )
-add_dependencies(bitcoin_clientversion generate_build_info)
 
 add_subdirectory(crypto)
 add_subdirectory(util)
