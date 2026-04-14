@@ -462,14 +462,17 @@ EOF
                 )
             fi
 
+            # shellcheck disable=SC2031
             guix_shell_common_args+=(
                 --container
                 --writable-root
                 --pure
                 --no-cwd
-                --share="$PWD"=/bitcoin
-                --share="$DISTSRC_BASE"=/distsrc-base
-                --share="$OUTDIR_BASE"=/outdir-base
+                --share="${PWD}=/bitcoin"
+                # shellcheck disable=SC2031
+                --share="${DISTSRC_BASE}=/distsrc-base"
+                # shellcheck disable=SC2031
+                --share="${OUTDIR_BASE}=/outdir-base"
                 --expose="$(git rev-parse --git-common-dir)"
                 ${SOURCES_PATH:+--share="$SOURCES_PATH"}
                 ${BASE_CACHE:+--share="$BASE_CACHE"}
@@ -480,6 +483,7 @@ EOF
                 --link-profile
                 --root="$(profiledir_for_host "${HOST}" "${root_suffix}")"
                 ${SUBSTITUTE_URLS:+--substitute-urls="$SUBSTITUTE_URLS"}
+                # shellcheck disable=SC2206
                 ${ADDITIONAL_GUIX_COMMON_FLAGS} ${ADDITIONAL_GUIX_ENVIRONMENT_FLAGS}
                 -- env HOST="$host"
                        BUILD_MODE="$1"
