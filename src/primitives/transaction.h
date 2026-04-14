@@ -22,6 +22,10 @@
 #include <string>
 #include <tuple>
 #include <utility>
+// IWYU erroneously suggests including <variant> instead of <memory>
+// for std::hash<CTransactionRef>.
+// See https://github.com/include-what-you-use/include-what-you-use/issues/2007.
+// IWYU pragma: no_include <variant>
 #include <vector>
 
 /** An outpoint - a combination of a transaction hash and an index n into its vout */
@@ -402,5 +406,13 @@ struct CMutableTransaction
 
 typedef std::shared_ptr<const CTransaction> CTransactionRef;
 template <typename Tx> static inline CTransactionRef MakeTransactionRef(Tx&& txIn) { return std::make_shared<const CTransaction>(std::forward<Tx>(txIn)); }
+
+/** Disable default std::hash for CTransactionRef to prevent accidentally
+ *  comparing by pointer. Use CTransactionRefSaltedHash or provide a custom
+ *  hasher. */
+template<>
+struct std::hash<CTransactionRef> {
+    size_t operator()(const CTransactionRef&) const = delete;
+};
 
 #endif // BITCOIN_PRIMITIVES_TRANSACTION_H
