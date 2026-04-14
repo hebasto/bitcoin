@@ -403,4 +403,18 @@ struct CMutableTransaction
 typedef std::shared_ptr<const CTransaction> CTransactionRef;
 template <typename Tx> static inline CTransactionRef MakeTransactionRef(Tx&& txIn) { return std::make_shared<const CTransaction>(std::forward<Tx>(txIn)); }
 
+namespace std {
+// Redeclaration of the primary template.
+template <class T>
+struct hash; // IWYU pragma: keep
+} // namespace std
+
+/** Disable default std::hash for CTransactionRef to prevent accidentally
+ *  comparing by pointer. Use CTransactionRefSaltedHash or provide a custom
+ *  hasher. */
+template <>
+struct std::hash<CTransactionRef> {
+    size_t operator()(const CTransactionRef&) const = delete;
+};
+
 #endif // BITCOIN_PRIMITIVES_TRANSACTION_H
