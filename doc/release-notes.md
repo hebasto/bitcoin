@@ -81,6 +81,7 @@ Notable changes
 - #34608 test: Fix broken --valgrind handling after bitcoin wrapper
 - #34690 test: Add missing timeout_factor to zmq socket
 - #34869 tests: applied PYTHON_GIL to the env for every test
+- #35080 test: Add missing self.options.timeout_factor scale in tool_bitcoin_chainstate.py
 
 ### Util
 
@@ -105,6 +106,11 @@ Notable changes
 - #34461 ci: Print verbose build error message in test-each-commit
 - #34802 ci: Bump GHA actions versions
 - #34815 ci: bump cirruslabs actions versions
+- #35202 ci: restore sockets in i686, no IPC job
+
+### Misc
+
+- #35175 multi_index: fix compilation failure with boost >= 1.91
 
 Credits
 =======
@@ -113,6 +119,7 @@ Thanks to everyone who directly contributed to this release:
 
 - ANAVHEOBA
 - brunoerg
+- Cory Fields
 - Daniel Pfeifer
 - darosior
 - fanquake
