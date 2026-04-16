@@ -8,7 +8,8 @@ export LC_ALL=C.UTF-8
 
 export CI_IMAGE_NAME_TAG="mirror.gcr.io/debian:trixie"  # To build codegen, CMake must be 3.31 or newer.
 export CONTAINER_NAME=ci_native_iwyu
-export IWYU_LLVM_V="22"
+export IWYU_COMMIT_HASH="2ea58a887d5a3b3dffc40a8ab176b8e2c2a15966"
+export IWYU_LLVM_V="23"
 export APT_LLVM_V="${IWYU_LLVM_V}"
 export PACKAGES="clang-${IWYU_LLVM_V} clang-format-${IWYU_LLVM_V} libclang-${IWYU_LLVM_V}-dev llvm-${IWYU_LLVM_V}-dev jq libevent-dev libboost-dev libzmq3-dev systemtap-sdt-dev qt6-base-dev qt6-tools-dev qt6-l10n-tools libqrencode-dev libsqlite3-dev libcapnp-dev capnproto"
 export NO_DEPENDS=1

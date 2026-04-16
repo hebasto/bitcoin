@@ -33,7 +33,7 @@ if [ -n "${APT_LLVM_V}" ]; then
   (
     # shellcheck disable=SC2034
     source /etc/os-release
-    echo "deb http://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME}-${APT_LLVM_V} main" > "/etc/apt/sources.list.d/llvm-toolchain-${VERSION_CODENAME}-${APT_LLVM_V}.list"
+    echo "deb http://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME} main" > "/etc/apt/sources.list.d/llvm-toolchain-${VERSION_CODENAME}.list"
   )
 fi
 
@@ -85,7 +85,9 @@ if [[ -n "${USE_INSTRUMENTED_LIBCPP}" ]]; then
 fi
 
 if [[ "${RUN_IWYU}" == true ]]; then
-  ${CI_RETRY_EXE} git clone --depth=1 https://github.com/include-what-you-use/include-what-you-use -b clang_"${IWYU_LLVM_V}" /include-what-you-use
+  ${CI_RETRY_EXE} curl --location --fail "https://github.com/include-what-you-use/include-what-you-use/archive/${IWYU_COMMIT_HASH}.tar.gz" -o "${IWYU_COMMIT_HASH}.tar.gz"
+  mkdir -p /include-what-you-use
+  tar -C /include-what-you-use --strip-components=1 -xf "${IWYU_COMMIT_HASH}.tar.gz"
   (cd /include-what-you-use && patch -p1 < /ci_container_base/ci/test/01_iwyu.patch)
   cmake -B /iwyu-build/ -G 'Unix Makefiles' -DCMAKE_PREFIX_PATH=/usr/lib/llvm-"${IWYU_LLVM_V}" -S /include-what-you-use
   make -C /iwyu-build/ install "$MAKEJOBS"
