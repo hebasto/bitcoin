@@ -8,7 +8,7 @@
 #include <util/fs_helpers.h>
 
 #include <sync.h>
-#include <util/byte_units.h> // IWYU pragma: keep
+#include <util/byte_units.h>
 #include <util/fs.h>
 #include <util/log.h>
 #include <util/syserror.h>

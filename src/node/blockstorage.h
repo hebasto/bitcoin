@@ -18,7 +18,7 @@
 #include <streams.h>
 #include <sync.h>
 #include <uint256.h>
-#include <util/byte_units.h> // IWYU pragma: keep
+#include <util/byte_units.h>
 #include <util/expected.h>
 #include <util/fs.h>
 #include <util/hasher.h>
