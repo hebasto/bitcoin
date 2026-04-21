@@ -26,7 +26,6 @@ if [ -z "$NO_SIGN" ]; then
 
     # $GPG can contain extra arguments passed to the binary
     # so let's check only the existence of arg[0]
-    # shellcheck disable=SC2206
     GPG_ARRAY=($GPG)
     check_tools "${GPG_ARRAY[0]}"
 fi

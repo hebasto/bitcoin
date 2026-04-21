@@ -242,7 +242,6 @@ mkdir -p "$DISTSRC"
     tar --strip-components=1 -xf "${GIT_ARCHIVE}"
 
     # Configure this DISTSRC for $HOST
-    # shellcheck disable=SC2086
     env CFLAGS="${HOST_CFLAGS}" CXXFLAGS="${HOST_CXXFLAGS}" LDFLAGS="${HOST_LDFLAGS}" \
     cmake -S . -B build \
           --toolchain "${BASEPREFIX}/${HOST}/toolchain.cmake" \

@@ -279,7 +279,6 @@ mkdir -p "$VAR_BASE"
 # Record the _effective_ values of precious directories such that guix-clean can
 # avoid clobbering them if appropriate.
 #
-# shellcheck disable=SC2046,SC2086
 {
     # Get depends precious dir definitions from depends
     make -C "${PWD}/depends" \
@@ -345,7 +344,6 @@ EOF
 }
 
 # Deterministically build Bitcoin Core
-# shellcheck disable=SC2153
 for host in $HOSTS; do
 
     # Display proper warning when the user interrupts the build
@@ -356,7 +354,6 @@ for host in $HOSTS; do
         # for the particular $HOST we're building for
         export HOST="$host"
 
-        # shellcheck disable=SC2030
 cat << EOF
 INFO: Building ${VERSION:?not set} for platform triple ${HOST:?not set}:
       ...using reference timestamp: ${SOURCE_DATE_EPOCH:?not set}
@@ -440,7 +437,6 @@ EOF
         #    Please read the README.md in the same directory as this file for
         #    more information.
         #
-        # shellcheck disable=SC2086,SC2031
         time-machine shell --manifest="${PWD}/contrib/guix/manifest.scm" \
                                  --container \
                                  --writable-root \
