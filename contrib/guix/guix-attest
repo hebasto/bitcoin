@@ -24,11 +24,9 @@ if [ -z "$NO_SIGN" ]; then
     # make it possible to override the gpg binary
     GPG=${GPG:-gpg}
 
-    # $GPG can contain extra arguments passed to the binary
-    # so let's check only the existence of arg[0]
-    # shellcheck disable=SC2206
-    GPG_ARRAY=($GPG)
-    check_tools "${GPG_ARRAY[0]}"
+    # $GPG can contain extra arguments passed to the binary,
+    # so strip them before checking.
+    check_tools "${GPG%% *}"
 fi
 
 ################
