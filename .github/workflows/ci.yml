@@ -100,6 +100,11 @@ jobs:
           py -3 --version
           bash --version
 
+      - shell: pwsh
+        run: |
+          vcpkg x-update-baseline
+          git diff
+
       - name: Restore vcpkg downloads cache
         id: vcpkg-downloads-cache
         uses: actions/cache/restore@v5
