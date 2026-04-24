@@ -146,6 +146,8 @@ add_library(bitcoin_common STATIC EXCLUDE_FROM_ALL
   script/solver.cpp
 )
 target_link_libraries(bitcoin_common
+  PUBLIC
+    univalue
   PRIVATE
     core_interface
     bitcoin_consensus
@@ -281,9 +283,10 @@ add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL
   $<$<NOT:$<TARGET_EXISTS:bitcoin_wallet>>:dummywallet.cpp>
 )
 target_link_libraries(bitcoin_node
+  PUBLIC
+    bitcoin_common
   PRIVATE
     core_interface
-    bitcoin_common
     bitcoin_util
     $<TARGET_NAME_IF_EXISTS:bitcoin_zmq>
     leveldb
