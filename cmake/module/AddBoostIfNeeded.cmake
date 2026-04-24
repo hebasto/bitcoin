@@ -54,15 +54,42 @@ function(add_boost_if_needed)
     )
   endif()
 
+  get_target_property(CMAKE_REQUIRED_INCLUDES Boost::headers INTERFACE_INCLUDE_DIRECTORIES)
+  set(CMAKE_REQUIRED_FLAGS ${working_compiler_werror_flag})
+  set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+  include(CheckCXXSourceCompiles)
+
+  # Boost.MultiIndex has migrated from Boost.MPL to Boost.Mp11 since
+  # version 1.91. Enforce old behavior for compatibility.
+  # See: https://www.boost.org/doc/libs/latest/libs/multi_index/doc/release_notes.html#boost_1_91.
+  check_cxx_source_compiles("
+    #include <boost/mpl/is_sequence.hpp>
+    #include <boost/multi_index_container.hpp>
+    #include <boost/multi_index/ordered_index.hpp>
+    #include <boost/multi_index/identity.hpp>
+
+    using container = boost::multi_index::multi_index_container<
+        int,
+        boost::multi_index::indexed_by<
+            boost::multi_index::ordered_unique<boost::multi_index::identity<int>>
+        >
+    >;
+
+    static_assert(boost::mpl::is_sequence<container::index_specifier_type_list>::value,
+                  \"Boost.MultiIndex is NOT using the legacy MPL variant\");
+  " HAVE_BOOST_MULTIINDEX_MPL
+  )
+  if(NOT HAVE_BOOST_MULTIINDEX_MPL)
+    target_compile_definitions(Boost::headers INTERFACE
+      BOOST_MULTI_INDEX_ENABLE_MPL_SUPPORT
+    )
+  endif()
+
   # Prevent use of std::unary_function, which was removed in C++17,
   # and will generate warnings with newer compilers for Boost
   # older than 1.80.
   # See: https://github.com/boostorg/config/pull/430.
   set(CMAKE_REQUIRED_DEFINITIONS -DBOOST_NO_CXX98_FUNCTION_BASE)
-  get_target_property(CMAKE_REQUIRED_INCLUDES Boost::headers INTERFACE_INCLUDE_DIRECTORIES)
-  set(CMAKE_REQUIRED_FLAGS ${working_compiler_werror_flag})
-  set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-  include(CheckCXXSourceCompiles)
   check_cxx_source_compiles("
     #include <boost/config.hpp>
     " NO_DIAGNOSTICS_BOOST_NO_CXX98_FUNCTION_BASE
