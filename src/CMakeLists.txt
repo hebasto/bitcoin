@@ -146,6 +146,8 @@ add_library(bitcoin_common STATIC EXCLUDE_FROM_ALL
   script/solver.cpp
 )
 target_link_libraries(bitcoin_common
+  PUBLIC
+    univalue
   PRIVATE
     core_interface
     bitcoin_consensus
@@ -320,6 +322,9 @@ if(BUILD_DAEMON)
   target_link_libraries(bitcoind
     core_interface
     bitcoin_node
+    bitcoin_common
+    bitcoin_util
+    bitcoin_clientversion
     $<TARGET_NAME_IF_EXISTS:bitcoin_wallet>
   )
   install_binary_component(bitcoind HAS_MANPAGE)

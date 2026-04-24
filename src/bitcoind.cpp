@@ -5,13 +5,18 @@
 
 #include <bitcoin-build-config.h> // IWYU pragma: keep
 
-#include <chainparams.h>
+// bitcoin_clientversion::
 #include <clientversion.h>
+
+// bitcoin_common::
+#include <chainparams.h>
 #include <common/args.h>
 #include <common/init.h>
 #include <common/license_info.h>
 #include <common/system.h>
 #include <compat/compat.h>
+
+// bitcoin_node::
 #include <init.h>
 #include <interfaces/chain.h>
 #include <interfaces/init.h>
@@ -21,6 +26,8 @@
 #include <node/interface_ui.h>
 #include <node/warnings.h>
 #include <noui.h>
+
+// bitcoin_util::
 #include <util/check.h>
 #include <util/exception.h>
 #include <util/signalinterrupt.h>
