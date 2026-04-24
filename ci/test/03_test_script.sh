@@ -221,7 +221,7 @@ if [[ "${RUN_IWYU}" == true ]]; then
              -p "${BASE_BUILD_DIR}" "${MAKEJOBS}" \
              -- -Xiwyu --cxx17ns -Xiwyu --mapping_file="${BASE_ROOT_DIR}/contrib/devtools/iwyu/bitcoin.core.imp" \
              -Xiwyu --max_line_length=160 \
-             -Xiwyu --check_also="*/primitives/*.h" \
+             -Xiwyu --check_also="/src/(primitives|util)/*.h" \
              2>&1 | tee /tmp/iwyu_ci.out
     python3 "/include-what-you-use/fix_includes.py" --nosafe_headers < /tmp/iwyu_ci.out
     git diff -U1 | ./contrib/devtools/clang-format-diff.py -binary="clang-format-${IWYU_LLVM_V}" -p1 -i -v
