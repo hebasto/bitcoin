@@ -175,7 +175,7 @@ ctest --test-dir build  # Append "-j N" for N parallel tests.
 
 ### 3. Deploy (optional)
 
-You can also create a  `.zip` containing the `.app` bundle by running the following command:
+You can also create a `.zip` containing the `.app` bundle by running the following command:
 
 ``` bash
 cmake --build build --target deploy
