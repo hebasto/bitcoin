@@ -163,9 +163,15 @@ esac
 ####################
 # Depends Building #
 ####################
-
-# Build the depends tree, overriding variables that assume multilib gcc
-make -C depends --jobs="$JOBS" HOST="$HOST" \
+(
+    # If not set externally, override SOURCE_DATE_EPOCH based on the latest
+    # commit in the depends subdirectory, ensuring that the built package
+    # cache can be reused where possible.
+    if [ -z "$FORCE_SOURCE_DATE_EPOCH" ]; then
+        export SOURCE_DATE_EPOCH="$(git -c log.showSignature=false log --format=%at -1 -- ./depends/)"
+    fi
+    # Build the depends tree, overriding variables that assume multilib gcc
+    make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    ${V:+V=1} \
                                    ${SOURCES_PATH+SOURCES_PATH="$SOURCES_PATH"} \
                                    ${BASE_CACHE+BASE_CACHE="$BASE_CACHE"} \
@@ -178,6 +184,7 @@ make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    x86_64_linux_RANLIB=x86_64-linux-gnu-gcc-ranlib \
                                    x86_64_linux_NM=x86_64-linux-gnu-gcc-nm \
                                    x86_64_linux_STRIP=x86_64-linux-gnu-strip
+)
 
 case "$HOST" in
     *darwin*)
