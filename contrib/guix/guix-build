@@ -464,6 +464,7 @@ EOF
                                         DISTNAME="$DISTNAME" \
                                         JOBS="$JOBS" \
                                         SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:?unable to determine value}" \
+                                        ${FORCE_SOURCE_DATE_EPOCH:+FORCE_SOURCE_DATE_EPOCH="$FORCE_SOURCE_DATE_EPOCH"} \
                                         ${V:+V=1} \
                                         ${SOURCES_PATH:+SOURCES_PATH="$SOURCES_PATH"} \
                                         ${BASE_CACHE:+BASE_CACHE="$BASE_CACHE"} \
