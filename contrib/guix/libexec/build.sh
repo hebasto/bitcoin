@@ -164,7 +164,11 @@ esac
 # Depends Building #
 ####################
 
-# Build the depends tree, overriding variables that assume multilib gcc
+# Build the depends tree, overriding variables that assume multilib gcc.
+# SOURCE_DATE_EPOCH is overridden based on changes within the depends
+# subdirectory, ensuring that the built package cache can be reused where
+# possible.
+env SOURCE_DATE_EPOCH="$(git -c log.showSignature=false log --format=%at -1 -- ./depends/)" \
 make -C depends --jobs="$JOBS" HOST="$HOST" \
                                    ${V:+V=1} \
                                    ${SOURCES_PATH+SOURCES_PATH="$SOURCES_PATH"} \
