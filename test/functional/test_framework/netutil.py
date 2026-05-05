@@ -2,7 +2,7 @@
 # Copyright (c) 2014-present The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
-"""Linux, macOS, and BSD network utilities.
+"""Linux, macOS, BSD and illumos network utilities.
 
 Roughly based on https://web.archive.org/web/20190424172231/http://voorloopnul.com/blog/a-python-netstat-in-less-than-100-lines-of-code/ by Ricardo Pascal
 """
@@ -95,11 +95,11 @@ def get_bind_addrs(pid):
             if conn[3] == STATE_LISTEN and conn[4] in inodes:
                 bind_addrs.append(conn[1])
         return bind_addrs
-    elif sys.platform.startswith(("darwin", "freebsd", "netbsd", "openbsd")):
+    elif sys.platform.startswith(("darwin", "freebsd", "netbsd", "openbsd", "sunos5")):
         import re
         import subprocess
         output = subprocess.check_output(["lsof",
-            *(["-Di"] if sys.platform.startswith("freebsd") else []), # Ignore device cache to avoid stderr warnings.
+            *(["-Di"] if sys.platform.startswith(("freebsd", "sunos5")) else []), # Ignore device cache to avoid stderr warnings.
             "-nP",          # Keep hosts and ports numeric.
             "-a",           # Require all filters to match.
             "-p", str(pid), # Limit results to the target pid.
@@ -141,7 +141,7 @@ def all_interfaces():
         return [(namestr[i:i+16].split(b'\0', 1)[0],
                  socket.inet_ntoa(namestr[i+20:i+24]))
                 for i in range(0, outbytes, struct_size)]
-    elif sys.platform.startswith(("darwin", "freebsd", "netbsd", "openbsd")):
+    elif sys.platform.startswith(("darwin", "freebsd", "netbsd", "openbsd", "sunos5")):
         import re
         import subprocess
         output = subprocess.check_output(["ifconfig", "-au"], text=True)
