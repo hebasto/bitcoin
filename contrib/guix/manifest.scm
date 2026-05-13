@@ -291,7 +291,8 @@ specific moment in time, whitelisting and revocation checks.")
          (file-name (git-file-name name commit))
          (sha256
           (base32
-           "17yqjll8nw83q6dhgqhkl7w502z5vy9sln8m6mlx0f1c10isg8yg"))))
+           "17yqjll8nw83q6dhgqhkl7w502z5vy9sln8m6mlx0f1c10isg8yg"))
+         (patches (search-our-patches "signapple-hard-code-openssl.patch"))))
       (build-system pyproject-build-system)
       (propagated-inputs
         (list python-asn1crypto
@@ -299,9 +300,19 @@ specific moment in time, whitelisting and revocation checks.")
               python-certvalidator
               python-elfesteem))
       (native-inputs (list python-poetry-core))
-      ;; There are no tests, but attempting to run python setup.py test leads to
-      ;; problems, just disable the test
-      (arguments '(#:tests? #f))
+      (arguments
+       ;; There are no tests, but attempting to run python setup.py test leads to
+       ;; problems, just disable the test
+       `(#:tests? #f
+         #:phases
+         (modify-phases %standard-phases
+           (add-after 'unpack 'hard-code-path-to-openssl
+             (lambda* (#:key inputs #:allow-other-keys)
+               (let ((openssl (assoc-ref inputs "openssl")))
+                 (substitute* "signapple/__init__.py"
+                   (("@GUIX_OSCRYPTO_USE_OPENSSL@")
+                    (string-append openssl "/lib/libcrypto.so" "," openssl "/lib/libssl.so")))
+                 #t))))))
       (home-page "https://github.com/achow101/signapple")
       (synopsis "Mach-O binary signature tool")
       (description "signapple is a Python tool for creating, verifying, and

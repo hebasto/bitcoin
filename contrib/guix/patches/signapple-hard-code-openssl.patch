@@ -1,0 +1,19 @@
+The `oscrypto` library searches for the OpenSSL runtime dependency using
+`ctypes.util.find_library()`, which implicitly requires a toolchain.
+See:
+ - https://github.com/wbond/oscrypto/blob/1.3.0/readme.md#dependencies
+ - https://docs.python.org/3/library/ctypes.html#ctypes.util.find_library
+ - https://docs.python.org/3/library/ctypes.html#ctypes-finding-shared-libraries
+
+This patch hard-codes the paths to `libcrypto.so` and `libssl.so`, making
+the `signapple` package self-consistent.
+
+--- a/signapple/__init__.py
++++ b/signapple/__init__.py
+@@ -1,3 +1,6 @@
++import oscrypto
++oscrypto.use_openssl(*'@GUIX_OSCRYPTO_USE_OPENSSL@'.split(','))
++
+ import argparse
+ 
+ 
