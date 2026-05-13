@@ -13,7 +13,8 @@
              (guix git-download)
              ((guix licenses) #:prefix license:)
              (guix packages)
-             ((guix utils) #:select (substitute-keyword-arguments)))
+             ((guix utils) #:select (substitute-keyword-arguments))
+             (toolchains))
 
 (define-public python-elfesteem
   (let ((commit "2eb1e5384ff7a220fd1afacd4a0170acff54fe56"))
@@ -167,6 +168,7 @@ inspecting signatures in Mach-O binaries.")
                  osslsigncode))
           ((string-contains target "-linux-")
            (list bison
+                 (make-bitcoin-cross-toolchain target) ;; glibc 2.31 based
                  pkg-config))
           ((string-contains target "darwin")
            (list python-signapple
