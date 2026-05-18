@@ -147,7 +147,6 @@ mkdir -p "$DISTSRC"
     # Setup the directory where our Bitcoin Core build for HOST will be
     # installed. This directory will also later serve as the input for our
     # binary tarballs.
-    INSTALLPATH="${PWD}/installed/${DISTNAME}"
     mkdir -p "${INSTALLPATH}"
     # Install built Bitcoin Core to $INSTALLPATH
     cmake --install build --prefix "${INSTALLPATH}" ${V:+--verbose} --component bitcoin-gui
@@ -159,54 +158,6 @@ mkdir -p "$DISTSRC"
     # Check that executables only contain allowed version symbols.
     echo "Running symbol and dynamic library checks on installed executables..."
     python3 "${DISTSRC}/contrib/guix/symbol-check.py" "${INSTALLPATH}/bin/"* "${INSTALLPATH}/libexec/"*
-
-    (
-        cd installed
-
-        # Split binaries from their debug symbols
-        {
-            find "${DISTNAME}/bin" "${DISTNAME}/libexec" -type f -executable -print0
-        } | xargs -0 -P"$JOBS" -I{} "${DISTSRC}/build/split-debug.sh" {} {} {}.dbg
-
-
-        cp "${DISTSRC}/README.md" "${DISTNAME}/"
-        cp "${DISTSRC}/doc/INSTALL_linux.md" "${DISTNAME}/INSTALL.md"
-
-        # copy over the example bitcoin.conf file. if contrib/devtools/gen-bitcoin-conf.sh
-        # has not been run before buildling, this file will be a stub
-        cp "${DISTSRC}/share/examples/bitcoin.conf" "${DISTNAME}/"
-
-        cp -r "${DISTSRC}/share/rpcauth" "${DISTNAME}/share/"
-
-        # Deterministically produce {non-,}debug binary tarballs ready
-        # for release
-        find "${DISTNAME}" -not -name "*.dbg" -print0 \
-            | sort --zero-terminated \
-            | tar --create --no-recursion --mode='u+rw,go+r-w,a+X' --null --files-from=- \
-            | gzip -9n > "${OUTDIR}/${DISTNAME}-${HOST}.tar.gz" \
-            || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST}.tar.gz" && exit 1 )
-        find "${DISTNAME}" -name "*.dbg" -print0 \
-            | sort --zero-terminated \
-            | tar --create --no-recursion --mode='u+rw,go+r-w,a+X' --null --files-from=- \
-            | gzip -9n > "${OUTDIR}/${DISTNAME}-${HOST}-debug.tar.gz" \
-            || ( rm -f "${OUTDIR}/${DISTNAME}-${HOST}-debug.tar.gz" && exit 1 )
-    )  # $DISTSRC/installed
-
 )  # $DISTSRC
 
-rm -rf "$ACTUAL_OUTDIR"
-mv --no-target-directory "$OUTDIR" "$ACTUAL_OUTDIR" \
-    || ( rm -rf "$ACTUAL_OUTDIR" && exit 1 )
-
-(
-    tmp="$(mktemp)"
-    cd /outdir-base
-    {
-        echo "$GIT_ARCHIVE"
-        find "$ACTUAL_OUTDIR" -type f
-    } | xargs realpath --relative-base="$PWD" \
-        | xargs sha256sum \
-        | sort -k2 \
-        > "$tmp";
-    mv "$tmp" "$ACTUAL_OUTDIR"/SHA256SUMS.part
-)
+. contrib/guix/libexec/package.sh

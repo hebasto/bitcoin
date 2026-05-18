@@ -145,7 +145,6 @@ mkdir -p "$DISTSRC"
     # Setup the directory where our Bitcoin Core build for HOST will be
     # installed. This directory will also later serve as the input for our
     # binary tarballs.
-    INSTALLPATH="${PWD}/installed/${DISTNAME}"
     mkdir -p "${INSTALLPATH}"
     # Install built Bitcoin Core to $INSTALLPATH
     cmake --install build --prefix "${INSTALLPATH}" ${V:+--verbose}
