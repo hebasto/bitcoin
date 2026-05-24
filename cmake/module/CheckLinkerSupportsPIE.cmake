@@ -5,6 +5,10 @@
 include_guard(GLOBAL)
 
 function(check_linker_supports_pie warnings)
+  # https://gitlab.kitware.com/cmake/cmake/-/work_items/26757#note_1635795
+  set(CMAKE_CXX_LINK_OPTIONS_PIE -fPIE -static-pie)
+  set(CMAKE_CXX_LINK_OPTIONS_PIE ${CMAKE_CXX_LINK_OPTIONS_PIE} PARENT_SCOPE)
+
   # Workaround for a bug in the check_pie_supported() function.
   # See:
   # - https://gitlab.kitware.com/cmake/cmake/-/issues/26463
