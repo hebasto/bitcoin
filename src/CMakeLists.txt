@@ -181,7 +181,7 @@ endif()
 
 
 # P2P and RPC server functionality used by `bitcoind` and `bitcoin-qt` executables.
-add_library(bitcoin_node STATIC EXCLUDE_FROM_ALL
+add_library(bitcoin_node STATIC
   addrdb.cpp
   addrman.cpp
   banman.cpp
