@@ -60,6 +60,16 @@ function(target_capnp_sources target include_prefix)
     "IMPORT_PATHS"  # multi_value_keywords
   )
 
+  cmake_policy(PUSH)
+  set(CODEGEN_OPT "")
+  if(POLICY CMP0171)
+    # `codegen` is a reserved target name.
+    # See: https://cmake.org/cmake/help/latest/policy/CMP0171.html
+    cmake_policy(SET CMP0171 NEW)
+    set(CODEGEN_OPT CODEGEN)
+  endif()
+  message("++++++++++++++++++++++++++++++++++++++++++++++++++++ CODEGEN_OPT=${CODEGEN_OPT}")
+
   set(MPGEN_BINARY "")
   if(MPGEN_EXECUTABLE)
     set(MPGEN_BINARY "${MPGEN_EXECUTABLE}")
@@ -72,23 +82,13 @@ function(target_capnp_sources target include_prefix)
     message(FATAL_ERROR "No usable mpgen. Set MPGEN_EXECUTABLE or enable the internal target.")
   endif()
 
-  set(DEPENDS_EXPLICIT_OPT "")
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.27)
-    set(DEPENDS_EXPLICIT_OPT DEPENDS_EXPLICIT_ONLY)
-  endif()
-  set(CODEGEN_OPT "")
-  if(POLICY CMP0171)
-    cmake_policy(GET CMP0171 _cmp0171_status)
-    if(_cmp0171_status STREQUAL "NEW")
-      set(CODEGEN_OPT CODEGEN)
-    endif()
-    unset(_cmp0171_status)
-  endif()
-
   get_property(mp_include_dir GLOBAL PROPERTY MP_INCLUDE_DIR)
   set(generated_headers "")
   foreach(capnp_file IN LISTS TCS_UNPARSED_ARGUMENTS)
     message("++++++++++++++++++++++++++++++++++++++++++++++++++++ capnp_file=${capnp_file}")
+    # message("++++++++++++++++++++++++++++++++++++++++++++++++++++ CODEGEN_OPT=${CODEGEN_OPT}")
+    cmake_policy(GET CMP0171 _cmp0171_status)
+    message("++++++++++++++++++++++++++++++++++++++++++++++++++++ _cmp0171_status=${_cmp0171_status}")
     add_custom_command(
       OUTPUT
         ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.c++
@@ -144,4 +144,6 @@ function(target_capnp_sources target include_prefix)
   if(NOT TARGET "${target}_headers")
     add_custom_target("${target}_headers" DEPENDS ${generated_headers})
   endif()
+
+  cmake_policy(POP)
 endfunction()
