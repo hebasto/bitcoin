@@ -88,24 +88,36 @@ function(target_capnp_sources target include_prefix)
   get_property(mp_include_dir GLOBAL PROPERTY MP_INCLUDE_DIR)
   set(generated_headers "")
   foreach(capnp_file IN LISTS TCS_UNPARSED_ARGUMENTS)
+    message("++++++++++++++++++++++++++++++++++++++++++++++++++++ capnp_file=${capnp_file}")
     add_custom_command(
-      OUTPUT ${capnp_file}.c++ ${capnp_file}.h ${capnp_file}.proxy-client.c++ ${capnp_file}.proxy-types.h ${capnp_file}.proxy-server.c++ ${capnp_file}.proxy-types.c++ ${capnp_file}.proxy.h
+      OUTPUT
+        ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.c++
+        ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.h
+        ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.proxy-client.c++
+        ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.proxy-server.c++
+        ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.proxy-types.c++
+        ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.proxy-types.h
+        ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.proxy.h
       COMMAND ${MPGEN_BINARY} ${CMAKE_CURRENT_SOURCE_DIR} ${include_prefix} ${CMAKE_CURRENT_SOURCE_DIR}/${capnp_file} ${TCS_IMPORT_PATHS} ${mp_include_dir}
-      DEPENDS ${capnp_file} ${MPGEN_BINARY}
+      # DEPENDS ${capnp_file} ${MPGEN_BINARY}
+      DEPENDS ${capnp_file}
       VERBATIM
       ${CODEGEN_OPT}
-      ${DEPENDS_EXPLICIT_OPT}
+      # ${DEPENDS_EXPLICIT_OPT}
     )
     # Skip linting for capnp-generated files but keep it for mpgen-generated ones
     set_source_files_properties(${capnp_file}.c++ PROPERTIES SKIP_LINTING TRUE) # Ignored before cmake 3.27
     target_sources(${target} PRIVATE
       ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.c++
+      ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.h
     )
     if(NOT TCS_ONLY_CAPNP)
       target_sources(${target} PRIVATE
         ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.proxy-client.c++
         ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.proxy-server.c++
         ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.proxy-types.c++
+        ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.proxy-types.h
+        ${CMAKE_CURRENT_BINARY_DIR}/${capnp_file}.proxy.h
       )
     endif()
     list(APPEND generated_headers ${capnp_file}.h)
