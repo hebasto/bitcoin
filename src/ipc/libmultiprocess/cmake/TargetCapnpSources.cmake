@@ -129,8 +129,7 @@ function(target_capnp_sources target include_prefix)
   # dependencies explicitly because while cmake detect dependencies of non
   # generated files on generated headers, it does not reliably detect
   # dependencies of generated headers on other generated headers.
-  if(NOT TARGET ${target}_headers)
-    add_custom_target(${target}_headers DEPENDS ${generated_headers})
-    add_dependencies(${target} ${target}_headers)
+  if(NOT TARGET "${target}_headers")
+    add_custom_target("${target}_headers" DEPENDS ${generated_headers})
   endif()
 endfunction()
