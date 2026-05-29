@@ -72,6 +72,19 @@ function(target_capnp_sources target include_prefix)
     message(FATAL_ERROR "No usable mpgen. Set MPGEN_EXECUTABLE or enable the internal target.")
   endif()
 
+  set(DEPENDS_EXPLICIT_OPT "")
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.27)
+    set(DEPENDS_EXPLICIT_OPT DEPENDS_EXPLICIT_ONLY)
+  endif()
+  set(CODEGEN_OPT "")
+  if(POLICY CMP0171)
+    cmake_policy(GET CMP0171 _cmp0171_status)
+    if(_cmp0171_status STREQUAL "NEW")
+      set(CODEGEN_OPT CODEGEN)
+    endif()
+    unset(_cmp0171_status)
+  endif()
+
   get_property(mp_include_dir GLOBAL PROPERTY MP_INCLUDE_DIR)
   set(generated_headers "")
   foreach(capnp_file IN LISTS TCS_UNPARSED_ARGUMENTS)
@@ -80,6 +93,8 @@ function(target_capnp_sources target include_prefix)
       COMMAND ${MPGEN_BINARY} ${CMAKE_CURRENT_SOURCE_DIR} ${include_prefix} ${CMAKE_CURRENT_SOURCE_DIR}/${capnp_file} ${TCS_IMPORT_PATHS} ${mp_include_dir}
       DEPENDS ${capnp_file}
       VERBATIM
+      ${CODEGEN_OPT}
+      ${DEPENDS_EXPLICIT_OPT}
     )
     # Skip linting for capnp-generated files but keep it for mpgen-generated ones
     set_source_files_properties(${capnp_file}.c++ PROPERTIES SKIP_LINTING TRUE) # Ignored before cmake 3.27
