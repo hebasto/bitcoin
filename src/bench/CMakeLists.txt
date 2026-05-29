@@ -2,10 +2,23 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or https://opensource.org/license/mit/.
 
+# A third-party subproject.
+add_library(bitcoin_nanobench STATIC EXCLUDE_FROM_ALL
+  nanobench.h
+  nanobench.cpp
+)
+target_link_libraries(bitcoin_nanobench
+  PRIVATE
+    core_interface
+)
+set_target_properties(bitcoin_nanobench PROPERTIES
+  EXPORT_COMPILE_COMMANDS OFF
+  SKIP_LINTING ON  # Ignored before CMake 4.2.
+)
+
 add_executable(bench_bitcoin
   bench_bitcoin.cpp
   bench.cpp
-  nanobench.cpp
 # Benchmarks:
   addrman.cpp
   base58.cpp
@@ -67,6 +80,7 @@ target_link_libraries(bench_bitcoin
   core_interface
   test_util
   bitcoin_node
+  bitcoin_nanobench
   Boost::headers
 )
 
