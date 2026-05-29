@@ -91,7 +91,7 @@ function(target_capnp_sources target include_prefix)
     add_custom_command(
       OUTPUT ${capnp_file}.c++ ${capnp_file}.h ${capnp_file}.proxy-client.c++ ${capnp_file}.proxy-types.h ${capnp_file}.proxy-server.c++ ${capnp_file}.proxy-types.c++ ${capnp_file}.proxy.h
       COMMAND ${MPGEN_BINARY} ${CMAKE_CURRENT_SOURCE_DIR} ${include_prefix} ${CMAKE_CURRENT_SOURCE_DIR}/${capnp_file} ${TCS_IMPORT_PATHS} ${mp_include_dir}
-      DEPENDS ${capnp_file}
+      DEPENDS ${capnp_file} ${MPGEN_BINARY}
       VERBATIM
       ${CODEGEN_OPT}
       ${DEPENDS_EXPLICIT_OPT}
@@ -129,7 +129,8 @@ function(target_capnp_sources target include_prefix)
   # dependencies explicitly because while cmake detect dependencies of non
   # generated files on generated headers, it does not reliably detect
   # dependencies of generated headers on other generated headers.
-  if(NOT TARGET "${target}_headers")
-    add_custom_target("${target}_headers" DEPENDS ${generated_headers})
+  if(NOT TARGET ${target}_headers)
+    add_custom_target(${target}_headers DEPENDS ${generated_headers})
+    add_dependencies(${target} ${target}_headers)
   endif()
 endfunction()

@@ -37,7 +37,7 @@ if(BUILD_TESTS)
   target_capnp_sources(bitcoin_ipc_test ${CMAKE_CURRENT_SOURCE_DIR}
     test/ipc_test.capnp
   )
-  add_dependencies(bitcoin_ipc_test bitcoin_ipc_headers)
+  # add_dependencies(bitcoin_ipc_test bitcoin_ipc_headers)
 
   target_link_libraries(bitcoin_ipc_test
     PRIVATE
