@@ -60,6 +60,15 @@ function(target_capnp_sources target include_prefix)
     "IMPORT_PATHS"  # multi_value_keywords
   )
 
+  cmake_policy(PUSH)
+  set(CODEGEN_OPT "")
+  if(POLICY CMP0171)
+    # `codegen` is a reserved target name.
+    # See: https://cmake.org/cmake/help/latest/policy/CMP0171.html
+    cmake_policy(SET CMP0171 NEW)
+    set(CODEGEN_OPT CODEGEN)
+  endif()
+
   set(MPGEN_BINARY "")
   if(MPGEN_EXECUTABLE)
     set(MPGEN_BINARY "${MPGEN_EXECUTABLE}")
@@ -80,6 +89,7 @@ function(target_capnp_sources target include_prefix)
       COMMAND ${MPGEN_BINARY} ${CMAKE_CURRENT_SOURCE_DIR} ${include_prefix} ${CMAKE_CURRENT_SOURCE_DIR}/${capnp_file} ${TCS_IMPORT_PATHS} ${mp_include_dir}
       DEPENDS ${capnp_file}
       VERBATIM
+      ${CODEGEN_OPT}
     )
     # Skip linting for capnp-generated files but keep it for mpgen-generated ones
     set_source_files_properties(${capnp_file}.c++ PROPERTIES SKIP_LINTING TRUE) # Ignored before cmake 3.27
@@ -117,4 +127,6 @@ function(target_capnp_sources target include_prefix)
   if(NOT TARGET "${target}_headers")
     add_custom_target("${target}_headers" DEPENDS ${generated_headers})
   endif()
+
+  cmake_policy(POP)
 endfunction()
