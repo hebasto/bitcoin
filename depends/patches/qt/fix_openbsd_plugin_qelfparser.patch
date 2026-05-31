@@ -1,0 +1,20 @@
+error: use of undeclared identifier 'ELFOSABI_AIX'
+
+1. The `net/if_types.h` header does not define the `IFT_STF` symbol.
+2. The `netinet6/in6_var.h` header defines some of used symbols.
+
+For the reference, see:
+ - https://codeberg.org/OpenBSD/ports/src/commit/c5e4088b89277b96d840492f9961b1593182b99c/x11/qt6/qtbase/patches/patch-src_corelib_plugin_qelfparser_p_cpp
+
+
+--- a/qtbase/src/corelib/plugin/qelfparser_p.cpp
++++ b/qtbase/src/corelib/plugin/qelfparser_p.cpp
+@@ -341,7 +341,7 @@ Q_DECL_UNUSED Q_DECL_COLD_FUNCTION static QDebug &operator<<(QDebug &d, ElfHeade
+     case ELFOSABI_NETBSD:   d << " (NetBSD"; break;
+     case ELFOSABI_LINUX:    d << " (GNU/Linux"; break;
+     case ELFOSABI_SOLARIS:  d << " (Solaris"; break;
+-    case ELFOSABI_AIX:      d << " (AIX"; break;
++    //case ELFOSABI_AIX:      d << " (AIX"; break;
+     case ELFOSABI_IRIX:     d << " (IRIX"; break;
+     case ELFOSABI_FREEBSD:  d << " (FreeBSD"; break;
+     case ELFOSABI_OPENBSD:  d << " (OpenBSD"; break;
