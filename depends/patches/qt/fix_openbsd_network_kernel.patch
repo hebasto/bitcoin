@@ -1,0 +1,17 @@
+Don't use undefined `IFT_STF` symbol on OpenBSD
+
+The `net/if_types.h` header on OpenBSD does not define the `IFT_STF` symbol.
+
+
+--- a/qtbase/src/network/kernel/qnetworkinterface_unix.cpp
++++ b/qtbase/src/network/kernel/qnetworkinterface_unix.cpp
+@@ -419,7 +419,9 @@ static QNetworkInterface::InterfaceType probeIfType(int socket, int iftype, stru
+         return QNetworkInterface::Ieee1394;
+ 
+     case IFT_GIF:
++#ifndef Q_OS_OPENBSD
+     case IFT_STF:
++#endif
+         return QNetworkInterface::Virtual;
+     }
+ 
