@@ -4,6 +4,7 @@ $(package)_download_path=https://xcb.freedesktop.org/dist
 $(package)_file_name=xcb-util-renderutil-$($(package)_version).tar.gz
 $(package)_sha256_hash=e04143c48e1644c5e074243fa293d88f99005b3c50d1d54358954404e635128a
 $(package)_dependencies=libxcb
+$(package)_patches = openbsd_ranlib.patch
 
 define $(package)_set_vars
 $(package)_config_opts=--disable-shared --disable-devel-docs --without-doxygen
@@ -11,7 +12,8 @@ $(package)_config_opts += --disable-dependency-tracking --enable-option-checking
 endef
 
 define $(package)_preprocess_cmds
-  cp -f $(BASEDIR)/config.guess $(BASEDIR)/config.sub .
+  cp -f $(BASEDIR)/config.guess $(BASEDIR)/config.sub . && \
+  patch -p1 -i $($(package)_patch_dir)/openbsd_ranlib.patch
 endef
 
 define $(package)_config_cmds
