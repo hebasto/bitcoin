@@ -4,6 +4,7 @@ $(package)_download_path=https://xkbcommon.org/download/
 $(package)_file_name=$(package)-$($(package)_version).tar.xz
 $(package)_sha256_hash=60ddcff932b7fd352752d51a5c4f04f3d0403230a584df9a2e0d5ed87c486c8b
 $(package)_dependencies=libxcb
+$(package)_patches = openbsd_ranlib.patch
 
 # This package explicitly enables -Werror=array-bounds, which causes build failures
 # with GCC 12.1+. Work around that by turning errors back into warnings.
@@ -16,7 +17,8 @@ $(package)_cflags += -Wno-error=array-bounds
 endef
 
 define $(package)_preprocess_cmds
-  cp -f $(BASEDIR)/config.guess $(BASEDIR)/config.sub build-aux
+  cp -f $(BASEDIR)/config.guess $(BASEDIR)/config.sub build-aux && \
+  patch -p1 -i $($(package)_patch_dir)/openbsd_ranlib.patch
 endef
 
 define $(package)_config_cmds
