@@ -213,7 +213,7 @@ $(package)_cmake_opts += -DCMAKE_DISABLE_FIND_PACKAGE_WrapSystemDoubleConversion
 $(package)_cmake_opts += -DCMAKE_DISABLE_FIND_PACKAGE_WrapSystemMd4c=TRUE
 $(package)_cmake_opts += -DCMAKE_DISABLE_FIND_PACKAGE_WrapZSTD=TRUE
 endif
-ifeq ($(host_os),linux)
+ifneq (,$(filter linux openbsd,$(host_os)))
 # The `-dbus-runtime` configure option does not work
 # https://qt-project.atlassian.net/browse/QTBUG-144864
 $(package)_cmake_opts += -DINPUT_dbus=runtime
