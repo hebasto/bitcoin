@@ -1,0 +1,22 @@
+libtool: remove OpenBSD specific performance hack for ranlib
+
+The -t flag was used as a performance hack for ranlib. The flag was
+supported by the GNU toolchain, but is an invalid option that causes
+a fatal error with the LLVM toolchain.
+
+Related upstream changes:
+- https://cgit.git.savannah.gnu.org/cgit/libtool.git/commit/?id=1ae386ba78f499d366c3123d0737745589c5dfec
+- https://cgit.git.savannah.gnu.org/cgit/libtool.git/commit/?id=5a7193dbfb8c90e1b1306a360a1b0c80ef8c4de0
+
+
+--- a/configure
++++ b/configure
+@@ -6676,7 +6676,7 @@
+ 
+ if test -n "$RANLIB"; then
+   case $host_os in
+-  bitrig* | openbsd*)
++  bitrig*)
+     old_postinstall_cmds="$old_postinstall_cmds~\$RANLIB -t \$tool_oldlib"
+     ;;
+   *)
