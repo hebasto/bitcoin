@@ -29,3 +29,7 @@ define $(package)_stage_cmds
   $(MAKE) DESTDIR=$($(package)_staging_dir) install
 endef
 
+define $(package)_postprocess_cmds
+  cd lib && \
+  ln -sf libfreetype.so.6.18.1 libfreetype.so.6.18
+endef
