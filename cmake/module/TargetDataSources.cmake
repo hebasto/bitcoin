@@ -17,6 +17,19 @@ macro(set_add_custom_command_options)
   endif()
 endmacro()
 
+# A workaround for an upsteram bug.
+# See https://gitlab.kitware.com/cmake/cmake/-/work_items/27862.
+macro(apply_issue27862_workaround output)
+  if(POLICY CMP0171)
+    cmake_policy(GET CMP0171 _cmp0171_status)
+    if(_cmp0171_status STREQUAL "NEW")
+      string(MAKE_C_IDENTIFIER ${output} _id)
+      add_custom_target(bitcoin_codegen_${_id} ALL DEPENDS ${output})
+    endif()
+    unset(_cmp0171_status)
+  endif()
+endmacro()
+
 # Specifies JSON data files to be processed into corresponding
 # header files for inclusion when building a target.
 function(target_json_data_sources target)
@@ -32,6 +45,7 @@ function(target_json_data_sources target)
       ${DEPENDS_EXPLICIT_OPT}
     )
     target_sources(${target} PRIVATE ${header})
+    apply_issue27862_workaround(${header})
   endforeach()
 endfunction()
 
@@ -51,5 +65,6 @@ function(target_raw_data_sources target)
       ${DEPENDS_EXPLICIT_OPT}
     )
     target_sources(${target} PRIVATE ${header})
+    apply_issue27862_workaround(${header})
   endforeach()
 endfunction()
