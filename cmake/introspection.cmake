@@ -185,37 +185,43 @@ check_cxx_source_compiles_with_flags("
   CXXFLAGS ${AVX2_CXXFLAGS}
 )
 
-if(NOT MSVC)
-  # Check for x86 SHA-NI intrinsics.
+# Check for x86 SHA-NI intrinsics.
+if(MSVC)
+  set(X86_SHANI_CXXFLAGS "")
+else()
   set(X86_SHANI_CXXFLAGS -msse4 -msha)
-  check_cxx_source_compiles_with_flags("
-    #include <immintrin.h>
-
-    int main()
-    {
-      __m128i i = _mm_set1_epi32(0);
-      __m128i j = _mm_set1_epi32(1);
-      __m128i k = _mm_set1_epi32(2);
-      return _mm_extract_epi32(_mm_sha256rnds2_epu32(i, j, k), 0);
-    }
-    " HAVE_X86_SHANI
-    CXXFLAGS ${X86_SHANI_CXXFLAGS}
-  )
-
-  # Check for ARMv8 SHA-NI intrinsics.
-  set(ARM_SHANI_CXXFLAGS -march=armv8-a+crypto)
-  check_cxx_source_compiles_with_flags("
-    #include <arm_neon.h>
-
-    int main()
-    {
-      uint32x4_t a, b, c;
-      vsha256h2q_u32(a, b, c);
-      vsha256hq_u32(a, b, c);
-      vsha256su0q_u32(a, b);
-      vsha256su1q_u32(a, b, c);
-    }
-    " HAVE_ARM_SHANI
-    CXXFLAGS ${ARM_SHANI_CXXFLAGS}
-  )
 endif()
+check_cxx_source_compiles_with_flags("
+  #include <immintrin.h>
+
+  int main()
+  {
+    __m128i i = _mm_set1_epi32(0);
+    __m128i j = _mm_set1_epi32(1);
+    __m128i k = _mm_set1_epi32(2);
+    return _mm_extract_epi32(_mm_sha256rnds2_epu32(i, j, k), 0);
+  }
+  " HAVE_X86_SHANI
+  CXXFLAGS ${X86_SHANI_CXXFLAGS}
+)
+
+# Check for ARMv8 SHA-NI intrinsics.
+if(MSVC)
+  set(ARM_SHANI_CXXFLAGS "")
+else()
+  set(ARM_SHANI_CXXFLAGS -march=armv8-a+crypto)
+endif()
+check_cxx_source_compiles_with_flags("
+  #include <arm_neon.h>
+
+  int main()
+  {
+    uint32x4_t a, b, c;
+    vsha256h2q_u32(a, b, c);
+    vsha256hq_u32(a, b, c);
+    vsha256su0q_u32(a, b);
+    vsha256su1q_u32(a, b, c);
+  }
+  " HAVE_ARM_SHANI
+  CXXFLAGS ${ARM_SHANI_CXXFLAGS}
+)
