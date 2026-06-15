@@ -21,8 +21,10 @@
 #include <util/strencodings.h>
 #include <validation.h>
 
+#include <array>
 #include <memory>
 #include <span>
+#include <string>
 #include <vector>
 
 using namespace util::hex_literals;

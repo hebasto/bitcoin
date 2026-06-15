@@ -6,6 +6,10 @@
 #include <test/util/time.h>
 #include <util/time.h>
 
+// https://en.cppreference.com/cpp/chrono/operator%22%22s
+// > std::string also defines operator""s, to represent literal objects of type std::string, but it is a string literal: 10s is ten seconds, but "10"s is a two-character string.
+#include <string>            // for operator""s
+
 static void BenchTimeDeprecated(benchmark::Bench& bench)
 {
     bench.run([&] {
