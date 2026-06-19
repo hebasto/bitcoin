@@ -86,10 +86,6 @@ mkdir -p "$DISTSRC"
 
     # Install built Bitcoin Core
     cmake --install build --component bitcoin-qt
-
-    # Make the installer
-    cmake --build build -j "$JOBS" -t deploy
-    mv build/bitcoin-win64-setup.exe "${OUTDIR}/${DISTNAME}-win64-setup-unsigned.exe"
 )
 
 # shellcheck source=package.sh
