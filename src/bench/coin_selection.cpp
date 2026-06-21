@@ -14,7 +14,6 @@
 #include <util/check.h>
 #include <util/result.h>
 #include <wallet/coinselection.h>
-#include <wallet/db.h>
 #include <wallet/spend.h>
 #include <wallet/test/util.h>
 #include <wallet/transaction.h>
@@ -22,6 +21,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <map>
 #include <memory>
 #include <optional>
