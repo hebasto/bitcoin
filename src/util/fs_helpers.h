@@ -10,7 +10,8 @@
 
 #include <cstdint>
 #include <cstdio>
-#include <iosfwd>
+#include <ios>        // for streamsize
+#include <iosfwd>     // for streampos
 #include <limits>
 #include <optional>
 #include <string>
