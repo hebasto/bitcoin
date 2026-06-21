@@ -13,13 +13,11 @@
 #include <test/util/setup_common.h>
 #include <util/check.h>
 #include <wallet/context.h>
-#include <wallet/db.h>
 #include <wallet/test/util.h>
 #include <wallet/wallet.h>
 #include <wallet/walletutil.h>
 
 #include <cstdint>
-#include <functional>
 #include <memory>
 #include <string>
 #include <utility>
