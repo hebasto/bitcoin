@@ -210,7 +210,7 @@ util::Result<std::unique_ptr<AddrMan>> LoadAddrman(const NetGroupManager& netgro
         addrman = std::make_unique<AddrMan>(netgroupman, deterministic, /*consistency_check_ratio=*/check_addrman);
         LogInfo("Creating peers.dat because the file was not found (%s)", fs::quoted(fs::PathToString(path_addr)));
         DumpPeerAddresses(args, *addrman);
-    } catch (const InvalidAddrManVersionError&) {
+    } catch (const std::ios_base::failure&) {
         if (!RenameOver(path_addr, (fs::path)path_addr + ".bak")) {
             return util::Error{strprintf(_("Failed to rename invalid peers.dat file. Please move or delete it and try again."))};
         }

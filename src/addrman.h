@@ -12,7 +12,6 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <ios>            // for ios_base
 #include <memory>
 #include <optional>
 #include <string>
@@ -43,12 +42,6 @@ static constexpr auto ADDRMAN_REPLACEMENT{4h};
 static constexpr size_t ADDRMAN_SET_TRIED_COLLISION_SIZE{10};
 /** The maximum time we'll spend trying to resolve a tried table collision */
 static constexpr auto ADDRMAN_TEST_WINDOW{40min};
-
-class InvalidAddrManVersionError : public std::ios_base::failure
-{
-public:
-    InvalidAddrManVersionError(std::string msg) : std::ios_base::failure(msg) { }
-};
 
 class AddrManImpl;
 class AddrInfo;

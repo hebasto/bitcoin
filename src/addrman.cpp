@@ -238,7 +238,7 @@ void AddrManImpl::Unserialize(Stream& s_)
     }
     const uint8_t lowest_compatible = compat - INCOMPATIBILITY_BASE;
     if (lowest_compatible > FILE_FORMAT) {
-        throw InvalidAddrManVersionError(strprintf(
+        throw std::ios_base::failure(strprintf(
             "Unsupported format of addrman database: %u. It is compatible with formats >=%u, "
             "but the maximum supported by this version of %s is %u.",
             uint8_t{format}, lowest_compatible, CLIENT_NAME, uint8_t{FILE_FORMAT}));
