@@ -69,6 +69,7 @@ add_library(bitcoinkernel
   ../util/moneystr.cpp
   ../util/rbf.cpp
   ../util/signalinterrupt.cpp
+  ../util/stream_exception.cpp
   ../util/syserror.cpp
   ../util/threadnames.cpp
   ../util/time.cpp
