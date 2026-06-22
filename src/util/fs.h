@@ -14,7 +14,7 @@
 #include <filesystem> // IWYU pragma: export
 #include <functional>
 #include <iomanip>
-#include <ios>
+#include <iosfwd>
 #include <string>
 #include <string_view>
 #include <type_traits>
