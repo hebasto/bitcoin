@@ -11,11 +11,11 @@
 #include <primitives/transaction_identifier.h> // IWYU pragma: export
 #include <script/script.h>
 #include <serialize.h>
+#include <util/stream_exception.h>
 
 #include <compare>
 #include <cstddef>
 #include <cstdint>
-#include <ios>                                  // for ios_base
 #include <limits>
 #include <memory>
 #include <numeric>
@@ -227,12 +227,12 @@ void UnserializeTransaction(TxType& tx, Stream& s, const TransactionSerParams& p
         }
         if (!tx.HasWitness()) {
             /* It's illegal to encode witnesses when all witness stacks are empty. */
-            throw std::ios_base::failure("Superfluous witness record");
+            ThrowStreamException("Superfluous witness record");
         }
     }
     if (flags) {
         /* Unknown flag in the serialization */
-        throw std::ios_base::failure("Unknown transaction optional data");
+        ThrowStreamException("Unknown transaction optional data");
     }
     s >> tx.nLockTime;
 }

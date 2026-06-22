@@ -14,6 +14,7 @@
 #include <util/log.h>
 #include <util/obfuscation.h>
 #include <util/overflow.h>
+#include <util/stream_exception.h>
 #include <util/syserror.h>
 
 #include <algorithm>
@@ -22,7 +23,6 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
-#include <ios>                                 // for ios_base
 #include <iterator>
 #include <limits>
 #include <optional>
@@ -115,7 +115,7 @@ public:
 
         // Read from the beginning of the buffer
         if (dst.size() > m_data.size()) {
-            throw std::ios_base::failure("SpanReader::read(): end of data");
+            ThrowStreamException("SpanReader::read(): end of data");
         }
         memcpy(dst.data(), m_data.data(), dst.size());
         m_data = m_data.subspan(dst.size());
@@ -124,7 +124,7 @@ public:
     void ignore(size_t n)
     {
         if (n > m_data.size()) {
-            throw std::ios_base::failure("SpanReader::ignore(): end of data");
+            ThrowStreamException("SpanReader::ignore(): end of data");
         }
         m_data = m_data.subspan(n);
     }
@@ -148,7 +148,7 @@ public:
     void write(std::span<const std::byte> src)
     {
         if (src.size() > m_dest.size()) {
-            throw std::ios_base::failure("SpanWriter::write(): exceeded buffer size");
+            ThrowStreamException("SpanWriter::write(): exceeded buffer size");
         }
         memcpy(m_dest.data(), src.data(), src.size());
         m_dest = m_dest.subspan(src.size());
@@ -221,7 +221,7 @@ public:
         // Read from the beginning of the buffer
         auto next_read_pos{CheckedAdd(m_read_pos, dst.size())};
         if (!next_read_pos.has_value() || next_read_pos.value() > vch.size()) {
-            throw std::ios_base::failure("DataStream::read(): end of data");
+            ThrowStreamException("DataStream::read(): end of data");
         }
         memcpy(dst.data(), &vch[m_read_pos], dst.size());
         if (next_read_pos.value() == vch.size()) {
@@ -237,7 +237,7 @@ public:
         // Ignore from the beginning of the buffer
         auto next_read_pos{CheckedAdd(m_read_pos, num_ignore)};
         if (!next_read_pos.has_value() || next_read_pos.value() > vch.size()) {
-            throw std::ios_base::failure("DataStream::ignore(): end of data");
+            ThrowStreamException("DataStream::ignore(): end of data");
         }
         if (next_read_pos.value() == vch.size()) {
             // If all bytes are ignored, reset to empty state.
@@ -528,7 +528,7 @@ private:
             return false;
         size_t nBytes{m_src.detail_fread(std::span{vchBuf}.subspan(pos, readNow))};
         if (nBytes == 0) {
-            throw std::ios_base::failure{m_src.feof() ? "BufferedFile::Fill: end of file" : "BufferedFile::Fill: fread failed"};
+            ThrowStreamException(m_src.feof() ? "BufferedFile::Fill: end of file" : "BufferedFile::Fill: fread failed");
         }
         nSrcPos += nBytes;
         return true;
@@ -543,7 +543,7 @@ private:
     {
         assert(m_read_pos <= nSrcPos);
         if (m_read_pos + length > nReadLimit) {
-            throw std::ios_base::failure("Attempt to position past buffer limit");
+            ThrowStreamException("Attempt to position past buffer limit");
         }
         // If there are no bytes available, read from the file.
         if (m_read_pos == nSrcPos && length > 0) Fill();
@@ -561,7 +561,7 @@ public:
         : m_src{file}, nReadLimit{std::numeric_limits<uint64_t>::max()}, nRewind{nRewindIn}, vchBuf(nBufSize, std::byte{0})
     {
         if (nRewindIn >= nBufSize)
-            throw std::ios_base::failure("Rewind limit must be less than buffer size");
+            ThrowStreamException("Rewind limit must be less than buffer size");
     }
 
     //! check whether we're at the end of the source file
