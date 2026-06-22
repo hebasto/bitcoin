@@ -2,11 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <mutex>
-#include <set>
-#include <string_view>
-
 #include <blockfilter.h>
+
 #include <crypto/siphash.h>
 #include <hash.h>
 #include <primitives/block.h>
@@ -16,6 +13,16 @@
 #include <undo.h>
 #include <util/golombrice.h>
 #include <util/string.h>
+
+#include <algorithm>
+#include <cassert>
+#include <ios>
+#include <map>
+#include <mutex>
+#include <set>
+#include <span>
+#include <stdexcept>
+#include <string_view>
 
 using util::Join;
 

@@ -11,12 +11,14 @@
 #include <random.h>
 #include <serialize.h>
 #include <tinyformat.h>
-#include <util/strencodings.h>
+#include <util/check.h>
+#include <util/stream_exception.h>
 #include <util/string.h>
 
 #include <array>
 #include <cstdint>
-#include <ios>
+#include <cstring>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -429,7 +431,7 @@ private:
         s >> COMPACTSIZE(address_size);
 
         if (address_size > MAX_ADDRV2_SIZE) {
-            throw std::ios_base::failure(strprintf(
+            ThrowStreamException(strprintf(
                 "Address too long: %u > %u", address_size, MAX_ADDRV2_SIZE));
         }
 

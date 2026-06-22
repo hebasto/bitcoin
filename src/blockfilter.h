@@ -5,19 +5,19 @@
 #ifndef BITCOIN_BLOCKFILTER_H
 #define BITCOIN_BLOCKFILTER_H
 
+#include <attributes.h>
+#include <uint256.h>
+#include <util/bytevectorhash.h>
+#include <util/stream_exception.h>
+
 #include <cstddef>
 #include <cstdint>
-#include <ios>
 #include <set>
 #include <string>
 #include <string_view>
 #include <unordered_set>
 #include <utility>
 #include <vector>
-
-#include <attributes.h>
-#include <uint256.h>
-#include <util/bytevectorhash.h>
 
 class CBlock;
 class CBlockUndo;
@@ -167,7 +167,7 @@ public:
 
         GCSFilter::Params params;
         if (!BuildParams(params)) {
-            throw std::ios_base::failure("unknown filter_type");
+            ThrowStreamException("unknown filter_type");
         }
         m_filter = GCSFilter(params, std::move(encoded_filter), /*skip_decode_check=*/false);
     }

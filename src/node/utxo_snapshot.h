@@ -14,11 +14,11 @@
 #include <uint256.h>
 #include <util/chaintype.h>
 #include <util/fs.h>
+#include <util/stream_exception.h>
 
 #include <algorithm>
 #include <array>
 #include <cstdint>
-#include <ios>
 #include <optional>
 #include <set>
 #include <string>
@@ -75,14 +75,14 @@ public:
         std::array<uint8_t, SNAPSHOT_MAGIC_BYTES.size()> snapshot_magic;
         s >> snapshot_magic;
         if (snapshot_magic != SNAPSHOT_MAGIC_BYTES) {
-            throw std::ios_base::failure("Invalid UTXO set snapshot magic bytes. Please check if this is indeed a snapshot file or if you are using an outdated snapshot format.");
+            ThrowStreamException("Invalid UTXO set snapshot magic bytes. Please check if this is indeed a snapshot file or if you are using an outdated snapshot format.");
         }
 
         // Read the version
         uint16_t version;
         s >> version;
         if (!m_supported_versions.contains(version)) {
-            throw std::ios_base::failure(strprintf("Version of snapshot %s does not match any of the supported versions.", version));
+            ThrowStreamException(strprintf("Version of snapshot %s does not match any of the supported versions.", version));
         }
 
         // Read the network magic (pchMessageStart)
@@ -94,9 +94,9 @@ public:
                 std::string network_string{ChainTypeToString(metadata_network.value())};
                 auto node_network{GetNetworkForMagic(m_network_magic)};
                 std::string node_network_string{ChainTypeToString(node_network.value())};
-                throw std::ios_base::failure(strprintf("The network of the snapshot (%s) does not match the network of this node (%s).", network_string, node_network_string));
+                ThrowStreamException(strprintf("The network of the snapshot (%s) does not match the network of this node (%s).", network_string, node_network_string));
             } else {
-                throw std::ios_base::failure("This snapshot has been created for an unrecognized network. This could be a custom signet, a new testnet or possibly caused by data corruption.");
+                ThrowStreamException("This snapshot has been created for an unrecognized network. This could be a custom signet, a new testnet or possibly caused by data corruption.");
             }
         }
 

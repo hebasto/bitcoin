@@ -9,6 +9,7 @@
 #include <util/obfuscation.h>
 
 #include <array>
+#include <ios>
 
 AutoFile::AutoFile(std::FILE* file, const Obfuscation& obfuscation) : m_file{file}, m_obfuscation{obfuscation}
 {
