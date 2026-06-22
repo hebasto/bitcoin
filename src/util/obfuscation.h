@@ -8,6 +8,7 @@
 #include <crypto/hex_base.h>
 #include <tinyformat.h>
 #include <util/check.h>
+#include <util/stream_exception.h>
 
 #include <array>
 #include <bit>
@@ -76,7 +77,7 @@ public:
     {
         std::vector<std::byte> bytes{KEY_SIZE};
         s >> bytes;
-        if (bytes.size() != KEY_SIZE) throw std::ios_base::failure(strprintf("Obfuscation key size should be exactly %s bytes long", KEY_SIZE));
+        if (bytes.size() != KEY_SIZE) ThrowStreamException(strprintf("Obfuscation key size should be exactly %s bytes long", KEY_SIZE));
         SetRotations(ToKey(std::span<std::byte, KEY_SIZE>(bytes)));
     }
 
