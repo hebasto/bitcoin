@@ -243,6 +243,10 @@ if [[ "${RUN_IWYU}" == true ]]; then
              -- -Xiwyu --cxx17ns -Xiwyu --mapping_file="${BASE_ROOT_DIR}/contrib/devtools/iwyu/bitcoin.core.imp" \
              -Xiwyu --max_line_length=160 \
              -Xiwyu --check_also="*/primitives/*.h" \
+             -Xiwyu --check_also="*/serialize.h" \
+             -Xiwyu --check_also="*/index/db_key.h" \
+             -Xiwyu --check_also="*/support/events.h" \
+             -Xiwyu --check_also="*/util/obfuscation.h" \
              2>&1 || true
     } | tee /tmp/iwyu_ci.out
     python3 "/include-what-you-use/fix_includes.py" --nosafe_headers < /tmp/iwyu_ci.out

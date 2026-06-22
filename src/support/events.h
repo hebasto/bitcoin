@@ -5,7 +5,6 @@
 #ifndef BITCOIN_SUPPORT_EVENTS_H
 #define BITCOIN_SUPPORT_EVENTS_H
 
-#include <ios>
 #include <memory>
 
 #include <event2/event.h>
