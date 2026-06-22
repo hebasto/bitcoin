@@ -6,8 +6,8 @@
 #include <netaddress.h>
 
 #include <crypto/common.h>
+#include <crypto/sha256.h>
 #include <crypto/sha3.h>
-#include <hash.h>
 #include <prevector.h>
 #include <tinyformat.h>
 #include <util/strencodings.h>
@@ -15,9 +15,11 @@
 
 #include <algorithm>
 #include <array>
+#include <compare>
 #include <cstdint>
 #include <ios>
 #include <iterator>
+#include <optional>
 #include <string_view>
 #include <tuple>
 

@@ -16,14 +16,21 @@
 #include <random.h>
 #include <serialize.h>
 #include <streams.h>
+#include <sync.h>
 #include <tinyformat.h>
 #include <uint256.h>
 #include <util/check.h>
 #include <util/log.h>
 #include <util/time.h>
 
+#include <algorithm>
 #include <cmath>
+#include <compare>
+#include <iterator>
 #include <optional>
+#include <ratio>
+#include <set>
+#include <unordered_map>
 
 
 int AddrInfo::GetTriedBucket(const uint256& nKey, const NetGroupManager& netgroupman) const

@@ -2,9 +2,9 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or https://opensource.org/license/mit/.
 
-#include <memusage.h>
-#include <span.h>
 #include <streams.h>
+
+#include <memusage.h>
 #include <util/fs_helpers.h>
 #include <util/obfuscation.h>
 

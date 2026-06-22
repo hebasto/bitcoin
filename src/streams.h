@@ -6,6 +6,7 @@
 #ifndef BITCOIN_STREAMS_H
 #define BITCOIN_STREAMS_H
 
+#include <attributes.h>
 #include <serialize.h>
 #include <span.h>
 #include <support/allocators/zeroafterfree.h>
@@ -16,15 +17,20 @@
 #include <util/syserror.h>
 
 #include <algorithm>
-#include <cassert>
+#include <cerrno>
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <ios>
+#include <iterator>
 #include <limits>
 #include <optional>
+#include <span>
+#include <stdexcept>
 #include <string>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
 /* Minimal stream for overwriting and/or appending to an existing byte vector

@@ -2,20 +2,30 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <mutex>
-#include <set>
-#include <string_view>
-
 #include <blockfilter.h>
+
+#include <coins.h>
 #include <crypto/siphash.h>
 #include <hash.h>
+#include <prevector.h>
 #include <primitives/block.h>
 #include <primitives/transaction.h>
 #include <script/script.h>
+#include <serialize.h>
 #include <streams.h>
 #include <undo.h>
+#include <util/fastrange.h>
 #include <util/golombrice.h>
 #include <util/string.h>
+
+#include <algorithm>
+#include <cassert>
+#include <map>
+#include <mutex>
+#include <set>
+#include <span>
+#include <stdexcept>
+#include <string_view>
 
 using util::Join;
 
