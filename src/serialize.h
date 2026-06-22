@@ -14,9 +14,10 @@
 #include <util/overflow.h>
 
 #include <algorithm>
+#include <array>
 #include <concepts>
+#include <cstddef>
 #include <cstdint>
-#include <cstring>
 #include <limits>
 #include <map>
 #include <memory>
@@ -24,8 +25,12 @@
 #include <span>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include <utility>
 #include <vector>
+
+struct ActionSerialize;
+struct ActionUnserialize;
 
 /**
  * The maximum size of a serialized object in bytes or number of elements

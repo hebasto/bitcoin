@@ -6,15 +6,19 @@
 #define BITCOIN_UTIL_OBFUSCATION_H
 
 #include <crypto/hex_base.h>
-#include <span.h>
 #include <tinyformat.h>
-#include <util/strencodings.h>
+#include <util/check.h>
 
 #include <array>
 #include <bit>
 #include <climits>
+#include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <memory>
+#include <span>
+#include <string>
+#include <vector>
 
 class Obfuscation
 {
