@@ -1,22 +1,14 @@
 (use-modules (gnu packages bison)
              ((gnu packages compression) #:select (xz zip))
-             (gnu packages gawk)
              ((gnu packages installers) #:select (nsis-x86_64))
              (gnu packages ninja)
              (gnu packages pkg-config)
-             ((gnu packages python-xyz) #:select (python-lief))
-             (guix build-system python)
-             (guix git-download)
-             (guix packages))
+             ((gnu packages python-xyz) #:select (python-lief)))
 
 (packages->manifest
  (append
   (list ;; Compression and archiving
         xz
-        ;; File(system) inspection
-        diffutils
-        ;; File transformation
-        gawk
         ;; Build tools
         ninja
         ;; Tests
