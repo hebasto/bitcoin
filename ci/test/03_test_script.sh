@@ -246,6 +246,7 @@ if [[ "${RUN_IWYU}" == true ]]; then
       python3 "/include-what-you-use/iwyu_tool.py" \
              -p "${BASE_BUILD_DIR}" "${MAKEJOBS}" \
              -- -Xiwyu --cxx17ns \
+             -Xiwyu --mapping_file=/usr/local/share/include-what-you-use/clang-22.intrinsics.imp \
              -Xiwyu --max_line_length=160 \
              -Xiwyu --check_also="*/primitives/*.h" \
              2>&1 || true
