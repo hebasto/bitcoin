@@ -107,7 +107,7 @@ bool ArgsManager::ReadConfigStream(std::istream& stream, const std::string& file
             if (!value) {
                 return false;
             }
-            m_settings.ro_config[key.section][key.name].push_back(*value);
+            m_settings->ro_config[key.section][key.name].push_back(*value);
         } else {
             if (ignore_invalid_keys) {
                 LogWarning("Ignoring unknown configuration value %s", option.first);
@@ -125,7 +125,7 @@ bool ArgsManager::ReadConfigString(const std::string& str_config)
     std::istringstream streamConfig(str_config);
     {
         LOCK(cs_args);
-        m_settings.ro_config.clear();
+        m_settings->ro_config.clear();
         m_config_sections.clear();
     }
     std::string error;
@@ -136,7 +136,7 @@ bool ArgsManager::ReadConfigFiles(std::string& error, bool ignore_invalid_keys)
 {
     {
         LOCK(cs_args);
-        m_settings.ro_config.clear();
+        m_settings->ro_config.clear();
         m_config_sections.clear();
         const auto conf_val = GetPathArg_("-conf", BITCOIN_CONF_FILENAME);
         m_config_path = (conf_val.is_absolute() || conf_val.empty()) ? conf_val : fsbridge::AbsPathJoin(GetDataDir(/*net_specific=*/false), conf_val);
@@ -166,7 +166,7 @@ bool ArgsManager::ReadConfigFiles(std::string& error, bool ignore_invalid_keys)
         bool use_conf_file{true};
         {
             LOCK(cs_args);
-            if (auto* includes = common::FindKey(m_settings.command_line_options, "includeconf")) {
+            if (auto* includes = common::FindKey(m_settings->command_line_options, "includeconf")) {
                 // ParseParameters() fails if a non-negated -includeconf is passed on the command-line
                 assert(common::SettingsSpan(*includes).last_negated());
                 use_conf_file = false;
@@ -179,7 +179,7 @@ bool ArgsManager::ReadConfigFiles(std::string& error, bool ignore_invalid_keys)
             auto add_includes = [&](const std::string& network, size_t skip = 0) {
                 size_t num_values = 0;
                 LOCK(cs_args);
-                if (auto* section = common::FindKey(m_settings.ro_config, network)) {
+                if (auto* section = common::FindKey(m_settings->ro_config, network)) {
                     if (auto* values = common::FindKey(*section, "includeconf")) {
                         for (size_t i = std::max(skip, common::SettingsSpan(*values).negated()); i < values->size(); ++i) {
                             conf_file_names.push_back((*values)[i].get_str());

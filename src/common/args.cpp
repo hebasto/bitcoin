@@ -144,7 +144,7 @@ std::set<std::string> ArgsManager::GetUnsuitableSectionOnlyArgs() const
     if (m_network == ChainTypeToString(ChainType::MAIN)) return std::set<std::string> {};
 
     for (const auto& arg : m_network_only_args) {
-        if (OnlyHasDefaultSectionSetting(m_settings, m_network, SettingName(arg))) {
+        if (OnlyHasDefaultSectionSetting(*m_settings, m_network, SettingName(arg))) {
             unsuitables.insert(arg);
         }
     }
@@ -177,7 +177,7 @@ void ArgsManager::SelectConfigNetwork(const std::string& network)
 bool ArgsManager::ParseParameters(int argc, const char* const argv[], std::string& error)
 {
     LOCK(cs_args);
-    m_settings.command_line_options.clear();
+    m_settings->command_line_options.clear();
 
     for (int i = 1; i < argc; i++) {
         std::string key(argv[i]);
@@ -240,11 +240,11 @@ bool ArgsManager::ParseParameters(int argc, const char* const argv[], std::strin
         std::optional<common::SettingsValue> value = InterpretValue(keyinfo, val ? &*val : nullptr, *flags, error);
         if (!value) return false;
 
-        m_settings.command_line_options[keyinfo.name].push_back(*value);
+        m_settings->command_line_options[keyinfo.name].push_back(*value);
     }
 
     // we do not allow -includeconf from command line, only -noincludeconf
-    if (auto* includes = common::FindKey(m_settings.command_line_options, "includeconf")) {
+    if (auto* includes = common::FindKey(m_settings->command_line_options, "includeconf")) {
         const common::SettingsSpan values{*includes};
         // Range may be empty if -noincludeconf was passed
         if (!values.empty()) {
@@ -469,13 +469,13 @@ bool ArgsManager::ReadSettingsFile(std::vector<std::string>* errors)
     }
 
     LOCK(cs_args);
-    m_settings.rw_settings.clear();
+    m_settings->rw_settings.clear();
     std::vector<std::string> read_errors;
-    if (!common::ReadSettings(path, m_settings.rw_settings, read_errors)) {
+    if (!common::ReadSettings(path, m_settings->rw_settings, read_errors)) {
         SaveErrors(read_errors, errors);
         return false;
     }
-    for (const auto& setting : m_settings.rw_settings) {
+    for (const auto& setting : m_settings->rw_settings) {
         KeyInfo key = InterpretKey(setting.first); // Split setting key into section and argname
         if (!GetArgFlags_('-' + key.name)) {
             LogWarning("Ignoring unknown rw_settings value %s", setting.first);
@@ -493,7 +493,7 @@ bool ArgsManager::WriteSettingsFile(std::vector<std::string>* errors, bool backu
 
     LOCK(cs_args);
     std::vector<std::string> write_errors;
-    if (!common::WriteSettings(path_tmp, m_settings.rw_settings, write_errors)) {
+    if (!common::WriteSettings(path_tmp, m_settings->rw_settings, write_errors)) {
         SaveErrors(write_errors, errors);
         return false;
     }
@@ -507,7 +507,7 @@ bool ArgsManager::WriteSettingsFile(std::vector<std::string>* errors, bool backu
 common::SettingsValue ArgsManager::GetPersistentSetting(const std::string& name) const
 {
     LOCK(cs_args);
-    return common::GetSetting(m_settings, m_network, name, !UseDefaultSection("-" + name),
+    return common::GetSetting(*m_settings, m_network, name, !UseDefaultSection("-" + name),
         /*ignore_nonpersistent=*/true, /*get_chain_type=*/false);
 }
 
@@ -614,7 +614,7 @@ bool ArgsManager::SoftSetArg(const std::string& strArg, const std::string& strVa
 {
     LOCK(cs_args);
     if (!GetSetting_(strArg).isNull()) return false;
-    m_settings.forced_settings[SettingName(strArg)] = strValue;
+    m_settings->forced_settings[SettingName(strArg)] = strValue;
     return true;
 }
 
@@ -629,7 +629,7 @@ bool ArgsManager::SoftSetBoolArg(const std::string& strArg, bool fValue)
 void ArgsManager::ForceSetArg(const std::string& strArg, const std::string& strValue)
 {
     LOCK(cs_args);
-    m_settings.forced_settings[SettingName(strArg)] = strValue;
+    m_settings->forced_settings[SettingName(strArg)] = strValue;
 }
 
 void ArgsManager::AddCommand(const std::string& cmd, const std::string& help, std::set<std::string> options)
@@ -927,7 +927,7 @@ std::variant<ChainType, std::string> ArgsManager::GetChainArg() const
 {
     auto get_net = [&](const std::string& arg) {
         LOCK(cs_args);
-        common::SettingsValue value = common::GetSetting(m_settings, /* section= */ "", SettingName(arg),
+        common::SettingsValue value = common::GetSetting(*m_settings, /* section= */ "", SettingName(arg),
             /* ignore_default_section_config= */ false,
             /*ignore_nonpersistent=*/false,
             /* get_chain_type= */ true);
@@ -965,7 +965,7 @@ common::SettingsValue ArgsManager::GetSetting_(const std::string& arg) const
 {
     AssertLockHeld(cs_args);
     return common::GetSetting(
-        m_settings, m_network, SettingName(arg), !UseDefaultSection(arg),
+        *m_settings, m_network, SettingName(arg), !UseDefaultSection(arg),
         /*ignore_nonpersistent=*/false, /*get_chain_type=*/false);
 }
 
@@ -978,7 +978,7 @@ common::SettingsValue ArgsManager::GetSetting(const std::string& arg) const
 std::vector<common::SettingsValue> ArgsManager::GetSettingsList(const std::string& arg) const
 {
     LOCK(cs_args);
-    return common::GetSettingsList(m_settings, m_network, SettingName(arg), !UseDefaultSection(arg));
+    return common::GetSettingsList(*m_settings, m_network, SettingName(arg), !UseDefaultSection(arg));
 }
 
 void ArgsManager::logArgsPrefix(
@@ -1002,11 +1002,11 @@ void ArgsManager::logArgsPrefix(
 void ArgsManager::LogArgs() const
 {
     LOCK(cs_args);
-    for (const auto& section : m_settings.ro_config) {
+    for (const auto& section : m_settings->ro_config) {
         logArgsPrefix("Config file arg:", section.first, section.second);
     }
-    for (const auto& setting : m_settings.rw_settings) {
+    for (const auto& setting : m_settings->rw_settings) {
         LogInfo("Setting file arg: %s = %s\n", setting.first, setting.second.write());
     }
-    logArgsPrefix("Command-line arg:", "", m_settings.command_line_options);
+    logArgsPrefix("Command-line arg:", "", m_settings->command_line_options);
 }

@@ -141,7 +141,7 @@ private:
     };
 
     mutable Mutex cs_args;
-    common::Settings m_settings GUARDED_BY(cs_args);
+    std::unique_ptr<common::Settings> m_settings PT_GUARDED_BY(cs_args);
     std::vector<std::string> m_command GUARDED_BY(cs_args);
     std::string m_network GUARDED_BY(cs_args);
     std::set<std::string> m_network_only_args GUARDED_BY(cs_args);
@@ -443,7 +443,7 @@ public:
     void LockSettings(Fn&& fn) EXCLUSIVE_LOCKS_REQUIRED(!cs_args)
     {
         LOCK(cs_args);
-        fn(m_settings);
+        fn(*m_settings);
     }
 
     /**
