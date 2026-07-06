@@ -5,8 +5,6 @@
 #ifndef BITCOIN_COMMON_ARGS_H
 #define BITCOIN_COMMON_ARGS_H
 
-#include <common/settings.h>
-#include <compat/compat.h>
 #include <sync.h>
 #include <util/chaintype.h>
 #include <util/fs.h>
@@ -16,6 +14,7 @@
 #include <iosfwd>
 #include <list>
 #include <map>
+#include <memory>
 #include <optional>
 #include <set>
 #include <string>
@@ -24,6 +23,12 @@
 #include <vector>
 
 class ArgsManager;
+class UniValue;
+
+namespace common {
+using SettingsValue = UniValue;
+struct Settings;
+}
 
 extern const char * const BITCOIN_CONF_FILENAME;
 extern const char * const BITCOIN_SETTINGS_FILENAME;
