@@ -65,7 +65,7 @@ template<typename I, int BITS, I MOD> NO_SANITIZE_MEMORY I MulWithClMulReduce(I 
     }
 }
 
-template<typename I, int BITS, int POS> NO_SANITIZE_MEMORY I MulTrinomial(I a, I b)
+template<typename I, int BITS, int POS> [[maybe_unused]] NO_SANITIZE_MEMORY I MulTrinomial(I a, I b)
 {
     static constexpr I MASK = Mask<BITS, I>();
 

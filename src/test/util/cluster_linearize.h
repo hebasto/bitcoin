@@ -119,7 +119,7 @@ struct DepGraphFormatter
     }
 
     template <typename Stream, typename SetType>
-    static void Ser(Stream& s, const DepGraph<SetType>& depgraph)
+    [[maybe_unused]] static void Ser(Stream& s, const DepGraph<SetType>& depgraph)
     {
         /** Construct a topological order to serialize the transactions in. */
         std::vector<DepGraphIndex> topo_order;
@@ -184,7 +184,7 @@ struct DepGraphFormatter
     }
 
     template <typename Stream, typename SetType>
-    void Unser(Stream& s, DepGraph<SetType>& depgraph)
+    [[maybe_unused]] void Unser(Stream& s, DepGraph<SetType>& depgraph)
     {
         /** The dependency graph which we deserialize into first, with transactions in
          *  topological serialization order, not original cluster order. */
@@ -283,7 +283,7 @@ struct DepGraphFormatter
 
 /** Perform a sanity/consistency check on a DepGraph. */
 template<typename SetType>
-void SanityCheck(const DepGraph<SetType>& depgraph)
+[[maybe_unused]] void SanityCheck(const DepGraph<SetType>& depgraph)
 {
     // Verify Positions and PositionRange consistency.
     DepGraphIndex num_positions{0};
@@ -380,7 +380,7 @@ void SanityCheck(const DepGraph<SetType>& depgraph)
 
 /** Perform a sanity check on a linearization. */
 template<typename SetType>
-void SanityCheck(const DepGraph<SetType>& depgraph, std::span<const DepGraphIndex> linearization)
+[[maybe_unused]] void SanityCheck(const DepGraph<SetType>& depgraph, std::span<const DepGraphIndex> linearization)
 {
     // Check completeness.
     assert(linearization.size() == depgraph.TxCount());

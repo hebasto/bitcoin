@@ -74,7 +74,7 @@ T Deserialize(DataStream&& ds, const P& params)
 }
 
 template <typename T, typename P>
-void DeserializeFromFuzzingInput(FuzzBufferType buffer, T&& obj, const P& params)
+[[maybe_unused]] void DeserializeFromFuzzingInput(FuzzBufferType buffer, T&& obj, const P& params)
 {
     try {
         SpanReader{buffer} >> params(obj);
