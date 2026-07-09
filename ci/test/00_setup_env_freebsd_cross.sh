@@ -17,7 +17,7 @@ export SYSROOT="--sysroot=${DEPENDS_DIR}/SDKs/${FREEBSD_SDK_BASENAME}"
 export DEP_OPTS="build_CC=clang build_CXX=clang++ \
  CC='clang --target=${HOST} ${SYSROOT}' \
  CXX='clang++ --target=${HOST} ${SYSROOT} -stdlib=libc++' \
- LDFLAGS='-Wc,-fuse-ld=lld -fuse-ld=lld' \
+ LDFLAGS='-fuse-ld=lld' \
  AR=llvm-ar-${APT_LLVM_V} \
  NM=llvm-nm-${APT_LLVM_V} \
  OBJCOPY=llvm-objcopy-${APT_LLVM_V} \
