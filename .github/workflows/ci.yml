@@ -208,8 +208,8 @@ jobs:
       matrix:
         include:
           - name: 'FreeBSD Cross'
-            warp-runner: 'warp-ubuntu-latest-x64-8x'
-            fallback-runner: 'ubuntu-latest'
+            warp-runner: 'ubuntu-26.04-arm'
+            fallback-runner: 'ubuntu-26.04-arm'
             timeout-minutes: 120
             file-env: './ci/test/00_setup_env_freebsd_cross.sh'
 
