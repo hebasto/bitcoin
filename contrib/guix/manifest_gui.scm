@@ -8,7 +8,9 @@
 
 (packages->manifest
  (append
-  (list ;; Compression and archiving
+  (list ;; UTF-8 locales
+        glibc-utf8-locales
+        ;; Compression and archiving
         xz
         ;; Build tools
         ninja
