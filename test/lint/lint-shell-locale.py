@@ -15,7 +15,6 @@ import sys
 import re
 
 OPT_OUT_LINES = [
-    'export LC_ALL=C',
     'export LC_ALL=C.UTF-8',
 ]
 
