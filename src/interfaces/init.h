@@ -5,14 +5,17 @@
 #ifndef BITCOIN_INTERFACES_INIT_H
 #define BITCOIN_INTERFACES_INIT_H
 
-#include <interfaces/chain.h>
-#include <interfaces/echo.h>
-#include <interfaces/mining.h>
-#include <interfaces/node.h>
-#include <interfaces/rpc.h>
-#include <interfaces/wallet.h>
-
 #include <memory>
+#include <stdexcept>
+
+namespace interfaces {
+class Chain;
+class Echo;
+class Mining;
+class Node;
+class Rpc;
+class WalletLoader;
+} // namespace interfaces
 
 namespace node {
 struct NodeContext;
