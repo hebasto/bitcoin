@@ -4,6 +4,8 @@
 
 #include <bitcoin-build-config.h> // IWYU pragma: keep
 
+#include <init/common.h>
+
 #include <clientversion.h>
 #include <common/args.h>
 #include <logging.h>
