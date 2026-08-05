@@ -8,6 +8,7 @@
 #include <interfaces/chain.h>
 #include <interfaces/echo.h>
 #include <interfaces/ipc.h>
+#include <interfaces/mining.h>
 #include <interfaces/node.h>
 #include <interfaces/rpc.h>
 #include <interfaces/wallet.h>
