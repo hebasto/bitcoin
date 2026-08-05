@@ -33,7 +33,7 @@ if [ -n "${APT_LLVM_V}" ]; then
   (
     # shellcheck disable=SC2034
     source /etc/os-release
-    echo "deb http://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME} main" > "/etc/apt/sources.list.d/llvm-toolchain-${VERSION_CODENAME}.list"
+    echo "deb http://apt.llvm.org/${VERSION_CODENAME}/ llvm-toolchain-${VERSION_CODENAME}-${APT_LLVM_V} main" > "/etc/apt/sources.list.d/llvm-toolchain-${VERSION_CODENAME}.list"
   )
 fi
 
