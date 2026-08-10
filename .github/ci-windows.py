@@ -78,6 +78,8 @@ def vcpkg_install(ci_type):
     command = [
         os.path.join(vcpkg_root, "vcpkg.exe"),
         "install",
+        "--host-triplet=x64-windows-release",
+        "--triplet=x64-windows-release",
     ] + VCPKG_INSTALL_OPTIONS[ci_type]
     if run(command, check=False).returncode != 0:
         print("=== ⚠️ ===")
