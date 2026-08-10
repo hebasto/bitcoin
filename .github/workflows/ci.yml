@@ -249,9 +249,9 @@ jobs:
           path: ~/AppData/Local/vcpkg/archives
           key: ${{ github.job }}-vcpkg-binary-release-${{ hashFiles('cmake_version', 'msbuild_version', 'toolset_version', 'vcpkg.json') }}
 
-      - name: Generate build system
+      - name: Install vcpkg packages
         run: |
-          py -3 .github/ci-windows.py ${{ matrix.job-type }} generate
+          py -3 .github/ci-windows.py ${{ matrix.job-type }} vcpkg_install
 
       - name: Save vcpkg binary cache
         uses: actions/cache/save@v5
@@ -270,6 +270,10 @@ jobs:
             ~/AppData/Local/vcpkg/downloads/*
             !~/AppData/Local/vcpkg/downloads/tools
           key: ${{ steps.vcpkg-downloads-cache.outputs.cache-primary-key }}
+
+      - name: Generate build system
+        run: |
+          py -3 .github/ci-windows.py ${{ matrix.job-type }} generate
 
       - name: Build
         run: |

@@ -24,6 +24,16 @@ def run(cmd, **kwargs):
         sys.exit(str(e))
 
 
+VCPKG_INSTALL_OPTIONS = {
+    "standard": [
+    ],
+    "fuzz": [
+        "--x-no-default-features",
+        "--x-feature=wallet",
+    ],
+}
+
+
 GENERATE_OPTIONS = {
     "standard": [
         "-DBUILD_BENCH=ON",
@@ -63,6 +73,19 @@ def github_import_vs_env(_ci_type):
             env_file.write(f"{name}={value}\n")
 
 
+def vcpkg_install(ci_type):
+    command = [
+        "vcpkg",
+        "install",
+    ] + VCPKG_INSTALL_OPTIONS[ci_type]
+    if run(command, check=False).returncode != 0:
+        print("=== ⚠️ ===")
+        print("Install failure! Network issue? Retry once ...")
+        time.sleep(12)
+        print("=== ⚠️ ===")
+        run(command)
+
+
 def generate(ci_type):
     command = [
         "cmake",
@@ -77,12 +100,7 @@ def generate(ci_type):
         "-DVCPKG_HOST_TRIPLET=x64-windows-release",
         "-DVCPKG_TARGET_TRIPLET=x64-windows-release",
     ] + GENERATE_OPTIONS[ci_type]
-    if run(command, check=False).returncode != 0:
-        print("=== ⚠️ ===")
-        print("Generate failure! Network issue? Retry once ...")
-        time.sleep(12)
-        print("=== ⚠️ ===")
-        run(command)
+    run(command)
 
 
 def build(_ci_type):
@@ -221,6 +239,7 @@ def main():
     parser.add_argument("ci_type", choices=GENERATE_OPTIONS, help="CI type to run.")
     steps = list(map(lambda f: f.__name__, [
         github_import_vs_env,
+        vcpkg_install,
         generate,
         build,
         check_manifests,
