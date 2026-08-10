@@ -7,8 +7,8 @@
 #include <tinyformat.h>
 #include <util/strencodings.h>
 
+#include <cstddef>
 #include <cstdint>
-#include <cstdio>
 #include <optional>
 #include <sstream>
 
