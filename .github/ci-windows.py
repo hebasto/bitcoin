@@ -74,8 +74,9 @@ def github_import_vs_env(_ci_type):
 
 
 def vcpkg_install(ci_type):
+    vcpkg_root = os.environ["VCPKG_ROOT"]
     command = [
-        "vcpkg",
+        os.path.join(vcpkg_root, "vcpkg.exe"),
         "install",
     ] + VCPKG_INSTALL_OPTIONS[ci_type]
     if run(command, check=False).returncode != 0:
