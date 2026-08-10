@@ -1,0 +1,15 @@
+syncqt.cpp: Include <algorithm> for std::transform
+
+See: https://codereview.qt-project.org/c/qt/qtbase/+/673183
+
+
+--- a/qtbase/src/tools/syncqt/main.cpp
++++ b/qtbase/src/tools/syncqt/main.cpp
+@@ -15,6 +15,7 @@
+  * pre-defined list of header files.
+  */
+ 
++#include <algorithm>
+ #include <iostream>
+ #include <fstream>
+ #include <string>
