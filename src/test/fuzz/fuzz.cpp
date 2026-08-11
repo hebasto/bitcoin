@@ -211,6 +211,8 @@ static fs::path g_input_path;
 }
 #endif
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-noreturn"
 // This function is used by libFuzzer
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size)
 {
@@ -225,6 +227,7 @@ extern "C" int LLVMFuzzerInitialize(int* argc, char*** argv)
     initialize();
     return 0;
 }
+#pragma GCC diagnostic pop
 
 #if defined(PROVIDE_FUZZ_MAIN_FUNCTION)
 int main(int argc, char** argv)
