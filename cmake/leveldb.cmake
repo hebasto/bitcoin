@@ -97,3 +97,7 @@ target_link_libraries(leveldb PRIVATE
 set_target_properties(leveldb PROPERTIES
   EXPORT_COMPILE_COMMANDS OFF
 )
+
+target_compile_options(leveldb PRIVATE
+  -Wmissing-noreturn
+)
