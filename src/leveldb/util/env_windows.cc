@@ -677,7 +677,7 @@ class WindowsEnv : public Env {
  private:
   [[noreturn]] void BackgroundThreadMain();
 
-  static void BackgroundThreadEntryPoint(WindowsEnv* env) {
+  [[noreturn]] static void BackgroundThreadEntryPoint(WindowsEnv* env) {
     env->BackgroundThreadMain();
   }
 
