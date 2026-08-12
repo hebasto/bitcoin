@@ -531,7 +531,7 @@ jobs:
           - name: 'MSan, fuzz'
             warp-runner: 'warp-ubuntu-latest-x64-8x'
             fallback-runner: 'ubuntu-latest'
-            timeout-minutes: 180
+            timeout-minutes: 240
             file-env: './ci/test/00_setup_env_native_fuzz_with_msan.sh'
 
           - name: 'MSan'
