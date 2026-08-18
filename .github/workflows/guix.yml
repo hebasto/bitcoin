@@ -22,7 +22,6 @@ permissions:
   contents: read
 
 env:
-  HOSTS: "x86_64-linux-gnu, arm64-apple-darwin"
   GUIX_BINARY_VERSION: 1.5.0
   GUIX_BINARY_SHA256: aa41025489c5061543e9c48873eaa829b900b2da75d40f9648913622f5f47817
   GUIX_BOOTSTRAP_DIR: ${{ github.workspace }}/.guix-cache/bootstrap
@@ -38,9 +37,16 @@ defaults:
 
 jobs:
   guix:
-    name: Guix, x86_64 Linux
+    name: Guix, ${{ matrix.host }}
     runs-on: ${{ github.repository == 'bitcoin/bitcoin' && 'warp-ubuntu-latest-x64-8x' || 'ubuntu-24.04' }}
     timeout-minutes: 360
+    strategy:
+      matrix:
+        host:
+          - x86_64-linux-gnu
+          - arm64-apple-darwin
+    env:
+      HOSTS: ${{ matrix.host }}
 
     steps:
       - name: Checkout
@@ -78,8 +84,8 @@ jobs:
         with:
           provider: ${{ github.repository == 'bitcoin/bitcoin' && 'warp' || 'gha' }}
           path: ${{ env.BASE_CACHE }}
-          key: guix-built-depends-${{ env.HOSTS }}-${{ env.GUIX_BINARY_VERSION }}-${{ hashFiles('depends/**') }}-${{ hashFiles('contrib/guix/**') }}
-          restore-keys: guix-built-depends-${{ env.HOSTS }}-${{ env.GUIX_BINARY_VERSION }}-
+          key: guix-built-depends-${{ matrix.host }}-${{ env.GUIX_BINARY_VERSION }}-${{ hashFiles('depends/**') }}-${{ hashFiles('contrib/guix/**') }}
+          restore-keys: guix-built-depends-${{ matrix.host }}-${{ env.GUIX_BINARY_VERSION }}-
 
       - name: Install Guix
         run: |
