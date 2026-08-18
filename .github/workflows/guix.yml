@@ -22,7 +22,7 @@ permissions:
   contents: read
 
 env:
-  HOSTS: x86_64-linux-gnu
+  HOSTS: "x86_64-linux-gnu, arm64-apple-darwin"
   GUIX_BINARY_VERSION: 1.5.0
   GUIX_BINARY_SHA256: aa41025489c5061543e9c48873eaa829b900b2da75d40f9648913622f5f47817
   GUIX_BOOTSTRAP_DIR: ${{ github.workspace }}/.guix-cache/bootstrap
