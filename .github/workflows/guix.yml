@@ -109,7 +109,6 @@ jobs:
           key: ${{ steps.depends-sources-cache.outputs.cache-primary-key }}
 
       - name: Save built depends cache
-        if: success() && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch && steps.built-depends-cache.outputs.cache-hit != 'true'
         uses: ./.github/actions/cache/save/internal
         with:
           provider: ${{ github.repository == 'bitcoin/bitcoin' && 'warp' || 'gha' }}
