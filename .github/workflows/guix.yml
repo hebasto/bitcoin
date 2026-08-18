@@ -29,6 +29,7 @@ env:
   SUBSTITUTE_SERVER_KEY_SHA256: 5796b4e6cc23635052ba7cecdc4b8b92ba6a53ef374208ce5094c0920a72f40f
   SOURCES_PATH: ${{ github.workspace }}/.guix-cache/depends-sources
   BASE_CACHE: ${{ github.workspace }}/.guix-cache/depends-built
+  SDK_PATH: ${{ github.workspace }}/.guix-cache/sdk
   SUBSTITUTE_URLS: https://guix.fish.foo
 
 defaults:
@@ -87,6 +88,30 @@ jobs:
           key: guix-built-depends-${{ matrix.host }}-${{ env.GUIX_BINARY_VERSION }}-${{ hashFiles('depends/**') }}-${{ hashFiles('contrib/guix/**') }}
           restore-keys: guix-built-depends-${{ matrix.host }}-${{ env.GUIX_BINARY_VERSION }}-
 
+      - name: Restore macOS SDK cache
+        if: matrix.host == 'arm64-apple-darwin'
+        id: macos-sdk-cache
+        uses: ./.github/actions/cache/restore/internal
+        with:
+          provider: ${{ github.repository == 'bitcoin/bitcoin' && 'warp' || 'gha' }}
+          path: ${{ env.SDK_PATH }}
+          key: guix-macos-sdk-${{ hashFiles('depends/hosts/darwin.mk', 'ci/test/00_setup_env_mac_cross.sh') }}
+          restore-keys: guix-macos-sdk-
+
+      - name: Install macOS SDK
+        if: matrix.host == 'arm64-apple-darwin'
+        run: |
+          source ci/test/00_setup_env_mac_cross.sh
+          sdk_name="Xcode-$XCODE_VERSION-$XCODE_BUILD_ID-extracted-SDK-with-libcxx-headers"
+          sdk_path="$SDK_PATH/$sdk_name"
+          sdk_archive="$RUNNER_TEMP/$sdk_name.tar"
+          if [ ! -d "$sdk_path" ]; then
+            mkdir -p "$SDK_PATH"
+            curl --location --fail "$SDK_URL/$sdk_name.tar" --output "$sdk_archive"
+            printf '%s  %s\n' "$OSX_SDK_SHA256" "$sdk_archive" | sha256sum --check
+            tar -C "$SDK_PATH" -xf "$sdk_archive"
+          fi
+
       - name: Install Guix
         run: |
           ./.github/install-guix.sh
@@ -113,6 +138,14 @@ jobs:
           provider: ${{ github.repository == 'bitcoin/bitcoin' && 'warp' || 'gha' }}
           path: ${{ env.SOURCES_PATH }}
           key: ${{ steps.depends-sources-cache.outputs.cache-primary-key }}
+
+      - name: Save macOS SDK cache
+        if: success() && github.event_name == 'push' && github.ref_name == github.event.repository.default_branch && matrix.host == 'arm64-apple-darwin' && steps.macos-sdk-cache.outputs.cache-hit != 'true'
+        uses: ./.github/actions/cache/save/internal
+        with:
+          provider: ${{ github.repository == 'bitcoin/bitcoin' && 'warp' || 'gha' }}
+          path: ${{ env.SDK_PATH }}
+          key: ${{ steps.macos-sdk-cache.outputs.cache-primary-key }}
 
       - name: Save built depends cache
         uses: ./.github/actions/cache/save/internal
