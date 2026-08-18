@@ -30,7 +30,7 @@ env:
   SUBSTITUTE_SERVER_KEY_SHA256: 5796b4e6cc23635052ba7cecdc4b8b92ba6a53ef374208ce5094c0920a72f40f
   SOURCES_PATH: ${{ github.workspace }}/.guix-cache/depends-sources
   BASE_CACHE: ${{ github.workspace }}/.guix-cache/depends-built
-  SUBSTITUTE_URLS: https://guix.fish.foo https://ci.guix.gnu.org
+  SUBSTITUTE_URLS: https://guix.fish.foo
 
 defaults:
   run:
