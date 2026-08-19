@@ -4,7 +4,7 @@
 
 { pkgs ? import (builtins.fetchTarball {
     # Pin, to keep the versions of the toolchain aligned with the versions used by Guix.
-    url = "https://github.com/NixOS/nixpkgs/archive/531670d871c0e29724a02f3cbcac170adc65b58c.tar.gz";
+    url = "https://github.com/NixOS/nixpkgs/archive/50ab793786d9de88ee30ec4e4c24fb4236fc2674.tar.gz";
   }) {} }:
 
 let
@@ -15,7 +15,7 @@ let
       then pkgs.pkgsCross.mingwW64
       else throw "Unsupported HOST: ${host}";
   toolchain = crossPkgs.stdenv.cc.targetPrefix;
-  pthreads = crossPkgs.windows.pthreads;
+  pthreads = crossPkgs.windows.mingw_w64_pthreads;
 in
 
 pkgs.mkShellNoCC {
