@@ -44,7 +44,7 @@ void TestRpcCommand(RPCConsole* console)
     QTest::keyClicks(lineEdit, "getblockchaininfo");
     QTest::keyClick(lineEdit, Qt::Key_Return);
     QVERIFY(mw_spy.wait(1000));
-    QCOMPARE(mw_spy.count(), 4);
+    QCOMPARE(mw_spy.count(), 42);
     const QString output = messagesWidget->toPlainText();
     const QString pattern = QStringLiteral("\"chain\": \"(\\w+)\"");
     QCOMPARE(FindInConsole(output, pattern), QString("regtest"));
