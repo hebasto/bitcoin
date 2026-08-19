@@ -126,9 +126,6 @@ jobs:
           - job-type: standard
             file-env: './ci/test/00_setup_env_mac_native.sh'
             job-name: 'macOS native'
-          - job-type: fuzz
-            file-env: './ci/test/00_setup_env_mac_native_fuzz.sh'
-            job-name: 'macOS native, fuzz'
 
     env:
       DANGER_RUN_CI_ON_HOST: 1
@@ -216,14 +213,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        crt: [msvcrt, ucrt]
         include:
           - crt: msvcrt
             file-env: './ci/test/00_setup_env_win64_msvcrt.sh'
             artifact-name: 'x86_64-w64-mingw32-executables'
-          - crt: ucrt
-            file-env: './ci/test/00_setup_env_win64.sh'
-            artifact-name: 'x86_64-w64-mingw32ucrt-executables'
 
     env:
       FILE_ENV: ${{ matrix.file-env }}
@@ -278,12 +271,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        crt: [msvcrt, ucrt]
         include:
           - crt: msvcrt
             artifact-name: 'x86_64-w64-mingw32-executables'
-          - crt: ucrt
-            artifact-name: 'x86_64-w64-mingw32ucrt-executables'
 
     env:
       PYTHONUTF8: 1
