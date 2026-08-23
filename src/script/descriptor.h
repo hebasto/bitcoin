@@ -7,15 +7,12 @@
 
 #include <outputtype.h>
 #include <pubkey.h>
-#include <uint256.h>
 
 #include <cstddef>
 #include <cstdint>
-#include <memory>
 #include <optional>
 #include <set>
 #include <string>
-#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -145,44 +142,5 @@ struct Descriptor {
     /** Get the number of key expressions in this descriptor. Used only for tests */
     virtual size_t GetKeyCount() const = 0;
 };
-
-/** Parse a `descriptor` string. Included private keys are put in `out`.
- *
- * If the descriptor has a checksum, it must be valid. If `require_checksum`
- * is set, the checksum is mandatory - otherwise it is optional.
- *
- * If a parse error occurs, or the checksum is missing/invalid, or anything
- * else is wrong, an empty vector is returned.
- */
-std::vector<std::unique_ptr<Descriptor>> Parse(std::string_view descriptor, FlatSigningProvider& out, std::string& error, bool require_checksum = false);
-
-/** Get the checksum for a `descriptor`.
- *
- * - If it already has one, and it is correct, return the checksum in the input.
- * - If it already has one that is wrong, return "".
- * - If it does not already have one, return the checksum that would need to be added.
- */
-std::string GetDescriptorChecksum(const std::string& descriptor);
-
-/** Find a descriptor for the specified `script`, using information from `provider` where possible.
- *
- * A non-ranged descriptor which only generates the specified script will be returned in all
- * circumstances.
- *
- * For public keys with key origin information, this information will be preserved in the returned
- * descriptor.
- *
- * - If all information for solving `script` is present in `provider`, a descriptor will be returned
- *   which is IsSolvable() and encapsulates said information.
- * - Failing that, if `script` corresponds to a known address type, an "addr()" descriptor will be
- *   returned (which is not IsSolvable()).
- * - Failing that, a "raw()" descriptor is returned.
- */
-std::unique_ptr<Descriptor> InferDescriptor(const CScript& script, const SigningProvider& provider);
-
-/** Unique identifier that may not change over time, unless explicitly marked as not backwards compatible.
-*   This is not part of BIP 380, not guaranteed to be interoperable and should not be exposed to the user.
-*/
-uint256 DescriptorID(const Descriptor& desc);
 
 #endif // BITCOIN_SCRIPT_DESCRIPTOR_H

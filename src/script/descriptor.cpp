@@ -8,7 +8,6 @@
 #include <attributes.h>
 #include <consensus/consensus.h>
 #include <crypto/hex_base.h>
-#include <crypto/sha256.h>
 #include <hash.h>
 #include <key.h>
 #include <key_io.h>
@@ -42,6 +41,7 @@
 #include <span>
 #include <stdexcept>
 #include <string>
+#include <string_view> 
 #include <tuple>
 #include <unordered_set>
 #include <utility>
@@ -2837,43 +2837,4 @@ bool CheckChecksum(std::span<const char>& sp, bool require_checksum, std::string
     if (out_checksum) *out_checksum = std::move(checksum);
     sp = check_split[0];
     return true;
-}
-
-std::vector<std::unique_ptr<Descriptor>> Parse(std::string_view descriptor, FlatSigningProvider& out, std::string& error, bool require_checksum)
-{
-    std::span<const char> sp{descriptor};
-    if (!CheckChecksum(sp, require_checksum, error)) return {};
-    uint32_t key_exp_index = 0;
-    auto ret = ParseScript(key_exp_index, sp, ParseScriptContext::TOP, out, error);
-    if (sp.empty() && !ret.empty()) {
-        std::vector<std::unique_ptr<Descriptor>> descs;
-        descs.reserve(ret.size());
-        for (auto& r : ret) {
-            descs.emplace_back(std::unique_ptr<Descriptor>(std::move(r)));
-        }
-        return descs;
-    }
-    return {};
-}
-
-std::string GetDescriptorChecksum(const std::string& descriptor)
-{
-    std::string ret;
-    std::string error;
-    std::span<const char> sp{descriptor};
-    if (!CheckChecksum(sp, false, error, &ret)) return "";
-    return ret;
-}
-
-std::unique_ptr<Descriptor> InferDescriptor(const CScript& script, const SigningProvider& provider)
-{
-    return InferScript(script, ParseScriptContext::TOP, provider);
-}
-
-uint256 DescriptorID(const Descriptor& desc)
-{
-    std::string desc_str = desc.ToString(/*compat_format=*/true);
-    uint256 id;
-    CSHA256().Write((unsigned char*)desc_str.data(), desc_str.size()).Finalize(id.begin());
-    return id;
 }
