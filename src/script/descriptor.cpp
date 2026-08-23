@@ -39,7 +39,6 @@
 #include <span>
 #include <stdexcept>
 #include <string>
-#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -1708,93 +1707,16 @@ enum class ParseScriptContext {
     MUSIG,   //!< Inside musig() (implies P2TR, cannot have nested musig())
 };
 
-/**
- * Parse a key path, being passed a split list of elements (the first element is ignored because it is always the key).
- *
- * @param[in] split BIP32 path string, using either ' or h for hardened derivation
- * @param[out] out Vector of parsed key paths
- * @param[out] apostrophe only updated if hardened derivation is found
- * @param[out] error parsing error message
- * @param[in] allow_multipath Allows the parsed path to use the multipath specifier
- * @param[out] has_hardened Records whether the path contains any hardened derivation
- * @returns false if parsing failed
- **/
-[[nodiscard]] bool ParseKeyPath(const std::vector<std::span<const char>>& split, std::vector<KeyPath>& out, bool& apostrophe, std::string& error, bool allow_multipath, bool& has_hardened)
+bool ParseKeyPath(const std::vector<std::span<const char>>& split, std::vector<KeyPath>& out, bool& apostrophe, std::string& error, bool allow_multipath, bool& has_hardened)
 {
     auto parse_elem = [&](std::span<const char> elem) -> std::optional<uint32_t> {
         const auto parsed{ParseKeyPathElement(elem)};
-        if (!parsed) {
-            error = parsed.error();
-            return std::nullopt;
-        }
-        if (parsed->is_hardened) {
-            has_hardened = true;
-            apostrophe = elem.back() == '\'';
-        }
         return parsed->ChildNumber();
     };
 
-    KeyPath path;
-    struct MultipathSubstitutes {
-        size_t placeholder_index;
-        std::vector<uint32_t> values;
-    };
-    std::optional<MultipathSubstitutes> substitutes;
-    has_hardened = false;
+    const std::span<const char>& elem = split[0];
+    const auto& op_num = parse_elem(elem);
 
-    for (size_t i = 1; i < split.size(); ++i) {
-        const std::span<const char>& elem = split[i];
-
-        // Check if element contains multipath specifier
-        if (!elem.empty() && elem.front() == '<' && elem.back() == '>') {
-            if (!allow_multipath) {
-                error = strprintf("Key path value '%s' specifies multipath in a section where multipath is not allowed", std::string(elem.begin(), elem.end()));
-                return false;
-            }
-            if (substitutes) {
-                error = "Multiple multipath key path specifiers found";
-                return false;
-            }
-
-            // Parse each possible value
-            std::vector<std::span<const char>> nums = Split(std::span(elem.begin()+1, elem.end()-1), ";");
-            if (nums.size() < 2) {
-                error = "Multipath key path specifiers must have at least two items";
-                return false;
-            }
-
-            substitutes.emplace();
-            std::unordered_set<uint32_t> seen_substitutes;
-            for (const auto& num : nums) {
-                const auto& op_num = parse_elem(num);
-                if (!op_num) return false;
-                auto [_, inserted] = seen_substitutes.insert(*op_num);
-                if (!inserted) {
-                    error = strprintf("Duplicated key path value %u in multipath specifier", *op_num);
-                    return false;
-                }
-                substitutes->values.emplace_back(*op_num);
-            }
-
-            path.emplace_back(); // Placeholder for multipath segment
-            substitutes->placeholder_index = path.size() - 1;
-        } else {
-            const auto& op_num = parse_elem(elem);
-            if (!op_num) return false;
-            path.emplace_back(*op_num);
-        }
-    }
-
-    if (!substitutes) {
-        out.emplace_back(std::move(path));
-    } else {
-        // Replace the multipath placeholder with each value while generating paths
-        for (uint32_t substitute : substitutes->values) {
-            KeyPath branch_path = path;
-            branch_path[substitutes->placeholder_index] = substitute;
-            out.emplace_back(std::move(branch_path));
-        }
-    }
     return true;
 }
 
