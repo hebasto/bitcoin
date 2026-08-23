@@ -5,12 +5,8 @@
 #ifndef BITCOIN_UTIL_BIP32_H
 #define BITCOIN_UTIL_BIP32_H
 
-#include <cstdint>
-#include <span>
-#include <string>
 #include <util/expected.h>
-#include <vector>
 
-util::Expected<int, std::string> ParseKeyPathElement();
+util::Expected<int, int> ParseKeyPathElement();
 
 #endif // BITCOIN_UTIL_BIP32_H
