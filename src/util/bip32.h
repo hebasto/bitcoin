@@ -11,14 +11,6 @@
 #include <util/expected.h>
 #include <vector>
 
-struct KeyPathElement {
-    /** Derivation index, without the hardened flag */
-    uint32_t index;
-    bool is_hardened;
-};
-
-/** Parse a single key path element like "0", "0'", or "0h".
- *  Returns the derivation index and hardened status, or an error message. */
-util::Expected<KeyPathElement, std::string> ParseKeyPathElement(std::span<const char> elem);
+util::Expected<int, std::string> ParseKeyPathElement();
 
 #endif // BITCOIN_UTIL_BIP32_H
