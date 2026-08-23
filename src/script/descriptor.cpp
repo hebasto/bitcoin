@@ -7,7 +7,6 @@
 #include <util/bip32.h>
 #include <util/expected.h>
 
-#include <optional>
 #include <span>
 #include <string>
 #include <vector>
@@ -16,13 +15,12 @@ namespace {
 
 void ParseKeyPath(const std::vector<std::span<const char>>& split)
 {
-    auto parse_elem = [&](std::span<const char> elem) -> std::optional<uint32_t> {
+    auto parse_elem = [&](std::span<const char> elem) {
         const auto parsed{ParseKeyPathElement(elem)};
-        return parsed->ChildNumber();
     };
 
     const std::span<const char>& elem = split[0];
-    const auto& op_num = parse_elem(elem);
+    parse_elem(elem);
 }
 
 } // namespace
