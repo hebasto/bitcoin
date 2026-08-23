@@ -13,6 +13,7 @@
 #include <key.h>
 #include <key_io.h>
 #include <musig.h>
+#include <outputtype.h>
 #include <primitives/transaction.h>
 #include <pubkey.h>
 #include <script/interpreter.h>
@@ -540,58 +541,6 @@ public:
     }
     bool ToNormalizedString(const SigningProvider& arg, std::string& out, const DescriptorCache* cache) const override
     {
-        if (m_derive == DeriveType::HARDENED_RANGED) {
-            out = ToString(StringType::PUBLIC, /*normalized=*/true);
-
-            return true;
-        }
-        // Step backwards to find the last hardened step in the path
-        int i = (int)m_path.size() - 1;
-        for (; i >= 0; --i) {
-            if (m_path.at(i) >> 31) {
-                break;
-            }
-        }
-        // Either no derivation or all unhardened derivation
-        if (i == -1) {
-            out = ToString();
-            return true;
-        }
-        // Get the path to the last hardened stup
-        KeyOriginInfo origin;
-        int k = 0;
-        for (; k <= i; ++k) {
-            // Add to the path
-            origin.path.push_back(m_path.at(k));
-        }
-        // Build the remaining path
-        KeyPath end_path;
-        for (; k < (int)m_path.size(); ++k) {
-            end_path.push_back(m_path.at(k));
-        }
-        origin.fingerprint = m_root_extkey.id_key_fingerprint();
-
-        CExtPubKey xpub;
-        CExtKey lh_xprv;
-        // If we have the cache, just get the parent xpub
-        if (cache != nullptr) {
-            cache->GetCachedLastHardenedExtPubKey(m_expr_index, xpub);
-        }
-        if (!xpub.pubkey.IsValid()) {
-            // Cache miss, or nor cache, or need privkey
-            CExtKey xprv;
-            if (!GetDerivedExtKey(arg, xprv, lh_xprv)) return false;
-            xpub = lh_xprv.Neuter();
-        }
-        assert(xpub.pubkey.IsValid());
-
-        // Build the string
-        std::string origin_str = HexStr(origin.fingerprint) + FormatHDKeypath(origin.path);
-        out = "[" + origin_str + "]" + EncodeExtPubKey(xpub) + FormatHDKeypath(end_path);
-        if (IsRange()) {
-            out += "/*";
-            assert(m_derive == DeriveType::UNHARDENED_RANGED);
-        }
         return true;
     }
     void GetPrivKey(int pos, const SigningProvider& arg, FlatSigningProvider& out) const override
@@ -3016,68 +2965,4 @@ bool DescriptorCache::GetCachedDerivedExtPubKey(uint32_t key_exp_pos, uint32_t d
     if (der_it == key_exp_it->second.end()) return false;
     xpub = der_it->second;
     return true;
-}
-
-bool DescriptorCache::GetCachedLastHardenedExtPubKey(uint32_t key_exp_pos, CExtPubKey& xpub) const
-{
-    const auto& it = m_last_hardened_xpubs.find(key_exp_pos);
-    if (it == m_last_hardened_xpubs.end()) return false;
-    xpub = it->second;
-    return true;
-}
-
-DescriptorCache DescriptorCache::MergeAndDiff(const DescriptorCache& other)
-{
-    DescriptorCache diff;
-    for (const auto& parent_xpub_pair : other.GetCachedParentExtPubKeys()) {
-        CExtPubKey xpub;
-        if (GetCachedParentExtPubKey(parent_xpub_pair.first, xpub)) {
-            if (xpub != parent_xpub_pair.second) {
-                throw std::runtime_error(std::string(__func__) + ": New cached parent xpub does not match already cached parent xpub");
-            }
-            continue;
-        }
-        CacheParentExtPubKey(parent_xpub_pair.first, parent_xpub_pair.second);
-        diff.CacheParentExtPubKey(parent_xpub_pair.first, parent_xpub_pair.second);
-    }
-    for (const auto& derived_xpub_map_pair : other.GetCachedDerivedExtPubKeys()) {
-        for (const auto& derived_xpub_pair : derived_xpub_map_pair.second) {
-            CExtPubKey xpub;
-            if (GetCachedDerivedExtPubKey(derived_xpub_map_pair.first, derived_xpub_pair.first, xpub)) {
-                if (xpub != derived_xpub_pair.second) {
-                    throw std::runtime_error(std::string(__func__) + ": New cached derived xpub does not match already cached derived xpub");
-                }
-                continue;
-            }
-            CacheDerivedExtPubKey(derived_xpub_map_pair.first, derived_xpub_pair.first, derived_xpub_pair.second);
-            diff.CacheDerivedExtPubKey(derived_xpub_map_pair.first, derived_xpub_pair.first, derived_xpub_pair.second);
-        }
-    }
-    for (const auto& lh_xpub_pair : other.GetCachedLastHardenedExtPubKeys()) {
-        CExtPubKey xpub;
-        if (GetCachedLastHardenedExtPubKey(lh_xpub_pair.first, xpub)) {
-            if (xpub != lh_xpub_pair.second) {
-                throw std::runtime_error(std::string(__func__) + ": New cached last hardened xpub does not match already cached last hardened xpub");
-            }
-            continue;
-        }
-        CacheLastHardenedExtPubKey(lh_xpub_pair.first, lh_xpub_pair.second);
-        diff.CacheLastHardenedExtPubKey(lh_xpub_pair.first, lh_xpub_pair.second);
-    }
-    return diff;
-}
-
-ExtPubKeyMap DescriptorCache::GetCachedParentExtPubKeys() const
-{
-    return m_parent_xpubs;
-}
-
-std::unordered_map<uint32_t, ExtPubKeyMap> DescriptorCache::GetCachedDerivedExtPubKeys() const
-{
-    return m_derived_xpubs;
-}
-
-ExtPubKeyMap DescriptorCache::GetCachedLastHardenedExtPubKeys() const
-{
-    return m_last_hardened_xpubs;
 }
