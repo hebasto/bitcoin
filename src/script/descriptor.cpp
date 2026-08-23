@@ -5,7 +5,6 @@
 #include <script/descriptor.h>
 
 #include <addresstype.h>
-#include <attributes.h>
 #include <consensus/consensus.h>
 #include <crypto/hex_base.h>
 #include <hash.h>
@@ -13,17 +12,14 @@
 #include <key_io.h>
 #include <musig.h>
 #include <outputtype.h>
-#include <primitives/transaction.h>
 #include <pubkey.h>
 #include <script/interpreter.h>
 #include <script/keyorigin.h>
-#include <script/miniscript.h>
 #include <script/script.h>
 #include <script/signingprovider.h>
 #include <script/solver.h>
 #include <serialize.h>
 #include <tinyformat.h>
-#include <uint256.h>
 #include <util/bip32.h>
 #include <util/check.h>
 #include <util/expected.h>
@@ -1477,237 +1473,7 @@ public:
     }
 };
 
-/* We instantiate Miniscript here with a simple integer as key type.
- * The value of these key integers are an index in the
- * DescriptorImpl::m_pubkey_args vector.
- */
-
-/**
- * The context for converting a Miniscript descriptor into a Script.
- */
-class ScriptMaker {
-    //! Keys contained in the Miniscript (the evaluation of DescriptorImpl::m_pubkey_args).
-    const std::vector<CPubKey>& m_keys;
-    //! The script context we're operating within (Tapscript or P2WSH).
-    const miniscript::MiniscriptContext m_script_ctx;
-
-    //! Get the ripemd160(sha256()) hash of this key.
-    //! Any key that is valid in a descriptor serializes as 32 bytes within a Tapscript context. So we
-    //! must not hash the sign-bit byte in this case.
-    uint160 GetHash160(uint32_t key) const {
-        if (miniscript::IsTapscript(m_script_ctx)) {
-            return Hash160(XOnlyPubKey{m_keys[key]});
-        }
-        return m_keys[key].GetID();
-    }
-
-public:
-    ScriptMaker(const std::vector<CPubKey>& keys LIFETIMEBOUND, const miniscript::MiniscriptContext script_ctx) : m_keys(keys), m_script_ctx{script_ctx} {}
-
-    std::vector<unsigned char> ToPKBytes(uint32_t key) const {
-        // In Tapscript keys always serialize as x-only, whether an x-only key was used in the descriptor or not.
-        if (!miniscript::IsTapscript(m_script_ctx)) {
-            return {m_keys[key].begin(), m_keys[key].end()};
-        }
-        const XOnlyPubKey xonly_pubkey{m_keys[key]};
-        return {xonly_pubkey.begin(), xonly_pubkey.end()};
-    }
-
-    std::vector<unsigned char> ToPKHBytes(uint32_t key) const {
-        auto id = GetHash160(key);
-        return {id.begin(), id.end()};
-    }
-};
-
-/**
- * The context for converting a Miniscript descriptor to its textual form.
- */
-class StringMaker {
-    //! To convert private keys for private descriptors.
-    const SigningProvider* m_arg;
-    //! Keys contained in the Miniscript (a reference to DescriptorImpl::m_pubkey_args).
-    const std::vector<std::unique_ptr<PubkeyProvider>>& m_pubkeys;
-    //! StringType to serialize keys
-    const DescriptorImpl::StringType m_type;
-    const DescriptorCache* m_cache;
-
-public:
-    StringMaker(const SigningProvider* arg LIFETIMEBOUND,
-                const std::vector<std::unique_ptr<PubkeyProvider>>& pubkeys LIFETIMEBOUND,
-                DescriptorImpl::StringType type,
-                const DescriptorCache* cache LIFETIMEBOUND)
-        : m_arg(arg), m_pubkeys(pubkeys), m_type(type), m_cache(cache) {}
-
-    std::optional<std::string> ToString(uint32_t key, bool& has_priv_key) const
-    {
-        std::string ret;
-        has_priv_key = false;
-        switch (m_type) {
-        case DescriptorImpl::StringType::PUBLIC:
-            ret = m_pubkeys[key]->ToString();
-            break;
-        case DescriptorImpl::StringType::PRIVATE:
-            has_priv_key = m_pubkeys[key]->ToPrivateString(*m_arg, ret);
-            break;
-        case DescriptorImpl::StringType::NORMALIZED:
-            if (!m_pubkeys[key]->ToNormalizedString(*m_arg, ret, m_cache)) return {};
-            break;
-        case DescriptorImpl::StringType::COMPAT:
-            ret = m_pubkeys[key]->ToString(PubkeyProvider::StringType::COMPAT);
-            break;
-        }
-        return ret;
-    }
-};
-
-class MiniscriptDescriptor final : public DescriptorImpl
-{
-private:
-    miniscript::Node<uint32_t> m_node;
-
-protected:
-    std::vector<CScript> MakeScripts(const std::vector<CPubKey>& keys, std::span<const CScript> scripts,
-                                     FlatSigningProvider& provider) const override
-    {
-        const auto script_ctx{m_node.GetMsCtx()};
-        for (const auto& key : keys) {
-            if (miniscript::IsTapscript(script_ctx)) {
-                provider.pubkeys.emplace(Hash160(XOnlyPubKey{key}), key);
-            } else {
-                provider.pubkeys.emplace(key.GetID(), key);
-            }
-        }
-        return Vector(m_node.ToScript(ScriptMaker(keys, script_ctx)));
-    }
-
-public:
-    MiniscriptDescriptor(std::vector<std::unique_ptr<PubkeyProvider>> providers, miniscript::Node<uint32_t>&& node)
-        : DescriptorImpl(std::move(providers), "?"), m_node(std::move(node))
-    {
-        // Traverse miniscript tree for unsafe use of older()
-        miniscript::ForEachNode(m_node, [&](const miniscript::Node<uint32_t>& node) {
-            if (node.Fragment() == miniscript::Fragment::OLDER) {
-                const uint32_t raw = node.K();
-                const uint32_t value_part = raw & ~CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG;
-                if (value_part > CTxIn::SEQUENCE_LOCKTIME_MASK) {
-                    const bool is_time_based = (raw & CTxIn::SEQUENCE_LOCKTIME_TYPE_FLAG) != 0;
-                    if (is_time_based) {
-                        m_warnings.push_back(strprintf("time-based relative locktime: older(%u) > (65535 * 512) seconds is unsafe", raw));
-                    } else {
-                        m_warnings.push_back(strprintf("height-based relative locktime: older(%u) > 65535 blocks is unsafe", raw));
-                    }
-                }
-            }
-        });
-    }
-
-    bool ToStringHelper(const SigningProvider* arg, std::string& out, const StringType type,
-                        const DescriptorCache* cache = nullptr) const override
-    {
-        bool has_priv_key{false};
-        auto res = m_node.ToString(StringMaker(arg, m_pubkey_args, type, cache), has_priv_key);
-        if (res) out = *res;
-        if (type == StringType::PRIVATE) {
-            Assume(res.has_value());
-            return has_priv_key;
-        } else {
-            return res.has_value();
-        }
-    }
-
-    bool IsSolvable() const override { return true; }
-    bool IsSingleType() const final { return true; }
-
-    std::optional<int64_t> ScriptSize() const override { return m_node.ScriptSize(); }
-
-    std::optional<int64_t> MaxSatSize(bool) const override
-    {
-        // For Miniscript we always assume high-R ECDSA signatures.
-        return m_node.GetWitnessSize();
-    }
-
-    std::optional<int64_t> MaxSatisfactionElems() const override
-    {
-        return m_node.GetStackSize();
-    }
-
-    std::unique_ptr<DescriptorImpl> Clone() const override
-    {
-        std::vector<std::unique_ptr<PubkeyProvider>> providers;
-        providers.reserve(m_pubkey_args.size());
-        for (const auto& arg : m_pubkey_args) {
-            providers.push_back(arg->Clone());
-        }
-        return std::make_unique<MiniscriptDescriptor>(std::move(providers), m_node.Clone());
-    }
-};
-
-/** A parsed rawtr(...) descriptor. */
-class RawTRDescriptor final : public DescriptorImpl
-{
-protected:
-    std::vector<CScript> MakeScripts(const std::vector<CPubKey>& keys, std::span<const CScript> scripts, FlatSigningProvider& out) const override
-    {
-        assert(keys.size() == 1);
-        XOnlyPubKey xpk(keys[0]);
-        if (!xpk.IsFullyValid()) return {};
-        WitnessV1Taproot output{xpk};
-        return Vector(GetScriptForDestination(output));
-    }
-public:
-    RawTRDescriptor(std::unique_ptr<PubkeyProvider> output_key) : DescriptorImpl(Vector(std::move(output_key)), "rawtr") {}
-    std::optional<OutputType> GetOutputType() const override { return OutputType::BECH32M; }
-    bool IsSingleType() const final { return true; }
-
-    std::optional<int64_t> ScriptSize() const override { return 1 + 1 + 32; }
-
-    std::optional<int64_t> MaxSatisfactionWeight(bool) const override {
-        // We can't know whether there is a script path, so assume key path spend.
-        return 1 + 65;
-    }
-
-    std::optional<int64_t> MaxSatisfactionElems() const override {
-        // See above, we assume keypath spend.
-        return 1;
-    }
-
-    std::unique_ptr<DescriptorImpl> Clone() const override
-    {
-        return std::make_unique<RawTRDescriptor>(m_pubkey_args.at(0)->Clone());
-    }
-};
-
-/** A parsed unused(KEY) descriptor */
-class UnusedDescriptor final : public DescriptorImpl
-{
-protected:
-    std::vector<CScript> MakeScripts(const std::vector<CPubKey>& keys, std::span<const CScript> scripts, FlatSigningProvider& out) const override { return {}; }
-public:
-    UnusedDescriptor(std::unique_ptr<PubkeyProvider> prov) : DescriptorImpl(Vector(std::move(prov)), "unused") {}
-    bool IsSingleType() const final { return true; }
-    bool HasScripts() const override { return false; }
-
-    std::unique_ptr<DescriptorImpl> Clone() const override
-    {
-        return std::make_unique<UnusedDescriptor>(m_pubkey_args.at(0)->Clone());
-    }
-};
-
-
-////////////////////////////////////////////////////////////////////////////
-// Parser                                                                 //
-////////////////////////////////////////////////////////////////////////////
-
-enum class ParseScriptContext {
-    TOP,     //!< Top-level context (script goes directly in scriptPubKey)
-    P2SH,    //!< Inside sh() (script becomes P2SH redeemScript)
-    P2WPKH,  //!< Inside wpkh() (no script, pubkey only)
-    P2WSH,   //!< Inside wsh() (script becomes v0 witness script)
-    P2TR,    //!< Inside tr() (either internal key, or BIP342 script leaf)
-    MUSIG,   //!< Inside musig() (implies P2TR, cannot have nested musig())
-};
-
-bool ParseKeyPath(const std::vector<std::span<const char>>& split, std::vector<KeyPath>& out, bool& apostrophe, std::string& error, bool allow_multipath, bool& has_hardened)
+void ParseKeyPath(const std::vector<std::span<const char>>& split)
 {
     auto parse_elem = [&](std::span<const char> elem) -> std::optional<uint32_t> {
         const auto parsed{ParseKeyPathElement(elem)};
@@ -1716,8 +1482,6 @@ bool ParseKeyPath(const std::vector<std::span<const char>>& split, std::vector<K
 
     const std::span<const char>& elem = split[0];
     const auto& op_num = parse_elem(elem);
-
-    return true;
 }
 
 } // namespace
