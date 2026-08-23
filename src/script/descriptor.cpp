@@ -11,16 +11,8 @@
 #include <string>
 #include <vector>
 
-namespace {
-
 void ParseKeyPath(const std::vector<std::span<const char>>& split)
 {
-    auto parse_elem = [&](std::span<const char> elem) {
-        const auto parsed{ParseKeyPathElement(elem)};
-    };
-
     const std::span<const char>& elem = split[0];
-    parse_elem(elem);
+    const auto parsed{ParseKeyPathElement(elem)};
 }
-
-} // namespace
