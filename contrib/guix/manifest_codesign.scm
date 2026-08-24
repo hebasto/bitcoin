@@ -172,7 +172,7 @@ inspecting signatures in Mach-O binaries.")
         ;; Git
         git-minimal)
   (let ((target (getenv "HOST")))
-    (cond ((string-suffix? "-mingw32" target)
+    (cond ((string-contains target "-mingw32")
            (list osslsigncode))
           ((string-contains target "darwin")
            (list python-signapple))

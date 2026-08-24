@@ -130,10 +130,9 @@ desirable for building Bitcoin Core release binaries."
 (define (make-mingw-pthreads-cross-toolchain target)
   "Create a cross-compilation toolchain package for TARGET"
   (let* ((xbinutils (binutils-mingw-patches (base-binutils target)))
-         (machine (substring target 0 (string-index target #\-)))
-         (pthreads-xlibc (winpthreads-patches (make-mingw-w64 machine
-                                         #:xgcc (cross-gcc target #:xgcc base-gcc)
-                                         #:with-winpthreads? #t)))
+         (pthreads-xlibc (winpthreads-patches (make-mingw-w64 target
+                                                              #:xgcc (cross-gcc target #:xgcc base-gcc)
+                                                              #:with-winpthreads? #t)))
          (pthreads-xgcc (cross-gcc target
                                     #:xgcc mingw-w64-base-gcc
                                     #:xbinutils xbinutils
@@ -275,7 +274,7 @@ chain for " target " development."))
         ;; Git
         git-minimal)
   (let ((target (getenv "HOST")))
-    (cond ((string-suffix? "-mingw32" target)
+    (cond ((string-contains target "-mingw32")
            (list gcc-toolchain-14
                  (make-mingw-pthreads-cross-toolchain target)))
           ((string-contains target "-linux-")

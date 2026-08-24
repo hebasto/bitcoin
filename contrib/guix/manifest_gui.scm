@@ -18,7 +18,7 @@
         ;; Tests
         python-lief)
   (let ((target (getenv "HOST")))
-    (cond ((string-suffix? "-mingw32" target)
+    (cond ((string-contains target "-mingw32")
            (list zip
                  nsis-x86_64))
           ((string-contains target "-linux-")

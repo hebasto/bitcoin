@@ -147,7 +147,7 @@ mingw_w64_toolchain() {
     # Set environment variables to point the CROSS toolchain to the right
     # includes/libs for $HOST
     # Determine output paths to use in CROSS_* environment variables
-    CROSS_GLIBC="$(store_path "mingw-w64-x86_64-winpthreads")"
+    CROSS_GLIBC="$(store_path "mingw-w64-x86_64-w64-mingw32ucrt-winpthreads")"
     CROSS_GCC="$(store_path "gcc-cross-${HOST}")"
     CROSS_GCC_LIB_STORE="$(store_path "gcc-cross-${HOST}" lib)"
     CROSS_GCC_LIBS=( "${CROSS_GCC_LIB_STORE}/lib/gcc/${HOST}"/* ) # This expands to an array of directories...

@@ -100,7 +100,7 @@ fi
 ################
 
 # Default to building for all supported HOSTs (overridable by environment)
-export HOSTS="${HOSTS:-x86_64-w64-mingw32 x86_64-apple-darwin arm64-apple-darwin}"
+export HOSTS="${HOSTS:-x86_64-w64-mingw32ucrt x86_64-apple-darwin arm64-apple-darwin}"
 
 # Accumulate a list of build directories that already exist...
 hosts_distsrc_exists=""
