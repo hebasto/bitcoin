@@ -1,14 +1,14 @@
 #ifndef _MINISKETCH_H_
 #define _MINISKETCH_H_ 1
 
-#include <stdint.h>
-#include <stdlib.h>
+#include <cstddef>
+#include <cstdint>
 
 #ifdef _MSC_VER
 #  include <BaseTsd.h>
    typedef SSIZE_T ssize_t;
 #else
-#  include <unistd.h>
+#  include <sys/types.h>
 #endif
 
 #ifndef MINISKETCH_API
