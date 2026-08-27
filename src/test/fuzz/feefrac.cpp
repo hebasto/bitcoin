@@ -2,17 +2,19 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <arith_uint256.h>
-#include <policy/feerate.h>
 #include <util/feefrac.h>
+
+#include <arith_uint256.h>
+#include <consensus/amount.h>
+#include <policy/feerate.h>
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
-#include <test/fuzz/util.h>
 
-#include <compare>
 #include <cmath>
+#include <compare>
 #include <cstdint>
-#include <iostream>
+#include <limits>
+#include <utility>
 
 namespace {
 

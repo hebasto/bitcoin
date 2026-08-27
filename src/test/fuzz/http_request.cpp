@@ -3,22 +3,19 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <httpserver.h>
-#include <netaddress.h>
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
-#include <test/fuzz/util.h>
 #include <test/util/net.h>
 #include <test/util/time.h>
-#include <util/check.h>
-#include <util/signalinterrupt.h>
 #include <util/strencodings.h>
+#include <util/string.h>
 
 #include <cassert>
 #include <cstdint>
-#include <memory>
+#include <optional>
+#include <stdexcept>
 #include <string>
 #include <string_view>
-#include <vector>
 
 std::string_view RequestMethodString(HTTPRequestMethod m);
 

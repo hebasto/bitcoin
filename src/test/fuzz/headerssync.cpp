@@ -2,20 +2,28 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or https://opensource.org/license/mit.
 
+#include <headerssync.h>
+
 #include <arith_uint256.h>
 #include <chain.h>
 #include <chainparams.h>
-#include <headerssync.h>
+#include <primitives/block.h>
+#include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
+#include <test/util/random.h>
 #include <test/util/setup_common.h>
 #include <test/util/time.h>
 #include <uint256.h>
-#include <util/chaintype.h>
-#include <util/time.h>
+#include <util/check.h>
 #include <validation.h>
 
+#include <compare>
+#include <cstddef>
+#include <functional>
 #include <iterator>
+#include <optional>
+#include <span>
 #include <vector>
 
 static void initialize_headers_sync_state_fuzz()

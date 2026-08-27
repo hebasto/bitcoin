@@ -6,11 +6,13 @@
 #define BITCOIN_PRIVATE_BROADCAST_H
 
 #include <net.h>
+#include <netaddress.h>
 #include <primitives/transaction.h>
-#include <primitives/transaction_identifier.h>
 #include <sync.h>
+#include <uint256.h>
 #include <util/time.h>
 
+#include <cstddef>
 #include <optional>
 #include <tuple>
 #include <unordered_map>

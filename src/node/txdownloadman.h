@@ -8,17 +8,23 @@
 #include <net.h>
 #include <node/txorphanage.h>
 #include <policy/packages.h>
+#include <primitives/transaction.h>
+#include <tinyformat.h>
+#include <util/check.h>
 
+#include <chrono>
 #include <cstdint>
 #include <memory>
+#include <optional>
+#include <string>
+#include <utility>
+#include <vector>
 
 class CBlock;
-class CRollingBloomFilter;
 class CTxMemPool;
-class GenTxid;
-class TxRequestTracker;
 namespace node {
 class TxDownloadManagerImpl;
+class TxValidationState;
 
 /** Maximum number of in-flight transaction requests from a peer. It is not a hard limit, but the threshold at which
  *  point the OVERLOADED_PEER_TX_DELAY kicks in. */
