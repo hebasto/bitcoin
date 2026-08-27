@@ -101,10 +101,11 @@ if [[ ${BARE_METAL_RISCV} == "true" ]]; then
 fi
 
 if [[ "${RUN_IWYU}" == true ]]; then
-  ${CI_RETRY_EXE} git clone --depth=1 https://github.com/include-what-you-use/include-what-you-use -b clang_"${IWYU_LLVM_V}" /include-what-you-use
+  ${CI_RETRY_EXE} curl --location --fail "https://github.com/include-what-you-use/include-what-you-use/archive/${IWYU_COMMIT_HASH}.tar.gz" -o "${IWYU_COMMIT_HASH}.tar.gz"
+  mkdir -p /include-what-you-use
+  tar -C /include-what-you-use --strip-components=1 -xf "${IWYU_COMMIT_HASH}.tar.gz"
   pushd /include-what-you-use
   patch -p1 < "${BASE_ROOT_DIR}/ci/test/01_iwyu.patch"
-  patch -p1 < "${BASE_ROOT_DIR}/ci/test/02_iwyu_hash.patch"
   popd
   cmake -B /iwyu-build/ -G 'Unix Makefiles' -DCMAKE_PREFIX_PATH=/usr/lib/llvm-"${IWYU_LLVM_V}" -S /include-what-you-use
   make -C /iwyu-build/ install "$MAKEJOBS"
