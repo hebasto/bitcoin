@@ -20,7 +20,13 @@ struct NodeContext;
 } // namespace node
 
 namespace interfaces {
+class Chain;
+class Echo;
 class Ipc;
+class Mining;
+class Node;
+class Rpc;
+class WalletLoader;
 
 //! Initial interface created when a process is first started, and used to give
 //! and get access to other interfaces (Node, Chain, Wallet, etc).
