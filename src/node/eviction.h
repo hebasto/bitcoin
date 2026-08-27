@@ -7,6 +7,7 @@
 
 #include <node/connection_types.h>
 #include <net_permissions.h>
+#include <util/time.h>
 
 #include <chrono>
 #include <cstdint>

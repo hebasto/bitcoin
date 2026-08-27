@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <cluster_linearize.h>
+
 #include <random.h>
 #include <serialize.h>
 #include <streams.h>
@@ -13,7 +14,9 @@
 #include <util/feefrac.h>
 
 #include <algorithm>
+#include <compare>
 #include <cstdint>
+#include <ios>
 #include <utility>
 #include <vector>
 

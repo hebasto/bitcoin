@@ -3,12 +3,22 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <random.h>
-#include <span.h>
-#include <test/fuzz/util.h>
+#include <test/fuzz/FuzzedDataProvider.h>
+#include <test/fuzz/fuzz.h>
 #include <util/vecdeque.h>
 
+#include <algorithm>
+#include <cassert>
+#include <compare>
+#include <cstddef>
 #include <cstdint>
 #include <deque>
+#include <map>
+#include <optional>
+#include <span>
+#include <type_traits>
+#include <utility>
+#include <vector>
 
 namespace {
 
