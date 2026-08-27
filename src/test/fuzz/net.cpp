@@ -2,12 +2,10 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <chainparams.h>
 #include <net.h>
-#include <net_permissions.h>
+
 #include <netaddress.h>
-#include <protocol.h>
-#include <random.h>
+#include <sync.h>
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
@@ -15,14 +13,16 @@
 #include <test/util/net.h>
 #include <test/util/setup_common.h>
 #include <test/util/time.h>
-#include <util/asmap.h>
-#include <util/chaintype.h>
-#include <util/time.h>
 
+#include <cassert>
 #include <cstdint>
+#include <functional>
+#include <map>
 #include <optional>
-#include <string>
+#include <span>
 #include <vector>
+
+enum class NetPermissionFlags : uint32_t;
 
 void initialize_net()
 {

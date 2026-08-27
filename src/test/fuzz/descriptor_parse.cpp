@@ -3,13 +3,23 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <chainparams.h>
-#include <key_io.h>
-#include <pubkey.h>
+#include <key.h>
 #include <script/descriptor.h>
+#include <script/script.h>
+#include <script/signingprovider.h>
+#include <span.h>
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util/descriptor.h>
 #include <util/chaintype.h>
-#include <util/strencodings.h>
+
+#include <cassert>
+#include <compare>
+#include <functional>
+#include <initializer_list>
+#include <memory>
+#include <optional>
+#include <string>
+#include <vector>
 
 //! The converter of mocked descriptors, needs to be initialized when the target is.
 MockedDescriptorConverter MOCKED_DESC_CONVERTER;

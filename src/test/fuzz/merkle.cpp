@@ -3,15 +3,20 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <consensus/merkle.h>
-#include <test/fuzz/fuzz.h>
-#include <test/fuzz/FuzzedDataProvider.h>
-#include <test/fuzz/util.h>
-#include <test/util/str.h>
-#include <util/strencodings.h>
+
 #include <hash.h>
+#include <primitives/block.h>
+#include <primitives/transaction.h>
+#include <test/fuzz/FuzzedDataProvider.h>
+#include <test/fuzz/fuzz.h>
+#include <test/fuzz/util.h>
 
 #include <cassert>
+#include <cstddef>
 #include <cstdint>
+#include <memory>
+#include <optional>
+#include <stdexcept>
 #include <vector>
 
 uint256 ComputeMerkleRootFromPath(const CBlock& block, uint32_t position, const std::vector<uint256>& merkle_path) {

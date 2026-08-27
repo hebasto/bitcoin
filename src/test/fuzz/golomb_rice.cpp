@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <blockfilter.h>
+#include <crypto/siphash.h>
 #include <serialize.h>
 #include <streams.h>
 #include <test/fuzz/FuzzedDataProvider.h>
@@ -10,12 +11,15 @@
 #include <test/fuzz/util.h>
 #include <test/util/random.h>
 #include <util/bytevectorhash.h>
+#include <util/fastrange.h>
 #include <util/golombrice.h>
 
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
-#include <iosfwd>
+#include <ios>
+#include <optional>
+#include <span>
 #include <unordered_set>
 #include <vector>
 

@@ -2,19 +2,23 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <test/fuzz/fuzz.h>
-
 #include <base58.h>
 #include <psbt.h>
 #include <span.h>
 #include <test/fuzz/FuzzedDataProvider.h>
+#include <test/fuzz/fuzz.h>
+#include <util/result.h>
 #include <util/strencodings.h>
 #include <util/string.h>
 
+#include <algorithm>
 #include <cassert>
+#include <cstddef>
+#include <optional>
+#include <span>
 #include <string>
+#include <string_view>
 #include <vector>
-#include <ranges>
 
 using util::TrimStringView;
 

@@ -3,15 +3,18 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <bip324.h>
+
 #include <chainparams.h>
 #include <random.h>
-#include <span.h>
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
+#include <util/chaintype.h>
 
 #include <algorithm>
+#include <cassert>
 #include <cstdint>
+#include <functional>
 #include <vector>
 
 namespace {

@@ -11,6 +11,7 @@
 #include <test/fuzz/util.h>
 #include <test/util/setup_common.h>
 
+#include <functional>
 #include <memory>
 
 namespace {

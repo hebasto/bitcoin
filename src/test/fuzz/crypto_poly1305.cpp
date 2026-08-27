@@ -7,7 +7,10 @@
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
 
-#include <cstdint>
+#include <array>
+#include <cassert>
+#include <cstddef>
+#include <span>
 #include <vector>
 
 FUZZ_TARGET(crypto_poly1305)

@@ -2,24 +2,30 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <consensus/tx_check.h>
-#include <consensus/validation.h>
-#include <net.h>
-#include <primitives/transaction.h>
 #include <private_broadcast.h>
+
+#include <netaddress.h>
+#include <node/eviction.h>
+#include <primitives/transaction.h>
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
 #include <test/fuzz/util/net.h>
-#include <test/util/setup_common.h>
+#include <test/util/random.h>
 #include <test/util/time.h>
-#include <util/overflow.h>
-#include <util/time.h>
+#include <uint256.h>
+#include <util/check.h>
 
 #include <algorithm>
+#include <cstddef>
+#include <functional>
+#include <memory>
+#include <optional>
 #include <ranges>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
+#include <vector>
 
 struct CTransactionRefHash {
     size_t operator()(const CTransactionRef& tx) const

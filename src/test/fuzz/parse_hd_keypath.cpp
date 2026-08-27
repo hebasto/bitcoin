@@ -9,6 +9,8 @@
 
 #include <cassert>
 #include <cstdint>
+#include <initializer_list>
+#include <string>
 #include <vector>
 
 FUZZ_TARGET(parse_hd_keypath)

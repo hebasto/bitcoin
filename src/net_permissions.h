@@ -3,11 +3,14 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <netaddress.h>
-#include <netbase.h>
 
+#include <cassert>
+#include <cstdint>
 #include <string>
 #include <type_traits>
 #include <vector>
+
+enum class ConnectionDirection;
 
 #ifndef BITCOIN_NET_PERMISSIONS_H
 #define BITCOIN_NET_PERMISSIONS_H

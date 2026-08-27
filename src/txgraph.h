@@ -2,15 +2,17 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <util/feefrac.h>
+
 #include <compare>
+#include <cstddef>
 #include <cstdint>
 #include <functional>
 #include <memory>
 #include <optional>
+#include <span>
 #include <utility>
 #include <vector>
-
-#include <util/feefrac.h>
 
 #ifndef BITCOIN_TXGRAPH_H
 #define BITCOIN_TXGRAPH_H

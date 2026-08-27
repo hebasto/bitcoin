@@ -2,8 +2,12 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <chainparams.h>
 #include <key.h>
+
+#include <addresstype.h>
+#include <chainparams.h>
+#include <crypto/hex_base.h>
+#include <hash.h>
 #include <key_io.h>
 #include <outputtype.h>
 #include <policy/policy.h>
@@ -14,21 +18,27 @@
 #include <script/sign.h>
 #include <script/signingprovider.h>
 #include <script/solver.h>
+#include <span.h>
 #include <streams.h>
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
 #include <test/util/random.h>
+#include <uint256.h>
 #include <util/chaintype.h>
-#include <util/strencodings.h>
 
 #include <array>
 #include <cassert>
 #include <cstddef>
-#include <cstdint>
+#include <functional>
+#include <initializer_list>
 #include <numeric>
 #include <optional>
+#include <set>
+#include <span>
 #include <string>
+#include <utility>
+#include <variant>
 #include <vector>
 
 void initialize_key()

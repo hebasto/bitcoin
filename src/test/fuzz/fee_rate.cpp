@@ -8,10 +8,11 @@
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
 
+#include <cassert>
+#include <compare>
 #include <cstdint>
 #include <limits>
 #include <string>
-#include <vector>
 
 FUZZ_TARGET(fee_rate)
 {

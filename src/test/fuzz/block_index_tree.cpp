@@ -3,20 +3,35 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 
+#include <arith_uint256.h>
 #include <chain.h>
 #include <chainparams.h>
+#include <consensus/validation.h>
 #include <flatfile.h>
+#include <node/blockstorage.h>
 #include <primitives/block.h>
 #include <primitives/transaction.h>
+#include <sync.h>
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
 #include <test/util/setup_common.h>
 #include <test/util/time.h>
 #include <test/util/validation.h>
+#include <uint256.h>
 #include <validation.h>
 
+#include <cassert>
+#include <compare>
+#include <cstddef>
+#include <functional>
+#include <map>
+#include <memory>
 #include <ranges>
+#include <set>
+#include <string>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 
 const TestingSetup* g_setup;

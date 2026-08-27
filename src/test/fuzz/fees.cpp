@@ -2,17 +2,19 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <util/fees.h>
+
 #include <common/messages.h>
 #include <consensus/amount.h>
+#include <policy/feerate.h>
 #include <policy/fees/block_policy_estimator.h>
+#include <random.h>
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
-#include <util/fees.h>
 
-#include <cstdint>
+#include <cassert>
 #include <string>
-#include <vector>
 
 using common::StringForFeeReason;
 

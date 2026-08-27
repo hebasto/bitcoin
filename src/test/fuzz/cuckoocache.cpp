@@ -3,16 +3,12 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <cuckoocache.h>
-#include <script/sigcache.h>
+
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
-#include <test/fuzz/util.h>
-#include <test/util/setup_common.h>
-#include <util/byte_units.h>
 
+#include <cassert>
 #include <cstdint>
-#include <string>
-#include <vector>
 
 namespace {
 FuzzedDataProvider* fuzzed_data_provider_ptr = nullptr;

@@ -7,7 +7,6 @@
 #define BITCOIN_CHAIN_H
 
 #include <arith_uint256.h>
-#include <consensus/params.h>
 #include <flatfile.h>
 #include <kernel/cs_main.h>
 #include <primitives/block.h>
@@ -18,9 +17,14 @@
 
 #include <algorithm>
 #include <cassert>
+#include <compare>
 #include <cstdint>
 #include <string>
 #include <vector>
+
+namespace Consensus {
+struct Params;
+} // namespace Consensus
 
 /**
  * Maximum amount of time that a block timestamp is allowed to exceed the

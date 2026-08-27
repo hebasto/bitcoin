@@ -18,7 +18,6 @@
 #include <test/util/random.h>
 #include <test/util/setup_common.h>
 #include <test/util/time.h>
-#include <txdb.h>
 #include <uint256.h>
 #include <util/check.h>
 #include <validation.h>

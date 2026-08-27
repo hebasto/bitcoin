@@ -5,6 +5,7 @@
 #include <common/messages.h>
 #include <merkleblock.h>
 #include <node/types.h>
+#include <outputtype.h>
 #include <policy/fees/block_policy_estimator.h>
 #include <rpc/util.h>
 #include <test/fuzz/FuzzedDataProvider.h>
@@ -12,9 +13,10 @@
 #include <test/fuzz/util.h>
 #include <util/translation.h>
 
-#include <array>
+#include <cassert>
 #include <cstdint>
 #include <optional>
+#include <string>
 #include <vector>
 
 using common::TransactionErrorString;

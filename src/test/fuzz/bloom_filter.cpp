@@ -12,6 +12,7 @@
 #include <cassert>
 #include <limits>
 #include <optional>
+#include <span>
 #include <vector>
 
 FUZZ_TARGET(bloom_filter)

@@ -8,8 +8,10 @@
 #include <test/fuzz/util.h>
 #include <util/serfloat.h>
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <cstdint>
 #include <limits>
 #include <optional>
 

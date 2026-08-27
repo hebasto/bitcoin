@@ -6,9 +6,8 @@
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
 
+#include <cassert>
 #include <cstdint>
-#include <string>
-#include <vector>
 
 namespace {
 template <typename T>

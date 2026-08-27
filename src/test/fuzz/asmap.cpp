@@ -2,13 +2,21 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include <util/asmap.h>
+
 #include <netaddress.h>
 #include <netgroup.h>
+#include <netinet/in.h>
 #include <test/fuzz/fuzz.h>
-#include <util/asmap.h>
 #include <util/strencodings.h>
 
+#include <algorithm>
+#include <cassert>
+#include <cstddef>
 #include <cstdint>
+#include <cstring>
+#include <iterator>
+#include <span>
 #include <vector>
 
 using namespace util::hex_literals;

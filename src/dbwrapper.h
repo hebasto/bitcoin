@@ -6,10 +6,8 @@
 #define BITCOIN_DBWRAPPER_H
 
 #include <attributes.h>
-#include <serialize.h>
 #include <span.h>
 #include <streams.h>
-#include <util/byte_units.h>
 #include <util/check.h>
 #include <util/fs.h>
 #include <util/obfuscation.h>
@@ -92,6 +90,7 @@ private:
     const CDBWrapper &parent;
 
     struct WriteBatchImpl;
+
     const std::unique_ptr<WriteBatchImpl> m_impl_batch;
 
     DataStream m_key_scratch{};

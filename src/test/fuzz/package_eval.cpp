@@ -6,7 +6,6 @@
 #include <consensus/amount.h>
 #include <consensus/consensus.h>
 #include <consensus/validation.h>
-#include <node/mining_types.h>
 #include <policy/feerate.h>
 #include <policy/packages.h>
 #include <policy/policy.h>
@@ -46,6 +45,7 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+
 using node::NodeContext;
 
 namespace {
