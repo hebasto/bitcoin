@@ -10,14 +10,17 @@
 #include <netaddress.h>
 #include <primitives/transaction.h>
 #include <serialize.h>
-#include <streams.h>
 #include <uint256.h>
 #include <util/time.h>
 
 #include <array>
+#include <cassert>
+#include <cstddef>
 #include <cstdint>
+#include <ios>
 #include <limits>
 #include <string>
+#include <vector>
 
 /** Message header.
  * (4) message start.
@@ -312,10 +315,6 @@ inline const std::array ALL_NET_MESSAGE_TYPES{std::to_array<std::string>({
 
 inline constexpr size_t MAX_FEATUREID_LENGTH{80};
 inline constexpr size_t MAX_FEATUREDATA_LENGTH{512};
-
-namespace NetMsgFeature {
-//inline constexpr std::string_view FOO{"BIP-FOO"};
-}
 
 /** nServices flags */
 enum ServiceFlags : uint64_t {
