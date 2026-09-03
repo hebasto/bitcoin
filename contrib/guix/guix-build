@@ -409,6 +409,8 @@ EOF
         read -ra _guix_common_flags <<< "$ADDITIONAL_GUIX_COMMON_FLAGS"
         read -ra _guix_env_flags <<< "$ADDITIONAL_GUIX_ENVIRONMENT_FLAGS"
 
+        id_salt="$GUIX_TIME_MACHINE_COMMIT $(git -c log.showSignature=false log --format=%h -1 -- contrib/guix/manifest_build.scm contrib/guix/manifest_gui.scm)"
+
         shell_opts=(
             --manifest="${PWD}/contrib/guix/manifest_build.scm"
             --container
@@ -436,6 +438,8 @@ EOF
                 ${SOURCES_PATH:+SOURCES_PATH="$SOURCES_PATH"}
                 ${BASE_CACHE:+BASE_CACHE="$BASE_CACHE"}
                 ${SDK_PATH:+SDK_PATH="$SDK_PATH"}
+                BUILD_ID_SALT="$id_salt"
+                HOST_ID_SALT="$id_salt"
                 DISTSRC="$(distsrc_for_host "$HOST" "" /distsrc-base)"
                 OUTDIR="$(outdir_for_host "$HOST" "" /outdir-base)"
                 DIST_ARCHIVE_BASE=/outdir-base/dist-archive
