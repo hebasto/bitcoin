@@ -52,7 +52,7 @@ fi
 
 if [[ ${HOST:-} == x86_64-w64-mingw32* ]]; then
   # Install Nix packages.
-  NIX_BUILD_SHELL=bash nix-shell "${BASE_ROOT_DIR}/contrib/devtools/shell-win64-cross.nix" --run true
+  NIX_BUILD_SHELL=bash GCC_VERSION=12 nix-shell "${BASE_ROOT_DIR}/contrib/devtools/shell-win64-cross.nix" --run true
 fi
 
 if [ -n "${APT_LLVM_V}" ]; then
