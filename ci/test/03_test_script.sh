@@ -253,7 +253,7 @@ if [[ "${RUN_IWYU}" == true ]]; then
              -Xiwyu --check_also='*/interfaces/*\.h' \
              -Xiwyu --check_also='*/primitives/transaction_identifier\.h' \
              -Xiwyu --check_also='*/rpc/protocol\.h' \
-             2>&1 || true
+             2>&1 || [[ "$2" != true ]]
     } | tee /tmp/iwyu_ci.out
     python3 "/include-what-you-use/fix_includes.py" --nosafe_headers < /tmp/iwyu_ci.out
     python3 -c '
@@ -266,13 +266,13 @@ subprocess.run(["git", "restore", "--", *subtrees], check=True)
     git diff -U1 | ./contrib/devtools/clang-format-diff.py -binary="clang-format-${IWYU_LLVM_V}" -p1 -i -v
   }
 
-  run_iwyu "compile_commands_iwyu_errors.json"
+  run_iwyu "compile_commands_iwyu_errors.json" true
   if ! ( git --no-pager diff --exit-code ); then
     echo "^^^ ⚠️ Failure generated from IWYU"
     false
   fi
 
-  run_iwyu "compile_commands_iwyu_warnings.json"
+  run_iwyu "compile_commands_iwyu_warnings.json" false
   git --no-pager diff
 fi
 
