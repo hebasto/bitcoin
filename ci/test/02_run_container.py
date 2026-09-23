@@ -188,7 +188,6 @@ def main():
         ci_exec([
             "env",
             "NIX_BUILD_SHELL=bash",
-            "GCC_VERSION=12",
             "nix-shell",
             f"{os.environ['BASE_ROOT_DIR']}/contrib/devtools/shell-win64-cross.nix",
             "--run",
