@@ -3114,6 +3114,11 @@ bool CConnman::OpenNetworkConnection(const CAddress& addrConnect,
     if (!pszDest) {
         bool banned_or_discouraged = m_banman && (m_banman->IsDiscouraged(addrConnect) || m_banman->IsBanned(addrConnect));
         if (IsLocal(addrConnect) || banned_or_discouraged || AlreadyConnectedToAddress(addrConnect)) {
+            LogDebug(BCLog::NET, "Not opening %s %s connection to %s: %s",
+                     use_v2transport ? "v2" : "v1",
+                     ConnectionTypeAsString(conn_type),
+                     addrConnect.ToStringAddrPort(),
+                     IsLocal(addrConnect) ? "local address" : banned_or_discouraged ? "banned or discouraged" : "already connected");
             return false;
         }
     } else if (AlreadyConnectedToHost(pszDest)) {
