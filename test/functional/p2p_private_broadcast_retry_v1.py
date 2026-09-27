@@ -143,6 +143,14 @@ class P2PPrivateBroadcastRetryV1(BitcoinTestFramework):
                 f"-onion={self.tor_proxy.conf.addr[0]}:{self.tor_proxy.conf.addr[1]}",
                 "-test=addrman",
                 "-v2transport=0",
+                # Do not open automatic outbound connections. They are made to the same IPv4
+                # addresses as the private broadcast connections and their v2->v1 reconnections
+                # are processed in the same PerformReconnections() batch. If an automatic
+                # connection to the address under test exists (or has just been re-opened) when
+                # the private broadcast v1 retry is attempted, OpenNetworkConnection() drops the
+                # retry as "already connected" and the test would time out waiting for v1.
+                # -connect=0 cannot be used because it is incompatible with -privatebroadcast.
+                "-maxconnections=0",
             ],
         ]
 
