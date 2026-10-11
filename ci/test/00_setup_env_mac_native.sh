@@ -17,6 +17,8 @@ printf -v BITCOIN_CONFIG "%q " \
   --preset=dev-mode \
   -DWITH_USDT=OFF \
   -DREDUCE_EXPORTS=ON \
-  -DCMAKE_EXE_LINKER_FLAGS="-Wl,-stack_size -Wl,0x80000"
+  -DCMAKE_EXE_LINKER_FLAGS="-Wl,-stack_size -Wl,0x80000" \
+  `# Model NetBSD's FD_SETSIZE=256 (see test_framework/util.py)` \
+  -DAPPEND_CPPFLAGS=-DFD_SETSIZE=256
 export BITCOIN_CONFIG
 export BITCOIN_CMD="bitcoin -m" # Used in functional tests
