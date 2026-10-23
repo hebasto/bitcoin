@@ -143,6 +143,7 @@ class P2PPrivateBroadcastRetryV1(BitcoinTestFramework):
                 f"-onion={self.tor_proxy.conf.addr[0]}:{self.tor_proxy.conf.addr[1]}",
                 "-test=addrman",
                 "-v2transport=0",
+                f"-peertimeout={int(10 * self.options.timeout_factor)}",
             ],
         ]
 
