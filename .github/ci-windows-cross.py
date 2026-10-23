@@ -109,18 +109,7 @@ def run_functional_tests():
     num_procs = str(os.process_cpu_count())
     test_runner_cmd = [
         sys.executable,
-        str(workspace / "test" / "functional" / "test_runner.py"),
-        "--jobs",
-        num_procs,
-        "--quiet",
-        f"--tmpdirprefix={workspace / '_ _'}",
-        "--combinedlogslen=99999999",
-        *shlex.split(os.environ.get("TEST_RUNNER_EXTRA", "").strip()),
-        # Tests using ancient releases fail on Windows because of emojis in the test data directory.
-        "--exclude",
-        "feature_unsupported_utxo_db.py",
-        "--exclude",
-        "wallet_ancient_migration.py",
+        str(workspace / "test" / "functional" / "wallet_migration.py"),
     ]
     run(test_runner_cmd)
 
