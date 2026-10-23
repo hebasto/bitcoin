@@ -16,9 +16,18 @@ let
   });
   toolchain = crossPkgs.stdenv.cc.targetPrefix;
   pthreads = crossPkgs.windows.pthreads;
+  gccVersion = "14.2.0";
   crossGcc = crossPkgs.buildPackages.gcc14;
-  gcc = crossGcc.override {
+  gcc = (crossGcc.override {
     cc = crossGcc.cc.overrideAttrs (old: {
+      version = gccVersion;
+      name = builtins.replaceStrings [ old.version ] [ gccVersion ] old.name;
+      postPatch = builtins.replaceStrings [ old.version ] [ gccVersion ] old.postPatch;
+      configureFlags = map (builtins.replaceStrings [ old.version ] [ gccVersion ]) old.configureFlags;
+      src = pkgs.fetchurl {
+        url = "mirror://gcc/releases/gcc-${gccVersion}/gcc-${gccVersion}.tar.xz";
+        sha256 = "a7b39bc69cbf9e25826c5a60ab26477001f7c08d85cec04bc0e29cabed6f3cc9";
+      };
       # Keep target pthread headers out of GCC's native build tools.
       env = old.env // {
         EXTRA_FLAGS_FOR_TARGET =
@@ -28,7 +37,9 @@ let
       };
     });
     extraPackages = [ pthreads ];
-  };
+  }).overrideAttrs (_: {
+    version = gccVersion;
+  });
 in
 
 pkgs.mkShellNoCC {
