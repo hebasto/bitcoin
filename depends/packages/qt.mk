@@ -208,6 +208,12 @@ ifneq ($(host),$(build))
 $(package)_cmake_opts += -DCMAKE_SYSTEM_NAME=$($(host_os)_cmake_system_name)
 $(package)_cmake_opts += -DCMAKE_SYSTEM_VERSION=$($(host_os)_cmake_system_version)
 $(package)_cmake_opts += -DCMAKE_SYSTEM_PROCESSOR=$(host_arch)
+$(package)_cmake_opts += -DCMAKE_C_COMPILER_TARGET=$(host)
+$(package)_cmake_opts += -DCMAKE_CXX_COMPILER_TARGET=$(host)
+ifeq ($(host_os),darwin)
+$(package)_cmake_opts += -DCMAKE_OBJC_COMPILER_TARGET=$(host)
+$(package)_cmake_opts += -DCMAKE_OBJCXX_COMPILER_TARGET=$(host)
+endif
 # Native packages cannot be used during cross-compiling. However,
 # Qt still unconditionally tries to find them, which causes issues
 # in some cases, such as when cross-compiling from macOS to Windows.
