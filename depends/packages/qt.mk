@@ -223,6 +223,7 @@ ifneq (,$(filter linux openbsd,$(host_os)))
 $(package)_cmake_opts += -DINPUT_dbus=runtime
 endif
 ifeq ($(host_os),darwin)
+$(package)_cmake_opts += -DCMAKE_OSX_DEPLOYMENT_TARGET=$(OSX_MIN_VERSION)
 $(package)_cmake_opts += -DCMAKE_INSTALL_NAME_TOOL=true
 $(package)_cmake_opts += -DCMAKE_FRAMEWORK_PATH=$(OSX_SDK)/System/Library/Frameworks
 $(package)_cmake_opts += -DQT_INTERNAL_APPLE_SDK_VERSION=$(OSX_SDK_VERSION)
