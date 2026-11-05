@@ -206,8 +206,8 @@ $(host_prefix)/toolchain.cmake : toolchain.cmake.in $(host_prefix)/.stamp_$(fina
             -e 's|@host_system_name@|$($(host_os)_cmake_system_name)|' \
             -e 's|@host_system_version@|$($(host_os)_cmake_system_version)|' \
             -e 's|@host_arch@|$(host_arch)|' \
-            -e 's|@CC@|$(host_CC)|' \
-            -e 's|@CXX@|$(host_CXX)|' \
+            -e 's|@CC@|$(call cmake_compiler,$(host_CC))|' \
+            -e 's|@CXX@|$(call cmake_compiler,$(host_CXX))|' \
             -e 's|@OSX_SDK@|$(OSX_SDK)|' \
             -e 's|@AR@|$(host_AR)|' \
             -e 's|@RANLIB@|$(host_RANLIB)|' \
