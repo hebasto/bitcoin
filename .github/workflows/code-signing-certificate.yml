@@ -18,13 +18,13 @@ concurrency:
 
 jobs:
   check-certificate:
-    if: github.repository == 'bitcoin/bitcoin'
+    if: github.repository == '${{ github.repository }}'
     runs-on: ubuntu-slim
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: master
+          ref: ${{ github.ref_name }}
           persist-credentials: false
 
       - name: Check certificate
@@ -44,7 +44,7 @@ jobs:
         if: steps.certificate.outputs.warning == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-          GH_REPO: bitcoin/bitcoin
+          GH_REPO: ${{ github.repository }}
         shell: bash
         run: |
           export TITLE="Code signing certificate warning"
