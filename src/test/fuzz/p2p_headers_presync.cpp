@@ -11,7 +11,6 @@
 #include <netmessagemaker.h>
 #include <node/blockstorage.h>
 #include <node/connection_types.h>
-#include <node/eviction.h>
 #include <node/peerman_args.h>
 #include <node/protocol_version.h>
 #include <primitives/block.h>

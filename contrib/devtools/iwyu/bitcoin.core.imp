@@ -2,4 +2,8 @@
 [
   # Standard C library symbols.
   { "include": [ "<bits/types/cookie_io_functions_t.h>", "private", "<cstdio>", "public" ] },
+
+  # NodeId is defined identically in both headers. Accept either to stop IWYU flip-flopping.
+  { "symbol": [ "NodeId", "full", "<node/eviction.h>", "public" ] },
+  { "symbol": [ "NodeId", "full", "<net.h>", "public" ] },
 ]

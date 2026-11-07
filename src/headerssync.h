@@ -7,7 +7,7 @@
 
 #include <arith_uint256.h>
 #include <kernel/chainparams.h>
-#include <net.h>
+#include <node/eviction.h>
 #include <primitives/block.h>
 #include <uint256.h>
 #include <util/bitdeque.h>

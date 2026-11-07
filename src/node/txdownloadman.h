@@ -5,7 +5,7 @@
 #ifndef BITCOIN_NODE_TXDOWNLOADMAN_H
 #define BITCOIN_NODE_TXDOWNLOADMAN_H
 
-#include <net.h>
+#include <node/eviction.h>
 #include <node/txorphanage.h>
 #include <policy/packages.h>
 #include <primitives/transaction.h>

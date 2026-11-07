@@ -10,7 +10,6 @@
 #include <netbase.h>
 #include <netgroup.h>
 #include <node/connection_types.h>
-#include <node/eviction.h>
 #include <protocol.h>
 #include <semaphore_grant.h>
 #include <streams.h>

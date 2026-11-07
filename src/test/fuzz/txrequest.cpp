@@ -4,7 +4,7 @@
 
 #include <crypto/sha256.h>
 #include <crypto/siphash.h>
-#include <net.h>
+#include <node/eviction.h>
 #include <primitives/transaction.h>
 #include <test/fuzz/fuzz.h>
 #include <txrequest.h>

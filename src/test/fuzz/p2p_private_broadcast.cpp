@@ -9,7 +9,6 @@
 #include <netaddress.h>
 #include <netmessagemaker.h>
 #include <node/connection_types.h>
-#include <node/eviction.h>
 #include <node/protocol_version.h>
 #include <primitives/transaction.h>
 #include <protocol.h>
