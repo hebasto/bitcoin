@@ -249,6 +249,7 @@ if [[ "${RUN_IWYU}" == true ]]; then
              -Xiwyu --check_also='*/common/types\.h' \
              -Xiwyu --check_also='*/consensus/*\.h' \
              -Xiwyu --check_also='*/interfaces/*\.h' \
+             -Xiwyu --check_also='*/node/node_id\.h' \
              -Xiwyu --check_also='*/primitives/transaction_identifier\.h' \
              -Xiwyu --check_also='*/rpc/protocol\.h' \
              2>&1 | tee /tmp/iwyu_ci.out
