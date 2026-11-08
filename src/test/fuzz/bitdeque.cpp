@@ -4,10 +4,17 @@
 
 #include <random.h>
 #include <test/fuzz/FuzzedDataProvider.h>
+#include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
 #include <util/bitdeque.h>
+#include <util/check.h>
 
+#include <cstddef>
 #include <deque>
+#include <functional>
+#include <iterator>
+#include <stdexcept>
+#include <utility>
 #include <vector>
 
 namespace {

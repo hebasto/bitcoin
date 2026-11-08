@@ -5,7 +5,7 @@
 #include <qt/test/wallettests.h>
 #include <qt/test/util.h>
 
-#include <wallet/coincontrol.h>
+#include <chainparams.h>
 #include <interfaces/chain.h>
 #include <interfaces/node.h>
 #include <key_io.h>
@@ -27,8 +27,9 @@
 #include <script/solver.h>
 #include <test/util/setup_common.h>
 #include <validation.h>
-#include <wallet/test/util.h>
+#include <wallet/coincontrol.h>
 #include <wallet/scan.h>
+#include <wallet/test/util.h>
 #include <wallet/wallet.h>
 
 #include <chrono>
