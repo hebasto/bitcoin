@@ -3,11 +3,13 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <random.h>
-#include <span.h>
-#include <test/fuzz/util.h>
+#include <test/fuzz/fuzz.h>
 #include <util/bitset.h>
+#include <util/check.h>
 
 #include <bitset>
+#include <cstdint>
+#include <utility>
 #include <vector>
 
 namespace {

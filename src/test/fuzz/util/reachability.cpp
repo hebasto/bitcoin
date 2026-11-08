@@ -14,6 +14,7 @@
 #include <map>
 #include <string>
 #include <string_view>
+#include <utility>
 
 namespace {
 struct GoalId {
