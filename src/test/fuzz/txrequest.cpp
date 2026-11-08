@@ -2,16 +2,26 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <crypto/common.h>
 #include <crypto/sha256.h>
 #include <crypto/siphash.h>
+#include <net.h>
 #include <primitives/transaction.h>
 #include <test/fuzz/fuzz.h>
 #include <txrequest.h>
+#include <uint256.h>
+#include <util/check.h>
+#include <util/time.h>
 
+#include <algorithm>
 #include <bitset>
+#include <compare>
+#include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <queue>
+#include <tuple>
+#include <utility>
+#include <variant>
 #include <vector>
 
 namespace {

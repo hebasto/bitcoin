@@ -8,7 +8,8 @@
 #include <streams.h>
 #include <test/fuzz/fuzz.h>
 
-#include <cassert>
+#include <ios>
+#include <string>
 
 FUZZ_TARGET(tx_in)
 {

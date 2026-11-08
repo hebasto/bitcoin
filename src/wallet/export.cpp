@@ -5,6 +5,7 @@
 #include <wallet/export.h>
 
 #include <key_io.h>
+#include <primitives/block.h>
 #include <util/fs.h>
 #include <util/expected.h>
 #include <wallet/scriptpubkeyman.h>
