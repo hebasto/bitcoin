@@ -8,15 +8,21 @@
 #include <net.h>
 #include <node/txorphanage.h>
 #include <policy/packages.h>
+#include <primitives/transaction.h>
+#include <tinyformat.h>
+#include <util/check.h>
 
+#include <chrono>
 #include <cstdint>
 #include <memory>
+#include <optional>
+#include <string>
+#include <utility>
+#include <vector>
 
 class CBlock;
-class CRollingBloomFilter;
 class CTxMemPool;
-class GenTxid;
-class TxRequestTracker;
+class TxValidationState;
 namespace node {
 class TxDownloadManagerImpl;
 

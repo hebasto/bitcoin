@@ -4,6 +4,7 @@
 
 #include <headerssync.h>
 
+#include <chain.h>
 #include <pow.h>
 #include <util/check.h>
 #include <util/log.h>
