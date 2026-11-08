@@ -3,7 +3,6 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <random.h>
-#include <span.h>
 #include <support/allocators/pool.h>
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
@@ -11,8 +10,12 @@
 #include <test/util/poolresourcetester.h>
 #include <util/byte_units.h>
 
+#include <algorithm>
+#include <cassert>
+#include <cstddef>
 #include <cstdint>
-#include <tuple>
+#include <span>
+#include <utility>
 #include <vector>
 
 namespace {
