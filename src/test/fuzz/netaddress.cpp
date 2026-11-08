@@ -8,10 +8,9 @@
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util/net.h>
 #include <test/util/random.h>
-#include <util/check.h>
+#include <util/check.h>  // ??????????????????????
 
 #include <cstdint>
-#include <vector>
 
 FUZZ_TARGET(netaddress)
 {

@@ -5,13 +5,18 @@
 #ifndef BITCOIN_UTIL_BITDEQUE_H
 #define BITCOIN_UTIL_BITDEQUE_H
 
+#include <util/overflow.h>
+
+#include <algorithm>
 #include <bitset>
 #include <cstddef>
 #include <deque>
+#include <iterator>
 #include <limits>
 #include <stdexcept>
 #include <tuple>
-#include <util/overflow.h>
+#include <type_traits>
+#include <utility>
 
 /** Class that mimics std::deque<bool>, but with std::vector<bool>'s bit packing.
  *
