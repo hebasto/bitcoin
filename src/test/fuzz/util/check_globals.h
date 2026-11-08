@@ -7,8 +7,6 @@
 
 #include <atomic>
 #include <memory>
-#include <optional>
-#include <string>
 
 extern std::atomic<bool> g_used_system_time;
 

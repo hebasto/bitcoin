@@ -8,7 +8,9 @@
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util/net.h>
 
+#include <cassert>
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <vector>
 

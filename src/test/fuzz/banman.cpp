@@ -3,12 +3,14 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <banman.h>
-#include <common/args.h>
+
 #include <netaddress.h>
+#include <netbase.h>
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
 #include <test/fuzz/util/net.h>
+#include <test/util/random.h>
 #include <test/util/setup_common.h>
 #include <test/util/time.h>
 #include <util/fs.h>
@@ -16,9 +18,11 @@
 
 #include <cassert>
 #include <cstdint>
+#include <functional>
 #include <limits>
+#include <map>
+#include <optional>
 #include <string>
-#include <vector>
 
 namespace {
 int64_t ConsumeBanTimeOffset(FuzzedDataProvider& fuzzed_data_provider) noexcept

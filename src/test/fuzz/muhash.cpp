@@ -2,16 +2,20 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <arith_uint256.h>
 #include <crypto/muhash.h>
-#include <span.h>
-#include <uint256.h>
+
+#include <arith_uint256.h>
+#include <crypto/common.h>
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
 #include <test/fuzz/util.h>
+#include <uint256.h>
 
 #include <algorithm>
 #include <array>
+#include <cassert>
+#include <cstdint>
+#include <span>
 #include <vector>
 
 namespace {
