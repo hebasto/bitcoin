@@ -13,12 +13,15 @@
 
 #include <test/fuzz/FuzzedDataProvider.h>
 #include <test/fuzz/fuzz.h>
-#include <test/fuzz/util.h>
 #include <test/util/versionbits.h>
 
+#include <cassert>
+#include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <limits>
 #include <memory>
+#include <utility>
 #include <vector>
 
 namespace {

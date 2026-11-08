@@ -3,10 +3,15 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include <blockencodings.h>
-#include <streams.h>
 #include <random.h>
+#include <streams.h>
 #include <test/fuzz/fuzz.h>
+#include <uint256.h>
 
+#include <cassert>
+#include <cstddef>
+#include <ios>
+#include <span>
 #include <vector>
 
 FUZZ_TARGET(difference_formatter)

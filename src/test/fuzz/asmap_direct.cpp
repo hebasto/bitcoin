@@ -2,15 +2,15 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include <netaddress.h>
-#include <util/asmap.h>
 #include <test/fuzz/fuzz.h>
-
-#include <cstdint>
-#include <optional>
-#include <vector>
+#include <util/asmap.h>
 
 #include <cassert>
+#include <cstddef>
+#include <cstdint>
+#include <optional>
+#include <span>
+#include <vector>
 
 std::vector<std::byte> BitsToBytes(std::span<const uint8_t> bits) noexcept
 {
