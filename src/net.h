@@ -20,6 +20,9 @@
 #include <netbase.h>
 #include <netgroup.h>
 #include <node/connection_types.h>
+// This header declares NodeId, which is essential part
+// of the interface provided by net.h.
+#include <node/node_id.h> // IWYU pragma: export
 #include <node/protocol_version.h>
 #include <policy/feerate.h>
 #include <protocol.h>
@@ -104,8 +107,6 @@ inline constexpr size_t DEFAULT_MAXRECEIVEBUFFER = 5 * 1000;
 inline constexpr size_t DEFAULT_MAXSENDBUFFER    = 1 * 1000;
 
 inline constexpr bool DEFAULT_V2_TRANSPORT{true};
-
-typedef int64_t NodeId;
 
 struct AddedNodeParams {
     std::string m_added_node;
