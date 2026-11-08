@@ -7,28 +7,20 @@
 #define BITCOIN_NET_H
 
 #include <bip324.h>
-#include <chainparams.h>
-#include <common/bloom.h>
-#include <compat/compat.h>
-#include <consensus/amount.h>
 #include <crypto/siphash.h>
 #include <hash.h>
 #include <i2p.h>
-#include <kernel/messagestartchars.h>
 #include <net_permissions.h>
 #include <netaddress.h>
 #include <netbase.h>
-#include <netgroup.h>
 #include <node/connection_types.h>
 // This header declares NodeId, which is essential part
 // of the interface provided by net.h.
 #include <node/node_id.h> // IWYU pragma: export
 #include <node/protocol_version.h>
-#include <policy/feerate.h>
 #include <protocol.h>
 #include <random.h>
 #include <semaphore_grant.h>
-#include <span.h>
 #include <streams.h>
 #include <sync.h>
 #include <uint256.h>
@@ -36,9 +28,13 @@
 #include <util/not_null.h>
 #include <util/sock.h>
 #include <util/threadinterrupt.h>
+#include <util/time.h>
 
+#include <algorithm>
+#include <array>
 #include <atomic>
 #include <condition_variable>
+#include <cstddef>
 #include <cstdint>
 #include <deque>
 #include <functional>
@@ -47,16 +43,23 @@
 #include <memory>
 #include <optional>
 #include <queue>
+#include <semaphore>
+#include <span>
+#include <string>
 #include <string_view>
 #include <thread>
+#include <tuple>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 class AddrMan;
 class BanMan;
 class CChainParams;
+class CKey;
 class CNode;
 class CScheduler;
+class NetGroupManager;
 struct bilingual_str;
 
 /** Time after which to disconnect, after waiting for a ping response (or inactivity). */
@@ -120,7 +123,6 @@ struct AddedNodeInfo {
     bool fInbound;
 };
 
-class CNodeStats;
 class CClientUIInterface;
 
 struct CSerializedNetMsg {
