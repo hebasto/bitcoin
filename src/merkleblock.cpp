@@ -5,6 +5,7 @@
 
 #include <merkleblock.h>
 
+#include <common/bloom.h>
 #include <consensus/consensus.h>
 #include <hash.h>
 #include <util/overflow.h>

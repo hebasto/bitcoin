@@ -7,6 +7,7 @@
 
 #include <arith_uint256.h>
 #include <chain.h>
+#include <consensus/params.h>
 #include <primitives/block.h>
 #include <uint256.h>
 #include <util/check.h>

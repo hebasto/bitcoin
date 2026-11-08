@@ -6,8 +6,6 @@
 #define BITCOIN_HEADERSSYNC_H
 
 #include <arith_uint256.h>
-#include <chain.h>
-#include <consensus/params.h>
 #include <kernel/chainparams.h>
 #include <net.h>
 #include <primitives/block.h>
@@ -15,9 +13,17 @@
 #include <util/bitdeque.h>
 #include <util/hasher.h>
 
+#include <cstddef>
+#include <cstdint>
 #include <deque>
+#include <span>
 #include <stdexcept>
 #include <vector>
+
+class CBlockIndex;
+namespace Consensus {
+struct Params;
+}
 
 // A compressed CBlockHeader, which leaves out the prevhash
 struct CompressedHeader {
