@@ -5,14 +5,15 @@
 #ifndef BITCOIN_NODE_EVICTION_H
 #define BITCOIN_NODE_EVICTION_H
 
-#include <node/connection_types.h>
+#include <netaddress.h>
 #include <node/node_id.h>
-#include <net_permissions.h>
+#include <util/time.h>
 
-#include <chrono>
 #include <cstdint>
 #include <optional>
 #include <vector>
+
+enum class ConnectionType;
 
 struct NodeEvictionCandidate {
     NodeId id;
