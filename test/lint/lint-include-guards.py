@@ -61,6 +61,27 @@ def _get_header_id(header_file: str) -> str:
     return header_id
 
 
+def _is_comment_or_blank(line: str, in_block_comment: bool) -> tuple[bool, bool]:
+    """ Helper function to tell whether a line carries no code.
+
+    Args:
+        line: A line of the header file.
+        in_block_comment: Whether the previous line left a /* ... */ comment open.
+
+    Returns:
+        A pair (is_comment_or_blank, in_block_comment) where the second
+        element is the block comment state after this line.
+    """
+    stripped = line.strip()
+    if in_block_comment:
+        return True, '*/' not in stripped
+    if stripped == '' or stripped.startswith('//'):
+        return True, False
+    if stripped.startswith('/*'):
+        return True, '*/' not in stripped
+    return False, False
+
+
 def main():
     exit_code = 0
 
@@ -74,11 +95,17 @@ def main():
             header_file_contents = f.readlines()
 
         count = 0
-        for header_file_contents_string in header_file_contents:
+        ifndef_line_num = None
+        endif_line_num = None
+        for line_num, header_file_contents_string in enumerate(header_file_contents, start=1):
             include_guard_lst = re.findall(
                 regex_pattern, header_file_contents_string)
 
             count += len(include_guard_lst)
+            if header_file_contents_string.startswith(f'#ifndef {header_id}'):
+                ifndef_line_num = line_num
+            elif header_file_contents_string.startswith(f'#endif // {header_id}'):
+                endif_line_num = line_num
 
         if count != 3:
             print(f'{header_file} seems to be missing the expected '
@@ -87,6 +114,25 @@ def main():
             print(f'  #define {header_id}')
             print('  ...')
             print(f'  #endif // {header_id}\n')
+            exit_code = 1
+            continue
+
+        # Everything except comments must be inside the include guard.
+        unguarded_line_nums = []
+        in_block_comment = False
+        for line_num, header_file_contents_string in enumerate(header_file_contents, start=1):
+            is_comment_or_blank, in_block_comment = _is_comment_or_blank(
+                header_file_contents_string, in_block_comment)
+            if is_comment_or_blank:
+                continue
+            if line_num < ifndef_line_num or line_num > endif_line_num:
+                unguarded_line_nums.append(line_num)
+
+        if unguarded_line_nums:
+            print(f'{header_file} has code outside the include guard '
+                  f'{header_id} on line(s) '
+                  f'{", ".join(str(n) for n in unguarded_line_nums)}. '
+                  'Move it inside the guard.\n')
             exit_code = 1
 
     sys.exit(exit_code)
