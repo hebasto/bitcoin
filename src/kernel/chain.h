@@ -8,7 +8,7 @@
 #include <attributes.h>
 
 #include <cstdint>
-#include <iostream>
+#include <iosfwd>
 
 class CBlock;
 class CBlockIndex;
