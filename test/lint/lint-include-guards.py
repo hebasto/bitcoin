@@ -73,20 +73,32 @@ def main():
         with open(header_file, 'r') as f:
             header_file_contents = f.readlines()
 
-        count = 0
-        for header_file_contents_string in header_file_contents:
-            include_guard_lst = re.findall(
-                regex_pattern, header_file_contents_string)
+        guard_line_nums = [
+            line_num for line_num, line in enumerate(header_file_contents, start=1)
+            if re.match(regex_pattern, line)
+        ]
 
-            count += len(include_guard_lst)
-
-        if count != 3:
+        if len(guard_line_nums) != 3:
             print(f'{header_file} seems to be missing the expected '
                   'include guard to prevent the double inclusion problem:')
             print(f'  #ifndef {header_id}')
             print(f'  #define {header_id}')
             print('  ...')
             print(f'  #endif // {header_id}\n')
+            exit_code = 1
+            continue
+
+        # Only blank lines and `//` comments may appear outside the include guard.
+        unguarded_line_nums = [
+            line_num for line_num, line in enumerate(header_file_contents, start=1)
+            if not guard_line_nums[0] <= line_num <= guard_line_nums[-1]
+            and line.strip() and not line.lstrip().startswith('//')
+        ]
+        if unguarded_line_nums:
+            print(f'{header_file} has content outside the include guard '
+                  f'{header_id} on line(s) '
+                  f'{", ".join(str(n) for n in unguarded_line_nums)}. '
+                  'Move it inside the guard.\n')
             exit_code = 1
 
     sys.exit(exit_code)
