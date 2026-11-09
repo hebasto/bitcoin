@@ -74,11 +74,17 @@ def main():
             header_file_contents = f.readlines()
 
         count = 0
-        for header_file_contents_string in header_file_contents:
+        ifndef_line_num = None
+        endif_line_num = None
+        for line_num, header_file_contents_string in enumerate(header_file_contents, start=1):
             include_guard_lst = re.findall(
                 regex_pattern, header_file_contents_string)
 
             count += len(include_guard_lst)
+            if header_file_contents_string.startswith(f'#ifndef {header_id}'):
+                ifndef_line_num = line_num
+            elif header_file_contents_string.startswith(f'#endif // {header_id}'):
+                endif_line_num = line_num
 
         if count != 3:
             print(f'{header_file} seems to be missing the expected '
@@ -87,6 +93,20 @@ def main():
             print(f'  #define {header_id}')
             print('  ...')
             print(f'  #endif // {header_id}\n')
+            exit_code = 1
+            continue
+
+        # Only blank lines and `//` comments may appear outside the include guard.
+        unguarded_line_nums = [
+            line_num for line_num, line in enumerate(header_file_contents, start=1)
+            if (line_num < ifndef_line_num or line_num > endif_line_num)
+            and line.strip() and not line.lstrip().startswith('//')
+        ]
+        if unguarded_line_nums:
+            print(f'{header_file} has content outside the include guard '
+                  f'{header_id} on line(s) '
+                  f'{", ".join(str(n) for n in unguarded_line_nums)}. '
+                  'Move it inside the guard.\n')
             exit_code = 1
 
     sys.exit(exit_code)
