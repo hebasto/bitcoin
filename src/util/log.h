@@ -9,15 +9,17 @@
 // to expose the complete logging interface.
 #include <logging/categories.h> // IWYU pragma: export
 #include <tinyformat.h>
-#include <util/check.h>
+#include <util/string.h>
 #include <util/threadnames.h>
 #include <util/time.h>
 
-#include <atomic>
+#include <atomic> /// ???
 #include <cstdint>
+#include <iomanip>
 #include <source_location>
 #include <string>
 #include <string_view>
+#include <utility>
 
 /// Like std::source_location, but allowing to override the function name.
 class SourceLocation

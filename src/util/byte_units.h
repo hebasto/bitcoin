@@ -7,7 +7,9 @@
 
 #include <util/overflow.h>
 
+#include <cstdint>
 #include <limits>
+#include <optional>
 #include <stdexcept>
 
 namespace util::detail {
