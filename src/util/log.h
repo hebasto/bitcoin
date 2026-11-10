@@ -9,7 +9,6 @@
 // to expose the complete logging interface.
 #include <logging/categories.h> // IWYU pragma: export
 #include <tinyformat.h>
-#include <util/check.h>
 #include <util/threadnames.h>
 #include <util/time.h>
 

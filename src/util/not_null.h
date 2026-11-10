@@ -8,10 +8,8 @@
 #include <attributes.h>
 #include <util/check.h>
 
-#include <compare>
 #include <concepts>
 #include <cstddef>
-#include <functional>
 #include <memory>
 #include <type_traits>
 #include <utility>

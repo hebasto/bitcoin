@@ -5,8 +5,6 @@
 #ifndef BITCOIN_UTIL_VECTOR_H
 #define BITCOIN_UTIL_VECTOR_H
 
-#include <functional>
-#include <initializer_list>
 #include <optional>
 #include <type_traits>
 #include <utility>
