@@ -42,6 +42,7 @@ Documentation for C++ subprocessing library.
 #include <util/syserror.h>
 
 #include <algorithm>
+#include <cerrno>
 #include <csignal>
 #include <cstdio>
 #include <cstdlib>
@@ -54,6 +55,9 @@ Documentation for C++ subprocessing library.
 #include <memory>
 #include <sstream>
 #include <string>
+#include <stdexcept>
+#include <tuple>
+#include <utility>
 #include <vector>
 
 extern "C" {

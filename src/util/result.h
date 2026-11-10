@@ -6,8 +6,11 @@
 #define BITCOIN_UTIL_RESULT_H
 
 #include <attributes.h>
+#include <util/check.h>
 #include <util/translation.h>
 
+#include <type_traits>
+#include <utility>
 #include <variant>
 
 namespace util {

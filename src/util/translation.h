@@ -10,7 +10,9 @@
 #include <util/string.h>
 
 #include <functional>
+#include <ostream>
 #include <string>
+#include <type_traits>
 
 /** Translate a message to the native language of the user. */
 using TranslateFn = std::function<std::string(const char*)>;
