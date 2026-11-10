@@ -246,12 +246,7 @@ if [[ "${RUN_IWYU}" == true ]]; then
              -Xiwyu --mapping_file="${BASE_ROOT_DIR}/contrib/devtools/iwyu/bitcoin.core.imp" \
              -Xiwyu --mapping_file="${BASE_BUILD_DIR}/clang.intrinsics.imp" \
              -Xiwyu --max_line_length=160 \
-             -Xiwyu --check_also='*/common/types\.h' \
-             -Xiwyu --check_also='*/consensus/*\.h' \
-             -Xiwyu --check_also='*/interfaces/*\.h' \
-             -Xiwyu --check_also='*/node/node_id\.h' \
-             -Xiwyu --check_also='*/primitives/transaction_identifier\.h' \
-             -Xiwyu --check_also='*/rpc/protocol\.h' \
+             -Xiwyu --check_also='*/util/*\.h' \
              2>&1 | tee /tmp/iwyu_ci.out
     python3 "/include-what-you-use/fix_includes.py" --nosafe_headers < /tmp/iwyu_ci.out
     # Undo edits to subtree headers. Subtree sources are filtered out of the
