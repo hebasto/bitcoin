@@ -246,7 +246,7 @@ if [[ "${RUN_IWYU}" == true ]]; then
              -Xiwyu --mapping_file="${BASE_ROOT_DIR}/contrib/devtools/iwyu/bitcoin.core.imp" \
              -Xiwyu --mapping_file="${BASE_BUILD_DIR}/clang.intrinsics.imp" \
              -Xiwyu --max_line_length=160 \
-             -Xiwyu --check_also='*/util/*\.h' \
+             -Xiwyu --check_also='*/src/util/*\.h' \
              2>&1 | tee /tmp/iwyu_ci.out
     python3 "/include-what-you-use/fix_includes.py" --nosafe_headers < /tmp/iwyu_ci.out
     # Undo edits to subtree headers. Subtree sources are filtered out of the
