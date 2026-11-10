@@ -68,8 +68,6 @@ def main():
     for header_file in header_file_lst:
         header_id = _get_header_id(header_file)
 
-        regex_pattern = f'^#(ifndef|define|endif //) {header_id}'
-
         with open(header_file, 'r') as f:
             header_file_contents = f.readlines()
 
