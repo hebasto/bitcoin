@@ -35,7 +35,8 @@
 #define TRACEPOINT_SEMAPHORE(context, event) \
     unsigned short context##_##event##_semaphore __attribute__((section(".probes")))
 
-#include <sys/sdt.h>
+// This header is a wrapper around <sys/sdt.h>.
+#include <sys/sdt.h> // IWYU pragma: export
 
 // Returns true if something is attached to the tracepoint.
 #define TRACEPOINT_ACTIVE(context, event) (context##_##event##_semaphore > 0)
