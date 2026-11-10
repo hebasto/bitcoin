@@ -5,7 +5,6 @@
 
 #include <policy/fees/block_policy_estimator.h>
 
-#include <common/system.h>
 #include <consensus/amount.h>
 #include <kernel/mempool_entry.h>
 #include <policy/feerate.h>
@@ -15,7 +14,7 @@
 #include <streams.h>
 #include <sync.h>
 #include <tinyformat.h>
-#include <uint256.h>
+#include <util/check.h>
 #include <util/fs.h>
 #include <util/log.h>
 #include <util/serfloat.h>
@@ -23,9 +22,9 @@
 #include <util/time.h>
 
 #include <algorithm>
-#include <cassert>
-#include <chrono>
+#include <cerrno>
 #include <cmath>
+#include <compare>
 #include <cstddef>
 #include <cstdint>
 #include <exception>

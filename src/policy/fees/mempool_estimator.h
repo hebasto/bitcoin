@@ -5,9 +5,7 @@
 #ifndef BITCOIN_POLICY_FEES_MEMPOOL_ESTIMATOR_H
 #define BITCOIN_POLICY_FEES_MEMPOOL_ESTIMATOR_H
 
-#include <primitives/transaction.h>
 #include <sync.h>
-#include <threadsafety.h>
 #include <uint256.h>
 #include <util/expected.h>
 #include <util/feefrac.h>
@@ -15,7 +13,8 @@
 #include <util/fs.h>
 #include <util/time.h>
 
-#include <chrono>
+#include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <optional>
 #include <span>
@@ -27,6 +26,10 @@ class ChainstateManager;
 class CTxMemPool;
 
 struct RemovedMempoolTransactionInfo;
+
+// IWYU incorrectly suggests adding this forward declaration.
+// See https://github.com/include-what-you-use/include-what-you-use/pull/2142.
+// IWYU pragma: no_forward_declare MemPoolFeeRateEstimatorCache::FeeRateEstimate
 
 // Fee rate estimate for confirmation target above this is not reliable,
 // as mempool conditions are likely to change.

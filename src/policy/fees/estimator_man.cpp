@@ -8,7 +8,10 @@
 #include <policy/feerate.h>
 #include <policy/fees/block_policy_estimator.h>
 #include <policy/fees/mempool_estimator.h>
+#include <util/check.h>
 #include <util/fees.h>
+
+#include <algorithm>
 
 FeeRateEstimatorManager::~FeeRateEstimatorManager() = default;
 

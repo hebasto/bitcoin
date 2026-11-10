@@ -7,6 +7,7 @@
 #include <common/args.h>
 #include <util/log.h>
 
+#include <string>
 #include <system_error>
 
 namespace {

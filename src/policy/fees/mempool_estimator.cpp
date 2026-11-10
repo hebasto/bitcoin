@@ -4,11 +4,16 @@
 
 #include <policy/fees/mempool_estimator.h>
 
+#include <chain.h>
+#include <consensus/consensus.h>
+#include <consensus/validation.h>
 #include <logging.h>
 #include <node/miner.h>
+#include <node/mining_types.h>
 #include <policy/feerate.h>
 #include <policy/policy.h>
 #include <primitives/block.h>
+#include <primitives/transaction.h>
 #include <serialize.h>
 #include <streams.h>
 #include <sync.h>
@@ -23,6 +28,9 @@
 #include <validation.h>
 
 #include <algorithm>
+#include <cerrno>
+#include <compare>
+#include <exception>
 #include <iterator>
 #include <numeric>
 #include <optional>
