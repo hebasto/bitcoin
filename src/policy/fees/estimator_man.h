@@ -5,21 +5,24 @@
 #ifndef BITCOIN_POLICY_FEES_ESTIMATOR_MAN_H
 #define BITCOIN_POLICY_FEES_ESTIMATOR_MAN_H
 
-#include <policy/fees/block_policy_estimator.h>
 #include <policy/fees/mempool_estimator.h>
 #include <primitives/transaction.h>
 #include <util/expected.h>
 #include <util/fees.h>
 #include <util/fs.h>
+#include <util/time.h>
 #include <validationinterface.h>
 
-#include <chrono>
+#include <cstdint>
 #include <memory>
+#include <vector>
 
+class CBlockPolicyEstimator;
 class CFeeRate;
 class ChainstateManager;
 class CTxMemPool;
-class MemPoolFeeRateEstimator;
+struct EstimationResult;
+enum class FeeEstimateHorizon;
 
 // How often to flush data to disk
 inline constexpr std::chrono::hours FEE_FLUSH_INTERVAL{1};

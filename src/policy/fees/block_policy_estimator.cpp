@@ -16,6 +16,7 @@
 #include <sync.h>
 #include <tinyformat.h>
 #include <uint256.h>
+#include <util/check.h>
 #include <util/fs.h>
 #include <util/log.h>
 #include <util/serfloat.h>
@@ -23,8 +24,6 @@
 #include <util/time.h>
 
 #include <algorithm>
-#include <cassert>
-#include <chrono>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>

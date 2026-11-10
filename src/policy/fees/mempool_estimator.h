@@ -5,9 +5,7 @@
 #ifndef BITCOIN_POLICY_FEES_MEMPOOL_ESTIMATOR_H
 #define BITCOIN_POLICY_FEES_MEMPOOL_ESTIMATOR_H
 
-#include <primitives/transaction.h>
 #include <sync.h>
-#include <threadsafety.h>
 #include <uint256.h>
 #include <util/expected.h>
 #include <util/feefrac.h>
@@ -15,7 +13,8 @@
 #include <util/fs.h>
 #include <util/time.h>
 
-#include <chrono>
+#include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <optional>
 #include <span>
