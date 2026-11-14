@@ -15,6 +15,9 @@
 #include <windows.h>
 #endif
 
+#ifdef HAVE_SYSTEM
+#undef
+
 std::string SysErrorString(int err)
 {
     char buf[1024];
