@@ -31,10 +31,6 @@ endif()
 target_link_libraries(bitcoin_ipc
   PRIVATE
     core_interface
-    univalue
-    Boost::headers
-  PUBLIC
-    bitcoin_common
 )
 
 if(BUILD_TESTS)
