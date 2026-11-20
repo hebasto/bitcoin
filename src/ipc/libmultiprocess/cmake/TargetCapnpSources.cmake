@@ -120,6 +120,7 @@ function(target_capnp_sources target include_prefix)
   # generated files on generated headers, it does not reliably detect
   # dependencies of generated headers on other generated headers.
   if(NOT TARGET "${target}_headers")
-    add_custom_target("${target}_headers" DEPENDS ${generated_headers})
+    add_custom_target("${target}_headers")
   endif()
+  set_property(TARGET ${target}_headers APPEND PROPERTY SOURCES ${generated_headers})
 endfunction()
