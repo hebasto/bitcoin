@@ -8,10 +8,6 @@ function(add_libmultiprocess subdir)
   # build a BUILD_TESTS option is used instead.
   set(BUILD_TESTING "${BUILD_TESTS}")
   add_subdirectory(${subdir} EXCLUDE_FROM_ALL)
-  # Apply core_interface compile options to libmultiprocess runtime library.
-  target_link_libraries(multiprocess PUBLIC $<BUILD_INTERFACE:core_interface>)
-  target_link_libraries(mputil PUBLIC $<BUILD_INTERFACE:core_interface>)
-  target_link_libraries(mpgen PUBLIC $<BUILD_INTERFACE:core_interface>)
   # Mark capproto options as advanced to hide by default from cmake UI
   mark_as_advanced(CapnProto_DIR)
   mark_as_advanced(CapnProto_capnpc_IMPORTED_LOCATION)

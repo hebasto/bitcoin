@@ -70,5 +70,3 @@ if (BUILD_FUZZ_BINARY)
       Boost::headers
   )
 endif()
-
-configure_file(.clang-tidy.in .clang-tidy USE_SOURCE_PERMISSIONS COPYONLY)

@@ -7,7 +7,7 @@
 #
 # Centos Stream 9, https://www.centos.org/cl-vs-cs/#end-of-life, EOL in May 2027:
 #  - CMake 3.26.5, https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.12)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "In-source builds are not allowed.")
@@ -86,7 +86,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/module)
-include(ProcessConfigurations)
 
 # Flatten static lib dependencies.
 # Without this, if libfoo.a depends on libbar.a, libfoo's objects can't begin
