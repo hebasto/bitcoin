@@ -181,13 +181,15 @@ void SetOsThreadName(const char* name)
 {
 #if defined(PR_SET_NAME)
     // Only the first 15 characters are used (16 - NUL terminator)
-    ::prctl(PR_SET_NAME, name, 0, 0, 0);
+    ::prctl(PR_SET_NAME, name, 0, 0, 0); // Linux
 #elif defined(HAVE_PTHREAD_SETNAME_NP_3ARG)
-    pthread_setname_np(pthread_self(), "%s", const_cast<char*>(name));
+    pthread_setname_np(pthread_self(), "%s", const_cast<char*>(name)); // NetBSD
 #elif defined(HAVE_PTHREAD_GETTHREADID_NP)
-    pthread_set_name_np(pthread_self(), name);
+    pthread_set_name_np(pthread_self(), name); // FreeBSD
+#elif defined(HAVE_PTHREAD_SETNAME_NP_2ARG)
+    pthread_setname_np(pthread_self(), name); // illumos (glibc also has this, but Linux uses PR_SET_NAME above, which truncates long names instead of failing)
 #elif defined(__APPLE__)
-    pthread_setname_np(name);
+    pthread_setname_np(name); // macOS
 #else
     // Prevent warnings for unused parameters...
     (void)name;
@@ -351,10 +353,23 @@ SocketId StartSpawned(const SpawnConnectInfo& connect_info)
 
 std::array<SocketId, 2> SocketPair()
 {
+    // Set FD_CLOEXEC atomically when possible. Setting it with fcntl() after
+    // socketpair() leaves a window where a fork() in another thread can leak
+    // the descriptors into an unrelated child process. SpawnProcess relies on
+    // FD_CLOEXEC to close its error-reporting socket on successful exec, and
+    // SOCK_CLOEXEC sets the same descriptor flag.
     int pair[2];
+#ifdef SOCK_CLOEXEC
+    KJ_SYSCALL(socketpair(AF_UNIX, SOCK_STREAM | SOCK_CLOEXEC, 0, pair));
+#else
     KJ_SYSCALL(socketpair(AF_UNIX, SOCK_STREAM, 0, pair));
-    KJ_SYSCALL(fcntl(pair[0], F_SETFD, FD_CLOEXEC));
-    KJ_SYSCALL(fcntl(pair[1], F_SETFD, FD_CLOEXEC));
+    if (fcntl(pair[0], F_SETFD, FD_CLOEXEC) == -1 || fcntl(pair[1], F_SETFD, FD_CLOEXEC) == -1) {
+        const int err = errno;
+        (void)close(pair[0]);
+        (void)close(pair[1]);
+        KJ_FAIL_SYSCALL("fcntl", err);
+    }
+#endif
     return {pair[0], pair[1]};
 }
 
